@@ -1,3 +1,10 @@
+2014-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1887
+	* Fix infinite loop caused by dying in control cheat when the user is paused
+	* Move get_LB_to_throne() so that party is healed and moved before advancing
+	  time to prevent damage ticks and pause from poison or damaging tile.
+	* Fix wrong index and missing text problem in CheatsDialog.
+	* Allow save menu to be opened when in control cheat (still disallow saving)
+
 2014-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1886
 	* Set original light sources to correct size. Try and have smooth lighting
 	  be more accurate. (It's hard to do when floor tile color and obj color can

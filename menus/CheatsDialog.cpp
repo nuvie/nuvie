@@ -78,32 +78,21 @@ bool CheatsDialog::init() {
 	config->value("config/cheats/party_all_the_time", party_all_the_time);
 	const char* const enabled_text[] = { "Disabled", "Enabled" };
 	const char* const yesno_text[] = { "no", "yes" };
+	char buff[4];
 	int brightness_selection;
-	int num_of_brightness = 6;
+	int num_of_brightness = 8;
 	uint8 min_brightness = game->get_map_window()->get_min_brightness();
 
-	if(min_brightness == 0) {
-		brightness_selection = 0;
-	} else if(min_brightness == 40) {
-		brightness_selection = 1;
-	} else if(min_brightness == 60) {
-		brightness_selection = 2;
-	} else if(min_brightness == 80) {
-		brightness_selection = 3;
-	} else if(min_brightness == 100) {
-		brightness_selection = 4;
-	} else if(min_brightness == 128) {
-		brightness_selection = 5;
-	} else if(min_brightness == 255) {
-		brightness_selection = 6;
+	if(min_brightness == 255) {
+		brightness_selection = 7;
+	} else if(min_brightness%20 == 0 && min_brightness <= 120) {
+		brightness_selection = min_brightness/20;
 	} else {
-		num_of_brightness = 8;
-		brightness_selection = 7; // manually edited setting
+		num_of_brightness = 9;
+		brightness_selection = 8; // manually edited setting or old 128
+		sprintf(buff, "%d", min_brightness);
 	}
-
-	char buff[4];
-	sprintf(buff, "%d", min_brightness);
-	const char* const brightness_text[] = { "0", "40", "60", "80", "128", "255", buff };
+	const char* const brightness_text[] = { "0", "20", "40", "60", "80", "100", "120", "255", buff };
 
 	cheat_button = new GUI_TextToggleButton(this, colX[1] - 30, buttonY[0], 70, height, enabled_text, 2, game->are_cheats_enabled(), gui->get_font(), BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(cheat_button); 
@@ -199,22 +188,12 @@ GUI_status CheatsDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) 
 		config->set("config/cheats/party_all_the_time", party_button->GetSelection() ? "yes" : "no");
 
 		int brightness = brightness_button->GetSelection();
-		if(brightness < 7) {
+		if(brightness < 8) {
 			int min_brightness;
-			if(brightness == 0)
-				min_brightness = 0;
-			else if(brightness == 1)
-				min_brightness = 40;
-			else if(brightness == 2)
-				min_brightness = 60;
-			else if(brightness == 3)
-				min_brightness = 80;
-			else if(brightness == 4)
-				min_brightness = 100;
-			else if(brightness == 5)
-				min_brightness = 128;
-			else //if(brightness == 6)
+			if(brightness == 7)
 				min_brightness = 255;
+			else
+				min_brightness = brightness*20;
 			config->set("config/cheats/min_brightness", min_brightness);
 			game->get_map_window()->set_min_brightness(min_brightness);
 			game->get_map_window()->updateAmbience();

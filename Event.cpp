@@ -2376,13 +2376,6 @@ void Event::quitDialog()
 
 void Event::saveDialog()
 {
- if(in_control_cheat)
- {
-	scroll->display_string("\nNot when using the control npc cheat!\n\n");
-	scroll->display_prompt();
-	return;
- }
-
  close_gumps();
 
  SaveManager *save_manager = game->get_save_manager();
@@ -2482,17 +2475,21 @@ void Event::solo_mode(uint32 party_member)
 /* Switch to party mode. */
 bool Event::party_mode()
 {
+    bool was_in_control_cheat; // go in party mode no matter what (we know are we not in combat or vehicle)
     MapCoord leader_loc;
     if(in_control_cheat)
     {
         in_control_cheat = false;
+        was_in_control_cheat = true;
         view_manager->set_party_mode();
         game->get_party()->update_light_sources();
     }
+    else
+        was_in_control_cheat = false;
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader
 
-    if(game->user_paused())
+    if(game->user_paused() && !was_in_control_cheat) // don't return if died in control cheat
         return false;
 
     if(player->is_in_vehicle())
@@ -2503,7 +2500,7 @@ bool Event::party_mode()
 
     if(player->get_party()->is_in_combat_mode())
         scroll->display_string("Not in combat mode!\n");
-    else if(player->get_party()->is_at(leader_loc, 6))
+    else if(player->get_party()->is_at(leader_loc, 6) || was_in_control_cheat)
     {
         if(player->set_party_mode(player->get_party()->get_actor(0)))
         {

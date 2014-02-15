@@ -3774,11 +3774,11 @@ function actor_avatar_death(avatar)
 				Actor.inv_unready_obj(avatar, obj)
 		end
 	end
-	get_LB_to_throne()
 	party_heal()
 	party_update_leader()
 	player_move(0x133, 0x160, 0, true)
 	party_exit_vehicle(0x133, 0x160, 0)
+	get_LB_to_throne()
 
 	for i=0,0xff do
 		local actor = Actor.get(i)

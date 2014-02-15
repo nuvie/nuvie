@@ -37,6 +37,7 @@
 #include "SaveDialog.h"
 #include "NuvieFileList.h"
 #include "Keys.h"
+#include "Event.h"
 
 #define CURSOR_HIDDEN 0
 #define CURSOR_AT_TOP 1
@@ -148,7 +149,7 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
 
  filelist.close();
 
- if(Game::get_game()->is_armageddon())
+ if(Game::get_game()->is_armageddon() || Game::get_game()->get_event()->using_control_cheat())
      save_button->Hide();
 
  cursor_tile = Game::get_game()->get_tile_manager()->get_gump_cursor_tile();
