@@ -46,7 +46,7 @@ class MsgScroll;
 #define OBJTYPE_CONTAINER 0x0002 /* must be set on empty bag,crate,backpack */
 #define OBJTYPE_BOOK      0x0004 /* has book data (signs, paintings, books) */
 
-#define TORCH_LIGHT_LEVEL    6
+#define TORCH_LIGHT_LEVEL    3
 
 typedef struct // object properties & usecode
 {

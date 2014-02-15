@@ -2099,7 +2099,7 @@ void clean_obj_tree_node(void *node)
  return;
 }
 
-bool ObjManager::unlink_from_engine(Obj *obj)
+bool ObjManager::unlink_from_engine(Obj *obj, bool run_usecode)
 {
   Actor *a;
   Obj *cont_obj;
@@ -2108,14 +2108,14 @@ bool ObjManager::unlink_from_engine(Obj *obj)
   {
     case OBJ_LOC_NONE : break;
     case OBJ_LOC_MAP : remove_obj_from_map(obj); break;
-
-    case OBJ_LOC_READIED : a = (Actor *)obj->parent;
-                           a->remove_readied_object(obj);
-                           a->inventory_remove_obj(obj);
+// inventory_remove_obj unreadies
+    case OBJ_LOC_READIED :/* a = (Actor *)obj->parent;
+                           a->remove_readied_object(obj, run_usecode);
+                           a->inventory_remove_obj(obj, run_usecode);
                            break;
-
+*/
     case OBJ_LOC_INV : a = (Actor *)obj->parent;
-                       a->inventory_remove_obj(obj);
+                       a->inventory_remove_obj(obj, run_usecode);
                        break;
 
     case OBJ_LOC_CONT : cont_obj = obj->get_container_obj();

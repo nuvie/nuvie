@@ -24,6 +24,7 @@
  */
 
 #include <string>
+//#include <cassert>
 #include "ObjManager.h"
 #include "Map.h"
 
@@ -97,6 +98,7 @@ class Party {
  PartyPathFinder *pathfinder;
 
  PartyMember member[PARTY_MAX_MEMBERS];
+ uint8 lightsources;
  uint8 num_in_party; // number of party members.
  uint8 formation; // walking formation
  uint16 prev_leader_x; // last location of leader
@@ -190,6 +192,11 @@ class Party {
  void set_combat_target(uint8 member_num, MapCoord target);
  void clear_combat_target(uint8 member_num);
  CombatTarget get_combat_target(uint8 member_num);
+ bool has_light_source();
+ void add_light_source() { lightsources++; /* fprintf(stderr, "lightsources = %d\n", lightsources); */ }
+ void subtract_light_source() { /*assert(lightsources != 0);*/
+                                lightsources--; /*fprintf(stderr, "lightsources = %d\n", lightsources); */ }
+ void update_light_sources();
 
  protected:
  void reform_party(); // call when adding or removing members

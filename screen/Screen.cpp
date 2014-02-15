@@ -45,9 +45,9 @@
 #define sqr(a) ((a)*(a))
 
 //Ultima 6 light globe sizes.
-
-static const sint32 globeradius[]   = { 76, 116, 180, 240, 270, 330 };
-static const sint32 globeradius_2[] = { 38,  58,  90, 120, 135, 160 };
+#define NUM_GLOBES 5
+static const sint32 globeradius[]   = { 36, 112, 148, 192, 448 };
+static const sint32 globeradius_2[] = { 18, 56, 74, 96, 224 };
 
 Screen::Screen(Configuration *cfg)
 {
@@ -86,7 +86,7 @@ Screen::~Screen()
  if (update_rects) free(update_rects);
  if (shading_data) free(shading_data);
 
- for( int i = 0; i < 6; i++ )
+ for( int i = 0; i < NUM_GLOBES; i++ )
    {
     if(shading_globe[i])
        free(shading_globe[i]);
@@ -853,19 +853,22 @@ void Screen::blitbitmap32(uint16 dest_x, uint16 dest_y, const unsigned char *src
 
 static const char TileGlobe[][11*11] =
 {
-{
+{ // 1 - magic items
+    1
+},
+{ // 2- candle, heatsource, fire field, cookfire, stove
     1,1,1,
     1,2,1,
     1,1,1
 },
-{
-    0,0,0,0,0,
-    0,1,2,1,0,
-    0,2,3,2,0,
-    0,1,2,1,0,
-    0,0,0,0,0
+{ // 3 - torch, brazier, campfire, lamppost, candelabra, moongate
+    0,1,1,1,0,
+    1,2,2,2,1,
+    1,2,3,2,1,
+    1,2,2,2,1,
+    0,1,1,1,0
 },
-{
+{ // 4 - 20:00, eclipse, dungeon
     0,0,1,1,1,0,0,
     0,1,2,2,2,1,0,
     1,2,3,3,3,2,1,
@@ -874,46 +877,85 @@ static const char TileGlobe[][11*11] =
     0,1,2,2,2,1,0,
     0,0,1,1,1,0,0
 },
-{
+{ // 5 - 5:00, 19:50
     0,0,0,1,1,1,0,0,0,
-    0,0,1,2,2,2,1,0,0,
+    0,1,1,2,2,2,1,1,0,
     0,1,2,3,3,3,2,1,0,
-    1,2,3,3,4,3,3,2,1,
     1,2,3,4,4,4,3,2,1,
-    1,2,3,3,4,3,3,2,1,
+    1,2,3,4,4,4,3,2,1,
+    1,2,3,4,4,4,3,2,1,
     0,1,2,3,3,3,2,1,0,
-    0,0,1,2,2,2,1,0,0,
-    0,0,0,1,1,1,0,0,0
+    0,1,1,2,2,2,1,1,0,
+    0,0,0,1,1,1,0,0,0,
 },
-{
+{ // 6 - 5:10, 19:40
+    0,0,0,0,1,1,1,0,0,0,0,
     0,0,1,1,2,2,2,1,1,0,0,
-    0,1,1,2,2,2,2,2,1,1,0,
-    1,1,2,2,3,3,3,2,2,1,1,
-    1,2,2,3,4,4,4,3,2,2,1,
-    2,2,3,4,4,4,4,4,3,2,2,
-    2,2,3,4,4,4,4,4,3,2,2,
-    2,2,3,4,4,4,4,4,3,2,2,
-    1,2,2,3,4,4,4,3,2,2,1,
-    1,1,2,2,3,3,3,2,2,1,1,
-    0,1,1,2,2,2,2,2,1,1,0,
+    0,1,2,2,3,3,3,2,2,1,0,
+    0,1,2,3,4,4,4,3,2,1,0,
+    1,2,3,4,4,4,4,4,3,2,1,
+    1,2,3,4,4,4,4,4,3,2,1,
+    1,2,3,4,4,4,4,4,3,2,1,
+    0,1,2,3,4,4,4,3,2,1,0,
+    0,1,2,2,3,3,3,2,2,1,0,
     0,0,1,1,2,2,2,1,1,0,0,
+    0,0,0,0,1,1,1,0,0,0,0
 },
-{
-    1,1,2,2,2,2,2,2,2,1,1,
-    1,2,2,3,3,3,3,3,2,2,1,
+{ // 7 - 5:20, 19:30
+    0,0,1,1,2,2,2,1,1,0,0,
+    0,1,2,2,3,3,3,2,2,1,0,
+    1,2,3,3,4,4,4,3,3,2,1,
+    1,2,3,4,4,4,4,4,3,2,1,
+    2,3,4,4,4,4,4,4,4,3,2,
+    2,3,4,4,4,4,4,4,4,3,2,
+    2,3,4,4,4,4,4,4,4,3,2,
+    1,2,3,4,4,4,4,4,3,2,1,
+    1,2,3,3,4,4,4,3,3,2,1,
+    0,1,2,2,3,3,3,2,2,1,0,
+    0,0,1,1,2,2,2,1,1,0,0
+},
+{ // 8- 5:30, 19:20, torch equipped, light spell
+    2,2,2,2,3,3,3,2,2,2,2,
     2,2,3,3,4,4,4,3,3,2,2,
-    2,3,3,4,4,4,4,4,3,3,2,
     2,3,4,4,4,4,4,4,4,3,2,
     2,3,4,4,4,4,4,4,4,3,2,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,4,4,4,4,4,4,4,4,4,3,
     2,3,4,4,4,4,4,4,4,3,2,
-    2,3,3,4,4,4,4,4,3,3,2,
+    2,3,4,4,4,4,4,4,4,3,2,
     2,2,3,3,4,4,4,3,3,2,2,
-    1,2,2,3,3,3,3,3,2,2,1,
-    1,1,2,2,2,2,2,2,2,1,1
+    2,2,2,2,3,3,3,2,2,2,2
+},
+{ // 9 - 5:40, 19:10
+    3,3,3,3,4,4,4,3,3,3,3,
+    3,3,4,4,4,4,4,4,4,3,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    4,4,4,4,4,4,4,4,4,4,4,
+    4,4,4,4,4,4,4,4,4,4,4,
+    4,4,4,4,4,4,4,4,4,4,4,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,3,4,4,4,4,4,4,4,3,3,
+    3,3,3,3,4,4,4,3,3,3,3
+},
+{ // 10 - 5:50 19:00
+    3,3,3,4,4,4,4,4,3,3,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    4,4,4,4,4,4,4,4,4,4,4,
+    4,4,4,4,4,4,4,4,4,4,4,
+    4,4,4,4,4,4,4,4,4,4,4,
+    4,4,4,4,4,4,4,4,4,4,4,
+    4,4,4,4,4,4,4,4,4,4,4,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,4,4,4,4,4,4,4,4,4,3,
+    3,3,3,4,4,4,4,4,3,3,3
 }
 };
 
-void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity )
+void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity, bool party_light_source)
 {
 	switch( lighting_style )
 	{
@@ -969,15 +1011,15 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
         x_off = 0;
     //Light globe around the avatar
     if( lighting_style == LIGHTING_STYLE_ORIGINAL )
-        drawalphamap8globe( (shading_rect.w-1 + x_off/16)/2, (shading_rect.h-1)/2, opacity/64+3 ); //range (0..3)+3 or (3..6)
+        drawalphamap8globe( (shading_rect.w-1 + x_off/16)/2, (shading_rect.h-1)/2, opacity/20 + 4); //range 4 - 10
     else if( lighting_style == LIGHTING_STYLE_SMOOTH )
-        drawalphamap8globe( (((shading_rect.w-8 + x_off)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, 3 );
+        drawalphamap8globe( (((shading_rect.w-8 + x_off)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, party_light_source ? 5 : 4 );
 }
 
 void Screen::buildalphamap8()
 {
-    //Build three globes for 6 intensities
-    for( int i = 0; i < 6; i++ )
+    //Build three globes for 5 intensities
+    for( int i = 0; i < NUM_GLOBES; i++ )
     {
         shading_globe[i] = (uint8*)malloc(sqr(globeradius[i]));
         for( int y = 0; y < globeradius[i]; y++ )
@@ -1024,9 +1066,10 @@ void Screen::buildalphamap8()
 void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 {
     sint16 i,j;
-    //Clamp lighting globe size to 0-5 (6 levels)
-    if( r > 5 )
-        r = 5;
+// check shouldn't be needed since items only have 3 intensites
+    //Clamp lighting globe size to 0-4 (5 levels) // 4 - 10 (7 levels) now in orig_style now like original
+//    if( r > NUM_GLOBES && lighting_style != LIGHTING_STYLE_ORIGINAL)
+//        r = NUM_GLOBES;
     if( r < 1 )
         return;
     if( shading_ambient == 0xFF )
@@ -1035,15 +1078,20 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 		return;
     if( lighting_style == LIGHTING_STYLE_ORIGINAL )
     {
+		uint8 rad;
+		if(r < 6)
+			rad = r - 1;
+		else
+			rad = 5;
         //Draw using "original" lighting
-		for( j = 0; j <= r*2; j++ )
-			for( i = 0; i <= r*2; i++ )
+		for( j = 0; j <= rad*2; j++ )
+			for( i = 0; i <= rad*2; i++ )
 			{
-				if( x + i - r < 0 || x + i - r >= shading_rect.w )
+				if( x + i - rad < 0 || x + i - rad >= shading_rect.w )
 					continue;
-				if( y + j - r < 0 || y + j - r >= shading_rect.h  )
+				if( y + j - rad < 0 || y + j - rad >= shading_rect.h  )
 					continue;
-				shading_data[(y+j-r)*shading_rect.w+(x+i-r)] = MIN( shading_data[(y+j-r)*shading_rect.w+(x+i-r)] + TileGlobe[r-1][j*(r*2+1)+i], 4 );
+				shading_data[(y+j-rad)*shading_rect.w+(x+i-rad)] = MIN( shading_data[(y+j-rad)*shading_rect.w+(x+i-rad)] + TileGlobe[r-1][j*(rad*2+1)+i], 4 );
 			}
         return;
     }

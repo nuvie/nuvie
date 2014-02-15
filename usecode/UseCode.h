@@ -217,7 +217,7 @@ private:
 
  Obj *get_obj_from_container(Obj *obj);
  bool search_container(Obj *obj, bool show_string = true);
- Obj *destroy_obj(Obj *obj, uint32 count = 0);
+ Obj *destroy_obj(Obj *obj, uint32 count = 0, bool run_usecode = true);
  bool out_of_use_range(Obj *obj, bool check_enemies);
 
  ScriptThread *get_running_script();

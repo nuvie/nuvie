@@ -267,7 +267,7 @@ void UseCode::dbg_print_event(UseCodeEvent event, Obj *obj)
  * than the object stack, or it could not be completely destroyed for whatever
  * reason. Returns NULL if the object was destroyed.
  */
-Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
+Obj *UseCode::destroy_obj(Obj *obj, uint32 count, bool run_usecode)
 {
   //ActorManager *actor_manager = Game::get_game()->get_actor_manager();
   //bool removed = false;
@@ -277,7 +277,7 @@ Obj *UseCode::destroy_obj(Obj *obj, uint32 count)
     obj->qty -= count;
   else // destroy
   {
-    obj_manager->unlink_from_engine(obj);
+    obj_manager->unlink_from_engine(obj, run_usecode);
     delete_obj(obj);
     obj = NULL;
   }

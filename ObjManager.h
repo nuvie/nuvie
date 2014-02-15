@@ -181,7 +181,7 @@ class ObjManager
 
  void update(uint16 x, uint16 y, uint8 z, bool teleport = false);
 
- bool unlink_from_engine(Obj *obj);
+ bool unlink_from_engine(Obj *obj, bool run_usecode = true);
  
  bool moveto_map(Obj *obj, MapCoord location);
  bool moveto_inventory(Obj *obj, uint16 actor_num);

@@ -103,10 +103,11 @@ class Screen
    void blitbitmap(uint16 dest_x, uint16 dest_y, const unsigned char *src_buf, uint16 src_w, uint16 src_h, uint8 fg_color, uint8 bg_color);
 
    void buildalphamap8();
-   void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity );
+   void clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opacity, bool party_light_source);
    void drawalphamap8globe( sint16 x, sint16 y, uint16 radius );
    void blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect);
    bool updatingalphamap;
+   int get_lighting_style() { return lighting_style; }
    int get_old_lighting_style() { return old_lighting_style; } // return the lighting_style before cheats applied
    void set_lighting_style(int lighting);
 

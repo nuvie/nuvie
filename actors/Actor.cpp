@@ -937,14 +937,14 @@ void Actor::inventory_del_all_objs()
    
 }
 
-bool Actor::inventory_remove_obj(Obj *obj)
+bool Actor::inventory_remove_obj(Obj *obj, bool run_usecode)
 {
  U6LList *inventory;
  Obj *container = NULL;
   
  inventory = get_inventory_list();
  if(obj->is_readied())
-    remove_readied_object(obj);
+    remove_readied_object(obj, run_usecode);
  if(obj->is_in_container())
     container = obj->get_container_obj();
  
@@ -1751,6 +1751,8 @@ void Actor::repel_from(Actor *target)
 
 void Actor::add_light(uint8 val)
 {
+    if(is_in_party() || (Actor*)this == Game::get_game()->get_player()->get_actor())
+        Game::get_game()->get_party()->add_light_source();
 //    light += val;
     light_source.push_back(val);
     if(val > light)
@@ -1759,6 +1761,8 @@ void Actor::add_light(uint8 val)
 
 void Actor::subtract_light(uint8 val)
 {
+    if(is_in_party() || (Actor*)this == Game::get_game()->get_player()->get_actor())
+        Game::get_game()->get_party()->subtract_light_source();
 //    if(light >= val)
 //        light -= val;
 //    else

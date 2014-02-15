@@ -58,6 +58,7 @@ Party::Party(Configuration *cfg)
  autowalk = false;
  in_vehicle = false;
  in_combat_mode = false;
+ lightsources = 0;
 
  memset(&member, 0, sizeof member );
 }
@@ -142,6 +143,7 @@ bool Party::load(NuvieIO *objlist)
 	 clear_combat_target(i);
  }
 
+ update_light_sources();
  update_music();
 
  return true;
@@ -210,7 +212,11 @@ bool Party::remove_actor(Actor *actor, bool keep_party_flag)
    if(member[i].actor->id_n == actor->id_n)
      {
       if(keep_party_flag == false)
+      {
+        for(int j = 0; j < member[i].actor->get_num_light_sources(); j++)
+          subtract_light_source();
         member[i].actor->set_in_party(false);
+      }
       if(i != (num_in_party - 1))
         {
          for(;i+1<num_in_party;i++)
@@ -221,7 +227,7 @@ bool Party::remove_actor(Actor *actor, bool keep_party_flag)
       reform_party();
       if(game->is_new_style())
       {
-// FIXME need to close member's gumps if open
+        Game::get_game()->get_event()->close_gumps();
         return true;
       }
       //FIXME this is a bit hacky we need a better way to refresh views when things change
@@ -266,7 +272,7 @@ bool Party::resurrect_dead_members()
     if(actor->is_in_party() && actor->is_alive() == false)
       actor->resurrect(new_pos);
   }
-  
+  update_light_sources(); // should only be needed for control cheat but it won't hurt to recheck
   return true;
 }
 
@@ -1051,4 +1057,38 @@ CombatTarget Party::get_combat_target(uint8 member_num)
 	}
 
 	return member[member_num].target;
+}
+
+void Party::update_light_sources()
+{
+	lightsources = 0;
+	for(int i=0;i< num_in_party;i++) {
+		for (int j=0; j < member[i].actor->get_num_light_sources(); j++)
+			add_light_source();
+	}
+	if(game->get_event()->using_control_cheat()) {
+		for(int i=0; i < game->get_player()->get_actor()->get_num_light_sources(); i++)
+			add_light_source();
+	}
+	game->get_map_window()->updateAmbience();
+}
+
+bool Party::has_light_source()
+{
+	if(lightsources > 0) { // the original engine didn't care about distance
+		if(game->get_event()->using_control_cheat()) {
+			if(game->get_player()->get_actor()->get_num_light_sources() > 0)
+				return true;
+			else
+				return false; 
+		}
+		for(int i=0;i< num_in_party;i++) {
+			if(member[i].actor->get_num_light_sources() > 0) {
+				if(!game->get_map_window()->tile_is_black(member[i].actor->x, member[i].actor->y)
+				   && member[i].actor->is_nearby(game->get_player()->get_actor())) // within 5 tiles of player
+					return true;
+			}
+		}
+	}
+	return false;
 }

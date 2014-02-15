@@ -437,7 +437,7 @@ class Actor
  bool inventory_add_object(Obj *obj, Obj *container = 0, bool stack=true);
  bool inventory_add_object_nostack(Obj *obj, Obj *container = 0) { return inventory_add_object(obj, container, false); }
  void inventory_del_all_objs();
- bool inventory_remove_obj(Obj *obj);
+ bool inventory_remove_obj(Obj *obj, bool run_usecode = true);
  Obj *inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality = 0);
  uint32 inventory_del_object(uint16 obj_n, uint32 qty, uint8 quality);
  float inventory_get_max_weight() { return((strength * 2)); }
@@ -490,6 +490,7 @@ class Actor
  virtual const char *get_worktype_string(uint32 wt) { return NULL; }
 
  Obj *find_body();
+ uint8 get_num_light_sources() { return light_source.size(); }
 };
 
 const char *get_actor_alignment_str(uint8 alignment);

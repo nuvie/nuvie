@@ -3227,9 +3227,10 @@ void U6UseCode::extinguish_torch(Obj *obj)
         Actor *owner = actor_manager->get_actor_holding_obj(obj);
         if((owner->is_in_party() || owner == player->get_actor()) && owner->is_alive()) 
         {
-            owner->remove_readied_object(obj, false);
             if(owner->get_hp() == 0) // Avatar during Kal Lor item removal
             {
+                owner->remove_readied_object(obj, false);
+                party->subtract_light_source();
                 game->get_map_window()->updateBlacking();
                 return;
             }
@@ -3242,7 +3243,7 @@ void U6UseCode::extinguish_torch(Obj *obj)
     }
 
     scroll->display_string("\nA torch burned out.\n");
-    destroy_obj(obj);
+    destroy_obj(obj, 0, false);
     game->get_map_window()->updateBlacking();
 }
 

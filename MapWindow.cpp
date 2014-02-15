@@ -702,11 +702,12 @@ void MapWindow::updateAmbience()
      //Dusk starts at 19:00
      //It's completely dark by 20:00
      //Dawn starts at 5:00
-     //It's completely bright by 5:45
+     //It's completely bright by 6:00
      //Dusk and dawn operate by changing the ambient light, not by changing the radius of the avatar's light globe
 
     if(!screen)
         return;
+    bool dawn_or_dusk = false;
     uint8 cur_min_brightness;
     if(game->are_cheats_enabled())
         cur_min_brightness = min_brightness;
@@ -725,9 +726,33 @@ void MapWindow::updateAmbience()
      else if( weather->is_eclipse() ) //solar eclipse
          a = cur_min_brightness;
      else if( h == 19 ) //Dusk -- Smooth transition between 255 and min_brightness during first 59 minutes
-         a = 255 - (uint8)( ( 255.0f - cur_min_brightness ) * (float)clock->get_minute() / 59.0f );
-     else if( h == 5 ) //Dawn -- Smooth transition between min_brightness and 255 during first 45 minutes
-         a = cur_min_brightness + ( 255.0f - cur_min_brightness ) * (float)clock->get_minute() / 45.0f;
+     {
+         if(screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH)
+         {
+             dawn_or_dusk = true;
+             a = 255 - (uint8)( ( 255.0f - cur_min_brightness ) * (float)clock->get_minute() / 59.0f );
+         }
+         else
+         {
+             a = 20*(6 - clock->get_minute()/10);
+             if(a < cur_min_brightness)
+                 a = cur_min_brightness;
+         }
+     }
+     else if( h == 5 ) //Dawn -- Smooth transition between min_brightness and 255 during first 59 minutes
+     {
+         if(screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH)
+         {
+             dawn_or_dusk = true;
+             a = cur_min_brightness + ( 255.0f - cur_min_brightness ) * (float)clock->get_minute() / 59.0f;
+         }
+         else
+         {
+             a = 20*(1 +  clock->get_minute()/10);
+             if(a < cur_min_brightness)
+                 a = cur_min_brightness;
+         }
+     }
      else if( h > 5 && h < 19 ) //Day
          a = 255;
      else //Night
@@ -735,13 +760,31 @@ void MapWindow::updateAmbience()
  
      if(a > 255)
          a = 255;
-     if(a < 0xab && clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0) //FIXME U6 specific
-    	 a = 0xaa; //FIXME this is an approximation
-
+     bool party_light_source;
+         // smooth seems to need an enormous range in order to have smooth transitions
+     if(a < (screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH ? 248 : 81) &&
+        (game->get_party()->has_light_source() || clock->get_timer(GAMECLOCK_TIMER_U6_LIGHT) != 0)) //FIXME U6 specific
+     {
+         party_light_source = true;
+         if(screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH)
+         {
+            if(!dawn_or_dusk) // preserve a when dusk or dawn so we have the correct opacity
+            {
+                 if(cur_min_brightness == 0) // opaque blacks
+                     a = 0;
+                 else
+                     a = cur_min_brightness;
+            }
+         }
+         else
+             a = 80;
+     }
+     else
+         party_light_source = false;
 	 screen->set_ambient( a );
 
      //Clear the opacity map
-     screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient() );
+     screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient(), party_light_source );
 }
 
 void MapWindow::updateBlacking()

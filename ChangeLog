@@ -1,3 +1,16 @@
+2014-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1886
+	* Set original light sources to correct size. Try and have smooth lighting
+	  be more accurate. (It's hard to do when floor tile color and obj color can
+	  greatly change visibility, and it uses circles instead of squares. Smooth
+	  ends up being slightly bigger.
+	* Handle party members with lit torches more like the original. (Torches
+	  magically increase their light radius when held by a party member and that
+	  radius moves with the controlled character not the person who holds it. It
+	  has the same light level as the light spell. Unlike the original, Nuvie
+	  will make sure the person with the light source is within 5 tiles of the
+	  player and make sure the area they are in isn't hidden (behind door, etc).
+	* Fix double removal of torches when then burn out.
+
 2014-02-13  Malignant Manor <malignantmanor@users.sourceforge.net> r1885
 	* Allow sleeping in dungeons like the original and have the in_town check
 	  only count tiles 5 tiles away or less.

@@ -1764,6 +1764,7 @@ void Event::alt_code_input(const char *in)
                 if(!game->is_new_style())
                     view_manager->get_inventory_view()->set_actor(player->get_actor());
             }
+            game->get_party()->update_light_sources();
             scroll->display_string("\n\n");
           }
             scroll->display_prompt();
@@ -2463,6 +2464,8 @@ void Event::solo_mode(uint32 party_member)
         scroll->display_string("Solo mode\n\n");
         player->set_mapwindow_centered(true);
         actor->set_worktype(0x02); // Player
+        if(in_control_cheat)
+            game->get_party()->update_light_sources();
         in_control_cheat = false;
 
         if(game->is_new_style())
@@ -2484,6 +2487,7 @@ bool Event::party_mode()
     {
         in_control_cheat = false;
         view_manager->set_party_mode();
+        game->get_party()->update_light_sources();
     }
     Actor *actor = player->get_party()->get_actor(0);
     assert(actor); // there must be a leader

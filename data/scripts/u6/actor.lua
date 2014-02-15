@@ -2065,8 +2065,8 @@ function advance_time(num_turns)
 								if obj.qty > num_turns then
 									obj.qty = obj.qty - num_turns
 								else
-									print("A torch burned out.\n")
-									Actor.inv_remove_obj(actor, obj)
+									--print("A torch burned out.\n")
+									Actor.inv_unready_obj(actor, obj)
 								end
 							end
 						elseif obj_n == 0x102 then --invisibility ring
