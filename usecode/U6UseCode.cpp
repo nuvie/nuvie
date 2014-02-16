@@ -2844,6 +2844,9 @@ bool U6UseCode::look_mirror(Obj *obj, UseCodeEvent ev)
  */
 bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
 {
+    if(!party->contains_actor(items.actor_ref))
+        return false;
+
     const char *prefix = "", *dungeon_name = "";
     uint16 x = obj->x, y = obj->y;
     uint8 z = obj->z;
@@ -2854,7 +2857,6 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
     if(!player->in_party_mode())
     {
         scroll->display_string("\n\nNot in solo mode.\n");
-        scroll->display_prompt();
         return(true);
     }
 
@@ -2907,8 +2909,7 @@ bool U6UseCode::enter_dungeon(Obj *obj, UseCodeEvent ev)
         return(true);
     }
     else if((ev == USE_EVENT_PASS || ev == USE_EVENT_USE) && party->get_autowalk()) // party can use now
-        if(party->contains_actor(items.actor_ref))
-            return(true);
+        return(true);
     return(false);
 }
 

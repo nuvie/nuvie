@@ -994,6 +994,22 @@ inline void MapWindow::drawActor(Actor *actor)
         {
             drawTile(tile, actor->x-cur_x,actor->y-cur_y, false);
             drawTile(tile, actor->x-cur_x,actor->y-cur_y, true);
+            if(game->get_clock()->get_timer(GAMECLOCK_TIMER_U6_INFRAVISION) != 0)
+            {
+                std::list<Obj *> *surrounding_objs = actor->get_surrounding_obj_list();
+
+                if(surrounding_objs)
+                {
+                    std::list<Obj *>::iterator obj_iter;
+                    for(obj_iter = surrounding_objs->begin(); obj_iter != surrounding_objs->end(); obj_iter++)
+                    {
+                        Obj *obj = *obj_iter;
+                        tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+                        drawTile(tile,obj->x - cur_x, obj->y - cur_y, false);
+                        drawTile(tile,obj->x - cur_x, obj->y - cur_y, true); // doesn't seem needed but will do it anyway (for now)
+                    }
+                }
+            }
         }
  
         // draw light coming from actor
