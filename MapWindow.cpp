@@ -769,12 +769,7 @@ void MapWindow::updateAmbience()
          if(screen->get_lighting_style() == LIGHTING_STYLE_SMOOTH)
          {
             if(!dawn_or_dusk) // preserve a when dusk or dawn so we have the correct opacity
-            {
-                 if(cur_min_brightness == 0) // opaque blacks
-                     a = 0;
-                 else
-                     a = cur_min_brightness;
-            }
+                a = cur_min_brightness;
          }
          else
              a = 80;

@@ -199,7 +199,8 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
                      break;
 
     default :
-              add_char(ascii); break;
+              if(isprint(ascii))
+                  add_char(ascii); break;
    }
 
 

@@ -1,3 +1,7 @@
+2014-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1888
+	* Only add printable characters to save description.
+	* Remove useless check in updateAmbience()
+
 2014-02-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1887
 	* Fix infinite loop caused by dying in control cheat when the user is paused
 	* Move get_LB_to_throne() so that party is healed and moved before advancing
