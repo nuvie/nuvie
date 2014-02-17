@@ -1,3 +1,7 @@
+2014-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1891
+	* Handle permitted input that isn't yes/no only or numbers only properly.
+	* Don't allow quicksave during armageddon or when using control cheat.
+
 2014-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1890
 	* End Avatar's turn if he dies from map tile damage when teleporting or
 	  passing his turn.

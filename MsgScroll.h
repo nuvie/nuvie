@@ -102,7 +102,7 @@ protected:
  uint8 input_char;
  bool input_mode;
  const char *permit_input; // character list, or 0 = any string
- bool yes_no_only, numbers_only; // limited input selection
+ bool yes_no_only, aye_nay_only, numbers_only; // limited input selection
 
  bool page_break;
  bool just_finished_page_break;

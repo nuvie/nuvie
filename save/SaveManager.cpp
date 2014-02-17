@@ -191,6 +191,13 @@ bool SaveManager::quick_save(int save_num, bool load)
 		text = "loading quick save ";
 		event->close_gumps();
 	} else {
+		if(Game::get_game()->is_armageddon()) {
+			scroll->message("Can't save. You killed everyone!\n\n");
+			return false;
+		} else if(event->using_control_cheat()) {
+			scroll->message(" Can't save while using control cheat\n\n");
+			return false;
+		}
 		text = "saving quick save ";
 	}
 	snprintf(buf, 6, "%03d\n", save_num);

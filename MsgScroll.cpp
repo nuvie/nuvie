@@ -177,6 +177,7 @@ void MsgScroll::init(Configuration *cfg, Font *f)
 
 	input_char = 0;
 	yes_no_only = false;
+	aye_nay_only = false;
 	numbers_only = false;
 	scroll_updated = false;
 	discard_whitespace = true;
@@ -621,6 +622,8 @@ void MsgScroll::set_permitted_input(const char *allowed)
 			yes_no_only = true;
 		else if(strncmp(permit_input, "0123456789", strlen(permit_input)) == 0)
 			numbers_only = true;
+		else if(game_type == NUVIE_GAME_U6 && strcmp(permit_input, "ayn") == 0) // Heftimus npc 47
+			aye_nay_only = true;
 	}
 }
 
@@ -629,6 +632,7 @@ void MsgScroll::clear_permitted_input()
 	permit_input = NULL;
 	yes_no_only = false;
 	numbers_only = false;
+	aye_nay_only = false;
 }
 
 void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape, bool use_target_cursor, bool set_numbers_only_to_true)
@@ -794,9 +798,7 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                           }
                           return(GUI_YUM);
         case SDLK_KP_ENTER:
-        case SDLK_RETURN: if(permit_inputescape ||
-                             (yes_no_only && (input_char != 0 || strcasecmp(input_buf.c_str(), "y") == 0
-                              || strcasecmp(input_buf.c_str(), "n") == 0)))
+        case SDLK_RETURN: if(permit_inputescape || input_char != 0) // input_char should only be permit_input
                           {
                             if(input_char != 0)
                               input_buf_add_char(get_char_from_input_char());
@@ -1017,7 +1019,7 @@ inline void MsgScroll::drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y
  uint16 total_length = 0;
  uint8 font_color = FONT_COLOR_U6_NORMAL;
  uint8 font_highlight_color = FONT_COLOR_U6_HIGHLIGHT;
- if(Game::get_game()->get_game_type()!=NUVIE_GAME_U6)
+ if(game_type!=NUVIE_GAME_U6)
  {
     font_color = FONT_COLOR_WOU_NORMAL;
     font_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
@@ -1038,7 +1040,7 @@ void MsgScroll::clearCursor(uint16 x, uint16 y)
 void MsgScroll::drawCursor(uint16 x, uint16 y)
 {
  uint8 font_color = 0x48;
- if(Game::get_game()->get_game_type()!=NUVIE_GAME_U6)
+ if(game_type!=NUVIE_GAME_U6)
     font_color = 0;
  if(input_char != 0) { // show letter selected by arrow keys
     font->drawChar(screen, get_char_from_input_char(), x, y, font_color);
@@ -1155,6 +1157,8 @@ void MsgScroll::increase_input_char()
 		return;
 	if(yes_no_only)
 		input_char = input_char == 25 ? 14 : 25; 
+	else if(aye_nay_only)
+		input_char = input_char == 1 ? 14 : 1;
 	else if(numbers_only)
 		input_char = (input_char == 0 || input_char == 37) ? 28 : input_char + 1;
 	else
@@ -1171,6 +1175,8 @@ void MsgScroll::decrease_input_char()
 		input_char = input_char == 25 ? 14 : 25;
 	else if(numbers_only)
 		input_char = (input_char == 0 || input_char == 28) ? 37 : input_char - 1;
+	else if(aye_nay_only)
+		input_char = input_char == 1 ? 14 : 1;
 	else
 		input_char = input_char == 0 ? 37 : input_char - 1;
 	if(permit_input != NULL && !strchr(permit_input, get_char_from_input_char())) // might only be needed for the teleport cheat menu

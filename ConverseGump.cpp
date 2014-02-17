@@ -309,6 +309,11 @@ void ConverseGump::set_permitted_input(const char *allowed)
 		add_keyword("yes");
 		add_keyword("no");
 	}
+	else if(aye_nay_only)
+	{
+		add_keyword("aye");
+		add_keyword("nay");
+	}
 	else if(numbers_only)
 	{
 		add_keyword("0");
@@ -530,7 +535,11 @@ std::string ConverseGump::get_token_at_cursor()
 		{
 			std::string keyword = (*iter).s;
 			if(!is_permanent_keyword(keyword))
+			{
 				keyword_list->erase(iter);
+				if(permit_input)
+					keyword = keyword.at(2); // only return first char after " *"
+			}
 			return keyword;
 		}
 	}
@@ -725,8 +734,7 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
 	        case SDLK_KP_ENTER:
 	        case SDLK_RETURN:
 	        					if(permit_inputescape || !cursor_at_input_section()
-	        					   || (yes_no_only && (input_char != 0 || strcasecmp(input_buf.c_str(), "y") == 0
-	        					       || strcasecmp(input_buf.c_str(), "n") == 0)))
+	        					   || input_char != 0) // input_char should only be permit_input
 	        	                 {
 	        						if(!cursor_at_input_section())
 	        							input_add_string(get_token_at_cursor());
