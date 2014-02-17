@@ -1,3 +1,9 @@
+2014-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1890
+	* End Avatar's turn if he dies from map tile damage when teleporting or
+	  passing his turn.
+	* Fix my poorly implemented way of ending the player's turn if they killed
+	  the Avatar and still have more weapons to use.
+
 2014-02-16  Malignant Manor <malignantmanor@users.sourceforge.net> r1889
 	* Have infravision work properly on actors that are larger than 1 tile.
 	* Fix "Not in solo mode." being displayed when non-party members move to a

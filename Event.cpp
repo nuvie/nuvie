@@ -780,7 +780,13 @@ bool Event::talk(Obj *obj)
 
 void Event::try_next_attack()
 {
-	if(player->attack_select_next_weapon(true) == false)
+	if(Game::get_game()->get_actor_manager()->get_avatar()->get_hp() == 0) // need to end turn if Avatar died
+	{
+		endAction();
+		Game::get_game()->get_actor_manager()->startActors();
+		return;
+	}
+	else if(player->attack_select_next_weapon(true) == false)
 	{
 		player->subtract_movement_points(10);
 		game->get_actor_manager()->startActors(); // end player turn

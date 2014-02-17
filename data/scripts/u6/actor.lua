@@ -249,9 +249,10 @@ function subtract_movement_pts(actor, pts)
    if pts < 1 then pts = 1 end
    
    actor.mpts = actor.mpts - pts
+--[[ doesn't seem needed anymore
    if g_avatar_died == true then
-      actor_avatar_death(Actor.get(1))
-   end
+      actor_avatar_death()
+   end --]]
 end
 
 function subtract_map_movement_pts(actor)
@@ -1920,7 +1921,10 @@ end
 --
 function actor_update_all()
 --dgb("actor_update_all()\n")
-
+   if g_avatar_died == true then
+      actor_avatar_death()
+      return
+   end
    g_time_stopped = is_time_stopped()
    
    actor_calculate_avg_coords()
@@ -2144,7 +2148,9 @@ function advance_time(num_turns)
 		
 		player_dec_alcohol(1)
 	end
-	
+	if g_avatar_died == true then
+		actor_avatar_death()
+	end
 end
 
 function actor_update_flags(actor)
@@ -3748,11 +3754,11 @@ function get_LB_to_throne()
 	end
 end
 
-function actor_avatar_death(avatar)
+function actor_avatar_death()
 	
 	--FIXME the hit tile is displayed constantly while the death tune is playing.
-	
-	
+	g_avatar_died = false -- before get_LB_to_throne()
+	local avatar = Actor.get(1)
 	if avatar.obj_n == 431 then --horse with rider
 		Actor.use(avatar) --dismount from horse
 	end
@@ -3774,7 +3780,7 @@ function actor_avatar_death(avatar)
 				Actor.inv_unready_obj(avatar, obj)
 		end
 	end
-	party_heal()
+	party_heal() -- need to heal before player_move
 	party_update_leader()
 	player_move(0x133, 0x160, 0, true)
 	party_exit_vehicle(0x133, 0x160, 0)
@@ -3793,7 +3799,6 @@ function actor_avatar_death(avatar)
 	party_set_combat_mode(false)
 	party_set_party_mode()
 	fade_in()
-	g_avatar_died = false
 end
 
 io.stderr:write("actor.lua loaded\n")

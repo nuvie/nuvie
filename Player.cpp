@@ -494,6 +494,11 @@ void Player::move(sint16 new_x, sint16 new_y, uint8 new_level, bool teleport)
     //map_window->centerMapOnActor(actor);
     if(party->is_leader(actor)) // lead party
       {
+       if(actor_manager->get_avatar()->get_hp() == 0) // need to end turn if Avatar died
+       {
+           actor_manager->startActors();
+           return;
+       }
        party->move(new_x, new_y, new_level); // center everyone first
        party->follow(0, 0); // then try to move them to correct positions
       }
