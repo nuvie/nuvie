@@ -1506,7 +1506,8 @@ void Actor::clear()
  z = 0;
  hide();
  Actor::set_worktype(0);
-
+ light = 0;
+ light_source.clear();
 }
 
 void Actor::show()

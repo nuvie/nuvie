@@ -57,7 +57,7 @@ class Look;
 #define TILEFLAG_BOUNDARY         0x4
 #define TILEFLAG_LIGHT_MSB        0x2 
 #define TILEFLAG_LIGHT_LSB        0x1
-
+#define GET_TILE_LIGHT_LEVEL(x) (x->flags2 & 0x3) // only use with a pointer
 //flags3
 #define TILEFLAG_ARTICLE_MSB     0x80 // 00 01 10 11
 #define TILEFLAG_ARTICLE_LSB     0x40 // -  a  an the

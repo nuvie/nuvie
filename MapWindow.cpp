@@ -158,6 +158,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  look_actor = NULL;
  walking = false;
  looking = false;
+ config->value(config_get_game_key(config) + "/map_tile_lighting",using_map_tile_lighting, game_type == NUVIE_GAME_MD ? false : true);
  config->value("config/input/enable_doubleclick",enable_doubleclick,true);
  config->value("config/input/look_on_left_click",look_on_left_click,true);
  set_use_left_clicks();
@@ -840,8 +841,8 @@ void MapWindow::Display(bool full_redraw)
            {
             TileInfo ti;
             ti.t=tile;
-            ti.x=j+cur_x;
-            ti.y=i+cur_y;
+            ti.x=j; // +cur_x; - in_town needs the addition but rendering below needs it without
+            ti.y=i; // +cur_y; - so it gets priority
             m_ViewableTiles.push_back(ti);
            }
         }
@@ -850,6 +851,16 @@ void MapWindow::Display(bool full_redraw)
    //map_ptr += map_width;
    map_ptr += tmp_map_width ;//* sizeof(uint16);
   }
+
+ if(screen->updatingalphamap && using_map_tile_lighting)
+ {
+    for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
+        ti != m_ViewableTiles.end(); ti++)
+    {
+        if(GET_TILE_LIGHT_LEVEL((*ti).t) > 0)
+            screen->drawalphamap8globe((*ti).x, (*ti).y, GET_TILE_LIGHT_LEVEL((*ti).t));
+    }
+ }
 
  drawObjs();
 
@@ -1004,20 +1015,23 @@ inline void MapWindow::drawActor(Actor *actor)
                     for(obj_iter = surrounding_objs->begin(); obj_iter != surrounding_objs->end(); obj_iter++)
                     {
                         Obj *obj = *obj_iter;
-                        tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-                        drawTile(tile,obj->x - cur_x, obj->y - cur_y, false);
-                        drawTile(tile,obj->x - cur_x, obj->y - cur_y, true); // doesn't seem needed but will do it anyway (for now)
+                        Tile *t = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+                        drawTile(t,obj->x - cur_x, obj->y - cur_y, false);
+                        drawTile(t,obj->x - cur_x, obj->y - cur_y, true); // doesn't seem needed but will do it anyway (for now)
                     }
                 }
             }
         }
- 
-        // draw light coming from actor
-        if(actor->light > 0 && screen->updatingalphamap)
+        /* draw light coming from the actor
+           Wisps can change the light level depending on their current tile so we can't use actor->light for an actor's innate lighting.
+           TODO - I don't know of a nice way to force the lighting to update for wisps.
+                  The original only updated them when the rest of the lighting needed an update, like when moving.
+        */
+        if(screen->updatingalphamap && (actor->light > 0 || GET_TILE_LIGHT_LEVEL(tile) > 0))
         {
             //if(actor->light > 5)
             //    DEBUG(0,LEVEL_WARNING,"%s's light level is %d\n",actor->get_name(),actor->light);
-            screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, actor->light);
+            screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, MAX(actor->light, GET_TILE_LIGHT_LEVEL(tile)));
         }
     }
 }
@@ -1149,9 +1163,9 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  //Draw a lightglobe in the middle of the 16x16 tile.
  if( !draw_lowertiles &&
      toptile &&
-     tile->flags2 & 0x3 &&
+     GET_TILE_LIGHT_LEVEL(tile) > 0 &&
      screen->updatingalphamap )
-	 	 screen->drawalphamap8globe( obj->x - cur_x, obj->y - cur_y, (tile->flags2 & 0x3) );
+	 	 screen->drawalphamap8globe( obj->x - cur_x, obj->y - cur_y, GET_TILE_LIGHT_LEVEL(tile) );
 
 
   drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
@@ -2744,7 +2758,7 @@ void MapWindow::set_overlay(SDL_Surface *surfpt)
     overlay = surfpt;
 }
 
-// TODO: We probably shouldn't use m_ViewableTiles anymore or make sure tiles more than 5 tiles away aren't added
+// TODO: We probably shouldn't use m_ViewableTiles anymore
 // There's no check for is_orig_style (which will only have 5 tiles) below to help speed this up in higher resolutions
 
 /* Returns true if town tiles are within 5 tiles of the player */ 
@@ -2754,7 +2768,7 @@ bool MapWindow::in_town()
 
     for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
         ti != m_ViewableTiles.end(); ti++)
-        if(MapCoord((*ti).x, (*ti).y, cur_level).distance(player_loc) <= 5 && // make sure tile is close enough
+        if(MapCoord((*ti).x+cur_x, (*ti).y+cur_y, cur_level).distance(player_loc) <= 5 && // make sure tile is close enough
            (*ti).t->flags1&TILEFLAG_WALL && (*ti).t->flags1&TILEFLAG_WALL_MASK) //only wall tiles with wall direction bits set.
         {
             return true;

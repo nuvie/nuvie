@@ -263,6 +263,8 @@ class MapWindow: public GUI_Widget
 
  void wizard_eye_start(MapCoord location, uint16 duration, CallBack *caller);
 
+ bool using_map_tile_lighting;
+
 protected:
  void create_thumbnail();
 

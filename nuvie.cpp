@@ -360,6 +360,7 @@ void Nuvie::SharedDefaultConfigValues()
 		config->set(game_str[i] + "show_orig_style_cb", "default");
 		if(i == 0) // U6
 			config->set("config/ultima6/cb_text_color", 115);
+		config->set(game_str[i] + "map_tile_lighting", i == 1 ? false : true); // MD has canals lit up so disable
 		config->set(game_str[i] + "converse_solid_bg", false);
 		config->set(game_str[i] + "converse_bg_color", bg_color[i]);
 		config->set(game_str[i] + "converse_width", "default");

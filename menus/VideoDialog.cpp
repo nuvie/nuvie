@@ -43,8 +43,8 @@
 #include "InventoryView.h"
 #include "Keys.h"
 
-#define VD_WIDTH 280
-#define VD_HEIGHT 139
+#define VD_WIDTH 311
+#define VD_HEIGHT 145
 
 VideoDialog::VideoDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - VD_WIDTH)/2,
@@ -56,7 +56,7 @@ VideoDialog::VideoDialog(GUI_CallBack *callback)
 }
 
 bool VideoDialog::init() {
-	int colX[] = { 9, 29, 63, 201, 239};
+	int colX[] = { 9, 29, 63, 232, 270};
 	int height = 12;
 	int yesno_width = 32;
 	int buttonY = 9;
@@ -212,6 +212,13 @@ bool VideoDialog::init() {
 		AddWidget(doll_button);
 		button_index[last_index+=1] = doll_button;
 	}
+// tile_lighting_b
+	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use lighting data from map tiles:", gui->get_font());
+	AddWidget(widget);
+	old_use_tile_lighting = game->get_map_window()->using_map_tile_lighting;
+	tile_lighting_b = new GUI_TextToggleButton(this, colX[4], buttonY += row_h, yesno_width, height, yesno_text, 2, old_use_tile_lighting, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(tile_lighting_b);
+	button_index[last_index+=1] = tile_lighting_b;
 // needs restart text
 	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h*2, 0, 0, 0, "The following require a restart:", gui->get_font());
 	AddWidget(widget);
@@ -239,10 +246,10 @@ bool VideoDialog::init() {
 	AddWidget(dither_button);
 	button_index[last_index+=1] = dither_button;
 // cancel/save buttons
-	cancel_button = new GUI_Button(this, 84, VD_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cancel_button = new GUI_Button(this, 95, VD_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
 	button_index[last_index+=1] = cancel_button;
-	save_button = new GUI_Button(this, 155, VD_HEIGHT - 20, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 170, VD_HEIGHT - 20, 40, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
 	button_index[last_index+=1] = save_button;
 
@@ -343,6 +350,7 @@ GUI_status VideoDialog::KeyDown(SDL_keysym key) {
 
 GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 	if(caller == (GUI_CallBack *)cancel_button) {
+!Game::get_game()->get_map_window()->using_map_tile_lighting;
 		return close_dialog();
 	} else if(fullscreen_button && caller == (GUI_CallBack *)fullscreen_button) {
 		rebuild_buttons(false);
@@ -403,6 +411,12 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 			InventoryView *iv = vm->get_inventory_view();
 			if(vm->get_current_view() == iv) // showing a doll so need to reset
 				iv->set_party_member(iv->get_party_member_num());
+		}
+	// tile_lighting_b
+		if(old_use_tile_lighting != tile_lighting_b->GetSelection()) {
+			config->set(config_get_game_key(config) + "/map_tile_lighting", tile_lighting_b->GetSelection() ? "yes" : "no");
+			game->get_map_window()->using_map_tile_lighting = tile_lighting_b->GetSelection() == 1;
+			game->get_map_window()->updateAmbience();
 		}
 	// lighting
 		const char *lighting_char;

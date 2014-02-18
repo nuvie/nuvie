@@ -1,3 +1,14 @@
+2014-02-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1892
+	* Add innate actor lighting levels like wisp glowing. Wisp glowing currently
+	  acts like the original engine and will only change their light level when
+	  something else causes the lighting to change, like walking.
+	* Reset temp actor light and light_source when clear() is called.
+	* Add optional lighting based on map tile data which will allow lava tiles
+	  to produce light which wasn't in the original engine but it seems like it
+	  was intended to work. It uses the game specific map_tile_lighting cfg
+	  setting. Yes is the default for U6 and SE. No is default for MD since the
+	  canals are lit up. It is can also be changed in the video options menu. 
+
 2014-02-17  Malignant Manor <malignantmanor@users.sourceforge.net> r1891
 	* Handle permitted input that isn't yes/no only or numbers only properly.
 	* Don't allow quicksave during armageddon or when using control cheat.

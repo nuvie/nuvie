@@ -100,6 +100,7 @@
   <cb_position>default</cb_position>
   <show_orig_style_cb>default</show_orig_style_cb>
   <cb_text_color>115</cb_text_color>
+  <map_tile_lighting>yes</map_tile_lighting>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>218</converse_bg_color>
   <converse_width>default</converse_width>
@@ -124,6 +125,7 @@
   <use_new_dolls>no</use_new_dolls>
   <cb_position>default</cb_position>
   <show_orig_style_cb>default</show_orig_style_cb>
+  <map_tile_lighting>no</map_tile_lighting>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>136</converse_bg_color>
   <converse_width>default</converse_width>
@@ -145,6 +147,7 @@
   <use_new_dolls>no</use_new_dolls>
   <cb_position>default</cb_position>
   <show_orig_style_cb>default</show_orig_style_cb>
+  <map_tile_lighting>yes</map_tile_lighting>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>216</converse_bg_color>
   <converse_width>default</converse_width>
