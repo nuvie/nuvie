@@ -136,6 +136,8 @@ class MapWindow: public GUI_Widget
 
  bool draw_brit_lens_anim;
  bool draw_garg_lens_anim;
+// std::vector<TileInfo> m_ViewableObjTiles; // shouldn't need this for in_town checks
+ std::vector<TileInfo> m_ViewableMapTiles;
 
  public:
 
@@ -259,7 +261,6 @@ class MapWindow: public GUI_Widget
  SDL_Surface *get_roof_tiles() { return roof_tiles; }
 
  std::vector<Obj *> m_ViewableObjects; //^^ dodgy public buffer
- std::vector<TileInfo> m_ViewableTiles; //^^ dodgy public buffer
 
  void wizard_eye_start(MapCoord location, uint16 duration, CallBack *caller);
 

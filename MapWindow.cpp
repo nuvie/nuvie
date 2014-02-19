@@ -790,7 +790,8 @@ void MapWindow::updateBlacking()
  updateAmbience();
 
  m_ViewableObjects.clear();
- m_ViewableTiles.clear();
+/// m_ViewableObjTiles.clear();
+ m_ViewableMapTiles.clear();
 
  draw_brit_lens_anim = false;
  draw_garg_lens_anim = false;
@@ -843,7 +844,7 @@ void MapWindow::Display(bool full_redraw)
             ti.t=tile;
             ti.x=j; // +cur_x; - in_town needs the addition but rendering below needs it without
             ti.y=i; // +cur_y; - so it gets priority
-            m_ViewableTiles.push_back(ti);
+            m_ViewableMapTiles.push_back(ti);
            }
         }
 
@@ -854,8 +855,8 @@ void MapWindow::Display(bool full_redraw)
 
  if(screen->updatingalphamap && using_map_tile_lighting)
  {
-    for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
-        ti != m_ViewableTiles.end(); ti++)
+    for(std::vector<TileInfo>::iterator ti = m_ViewableMapTiles.begin();
+        ti != m_ViewableMapTiles.end(); ti++)
     {
         if(GET_TILE_LIGHT_LEVEL((*ti).t) > 0)
             screen->drawalphamap8globe((*ti).x, (*ti).y, GET_TILE_LIGHT_LEVEL((*ti).t));
@@ -1183,16 +1184,16 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile,
  uint16 tile_num;
 
  tile_num = tile->tile_num;
-
+/* shouldn't be needed for in_town check
  if(window_updated)
    {
     TileInfo ti;
     ti.t=tile;
     ti.x=x;
     ti.y=y;
-    m_ViewableTiles.push_back(ti);
+    m_ViewableObjTiles.push_back(ti);
    }
-
+*/
  dbl_width = tile->dbl_width;
  dbl_height = tile->dbl_height;
 
@@ -2758,16 +2759,13 @@ void MapWindow::set_overlay(SDL_Surface *surfpt)
     overlay = surfpt;
 }
 
-// TODO: We probably shouldn't use m_ViewableTiles anymore
-// There's no check for is_orig_style (which will only have 5 tiles) below to help speed this up in higher resolutions
-
 /* Returns true if town tiles are within 5 tiles of the player */ 
 bool MapWindow::in_town()
 {
     MapCoord player_loc = actor_manager->get_player()->get_location();
 
-    for(std::vector<TileInfo>::iterator ti = m_ViewableTiles.begin();
-        ti != m_ViewableTiles.end(); ti++)
+    for(std::vector<TileInfo>::iterator ti = m_ViewableMapTiles.begin();
+        ti != m_ViewableMapTiles.end(); ti++)
         if(MapCoord((*ti).x+cur_x, (*ti).y+cur_y, cur_level).distance(player_loc) <= 5 && // make sure tile is close enough
            (*ti).t->flags1&TILEFLAG_WALL && (*ti).t->flags1&TILEFLAG_WALL_MASK) //only wall tiles with wall direction bits set.
         {
