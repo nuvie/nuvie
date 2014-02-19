@@ -1,3 +1,7 @@
+2014-02-19 Malignant Manor <malignantmanor@users.sourceforge.net> r1893
+	* Fix problem with map_tile_lighting not being right if updateAmbience() was
+	  called without updateBlacking().
+
 2014-02-18  Malignant Manor <malignantmanor@users.sourceforge.net> r1892
 	* Add innate actor lighting levels like wisp glowing. Wisp glowing currently
 	  acts like the original engine and will only change their light level when
