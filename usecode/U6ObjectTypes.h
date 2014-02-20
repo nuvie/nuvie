@@ -124,8 +124,8 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_SHIP, 255,0,USE_EVENT_USE|USE_EVENT_SEARCH|USE_EVENT_LOOK,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_SKIFF,255,0,USE_EVENT_USE|USE_EVENT_GET|USE_EVENT_LOOK,&U6UseCode::use_boat,OBJTYPE_NONE },
     { OBJ_U6_RAFT,   0,0,USE_EVENT_USE,&U6UseCode::use_boat,OBJTYPE_NONE },
-    
-    { OBJ_U6_BALLOON_PLANS,0,0,USE_EVENT_USE,&U6UseCode::use_balloon_plans,OBJTYPE_NONE },    
+  // don't want OBJTYPE_BOOK so that we will always use the plans when double clicking 
+    { OBJ_U6_BALLOON_PLANS,0,0,USE_EVENT_USE|USE_EVENT_LOOK,&U6UseCode::use_balloon_plans,OBJTYPE_NONE },
     { OBJ_U6_BALLOON,0,0,USE_EVENT_USE,&U6UseCode::use_balloon,OBJTYPE_NONE },
     { OBJ_U6_INFLATED_BALLOON,255,0,USE_EVENT_USE,&U6UseCode::use_balloon,OBJTYPE_NONE },
 

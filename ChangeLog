@@ -1,3 +1,7 @@
+2014-02-20 Malignant Manor <malignantmanor@users.sourceforge.net> r1894
+	* Allow balloon plans to be read. Taking the created balloon is no longer
+	  considered stealing.
+
 2014-02-19 Malignant Manor <malignantmanor@users.sourceforge.net> r1893
 	* Fix problem with map_tile_lighting not being right if updateAmbience() was
 	  called without updateBlacking().

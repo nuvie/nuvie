@@ -2195,6 +2195,9 @@ inline bool U6UseCode::use_boat_find_land(uint16 *x, uint16 *y, uint8 *z)
 /* construct a balloon using the balloon plans */
 bool U6UseCode::use_balloon_plans(Obj *obj, UseCodeEvent ev)
 {
+ if(ev == USE_EVENT_LOOK)
+    return look_sign(obj, ev);
+
  MapCoord player_location = player->get_actor()->get_location();
  bool missing_obj = false;
  Obj *balloon;
@@ -2241,7 +2244,10 @@ bool U6UseCode::use_balloon_plans(Obj *obj, UseCodeEvent ev)
     balloon = new_obj(OBJ_U6_BALLOON, 0, player_location.x, player_location.y, player_location.z);
 
     if(balloon && obj_manager->add_obj(balloon))
-      scroll->display_string("You study the scroll!\n");
+    {
+      balloon->set_ok_to_take(true);
+      scroll->display_string("Done!\n");
+    }
    }
    
  return true;
@@ -2764,6 +2770,7 @@ bool U6UseCode::look_sign(Obj *obj, UseCodeEvent ev)
                      case OBJ_U6_SCROLL:
                      case OBJ_U6_GRAVE:
                      case OBJ_U6_CROSS: // wooden cross used as grave marker (text like grave)
+                     case OBJ_U6_BALLOON_PLANS:
                      case OBJ_U6_BOOK_OF_CIRCLES:
                      case OBJ_U6_CODEX:
                          game->get_view_manager()->open_scroll_gump(data,strlen(data));
