@@ -164,9 +164,9 @@ GUI_status ScrollWidgetGump::KeyDown(SDL_keysym key)
 
 	switch(keybinder->GetActionKeyType(a))
 	{
-	case MSGSCROLL_DOWN_KEY:
+	case MSGSCROLL_DOWN_KEY: event = SCROLL_PAGE_DOWN; break;
 	case SOUTH_KEY: event = SCROLL_DOWN; break;
-	case MSGSCROLL_UP_KEY:
+	case MSGSCROLL_UP_KEY: event = SCROLL_PAGE_UP; break;
 	case NORTH_KEY: event = SCROLL_UP; break;
 	case HOME_KEY: event = SCROLL_TO_BEGINNING; break;
 	case END_KEY: event = SCROLL_TO_END; break;
@@ -224,12 +224,42 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 
 	case SCROLL_DOWN :
 		//timer = new TimedCallback(this, NULL, 2000);
-		if(position + scroll_height < msg_buf.size()/* && !page_break*/)
+		if(page_break && position + scroll_height == msg_buf.size())
+		{
+			process_page_break();
+			update_arrows(); // just in case noting is added to the buffer
+		}
+		if(position + scroll_height < msg_buf.size())
 		{
 			position++;
 			update_arrows();
 		}
 		return (GUI_YUM);
+	case SCROLL_PAGE_UP:
+		if(position > 0)
+		{
+			for(int i=0; i < scroll_height && position > 0; i++)
+				position--;
+			update_arrows();
+		}
+		return GUI_YUM;
+	case SCROLL_PAGE_DOWN:
+		if(position + scroll_height < msg_buf.size() || page_break)
+		{
+			for(int i=0; i < scroll_height; i++)
+			{
+				if(position + scroll_height < msg_buf.size())
+					position++;
+				else if(page_break)
+				{
+					process_page_break();
+					if(position + scroll_height < msg_buf.size()) // make sure something was added to the buffer
+						position++;
+				}
+			}
+			update_arrows();
+		}
+		return GUI_YUM;
 	case SCROLL_TO_BEGINNING :
 		if(position > 0)
 		{

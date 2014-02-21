@@ -42,6 +42,8 @@ class CallBack;
 typedef enum {
 	SCROLL_UP,
 	SCROLL_DOWN,
+	SCROLL_PAGE_UP,
+	SCROLL_PAGE_DOWN,
 	SCROLL_ESCAPE,
 	SCROLL_TO_BEGINNING,
 	SCROLL_TO_END
@@ -84,6 +86,7 @@ class ScrollWidgetGump: public MsgScroll
 
  GUI_status KeyDown(SDL_keysym key);
  GUI_status MouseDown(int x, int y, int button);
+ GUI_status MouseUp(int x, int y, int button) { return GUI_YUM; } // otherwise we do Msgscroll::MouseUp
 
  void move_scroll_down() { scroll_movement_event(SCROLL_DOWN); }
  void move_scroll_up() { scroll_movement_event(SCROLL_UP); }
