@@ -675,9 +675,9 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
             char *dstring = get_db_string(v[0], v[1]);
             if(dstring)
             {
-//                converse->set_output(dstring); // data may have special symbols
-                converse->print(dstring); // data can have no special symbols
-                converse->print("\n");
+                converse->set_output(dstring); // data may have special symbols
+//                converse->print(dstring); // data can have no special symbols -- wrong
+//                converse->print("\n");
                 free(dstring);
             }
             break;

@@ -1,3 +1,7 @@
+2014-02-20 Malignant Manor <malignantmanor@users.sourceforge.net> r1895
+	* Fix r492 regression where special symbols weren't being parsed in
+	  U6OP_DPRINT. Beh Lem would return $Z instead of what was typed.
+
 2014-02-20 Malignant Manor <malignantmanor@users.sourceforge.net> r1894
 	* Allow balloon plans to be read. Taking the created balloon is no longer
 	  considered stealing.
