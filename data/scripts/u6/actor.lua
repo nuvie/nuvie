@@ -432,7 +432,8 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 		return
 	end
 
-	if obj_n ~= 0x1a7 and obj_n ~= 0x19e and obj_n ~= 0x19f and obj_n ~= 0x19c and (actor_type == nil or actor_type[13] == 0) and actor.protected == false then --balloon, skiff, raft, ship, immune to map dmg
+	if obj_n ~= 0x1a7 and obj_n ~= 0x19e and obj_n ~= 0x19f and obj_n ~= 0x19c --balloon, skiff, raft, ship, immune to map dmg
+	   and (actor_type == nil or actor_type[13] == 0) and actor.protected == false and actor.in_vehicle == false then
 		local map_tile = map_get_dmg_tile_num(map_x, map_y, map_z)
 		if map_tile ~= nil then
 			actor_tile_dmg(actor, map_tile)
@@ -469,7 +470,7 @@ function actor_tile_dmg(actor, map_tile)
 			elseif (map_tile >= 2 and map_tile <= 5) or map_tile == 1165 then --swamp tiles or poison field.
 				--poison
 				local swamp_boots = Actor.inv_get_readied_obj_n(actor, 7) == 0x1c --swamp boots
-				if (swamp_boots == false and actor.in_vehicle == false) or map_tile == 1165 then -- 423 is balloon
+				if swamp_boots == false or map_tile == 1165 then
 					if (actor_type == nil or actor_type[19] == 0) and actor.poisoned == false then --19 immune to poison
 						actor.poisoned = true
 						print(actor.name.." poisoned!\n")

@@ -2,13 +2,10 @@
 
   if loc == nil then return end
   
-  obj = Obj.new(317); --fire field
-  if magic_get_caster().obj_n == 346 then --sea serpent
+  if map_can_put_obj(loc) and map_is_water(loc.x,loc.y,loc.z) == false then
+     obj = Obj.new(317); --fire field
      obj.temporary = true
-  end
-  obj.x,obj.y,obj.z = loc.x,loc.y,loc.z
-
-  if map_can_put_obj(loc) then
+     obj.x,obj.y,obj.z = loc.x,loc.y,loc.z
      Obj.moveToMap(obj)
      fade_obj_in(obj)
      magic_success()

@@ -1,4 +1,9 @@
-2014-02-20 Malignant Manor <malignantmanor@users.sourceforge.net> r1895
+2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1897
+	* Don't allow casting field spells on water. Don't have them create an
+	  object unless they can place it on the map.
+	* Don't allow actors in vehicles to take map damage.
+
+2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1896
 	* Fix r492 regression where special symbols weren't being parsed in
 	  U6OP_DPRINT. Beh Lem would return $Z instead of what was typed.
 
