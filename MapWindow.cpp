@@ -1927,7 +1927,7 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 {
 	if(!obj)
 		return false;
-	if(game->using_hackmove())
+	if(get_interface() == INTERFACE_IGNORE_BLOCK)
 		return true;
 	if(obj->is_in_inventory())
 		return false;
@@ -1936,9 +1936,6 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 
 	if(actor->get_z() != obj->z)
 		return false;
-
-	if(get_interface() == INTERFACE_IGNORE_BLOCK)
-		return true;
 
 	LineTestResult lt;
 	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt, 0, obj))
