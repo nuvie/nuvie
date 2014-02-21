@@ -353,13 +353,14 @@ void Actor::add_surrounding_obj(Obj *obj)
 
 void Actor::unlink_surrounding_objects(bool make_objects_temporary)
 {
-	if(make_objects_temporary)
+//	if(make_objects_temporary)
 	{
 		 std::list<Obj *>::iterator obj;
 
 		 for(obj = surrounding_objects.begin(); obj != surrounding_objects.end(); obj++)
 		 {
-		    (*obj)->set_temporary();
+			if(make_objects_temporary)
+				(*obj)->set_temporary();
 		    (*obj)->set_actor_obj(false);
 		 }
 	}

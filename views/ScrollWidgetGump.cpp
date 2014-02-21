@@ -238,8 +238,7 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 	case SCROLL_PAGE_UP:
 		if(position > 0)
 		{
-			for(int i=0; i < scroll_height && position > 0; i++)
-				position--;
+			position = position > scroll_height ? position - scroll_height : 0;
 			update_arrows();
 		}
 		return GUI_YUM;
@@ -250,11 +249,15 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 			{
 				if(position + scroll_height < msg_buf.size())
 					position++;
-				else if(page_break)
+				else if(page_break) // we didn't have enough text showing to fill out the current page.
 				{
 					process_page_break();
-					if(position + scroll_height < msg_buf.size()) // make sure something was added to the buffer
-						position++;
+					for(; i < scroll_height; i++) { // Stop advancing text position
+						if(page_break && position + size_t(scroll_height*2) <= msg_buf.size()) // make sure we have enough text to fill the page
+							process_page_break();
+						else
+							i = scroll_height; // break out of both loops
+					}
 				}
 			}
 			update_arrows();

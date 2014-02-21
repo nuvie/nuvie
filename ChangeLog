@@ -1,3 +1,9 @@
+2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1901
+	* Have unlink_surrounding_objects always set_actor_obj to false. This
+	  stops a bug where you talk to actors at 0,0,0 when using multiuse function
+	  on an exited ship's surrounding objects (fore and aft).
+	* Have SCROLL_PAGE_DOWN in ScrollWidgetGump better handle page breaks.
+
 2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1900
 	* Have move (push) be able to move objects places that are blocked when
 	  interface is INTERFACE_IGNORE_BLOCK.
