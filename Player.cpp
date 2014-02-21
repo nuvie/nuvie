@@ -653,7 +653,7 @@ void Player::attack_select_init(bool use_attack_text)
  
  map_window->centerCursor();
 
- CombatTarget target = party->get_combat_target(party->get_member_num(actor));
+ CombatTarget target = party->get_combat_target(actor->id_n == 0 ? 0 : party->get_member_num(actor));
  Actor *target_actor = NULL;
 
  switch(target.type)
@@ -672,7 +672,7 @@ void Player::attack_select_init(bool use_attack_text)
 	 }
 	 else
 	 {
-		 party->clear_combat_target(party->get_member_num(actor));
+		 party->clear_combat_target(actor->id_n == 0 ? 0 : party->get_member_num(actor));
 	 }
 	 break;
 
@@ -686,7 +686,7 @@ void Player::attack_select_init(bool use_attack_text)
 	 }
 	 else
 	 {
-		 party->clear_combat_target(party->get_member_num(actor));
+		 party->clear_combat_target(actor->id_n == 0 ? 0 : party->get_member_num(actor));
 	 }
 	 break;
 
@@ -758,14 +758,14 @@ void Player::attack(MapCoord target, Actor *target_actor)
 
    if(target_actor)
    {
-	   party->set_combat_target(party->get_member_num(actor), target_actor);
+	   party->set_combat_target(actor->id_n == 0 ? 0 : party->get_member_num(actor), target_actor);
    }
    else
    {
 	   Obj *target_obj = obj_manager->get_obj(target.x,target.y,actor->get_z());
 	   if(target_obj)
 	   {
-		   party->set_combat_target(party->get_member_num(actor), MapCoord(target_obj));
+		   party->set_combat_target(actor->id_n == 0 ? 0 : party->get_member_num(actor), MapCoord(target_obj));
 	   }
    }
  }

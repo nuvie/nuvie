@@ -1,6 +1,8 @@
 2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1898
 	* Allow ScrollWidgetGump to page up and page down. Don't have it send
 	  MouseUp events to Msgscroll. Have SCROLL_DOWN process page breaks.
+	* Fix ship attack range (r1841 regression) and have it use the Avatar's
+	  targets in combat.
 
 2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1897
 	* Don't allow casting field spells on water. Don't have them create an
