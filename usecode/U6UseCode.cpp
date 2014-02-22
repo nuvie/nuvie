@@ -50,6 +50,8 @@
 #include "Weather.h"
 #include "Script.h"
 #include "Keys.h"
+#include "Background.h"
+#include "CommandBar.h"
 
 #include "U6UseCode.h"
 #include "U6ObjectTypes.h"
@@ -946,8 +948,12 @@ bool U6UseCode::use_vortex_cube(Obj *obj, UseCodeEvent ev)
 
              game->get_map_window()->Hide();
              game->get_scroll()->Hide();
+             game->get_background()->Hide();
+             game->get_command_bar()->Hide();
              game->get_event()->close_gumps();
-             game->get_view_manager()->get_current_view()->Hide();
+             if(game->get_view_manager()->get_current_view())
+                 game->get_view_manager()->get_current_view()->Hide();
+
              game->get_script()->play_cutscene("/ending.lua");
              game->quit();
 

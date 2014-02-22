@@ -1,3 +1,8 @@
+2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1902
+	* Hide command bar and background when showing the ending.
+	* Fix NULL pointer crash when viewing ending in new style.
+	* More work on SCROLL_DOWN and SCROLL_PAGE_DOWN in ScrollWidgetGump.
+
 2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1901
 	* Have unlink_surrounding_objects always set_actor_obj to false. This
 	  stops a bug where you talk to actors at 0,0,0 when using multiuse function

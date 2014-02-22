@@ -224,12 +224,14 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 
 	case SCROLL_DOWN :
 		//timer = new TimedCallback(this, NULL, 2000);
-		if(page_break && position + scroll_height == msg_buf.size())
+		if(page_break && position + scroll_height >= msg_buf.size())
 		{
+			if(position + scroll_height == msg_buf.size()) // break was just off the page so advance text
+				position++;
 			process_page_break();
-			update_arrows(); // just in case noting is added to the buffer
+			update_arrows();
 		}
-		if(position + scroll_height < msg_buf.size())
+		else if(position + scroll_height < msg_buf.size())
 		{
 			position++;
 			update_arrows();
@@ -245,20 +247,18 @@ GUI_status ScrollWidgetGump::scroll_movement_event(ScrollEventType event)
 	case SCROLL_PAGE_DOWN:
 		if(position + scroll_height < msg_buf.size() || page_break)
 		{
-			for(int i=0; i < scroll_height; i++)
+			if(position + scroll_height >= msg_buf.size())
+				position = msg_buf.size();
+			else
 			{
-				if(position + scroll_height < msg_buf.size())
-					position++;
-				else if(page_break) // we didn't have enough text showing to fill out the current page.
-				{
-					process_page_break();
-					for(; i < scroll_height; i++) { // Stop advancing text position
-						if(page_break && position + size_t(scroll_height*2) <= msg_buf.size()) // make sure we have enough text to fill the page
-							process_page_break();
-						else
-							i = scroll_height; // break out of both loops
-					}
-				}
+				position += scroll_height;
+				update_arrows();
+				return GUI_YUM;
+			}
+			if(page_break) // we didn't have enough text showing to fill out the current page.
+			{
+				position = msg_buf.size();
+				process_page_break();
 			}
 			update_arrows();
 		}
