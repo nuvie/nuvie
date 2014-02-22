@@ -147,9 +147,11 @@ class TileManager
  char *desc_buf; // for look
  Configuration *config;
 
- uint8 *dither;
  int game_type;
  
+ Tile *extendedTiles;
+ uint16 numTiles;
+
  public:
 
    TileManager(Configuration *cfg);
@@ -175,6 +177,8 @@ class TileManager
    Tile *get_use_tile();
    const Tile *get_gump_cursor_tile();
 
+   Tile *loadCustomTiles(const std::string filename, bool overwrite_tiles, bool copy_tileflags, uint16 tile_num_start_offset);
+
  protected:
 
    bool loadAnimData();
@@ -182,6 +186,12 @@ class TileManager
    void decodePixelBlockTile(unsigned char *tile_data, uint16 tile_num);
 
    bool loadAnimMask();
+
+ private:
+
+   Tile *get_extended_tile(uint16 tile_num);
+   void copyTileMetaData(Tile *dest, Tile *src);
+   Tile *addNewTiles(uint16 num_tiles);
 };
 
 #endif /* __TileManager_h__ */

@@ -26,7 +26,9 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <map>
 
+using std::map;
 using std::list;
 using std::string;
 using std::vector;
@@ -265,6 +267,7 @@ class Actor
  uint16 sched_pos;
 
  list<Obj *> surrounding_objects; //used for multi-tile actors.
+ std::map<uint16, uint16> *custom_tile_tbl;
 
  public:
 
@@ -307,6 +310,7 @@ class Actor
  MapCoord get_location();
 
  uint16 get_tile_num();
+ Tile *get_tile();
  virtual uint16 get_downward_facing_tile_num();
  uint8 get_actor_num() { return(id_n); }
  uint8 get_talk_flags() { return(talk_flags); }
@@ -360,6 +364,7 @@ class Actor
  void set_hit_flag(bool val);
 
  void set_invisible(bool invisible);
+ void set_custom_tile_num(uint16 obj_num, uint16 tile_num);
 
  uint8 get_worktype();
  uint8 get_sched_worktype();
@@ -472,6 +477,7 @@ class Actor
  bool get_schedule_location(MapCoord *loc);
  bool is_at_scheduled_location();
  virtual bool will_not_talk() { return false; }
+ uint16 get_custom_tile_num(uint16 obj_num);
  protected:
 
  void loadSchedule(unsigned char *schedule_data, uint16 num);
@@ -490,7 +496,11 @@ class Actor
  virtual const char *get_worktype_string(uint32 wt) { return NULL; }
 
  Obj *find_body();
+ uint16 get_tile_num(uint16 obj_num);
  uint8 get_num_light_sources() { return light_source.size(); }
+
+ private:
+
 };
 
 const char *get_actor_alignment_str(uint8 alignment);

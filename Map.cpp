@@ -245,7 +245,7 @@ bool Map::can_put_obj(uint16 x, uint16 y, uint8 level)
 			// the object is passable and not on a boundary.
 
 			Tile *obj_tile = obj_manager->get_obj_tile(lt.hitObj->obj_n, lt.hitObj->frame_n);
-			if(obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP ||
+			if((obj_tile->flags3 & TILEFLAG_CAN_PLACE_ONTOP) ||
 					(obj_tile->passable && !is_boundary(lt.hit_x, lt.hit_y, lt.hit_level)) )
 			{
 				return true;

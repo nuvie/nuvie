@@ -579,7 +579,7 @@ void DollWidget::drag_draw(int x, int y, int message, void* data)
 	if (!selected_obj)
 		return;
 
-	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
+	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj) + selected_obj->frame_n);
 
 	int	nx = x - 8;
 	int	ny = y - 8;

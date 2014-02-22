@@ -97,6 +97,8 @@ clean:
 install: all copy_scripts
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
 	mkdir -p $(U6PATH)/data/images
+	mkdir -p $(U6PATH)/data/images/actors
+	mkdir -p $(U6PATH)/data/images/actors/U6
 	mkdir -p $(U6PATH)/data/images/gumps
 	mkdir -p $(U6PATH)/data/images/gumps/celestial
 	mkdir -p $(U6PATH)/data/images/gumps/fonts
@@ -109,6 +111,7 @@ install: all copy_scripts
 	mkdir -p $(U6PATH)/data/maps
 	mkdir -p $(U6PATH)/data/maps/u6
 	cp data/images/*.bmp $(U6PATH)/data/images
+	cp data/images/actors/U6/*.bmp $(U6PATH)/data/images/actors/U6
 	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
 	cp data/images/gumps/celestial/*.bmp $(U6PATH)/data/images/gumps/celestial
 	cp data/images/gumps/fonts/*.bmp $(U6PATH)/data/images/gumps/fonts

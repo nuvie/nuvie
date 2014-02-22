@@ -125,6 +125,9 @@ class ActorManager
 
  inline void clean_temp_actor(Actor *actor);
 
+ private:
+
+ bool loadCustomTiles(nuvie_game_t game_type);
 };
 
 #endif /* __ActorManager_h__ */

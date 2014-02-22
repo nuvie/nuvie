@@ -100,6 +100,8 @@ class ObjManager
 
  uint16 obj_save_count;
 
+ bool custom_actor_tiles;
+
  public:
 
  ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
@@ -149,6 +151,7 @@ class ObjManager
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects = true);
 
  uint16 get_obj_tile_num(uint16 obj_num);
+ uint16 get_obj_tile_num(Obj *obj);
  void set_obj_tile_num(uint16 obj_num, uint16 tile_num);
 
  U6LList *get_actor_inventory(uint16 actor_num);

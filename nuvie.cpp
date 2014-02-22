@@ -338,6 +338,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/converse_gump", false);
 	config->set("config/general/use_text_gumps", false);
 	config->set("config/general/party_formation", "standard");
+	config->set("config/general/custom_actor_tiles", false);
 
 	config->set("config/cheats/enabled", false);
 	config->set("config/cheats/enable_hackmove", false);

@@ -172,6 +172,7 @@ private:
   autobreak = false; scroll_updated = false; cursor_char = 0; cursor_x = 0;
   cursor_y = 0; line_count = 0; display_pos = 0; capitalise_next_letter = false;
   just_displayed_prompt = false; scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
+  discard_whitespace = false;
  }
  ~MsgScroll();
 

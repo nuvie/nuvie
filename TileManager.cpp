@@ -28,6 +28,7 @@
 
 #include "Console.h"
 #include "NuvieIOFile.h"
+#include "NuvieBmpFile.h"
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
 #include "Game.h"
@@ -37,6 +38,9 @@
 #include "GameClock.h"
 #include "TileManager.h"
 #include "GUI.h"
+
+#define NUM_ORIGINAL_TILES 2048
+
 static char article_tbl[][5] = {"", "a ", "an ", "the "};
 
 static const uint16 U6_ANIM_SRC_TILE[32] = {0x16,0x16,0x1a,0x1a,0x1e,0x1e,0x12,0x12,
@@ -89,11 +93,15 @@ TileManager::TileManager(Configuration *cfg)
 {
  config = cfg;
  look = NULL;
- dither = NULL;
  game_counter = rgame_counter = 0;
  memset(tileindex,0,sizeof(tileindex));
  memset(tile,0,sizeof(tile));
  memset(&animdata,0,sizeof animdata);
+
+ extendedTiles = NULL;
+ numTiles = NUM_ORIGINAL_TILES;
+
+ config->value("config/GameType",game_type);
 }
 
 TileManager::~TileManager()
@@ -101,6 +109,10 @@ TileManager::~TileManager()
  // remove tiles
  free(desc_buf);
  delete look;
+ if(extendedTiles)
+ {
+   free(extendedTiles);
+ }
 }
 
 bool TileManager::loadTiles()
@@ -125,7 +137,7 @@ bool TileManager::loadTiles()
  
  dither = Game::get_game()->get_dither();
  
- config->value("config/GameType",game_type);
+
  config_get_path(config,"maptiles.vga",maptiles_path);
  config_get_path(config,"masktype.vga",masktype_path);
 
@@ -202,6 +214,9 @@ bool TileManager::loadTiles()
    switch(masktype[i])
     {
      case U6TILE_TRANS : tile[i].transparent = true;
+                         memcpy(tile[i].data, &tile_data[tile_offset], 256);
+                         break;
+
      case U6TILE_PLAIN : memcpy(tile[i].data, &tile_data[tile_offset], 256);
                          break;
 
@@ -256,30 +271,18 @@ bool TileManager::loadTiles()
 #endif
 
  delete lzw;
-/*
- std::string datadir = GUI::get_gui()->get_data_dir();
- std::string imagefile;
 
- build_path(datadir, "images", path);
- datadir = path;
- build_path(datadir, "new_avatar.raw", imagefile);
-
- file.open(imagefile.c_str());
- for(i=0;i<16;i++)
- {
-	 file.readToBuf(tile[i+1776].data, 256);
-	 dither->dither_bitmap(tile[i+1776].data,16,16,tile[i+1776].transparent);
- }
- file.readToBuf(tile[1269].data, 256);
- dither->dither_bitmap(tile[1269].data,16,16,tile[1269].transparent);
- file.close();
-*/
  return true;
 }
 
 Tile *TileManager::get_tile(uint16 tile_num)
 {
- return &tile[tileindex[tile_num]];
+ if(tile_num < NUM_ORIGINAL_TILES)
+ {
+   return &tile[tileindex[tile_num]];
+ }
+
+ return get_extended_tile(tile_num);
 }
 
 Tile *TileManager::get_anim_base_tile(uint16 tile_num)
@@ -289,9 +292,23 @@ Tile *TileManager::get_anim_base_tile(uint16 tile_num)
 
 Tile *TileManager::get_original_tile(uint16 tile_num)
 {
- return &tile[tile_num];
+  if(tile_num < NUM_ORIGINAL_TILES)
+  {
+    return &tile[tile_num];
+  }
+
+  return get_extended_tile(tile_num);
 }
 
+
+Tile *TileManager::get_extended_tile(uint16 tile_num)
+{
+  if(tile_num<=numTiles)
+  {
+    return &extendedTiles[tile_num-2048];
+  }
+  return &tile[0];
+}
 
 // set entry in tileindex[] to tile num
 void TileManager::set_tile_index(uint16 tile_index, uint16 tile_num)
@@ -435,7 +452,7 @@ bool TileManager::loadTileFlag()
    else
      tile[i].toptile = false;
 
-   if(tile[i].flags2 & 0x4 || tile[i].flags2 & 0x8)
+   if((tile[i].flags2 & 0x4) || (tile[i].flags2 & 0x8))
      tile[i].boundary = true;
    else
      tile[i].boundary = false;
@@ -815,3 +832,111 @@ const Tile *TileManager::get_gump_cursor_tile()
 {
 	return &gump_cursor;
 }
+
+Tile *TileManager::loadCustomTiles(const std::string filename, bool overwrite_tiles, bool copy_tileflags, uint16 tile_num_start_offset)
+{
+  NuvieBmpFile bmp;
+
+  if(bmp.load(filename) == false)
+  {
+    return NULL;
+  }
+
+  unsigned char *tile_data = bmp.getRawIndexedData();
+
+  uint16 w = bmp.getWidth();
+  uint16 h = bmp.getHeight();
+  uint16 pitch = w;
+
+  if(w % 16 != 0 || h % 16 != 0)
+  {
+    return NULL;
+  }
+
+  w = w / 16;
+  h = h / 16;
+
+  uint16 num_tiles = w * h;
+
+  Tile *newTilePtr = NULL;
+  Tile *origTile = NULL;
+  if(overwrite_tiles)
+  {
+    newTilePtr = get_original_tile(tile_num_start_offset);
+  }
+  else
+  {
+    newTilePtr = addNewTiles(num_tiles);
+  }
+
+  if(copy_tileflags)
+  {
+    origTile = get_tile(tile_num_start_offset);
+  }
+
+  Tile *t = newTilePtr;
+
+  Dither *dither = Game::get_game()->get_dither();
+
+  for(uint16 y=0;y<h;y++)
+  {
+    for(uint16 x=0;x<w;x++)
+    {
+      unsigned char *data = tile_data + (y * 16 * pitch) + (x * 16);
+      for(uint16 i=0;i<16;i++)
+      {
+        memcpy(&t->data[i*16], data, 16);
+        data += pitch;
+      }
+
+      if(origTile)
+      {
+        copyTileMetaData(t, origTile);
+        origTile++;
+      }
+      dither->dither_bitmap(t->data,16,16,t->transparent);
+      t++;
+    }
+  }
+
+  return newTilePtr;
+}
+
+void TileManager::copyTileMetaData(Tile *dest, Tile *src)
+{
+  dest->passable = src->passable;
+  dest->water = src->water;
+  dest->toptile = src->toptile;
+  dest->dbl_width = src->dbl_width;
+  dest->dbl_height = src->dbl_height;
+  dest->transparent = src->transparent;
+  dest->boundary = src->boundary;
+  dest->damages = src->damages;
+  dest->article_n = src->article_n;
+
+  dest->flags1 = src->flags1;
+  dest->flags2 = src->flags2;
+  dest->flags3 = src->flags3;
+}
+
+Tile *TileManager::addNewTiles(uint16 num_tiles)
+{
+  Tile *tileDataPtr = (Tile *)realloc(extendedTiles, sizeof(Tile) * (numTiles-NUM_ORIGINAL_TILES+num_tiles));
+  if(tileDataPtr != NULL)
+  {
+    extendedTiles = tileDataPtr;
+  }
+
+  tileDataPtr += (numTiles-NUM_ORIGINAL_TILES);
+
+  Tile *t = tileDataPtr;
+  for(uint16 i=0;i<num_tiles;i++,t++)
+  {
+    t->tile_num = numTiles + i;
+  }
+
+  numTiles += num_tiles;
+
+  return tileDataPtr;
+}
+

@@ -36,7 +36,6 @@
 
 using std::string;
 
-FpsCounter::FpsCounter() : GUI_Widget(NULL) { }
 
 FpsCounter::FpsCounter(Game *g) : GUI_Widget(NULL)
 {

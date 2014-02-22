@@ -122,7 +122,7 @@ uint16 CannonballEffect::callback(uint16 msg, CallBack *caller, void *msg_data)
                                                         hit_loc->z);
 
             if((tile->flags2 & TILEFLAG_MISSILE_BOUNDARY)
-               || (obj_tile && obj_tile->flags2 & TILEFLAG_MISSILE_BOUNDARY))
+               || (obj_tile && (obj_tile->flags2 & TILEFLAG_MISSILE_BOUNDARY)))
             {
                 //new ExplosiveEffect(hit_loc->x, hit_loc->y, 2);
             	new ExpEffect(EXP_EFFECT_TILE_NUM, MapCoord(hit_loc->x, hit_loc->y, hit_loc->z));
@@ -1434,7 +1434,7 @@ TileFadeEffect::~TileFadeEffect()
 void TileFadeEffect::add_actor_anim()
 {
 	MapCoord loc = actor->get_location();
-	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+	Tile *from = actor->get_tile();
 	add_tile_anim(loc, from);
 
 	std::list<Obj *> *surrounding_objs = actor->get_surrounding_obj_list();
@@ -1556,7 +1556,7 @@ TileBlackFadeEffect::~TileBlackFadeEffect()
 void TileBlackFadeEffect::add_actor_anim()
 {
 	MapCoord loc = actor->get_location();
-	Tile *from = Game::get_game()->get_obj_manager()->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+	Tile *from = actor->get_tile();
 	add_tile_anim(loc, from);
 
 	std::list<Obj *> *surrounding_objs = actor->get_surrounding_obj_list();

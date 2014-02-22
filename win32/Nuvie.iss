@@ -55,6 +55,15 @@ Source: data\defaultkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\u6keys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\sekeys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\mdkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
+Source: data\images\actors\U6\actor_002_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_002_0376.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_003_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_003_0377.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_004_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_004_0386.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_009_0354.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_164_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_164_0363.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\gumps\gump_btn_down.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\gump_btn_up.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion
 Source: data\images\gumps\left_arrow.bmp; DestDir: {app}\data\images\gumps; Flags: ignoreversion

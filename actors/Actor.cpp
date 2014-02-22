@@ -80,6 +80,9 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  obj_flags = 0;
  body_armor_class = 0;
  readied_armor_class = 0;
+
+ custom_tile_tbl = NULL;
+
  clear_error();
 }
 
@@ -104,6 +107,11 @@ Actor::~Actor()
        delete readied_objects[location];
       }
    }
+
+ if(custom_tile_tbl)
+ {
+   delete custom_tile_tbl;
+ }
 
  return;
 }
@@ -202,7 +210,42 @@ MapCoord Actor::get_location()
 
 uint16 Actor::get_tile_num()
 {
- return obj_n;// + frame_n;
+  if(custom_tile_tbl)
+  {
+    return get_custom_tile_num(obj_n);
+  }
+
+ return obj_manager->get_obj_tile_num(obj_n);
+}
+
+uint16 Actor::get_tile_num(uint16 obj_num)
+{
+  if(custom_tile_tbl)
+  {
+    return get_custom_tile_num(obj_num);
+  }
+
+ return obj_manager->get_obj_tile_num(obj_num);
+}
+
+uint16 Actor::get_custom_tile_num(uint16 obj_num)
+{
+  if(custom_tile_tbl)
+  {
+    std::map<uint16,uint16>::iterator it;
+    it = custom_tile_tbl->find(obj_num);
+    if(it != custom_tile_tbl->end())
+    {
+      return it->second;
+    }
+  }
+
+  return obj_manager->get_obj_tile_num(obj_num);
+}
+
+Tile *Actor::get_tile()
+{
+  return Game::get_game()->get_tile_manager()->get_tile(get_tile_num()+frame_n);
 }
 
 uint8 Actor::get_worktype()
@@ -2060,4 +2103,14 @@ void Actor::cure()
 	set_corpser_flag(false);
 	set_cursed(false);
 	set_asleep(false);
+}
+
+void Actor::set_custom_tile_num(uint16 obj_num, uint16 tile_num)
+{
+  if(custom_tile_tbl == NULL)
+  {
+    custom_tile_tbl = new std::map<uint16,uint16>();
+  }
+
+  custom_tile_tbl->insert(std::pair<uint16,uint16>(obj_num, tile_num));
 }

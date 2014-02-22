@@ -91,6 +91,8 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
 
  config->value(show_eggs_key, show_eggs);
 
+ config->value("config/general/custom_actor_tiles", custom_actor_tiles, false);
+
  //if(!show_eggs)
  //  show_egg_objs(false);
 }
@@ -654,7 +656,15 @@ bool ObjManager::is_stackable(Obj *obj)
  if(game_type==NUVIE_GAME_U6)
  {
   switch (obj->obj_n) {
-   case OBJ_U6_TORCH: if(obj->frame_n == 1) return false;// 0x5A, // torch 
+   case OBJ_U6_TORCH: // 0x5A, // torch
+     if(obj->frame_n == 1)
+     {
+       return false;
+     }
+     else
+     {
+       return true;
+     }
    case OBJ_U6_LOCK_PICK: // 0x3F, // lock pick
    case OBJ_U6_GEM: // 0x4D, // gem
    case OBJ_U6_ARROW: // 0x37, // arrow
@@ -1376,12 +1386,28 @@ uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :
  return obj_to_tile[obj_num];
 }
 
+uint16 ObjManager::get_obj_tile_num(Obj *obj) //assume obj_num is < 1024 :)
+{
+  const uint16 dead_body_obj_tbl[5] = {
+      0,   // NUVIE_GAME_NONE
+      339, // NUVIE_GAME_U6
+      0,   // NUVIE_GAME_MD
+      0,
+      0};  // NUVIE_GAME_SE
+
+  if(custom_actor_tiles && obj->obj_n == dead_body_obj_tbl[game_type])
+  {
+    return Game::get_game()->get_actor_manager()->get_actor(obj->quality)->get_custom_tile_num(obj->obj_n);
+  }
+
+ return obj_to_tile[obj->obj_n];
+}
+
 void ObjManager::set_obj_tile_num(uint16 obj_num, uint16 tile_num)
 {
  obj_to_tile[obj_num] = tile_num;
  return;
 }
-
 
 /* Animate all visible tiles of an object `loop_count' times. */
 void ObjManager::animate_forwards(Obj *obj, uint32 loop_count)

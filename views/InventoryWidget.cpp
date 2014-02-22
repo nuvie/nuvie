@@ -173,7 +173,7 @@ void InventoryWidget::display_inventory_container()
  if(!container_obj) //display actor
    tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
  else // display container object
-   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj->obj_n)+container_obj->frame_n);
+   tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(container_obj)+container_obj->frame_n);
 
  screen->blit(area.x+icon_x,area.y,tile->data,8,16,16,16,true);
 
@@ -229,7 +229,7 @@ void InventoryWidget::display_inventory_list()
           else
             link = link->next;
 
-          tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+          tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj)+obj->frame_n);
           if(link == NULL)
             {
              if(obj->is_readied()) //last object is readied so skip it.
@@ -503,7 +503,7 @@ GUI_status InventoryWidget::MouseMotion(int x,int y,Uint8 state)
  if(selected_obj && !dragging && Game::get_game()->is_dragging_enabled())
    {
     dragging = true;
-    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj->obj_n)+selected_obj->frame_n);
+    tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(selected_obj)+selected_obj->frame_n);
     return gui_drag_manager->start_drag(this, GUI_DRAG_OBJ, selected_obj, tile->data, 16, 16, 8);
    }
 
@@ -665,7 +665,7 @@ void InventoryWidget::drag_draw(int x, int y, int message, void* data)
 	if (!selected_obj)
 		return;
 
-	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
+	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj) + selected_obj->frame_n);
 
 	int	nx = x - 8;
 	int	ny = y - 8;

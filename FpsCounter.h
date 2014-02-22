@@ -37,7 +37,6 @@ protected:
 	char fps_string[7]; // "000.00\0"
 
 public:
-    FpsCounter();
     FpsCounter(Game *g);
     ~FpsCounter();
 

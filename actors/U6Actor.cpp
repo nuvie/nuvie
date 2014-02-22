@@ -398,7 +398,7 @@ uint16 U6Actor::get_downward_facing_tile_num()
  if(base_actor_type->frames_per_direction > 1) //we want the second frame for most actor types.
    shift = 1;
 
- return obj_manager->get_obj_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (NUVIE_DIR_S * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
+ return get_tile_num(base_actor_type->base_obj_n) + base_actor_type->tile_start_offset + (NUVIE_DIR_S * base_actor_type->tiles_per_direction + base_actor_type->tiles_per_frame - 1) + shift;
 }
 
 bool U6Actor::updateSchedule(uint8 hour, bool teleport)
@@ -727,7 +727,7 @@ bool U6Actor::weapon_can_hit(const CombatType *weapon, Actor *target, uint16 *hi
 	uint16 target_x = target->get_x();
 	uint16 target_y = target->get_y();
 
-	Tile *tile = obj_manager->get_obj_tile(target->get_obj_n(),target->get_frame_n());
+	Tile *tile = target->get_tile();
 	if(tile->dbl_width && tile->dbl_height)
 	{
 		if(Actor::weapon_can_hit(weapon, target_x-1, target_y-1))

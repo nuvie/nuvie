@@ -475,39 +475,39 @@ bool MsgScroll::parse_token(MsgText *token)
 
     default   :  if(msg_line)
     {
-    	if(can_fit_token_on_msgline(msg_line, token) == false) // the token is to big for the current line
-    	{
-    		msg_line = add_new_line();
-    	}
-    	// This adds extra newlines. (SB-X)
-    	//                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
-    	//                    add_new_line();
+      if(can_fit_token_on_msgline(msg_line, token) == false) // the token is to big for the current line
+      {
+        msg_line = add_new_line();
+      }
+      // This adds extra newlines. (SB-X)
+      //                 if(msg_line->total_length + token->length() == scroll_width) //we add a new line but write to the old line.
+      //                    add_new_line();
 
-    	if(msg_line->total_length == 0 && token->s[0] == ' ' && discard_whitespace) // discard whitespace at the start of a line.
-    		return true;
+      if(msg_line->total_length == 0 && token->s[0] == ' ' && discard_whitespace) // discard whitespace at the start of a line.
+        return true;
     }
-                 if(token->s[0] == '*')
-                 {
-                	if(just_finished_page_break == false) //we don't want to add another break if we've only just completed an autobreak
-                		set_page_break();
-                 }
-                 else
-                 {
-                	if(capitalise_next_letter)
-                	{
-						token->s[0] = toupper(token->s[0]);
-                		capitalise_next_letter = false;
-                	}
+    if(token->s[0] == '*')
+    {
+      if(just_finished_page_break == false) //we don't want to add another break if we've only just completed an autobreak
+        set_page_break();
+    }
+    else
+    {
+      if(capitalise_next_letter)
+      {
+        token->s[0] = toupper(token->s[0]);
+        capitalise_next_letter = false;
+      }
 
-                	add_token(token);
-                	if(msg_line->total_length == scroll_width // add another line for cursor.
-                       && (talking || Game::get_game()->get_event()->get_mode() == INPUT_MODE
-                       || Game::get_game()->get_event()->get_mode() == KEYINPUT_MODE))
-                	{
-                		msg_line = add_new_line();
-                	}
-                 }
-                 break;
+      add_token(token);
+      if(msg_line->total_length == scroll_width // add another line for cursor.
+          && (talking || Game::get_game()->get_event()->get_mode() == INPUT_MODE
+              || Game::get_game()->get_event()->get_mode() == KEYINPUT_MODE))
+      {
+        msg_line = add_new_line();
+      }
+    }
+    break;
    }
 
 if(msg_buf.size() > scroll_height)

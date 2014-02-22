@@ -23,6 +23,8 @@
  *
  */
 #include <sys/types.h>
+#include <string>
+#include <list>
 
 using std::list;
 using std::string;

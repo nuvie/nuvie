@@ -900,8 +900,7 @@ static int nscript_actor_get_temp_status(Actor *actor, lua_State *L)
 
 static int nscript_actor_get_tile_num(Actor *actor, lua_State *L)
 {
-   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
-   Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(), actor->get_frame_n());
+   Tile *tile = actor->get_tile();
 
    lua_pushinteger(L, (int)tile->tile_num); return 1;
 }

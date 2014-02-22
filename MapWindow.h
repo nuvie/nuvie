@@ -80,6 +80,8 @@ class MapWindow: public GUI_Widget
  X_RayType x_ray_view;
  InterfaceType interface;
 
+ bool custom_actor_tiles;
+
  Map *map;
 
  uint16 *tmp_map_buf; // tempory buffer for flood fill, hide rooms.

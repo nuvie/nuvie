@@ -970,7 +970,7 @@ inline void MapWindow::drawActor(Actor *actor)
        && (!(actor->obj_flags&OBJ_STATUS_INVISIBLE) || actor->is_in_party() || actor == actor_manager->get_player())
        && actor->get_corpser_flag() == false)
     {
-        Tile *tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(actor->obj_n)+actor->frame_n);
+        Tile *tile = tile_manager->get_tile(actor->get_tile_num()+actor->frame_n);
         Tile *rtile = 0;
 
         if(actor->obj_flags&OBJ_STATUS_INVISIBLE)
@@ -1141,7 +1141,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  if(obj->status & OBJ_STATUS_INVISIBLE)
     return;
 
- tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+ tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj)+obj->frame_n);
 
  if(draw_lowertiles == false && (tile->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
    return;
@@ -1575,7 +1575,7 @@ bool MapWindow::floorTilesVisible()
 			 if(map->has_roof(cX,cY,cur_level) && !map->is_boundary(cX,cY,cur_level))
 			 {
 				 Tile *t = obj_manager->get_obj_tile(cX,cY, cur_level, false);
-				 if(t && t->flags1&TILEFLAG_WALL)
+				 if(t && (t->flags1&TILEFLAG_WALL))
 					 return true;
 			 }
 			 cX = WRAPPED_COORD(cX+1, cur_level);
@@ -1706,13 +1706,13 @@ void MapWindow::reshapeBoundary()
           if(((tile->flags1) & TILEFLAG_WALL_MASK) > flag && flag != 144) // 1001 _| corner
             {
              //flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag && tile->flags1 & TILEFLAG_WALL_MASK;)
+             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag && (tile->flags1 & TILEFLAG_WALL_MASK);)
                tile = tile_manager->get_tile(tile->tile_num - 1);
             }
           else
             {
              //flag |= TILEFLAG_WALL_NORTH | TILEFLAG_WALL_WEST;
-             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag && tile->flags1 & TILEFLAG_WALL_MASK;)
+             for(;((tile->flags1 ) & TILEFLAG_WALL_MASK) != flag && (tile->flags1 & TILEFLAG_WALL_MASK);)
                tile = tile_manager->get_tile(tile->tile_num + 1);
             }
 
@@ -1957,7 +1957,7 @@ bool MapWindow::blocked_by_wall(Actor *actor, Obj *obj)
 	if(game_type == NUVIE_GAME_U6 && obj->x == 282 && obj->y == 438 && cur_level == 0) // HACK for buggy location
 		return false;
 	Tile *tile = map->get_tile(obj->x, obj->y, cur_level);
-	if((tile->flags1 & TILEFLAG_WALL && !game->get_usecode()->is_door(obj))
+	if(((tile->flags1 & TILEFLAG_WALL) && !game->get_usecode()->is_door(obj))
        && (((tile->flags1 & TILEFLAG_WALL_MASK) == 208 && actor->get_y() < obj->y) // can't get items that are south
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 176 && actor->get_x() < obj->x) // can't get items that are east
 	   || ((tile->flags1 & TILEFLAG_WALL_MASK) == 240 // northwest corner - used in SE (not sure if used in other games)
@@ -2139,11 +2139,16 @@ bool MapWindow::move_on_drop(Obj *obj)
 			{
 				case OBJ_U6_CHEST:
 				case OBJ_U6_LOCK_PICK:
-				case OBJ_U6_MOONSTONE: game->get_usecode()->get_obj(obj, actor_manager->get_player());
+				case OBJ_U6_MOONSTONE:
+				  game->get_usecode()->get_obj(obj, actor_manager->get_player());
+				  return false;
 				case OBJ_U6_SKIFF:
 					return false;
-				case OBJ_U6_TORCH: if(obj->frame_n == 0) return false; // else fall through
-				default : return move;
+				case OBJ_U6_TORCH:
+				  if(obj->frame_n == 0)
+				    return false;
+				  break;
+				default : break;
 			}
 		}
 
@@ -2511,7 +2516,7 @@ void MapWindow::drag_draw(int x, int y, int message, void* data)
 	if (!selected_obj)
 		return;
 
-	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj->obj_n) + selected_obj->frame_n);
+	tile = tile_manager->get_tile(obj_manager->get_obj_tile_num (selected_obj) + selected_obj->frame_n);
 
 	int	nx = x - 8;
 	int	ny = y - 8;
@@ -2560,10 +2565,9 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2)
        && !event->dont_show_target_cursor())
         game->set_mouse_pointer(1); // crosshairs
-    else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1)
-                                                   || wy == (cur_y+win_height-1)))
-            || (game->is_original_plus() && (my <= Game::get_game()->get_game_y_offset() + 200 || game->is_original_plus_cutoff_map())
-                && mx >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width))
+    else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1)))
+            || (game->is_original_plus() && (my <= (uint32)Game::get_game()->get_game_y_offset() + 200 || game->is_original_plus_cutoff_map())
+                && mx >= (uint32)Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width))
         game->set_mouse_pointer(0); // arrow
     else
         game->set_mouse_pointer(mptr); // 1=crosshairs, 2to9=arrows

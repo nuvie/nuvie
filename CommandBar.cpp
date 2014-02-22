@@ -86,7 +86,7 @@ static Tile placeholder_tile = {
 		}
 };
 
-CommandBar::CommandBar() : GUI_Widget(NULL) { }
+CommandBar::CommandBar() : GUI_Widget(NULL) { selected_action = -1; }
 
 CommandBar::CommandBar(Game *g) : GUI_Widget(NULL)
 {

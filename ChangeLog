@@ -1,3 +1,11 @@
+2014-02-22  Eric Fry <efry at users.sourceforge.net> r1903
+	* Added support for custom actor tiles. This can be enabled with the 
+	  config config/general/custom_actor_tiles config parameter.
+	  Custom tiles are loaded from
+	  data/images/actors/<gametype>/actor_<actor_num>_<obj_num>.bmp
+	  I haven't included all of Hiphish's tiles yet. There are also some palette
+	  cycling issues with the current tiles.
+
 2014-02-21 Malignant Manor <malignantmanor@users.sourceforge.net> r1902
 	* Hide command bar and background when showing the ending.
 	* Fix NULL pointer crash when viewing ending in new style.

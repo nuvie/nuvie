@@ -24,7 +24,9 @@
 #include <sstream>
 #include <cstdlib>
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Configuration.h"
+#include "NuvieFileList.h"
 
 #include "Actor.h"
 #include "U6Actor.h"
@@ -354,6 +356,7 @@ bool ActorManager::load(NuvieIO *objlist)
  }
 
  updateSchedules();
+ loadCustomTiles(game_type);
 
  return true;
 }
@@ -589,7 +592,7 @@ Actor *ActorManager::get_multi_tile_actor(uint16 x, uint16 y, uint8 z)
 	Actor *actor = get_actor(x+1,y+1,z,false); //search for 2x2 tile actor.
 	if(actor)
 	{
-		Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(),actor->get_frame_n());
+		Tile *tile = actor->get_tile();
 		if(tile->dbl_width && tile->dbl_height)
 			return actor;
 	}
@@ -597,7 +600,7 @@ Actor *ActorManager::get_multi_tile_actor(uint16 x, uint16 y, uint8 z)
 	actor = get_actor(x,y+1,z,false); //search for 1x2 tile actor.
 	if(actor)
 	{
-		Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(),actor->get_frame_n());
+		Tile *tile = actor->get_tile();
 		if(tile->dbl_height)
 			return actor;
 	}
@@ -605,7 +608,7 @@ Actor *ActorManager::get_multi_tile_actor(uint16 x, uint16 y, uint8 z)
 	actor = get_actor(x+1,y,z,false); //search for 1x2 tile actor.
 	if(actor)
 	{
-		Tile *tile = obj_manager->get_obj_tile(actor->get_obj_n(),actor->get_frame_n());
+		Tile *tile = actor->get_tile();
 		if(tile->dbl_width)
 			return actor;
 	}
@@ -1178,4 +1181,54 @@ ActorList *ActorManager::filter_party(ActorList *list)
 void ActorManager::set_combat_movement(bool c)
 {
     combat_movement = c;
+}
+
+bool ActorManager::loadCustomTiles(nuvie_game_t game_type)
+{
+  bool custom_actor_tiles;
+  config->value("config/general/custom_actor_tiles", custom_actor_tiles, false);
+  if(custom_actor_tiles == false)
+  {
+    return false;
+  }
+
+  NuvieFileList filelist;
+  std::string datadir = GUI::get_gui()->get_data_dir();
+  std::string imagefile, path;
+
+  build_path(datadir, "images", path);
+  datadir = path;
+  build_path(datadir, "actors", path);
+  datadir = path;
+  build_path(datadir, get_game_tag(1), path);
+  datadir = path;
+
+  if(filelist.open(datadir.c_str(), "actor_", NUVIE_SORT_NAME_ASC) == false)
+  {
+    return false;
+  }
+
+  int num_files = filelist.get_num_files();
+
+  for(int i=0;i<num_files;i++)
+  {
+    std::string *filename = filelist.next();
+    if(filename == NULL || filename->length() != 18) // actor_nnn_nnnn.bmp
+    {
+      continue;
+    }
+    std::string num_str = filename->substr(6,3);
+    uint8 actor_num = (uint8)strtol(num_str.c_str(), NULL, 10);
+
+    num_str = filename->substr(10,4);
+    uint16 obj_n = (uint16)strtol(num_str.c_str(), NULL, 10);
+
+    build_path(datadir, filename->c_str(), imagefile);
+    Tile *start_tile = tile_manager->loadCustomTiles(imagefile,false,true,actors[actor_num]->get_tile_num());
+    if(start_tile)
+    {
+      actors[actor_num]->set_custom_tile_num(obj_n, start_tile->tile_num);
+    }
+  }
+  return true;
 }

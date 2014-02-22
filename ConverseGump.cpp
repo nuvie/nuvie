@@ -141,7 +141,9 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 {
 	if(state == true)
 	{
+#ifdef HAVE_JOYSTICK_SUPPORT
 		Game::get_game()->get_keybinder()->set_enable_joy_repeat(false);
+#endif
 		found_break_char = true;
 		conv_keywords.clear();
 		permitted_input_keywords.clear();
@@ -178,7 +180,11 @@ void ConverseGump::set_talking(bool state, Actor *actor)
 		cursor_position = 0;
 	}
 	else
+	{
+#ifdef HAVE_JOYSTICK_SUPPORT
 		Game::get_game()->get_keybinder()->set_enable_joy_repeat(true);
+#endif
+	}
 
 	MsgScroll::set_talking(state);
 }
