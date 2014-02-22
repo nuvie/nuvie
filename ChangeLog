@@ -1,3 +1,6 @@
+2014-02-23  Eric Fry <efry at users.sourceforge.net> r1905
+	* Fixed palette cycling issues with new custom actor tiles.
+
 2014-02-22 Malignant Manor <malignantmanor@users.sourceforge.net> r1904
 	* Have custom tiles use game specific custom_actor_tiles cfg setting. Values
 	  are yes, no, and default. default will use them in new style but not in
