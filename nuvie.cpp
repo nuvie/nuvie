@@ -302,6 +302,10 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/audio/enable_sfx", true);
 	config->set("config/audio/music_volume", 100);
 	config->set("config/audio/sfx_volume", 255);
+	config->set("config/audio/combat_changes_music", true);
+	config->set("config/audio/vehicles_changes_music", true);
+	config->set("config/audio/conversations_stop_music", false); // original stopped music - maybe due to memory and disk swapping
+	config->set("config/audio/stop_music_on_group_change", true);
 
 #ifdef HAVE_JOYSTICK_SUPPORT
 	config->set("config/joystick/enable_joystick", false);
@@ -338,7 +342,6 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/converse_gump", false);
 	config->set("config/general/use_text_gumps", false);
 	config->set("config/general/party_formation", "standard");
-	config->set("config/general/custom_actor_tiles", false);
 
 	config->set("config/cheats/enabled", false);
 	config->set("config/cheats/enable_hackmove", false);
@@ -362,6 +365,7 @@ void Nuvie::SharedDefaultConfigValues()
 		if(i == 0) // U6
 			config->set("config/ultima6/cb_text_color", 115);
 		config->set(game_str[i] + "map_tile_lighting", i == 1 ? false : true); // MD has canals lit up so disable
+		config->set(game_str[i] + "custom_actor_tiles", "default");
 		config->set(game_str[i] + "converse_solid_bg", false);
 		config->set(game_str[i] + "converse_bg_color", bg_color[i]);
 		config->set(game_str[i] + "converse_width", "default");

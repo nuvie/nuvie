@@ -87,6 +87,10 @@
   <enable_sfx>yes</enable_sfx>
   <music_volume>100</music_volume>
   <sfx_volume>255</sfx_volume>
+  <combat_changes_music>yes</combat_changes_music>
+  <vehicles_changes_music>yes</vehicles_changes_music>
+  <conversations_stop_music>no</conversations_stop_music>
+  <stop_music_on_group_change>yes</stop_music_on_group_change>
  </audio>
 
  <ultima6>
@@ -103,6 +107,7 @@
   <show_orig_style_cb>default</show_orig_style_cb>
   <cb_text_color>115</cb_text_color>
   <map_tile_lighting>yes</map_tile_lighting>
+  <custom_actor_tiles>default</custom_actor_tiles>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>218</converse_bg_color>
   <converse_width>default</converse_width>
@@ -130,6 +135,7 @@
   <cb_position>default</cb_position>
   <show_orig_style_cb>default</show_orig_style_cb>
   <map_tile_lighting>no</map_tile_lighting>
+  <custom_actor_tiles>default</custom_actor_tiles>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>136</converse_bg_color>
   <converse_width>default</converse_width>
@@ -154,6 +160,7 @@
   <cb_position>default</cb_position>
   <show_orig_style_cb>default</show_orig_style_cb>
   <map_tile_lighting>yes</map_tile_lighting>
+  <custom_actor_tiles>default</custom_actor_tiles>
   <converse_solid_bg>no</converse_solid_bg>
   <converse_bg_color>216</converse_bg_color>
   <converse_width>default</converse_width>

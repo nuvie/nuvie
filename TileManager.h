@@ -25,6 +25,7 @@
  */
 
 #include "nuvieDefs.h"
+#include <string>
 
 class Configuration;
 class Look;

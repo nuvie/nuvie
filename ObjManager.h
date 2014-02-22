@@ -107,6 +107,7 @@ class ObjManager
  ObjManager(Configuration *cfg, TileManager *tm, EggManager *em);
  ~ObjManager();
 
+ bool use_custom_actor_tiles() { return custom_actor_tiles; }
  bool is_showing_eggs() { return show_eggs; }
  void set_show_eggs(bool value) { show_eggs = value; }
 

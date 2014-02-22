@@ -198,6 +198,8 @@ class Party {
                                 lightsources--; /*fprintf(stderr, "lightsources = %d\n", lightsources); */ }
  void update_light_sources();
 
+ bool combat_changes_music, vehicles_changes_music;
+
  protected:
  void reform_party(); // call when adding or removing members
 

@@ -92,6 +92,9 @@ bool Party::init(Game *g, ActorManager *am)
  else
    formation = PARTY_FORM_STANDARD;
 
+ config->value("config/audio/combat_changes_music", combat_changes_music, true);
+ config->value("config/audio/vehicles_changes_music", vehicles_changes_music, true);
+
  return true;
 }
 
@@ -664,8 +667,8 @@ void Party::set_in_combat_mode(bool value)
 	  for(int p=0; p<get_party_size();p++)
 	  		  get_actor(p)->set_worktype(ACTOR_WT_FOLLOW); //set back to follow party leader.
   }
-
-  update_music();
+  if(combat_changes_music)
+      update_music();
   if(game->get_command_bar() != NULL)
   {
       game->get_command_bar()->set_combat_mode(in_combat_mode);
@@ -850,8 +853,8 @@ void Party::exit_vehicle(uint16 x, uint16 y, uint16 z)
 void Party::set_in_vehicle(bool value)
 {
  in_vehicle = value;
-
- update_music();
+ if(vehicles_changes_music)
+   update_music();
  if(value)
  {
   set_in_combat_mode(false); // break off combat when boarding a vehicle

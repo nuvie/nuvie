@@ -90,11 +90,22 @@ ObjManager::ObjManager(Configuration *cfg, TileManager *tm, EggManager *em)
  show_eggs_key.append("/show_eggs");
 
  config->value(show_eggs_key, show_eggs);
-
- config->value("config/general/custom_actor_tiles", custom_actor_tiles, false);
-
  //if(!show_eggs)
  //  show_egg_objs(false);
+
+ std::string custom_tile_str;
+ config->value(config_get_game_key(config) +"/custom_actor_tiles", custom_tile_str, "default");
+ if(custom_tile_str == "default")
+ {
+    if(Game::get_game()->is_new_style())
+        custom_actor_tiles = true;
+    else
+        custom_actor_tiles = false;
+ }
+ else if(custom_tile_str == "yes")
+    custom_actor_tiles = true;
+ else
+    custom_actor_tiles = false;
 }
 
 ObjManager::~ObjManager()

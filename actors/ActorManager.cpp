@@ -1185,9 +1185,7 @@ void ActorManager::set_combat_movement(bool c)
 
 bool ActorManager::loadCustomTiles(nuvie_game_t game_type)
 {
-  bool custom_actor_tiles;
-  config->value("config/general/custom_actor_tiles", custom_actor_tiles, false);
-  if(custom_actor_tiles == false)
+  if(obj_manager->use_custom_actor_tiles() == false)
   {
     return false;
   }

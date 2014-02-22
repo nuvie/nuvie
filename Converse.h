@@ -166,6 +166,8 @@ public:
     void delete_variables();
 
     ConverseSpeech *get_speech() { return speech; };
+
+    bool conversations_stop_music;
 };
 
 

@@ -138,6 +138,7 @@ bool SoundManager::nuvieStartup (Configuration * config)
   m_Config = config;
   m_Config->value ("config/audio/enabled", audio_enabled, true);
   m_Config->value("config/GameType",game_type);
+  m_Config->value("config/audio/stop_music_on_group_change", stop_music_on_group_change, true);
 
 /*  if(audio_enabled == false) // commented out to allow toggling
      {
@@ -534,7 +535,8 @@ void SoundManager::musicPlayFrom(string group)
    return;
  if(m_CurrentGroup != group)
   {
-   g_MusicFinished = true;
+   if(stop_music_on_group_change)
+     g_MusicFinished = true;
    m_CurrentGroup = group;
   }
 }

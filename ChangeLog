@@ -1,3 +1,12 @@
+2014-02-22 Malignant Manor <malignantmanor@users.sourceforge.net> r1904
+	* Have custom tiles use game specific custom_actor_tiles cfg setting. Values
+	  are yes, no, and default. default will use them in new style but not in
+	  other styles.
+	* Fix missing <string> include.
+	* Add conversations_stop_music, stop_music_on_group_change,
+	  combat_changes_music, and vehicles_changes_music to the audio section of
+	  the cfg.
+
 2014-02-22  Eric Fry <efry at users.sourceforge.net> r1903
 	* Added support for custom actor tiles. This can be enabled with the 
 	  config config/general/custom_actor_tiles config parameter.

@@ -85,6 +85,8 @@ public:
     void set_music_volume(uint8 val) {music_volume = val; }
     Sound *get_m_pCurrentSong() { return m_pCurrentSong; }
 
+    bool stop_music_on_group_change;
+
 private:
 	bool LoadCustomSongs(string scriptname);
     bool LoadNativeU6Songs();

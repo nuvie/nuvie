@@ -93,6 +93,7 @@ Converse::init(Configuration *cfg, nuvie_game_t t, MsgScroll *s,ActorManager *a,
     gametype = t;
 
     cfg->value("config/cheats/party_all_the_time", party_all_the_time);
+    cfg->value("config/audio/conversations_stop_music", conversations_stop_music, false);
 
     cfg->value("config/ultima6/townsdir", townsdir, "");
     if(townsdir != "" && directory_exists(townsdir.c_str()))
@@ -381,7 +382,8 @@ bool Converse::start(uint8 n)
         scroll->set_talking(true, actors->get_actor(npc_num));
         Game::get_game()->get_map_window()->set_walking(false);
         Game::get_game()->get_map_window()->set_looking(false);
-        Game::get_game()->get_sound_manager()->musicStop();
+        if(conversations_stop_music)
+            Game::get_game()->get_sound_manager()->musicStop();
         //Game::get_game()->get_event()->set_mode(WAIT_MODE); // ignore player actions
         Game::get_game()->pause_user();
         Game::get_game()->get_gui()->unblock();
@@ -443,9 +445,12 @@ void Converse::stop()
     }
 
     Game::get_game()->unpause_user();
-    SoundManager *sm = Game::get_game()->get_sound_manager();
-    if(sm->is_audio_enabled() && sm->is_music_enabled())
-        sm->musicPlay();
+    if(conversations_stop_music)
+    {
+        SoundManager *sm = Game::get_game()->get_sound_manager();
+        if(sm->is_audio_enabled() && sm->is_music_enabled())
+            sm->musicPlay();
+    }
     Game::get_game()->get_event()->set_mode(MOVE_MODE); // return control to player
 
     active = false;
