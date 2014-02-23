@@ -1,3 +1,6 @@
+2014-02-24  Eric Fry <efry at users.sourceforge.net> r1911
+	* Added custom tiles for Gwenno and Seggallion
+
 2014-02-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1910
 	* Allow actors that use the tile number they died as for their corpse, like
 	  Sherry, to display custom dead tiles. They will use the same sprite sheet
