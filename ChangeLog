@@ -1,3 +1,10 @@
+2014-02-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1910
+	* Allow actors that use the tile number they died as for their corpse, like
+	  Sherry, to display custom dead tiles. They will use the same sprite sheet
+	  as when they were alive.
+	  This uses inline bool ObjManager::is_corpse(Obj *obj)
+	* Improve resurrect.
+
 2014-02-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1909
 	* Revert r1907.
 

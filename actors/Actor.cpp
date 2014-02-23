@@ -41,6 +41,7 @@
 #include "Actor.h"
 #include "Script.h"
 #include "Event.h"
+#include "U6Actor.h"
 
 static uint8 walk_frame_tbl[4] = {0,1,2,1};
 
@@ -1688,11 +1689,14 @@ void Actor::resurrect(MapCoord new_position, Obj *body_obj)
 	y = new_position.y;
 	z = new_position.z;
 	obj_n = base_obj_n;
-	init();
+	init((Game::get_game()->get_game_type() == NUVIE_GAME_U6 && id_n == 130)
+	      ? OBJ_STATUS_MUTANT : NO_OBJ_STATUS);
 
 	frame_n = 0;
 
 	set_direction(NUVIE_DIR_N);
+	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+		((U6Actor*)this)->do_twitch(); // fixes actors with more than 1 tile
 
 	set_hp(1);
 	//actor->set_worktype(0x1);

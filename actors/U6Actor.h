@@ -82,6 +82,7 @@ class U6Actor: public Actor
  bool move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  void twitch();
+ void do_twitch();
  void die(bool create_body=true);
  void set_poisoned(bool poisoned);
  void set_paralyzed(bool paralyzed);

@@ -1397,16 +1397,39 @@ uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :
  return obj_to_tile[obj_num];
 }
 
+inline bool ObjManager::is_corpse(Obj *obj)
+{
+	if(game_type == NUVIE_GAME_U6) {
+		switch(obj->obj_n) {
+			case OBJ_U6_DEAD_BODY:
+			case OBJ_U6_DEAD_CYCLOPS:
+			case OBJ_U6_DEAD_GARGOYLE:
+			case OBJ_U6_DOG: // Kador id_n 135
+			case OBJ_U6_MOUSE: // Sherry id_n 9
+			case OBJ_U6_HORSE_CARCASS: // Pushme Pullyu id 130, Smith id 132
+				return true;
+			default:
+				break;
+		}
+	} else if(game_type == NUVIE_GAME_SE) {
+		switch(obj->obj_n) {
+			// TODO - add SE body obj numbers
+			default:
+				break;
+		}
+	} else { // MD
+		switch(obj->obj_n) {
+			// TODO - add MD body obj numbers
+			default:
+				break;
+		}
+	}
+	return false;
+}
+
 uint16 ObjManager::get_obj_tile_num(Obj *obj) //assume obj_num is < 1024 :)
 {
-  const uint16 dead_body_obj_tbl[5] = {
-      0,   // NUVIE_GAME_NONE
-      339, // NUVIE_GAME_U6
-      0,   // NUVIE_GAME_MD
-      0,
-      0};  // NUVIE_GAME_SE
-
-  if(custom_actor_tiles && obj->obj_n == dead_body_obj_tbl[game_type])
+  if(custom_actor_tiles && is_corpse(obj))
   {
     return Game::get_game()->get_actor_manager()->get_actor(obj->quality)->get_custom_tile_num(obj->obj_n);
   }

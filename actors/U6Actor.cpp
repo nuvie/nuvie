@@ -766,7 +766,13 @@ void U6Actor::twitch()
    return;
 
  if(NUVIE_RAND()%actor_type->twitch_rand == 1)
-  {
+   do_twitch();
+
+ return;
+}
+
+void U6Actor::do_twitch()
+{
    if(actor_type->frames_per_direction == 0)
      walk_frame = (walk_frame + 1) % 4;
    else
@@ -783,9 +789,6 @@ void U6Actor::twitch()
 	}
 
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1);
-  }
-
- return;
 }
 
 void U6Actor::set_poisoned(bool poisoned)

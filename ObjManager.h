@@ -152,6 +152,7 @@ class ObjManager
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects = true);
 
  uint16 get_obj_tile_num(uint16 obj_num);
+ inline bool is_corpse(Obj *obj);
  uint16 get_obj_tile_num(Obj *obj);
  void set_obj_tile_num(uint16 obj_num, uint16 tile_num);
 
