@@ -1540,11 +1540,7 @@ void U6Actor::die(bool create_body)
 			Obj *dead_body = new Obj;
 			dead_body->obj_n = base_actor_type->dead_obj_n;
 			if(base_actor_type->dead_frame_n == 255) // dog, cat, mouse, deer, wolf, drake, mongbat
-			{
 				dead_body->frame_n = frame_n; // same frame the actor died
-				if(get_tile_num() != obj_manager->get_obj_tile_num(obj_n)) // has custom tiles (Sherry)
-					dead_body->obj_n = OBJ_U6_DEAD_BODY; // hack to display custom tile
-			}
 			else if(base_actor_type->dead_obj_n == OBJ_U6_BLOOD)
 				dead_body->frame_n = NUVIE_RAND()%3;
 			else
