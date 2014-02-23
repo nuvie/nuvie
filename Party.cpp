@@ -93,7 +93,7 @@ bool Party::init(Game *g, ActorManager *am)
    formation = PARTY_FORM_STANDARD;
 
  config->value("config/audio/combat_changes_music", combat_changes_music, true);
- config->value("config/audio/vehicles_changes_music", vehicles_changes_music, true);
+ config->value("config/audio/vehicles_change_music", vehicles_change_music, true);
 
  return true;
 }
@@ -667,7 +667,7 @@ void Party::set_in_combat_mode(bool value)
 	  for(int p=0; p<get_party_size();p++)
 	  		  get_actor(p)->set_worktype(ACTOR_WT_FOLLOW); //set back to follow party leader.
   }
-  if(combat_changes_music)
+//  if(combat_changes_music)
       update_music();
   if(game->get_command_bar() != NULL)
   {
@@ -680,12 +680,12 @@ void Party::update_music()
  SoundManager *s = Game::get_game()->get_sound_manager();
  MapCoord pos;
 
- if(in_vehicle)
+ if(in_vehicle && vehicles_change_music)
    {
     s->musicPlayFrom("boat");
     return;
    }
- else if(in_combat_mode)
+ else if(in_combat_mode && combat_changes_music)
    {
     s->musicPlayFrom("combat");
     return;
@@ -853,11 +853,12 @@ void Party::exit_vehicle(uint16 x, uint16 y, uint16 z)
 void Party::set_in_vehicle(bool value)
 {
  in_vehicle = value;
- if(vehicles_changes_music)
+ if(vehicles_change_music)
    update_music();
  if(value)
  {
-  set_in_combat_mode(false); // break off combat when boarding a vehicle
+  if(in_combat_mode == true)
+    set_in_combat_mode(false); // break off combat when boarding a vehicle
  }
 
  return;
@@ -865,13 +866,14 @@ void Party::set_in_vehicle(bool value)
 
 /* Done automatically walking, return view to player character.
  */
-void Party::stop_walking()
+void Party::stop_walking(bool force_music_change)
 {
     game->get_player()->set_mapwindow_centered(true);
     game->unpause_world(); // allow user input, unfreeze actors
     game->unpause_user();
     autowalk = false;
-    update_music();
+    if(force_music_change || vehicles_change_music)
+        update_music();
 }
 
 void Party::dismount_from_horses()

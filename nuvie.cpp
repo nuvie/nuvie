@@ -303,7 +303,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/audio/music_volume", 100);
 	config->set("config/audio/sfx_volume", 255);
 	config->set("config/audio/combat_changes_music", true);
-	config->set("config/audio/vehicles_changes_music", true);
+	config->set("config/audio/vehicles_change_music", true);
 	config->set("config/audio/conversations_stop_music", false); // original stopped music - maybe due to memory and disk swapping
 	config->set("config/audio/stop_music_on_group_change", true);
 

@@ -34,10 +34,12 @@
 #include "SoundManager.h"
 #include "Configuration.h"
 #include "Keys.h"
+#include "Party.h"
+#include "Converse.h"
 #include <math.h>
 
-#define AD_WIDTH 200
-#define AD_HEIGHT 101
+#define AD_WIDTH 292
+#define AD_HEIGHT 153
 
 AudioDialog::AudioDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - AD_WIDTH)/2,
@@ -50,31 +52,41 @@ AudioDialog::AudioDialog(GUI_CallBack *callback)
 
 bool AudioDialog::init() {
 	int height = 12;
-	int colX[] = { 121, 151 };
+	int colX[] = { 213, 243 };
 	int textX[] = { 9, 19, 29 };
-	int textY[] = { 11, 24, 37, 50, 63};
-	int buttonY[] = { 9, 22, 35, 48, 61, 80 };
+	int buttonY = 9;
+	uint8 textY = 11;
+	uint8 row_h = 13;
 	b_index_num = -1;
 	last_index = 0;
 
 	GUI_Widget *widget;
 	GUI_Font * font = GUI::get_gui()->get_font();
 
-	widget = (GUI_Widget *) new GUI_Text(textX[0], textY[0], 0, 0, 0, "Audio:", font);
+	widget = (GUI_Widget *) new GUI_Text(textX[0], textY, 0, 0, 0, "Audio:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(textX[1], textY[1], 0, 0, 0, "Enable music:", font);
+	widget = (GUI_Widget *) new GUI_Text(textX[1], textY += row_h, 0, 0, 0, "Enable music:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(textX[2], textY[2], 0, 0, 0, "Music volume:", font);
+	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Music volume:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(textX[1], textY[3], 0, 0, 0, "Enable sfx:", font);
+	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Combat changes music:", font);
 	AddWidget(widget);
-	widget = (GUI_Widget *) new GUI_Text(textX[2], textY[4], 0, 0, 0, "Sfx volume:", font);
+	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Vehicle changes music:", font);
+	AddWidget(widget);
+	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Conversations stop music:", font);
+	AddWidget(widget);
+	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Stop music on group change:", font);
+	AddWidget(widget);
+	widget = (GUI_Widget *) new GUI_Text(textX[1], textY += row_h, 0, 0, 0, "Enable sfx:", font);
+	AddWidget(widget);
+	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Sfx volume:", font);
 	AddWidget(widget);
  
 	char musicBuff[5], sfxBuff[5];
 	int sfxVol_selection, musicVol_selection, num_of_sfxVol, num_of_musicVol;
 	SoundManager *sm = Game::get_game()->get_sound_manager();
 	const char* const enabled_text[] = { "Disabled", "Enabled" };
+	const char* const yes_no_text[] = { "no", "yes" };
 
 	uint8 music_percent = round(sm->get_music_volume() / 2.55); // round needed for 10%, 30%, etc. 
 	sprintf(musicBuff, "%u%%", music_percent);
@@ -100,31 +112,49 @@ bool AudioDialog::init() {
 		sfxVol_selection = 11;
 	}
 
-	audio_button = new GUI_TextToggleButton(this, colX[0], buttonY[0], 70, height, enabled_text, 2, sm->is_audio_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	audio_button = new GUI_TextToggleButton(this, colX[0], buttonY, 70, height, enabled_text, 2, sm->is_audio_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(audio_button); 
 	button_index[last_index] = audio_button;
 
-	music_button = new GUI_TextToggleButton(this, colX[0], buttonY[1], 70, height, enabled_text, 2, sm->is_music_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	music_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, sm->is_music_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(music_button);
 	button_index[last_index += 1] = music_button;
 
-	musicVol_button = new GUI_TextToggleButton(this, colX[1], buttonY[2], 40, height, musicVol_text, num_of_musicVol, musicVol_selection, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	musicVol_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, musicVol_text, num_of_musicVol, musicVol_selection, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(musicVol_button);
 	button_index[last_index += 1] = musicVol_button;
 
-	sfx_button = new GUI_TextToggleButton(this, colX[0], buttonY[3], 70, height, enabled_text, 2, sm->is_sfx_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	Party *party = Game::get_game()->get_party();
+	combat_b = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, party->combat_changes_music, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(combat_b);
+	button_index[last_index += 1] = combat_b;
+
+	vehicle_b = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, party->vehicles_change_music, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(vehicle_b);
+	button_index[last_index += 1] = vehicle_b;
+
+	bool stop_converse = Game::get_game()->get_converse()->conversations_stop_music;
+	converse_b = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, stop_converse, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(converse_b);
+	button_index[last_index += 1] = converse_b;
+
+	group_b = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, sm->stop_music_on_group_change, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(group_b);
+	button_index[last_index += 1] = group_b;
+
+	sfx_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, sm->is_sfx_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(sfx_button);
 	button_index[last_index += 1] = sfx_button;
 
-	sfxVol_button = new GUI_TextToggleButton(this, colX[1], buttonY[4], 40, height, sfxVol_text, num_of_sfxVol, sfxVol_selection, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	sfxVol_button = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, sfxVol_text, num_of_sfxVol, sfxVol_selection, font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(sfxVol_button); 
 	button_index[last_index += 1] = sfxVol_button;
 
-	cancel_button = new GUI_Button(this, 34, buttonY[5], 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	cancel_button = new GUI_Button(this, 80, AD_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
 	button_index[last_index += 1] = cancel_button;
 
-	save_button = new GUI_Button(this, 105, buttonY[5], 60, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	save_button = new GUI_Button(this, 151, AD_HEIGHT - 20, 60, height, "Save", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(save_button);
 	button_index[last_index += 1] = save_button;
  
@@ -202,6 +232,20 @@ GUI_status AudioDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 		config->set("config/audio/enable_music", music_button->GetSelection() ? "yes" : "no");
 		if(sfx_button->GetSelection() != sm->is_sfx_enabled())
 			sm->set_sfx_enabled(sfx_button->GetSelection());
+
+		Party *party = Game::get_game()->get_party();
+		party->combat_changes_music = combat_b->GetSelection();
+		config->set("config/audio/combat_changes_music", combat_b->GetSelection() ? "yes" : "no");
+
+		party->vehicles_change_music = vehicle_b->GetSelection();
+		config->set("config/audio/vehicles_change_music", vehicle_b->GetSelection() ? "yes" : "no");
+
+		Game::get_game()->get_converse()->conversations_stop_music = converse_b->GetSelection();
+		config->set("config/audio/conversations_stop_music", converse_b->GetSelection() ? "yes" : "no");
+
+		sm->stop_music_on_group_change = group_b->GetSelection();
+		config->set("config/audio/stop_music_on_group_change", group_b->GetSelection() ? "yes" : "no");
+
 		config->set("config/audio/enable_sfx", sfx_button->GetSelection() ? "yes" : "no");
 		if(audio_button->GetSelection() != sm->is_audio_enabled())
 			sm->set_audio_enabled(audio_button->GetSelection());

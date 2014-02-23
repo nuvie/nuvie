@@ -88,7 +88,7 @@
   <music_volume>100</music_volume>
   <sfx_volume>255</sfx_volume>
   <combat_changes_music>yes</combat_changes_music>
-  <vehicles_changes_music>yes</vehicles_changes_music>
+  <vehicles_change_music>yes</vehicles_change_music>
   <conversations_stop_music>no</conversations_stop_music>
   <stop_music_on_group_change>yes</stop_music_on_group_change>
  </audio>

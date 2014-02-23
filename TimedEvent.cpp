@@ -285,7 +285,7 @@ void TimedPartyMove::timed(uint32 evtime)
         if(falling_in == false) // change location, get in formation
         {
             change_location(); // fade map, move and show party
-            party->stop_walking(); // return control (and change viewpoint)
+            party->stop_walking(true); // return control (and change viewpoint)
 
             // wait for effect or line up now; Party called unpause_user()
             Game::get_game()->pause_user();
@@ -505,7 +505,7 @@ void TimedPartyMoveToVehicle::timed(uint32 evtime)
     if(repeat_count == 0) // everyone is in the boat
     {
         Game::get_game()->get_usecode()->use_obj(ship_obj);
-        party->stop_walking(); // return control to player
+        party->stop_walking(false); // return control to player
     }
     if(moves_left > 0)
         --moves_left;

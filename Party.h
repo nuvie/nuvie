@@ -182,7 +182,7 @@ class Party {
  void walk(Obj *moongate, MapCoord *teleport, uint32 step_delay = 0);
  void enter_vehicle(Obj *ship_obj, uint32 step_delay = 0);
  void exit_vehicle(uint16 x, uint16 y, uint16 z);
- void stop_walking();
+ void stop_walking(bool force_music_change);
  bool get_autowalk() { return(autowalk); }
  void rest_gather();
  void rest_sleep(uint8 hours, sint16 guard);
@@ -198,7 +198,7 @@ class Party {
                                 lightsources--; /*fprintf(stderr, "lightsources = %d\n", lightsources); */ }
  void update_light_sources();
 
- bool combat_changes_music, vehicles_changes_music;
+ bool combat_changes_music, vehicles_change_music;
 
  protected:
  void reform_party(); // call when adding or removing members

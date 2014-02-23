@@ -1,3 +1,7 @@
+2014-02-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1906
+	* Add some more settings to the menus.
+	* Rename vehicles_changes_music to vehicles_change_music and have it work.
+
 2014-02-23  Eric Fry <efry at users.sourceforge.net> r1905
 	* Fixed palette cycling issues with new custom actor tiles.
 

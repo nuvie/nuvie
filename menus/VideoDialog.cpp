@@ -44,7 +44,7 @@
 #include "Keys.h"
 
 #define VD_WIDTH 311
-#define VD_HEIGHT 145
+#define VD_HEIGHT 158
 
 VideoDialog::VideoDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - VD_WIDTH)/2,
@@ -192,6 +192,8 @@ bool VideoDialog::init() {
 		fullscreen_button = NULL;
 #endif
 
+	Configuration *config = Game::get_game()->get_config();
+
 // show roofs
 	widget = (GUI_Widget *) new GUI_Text(colX[0], textY += first_index ? 0 : row_h, 0, 0, 0, "Show roofs:", gui->get_font());
 	AddWidget(widget);
@@ -205,7 +207,6 @@ bool VideoDialog::init() {
 		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use new actor dolls:", gui->get_font());
 		AddWidget(widget);
 		bool use_new_dolls;
-		Configuration *config = Game::get_game()->get_config();
 		config->value(config_get_game_key(config) + "/use_new_dolls", use_new_dolls, false);
 		old_use_new_dolls = use_new_dolls;
 		doll_button = new GUI_TextToggleButton(this, colX[4], buttonY += row_h, yesno_width, height, yesno_text, 2, use_new_dolls, font, BUTTON_TEXTALIGN_CENTER, this, 0);
@@ -229,6 +230,20 @@ bool VideoDialog::init() {
 	lighting_button = new GUI_TextToggleButton(this, colX[3], buttonY += row_h*3, 70, height, lighting_text, 3, screen->get_old_lighting_style(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 	AddWidget(lighting_button);
 	button_index[last_index+=1] = lighting_button;
+// sprites (needs reset)
+	widget = (GUI_Widget *) new GUI_Text(colX[1], textY += row_h, 0, 0, 0, "Use custom actor tiles:", gui->get_font());
+	AddWidget(widget);
+	const char* const sprite_text[] = { "no", "yes", "default" };
+	std::string custom_tile_str;
+	int custom_tiles;
+	config->value(config_get_game_key(config) +"/custom_actor_tiles", custom_tile_str, "default");
+	if(custom_tile_str == "default")
+		custom_tiles = 2;
+	else 
+		custom_tiles = custom_tile_str == "yes" ? 1 : 0;
+	sprites_b = new GUI_TextToggleButton(this, colX[3], buttonY += row_h, 70, height, sprite_text, 3, custom_tiles, font, BUTTON_TEXTALIGN_CENTER, this, 0);
+	AddWidget(sprites_b);
+	button_index[last_index+=1] = sprites_b;
 // game_style (needs reset)
 	const char *game_style_text[4];
 	game_style_text[0] = "original style"; game_style_text[1] = "new style"; game_style_text[2] = "original+";
@@ -428,7 +443,14 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 		else
 			lighting_char = "original";
 		config->set("config/general/lighting", lighting_char);
-	// fullscreen_map
+	// sprites
+		const char *sprite_char;
+		if(sprites_b->GetSelection() == 2)
+			sprite_char = "default";
+		else
+			sprite_char = sprites_b->GetSelection() ? "yes" : "no";
+		config->set(config_get_game_key(config) + "/custom_actor_tiles", sprite_char);
+	// game_style
 		const char *game_style_text[4];
 		game_style_text[0] = "original"; game_style_text[1] = "new"; game_style_text[2] = "original+";
 		game_style_text[3] = "original+_full_map";
