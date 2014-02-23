@@ -1,3 +1,9 @@
+2014-02-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1907
+	* Add hack to allow actors that use the tile number they died as for their
+	  corpse, like Sherry, to display custom dead tiles by duplicating their
+	  normal tiles sheet with their corpse obj number in the file name.
+	  I.e. actor_009_0354.bmp gets an extra copy named actor_009_0339.bmp.
+
 2014-02-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1906
 	* Add some more settings to the menus.
 	* Rename vehicles_changes_music to vehicles_change_music and have it work.
