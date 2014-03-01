@@ -142,6 +142,7 @@ protected:
     TimedCallback *timer;
 public:
     TimedEffect()                  { timer = NULL; }
+    TimedEffect(uint32 delay)      { timer = NULL; start_timer(delay); }
     ~TimedEffect()                 { stop_timer(); }
 
     void start_timer(uint32 delay);

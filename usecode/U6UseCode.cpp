@@ -238,7 +238,7 @@ bool U6UseCode::is_readable(Obj *obj)
 bool U6UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 {
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, ev);
-    if(!type)
+    if(!type && !UseCode::has_usecode(obj, ev))
         return(false);
     return(true);
 }
@@ -254,6 +254,11 @@ bool U6UseCode::has_usecode(Actor *actor, UseCodeEvent ev)
 /* USE object. Actor is the actor using the object. */
 bool U6UseCode::use_obj(Obj *obj, Actor *actor)
 {
+    if(UseCode::has_usecode(obj, USE_EVENT_USE)) //use script based usecode.
+    {
+      return UseCode::use_obj(obj, actor);
+    }
+
     const U6ObjectType *type = get_object_type(obj->obj_n, obj->frame_n, USE_EVENT_USE);
     set_itemref(actor, items.actor2_ref);
     return(uc_event(type, USE_EVENT_USE, obj));

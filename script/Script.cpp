@@ -233,6 +233,13 @@ static int nscript_set_armageddon(lua_State *L);
 static int nscript_mouse_cursor_show(lua_State *L);
 static int nscript_mouse_cursor_set_pointer(lua_State *L);
 
+static int nscript_wait(lua_State *L);
+
+static int nscript_mapwindow_center_at_loc(lua_State *L);
+static int nscript_mapwindow_get_loc(lua_State *L);
+static int nscript_mapwindow_set_loc(lua_State *L);
+static int nscript_mapwindow_set_enable_blacking(lua_State *L);
+
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_u6llist_iter_recursive(lua_State *L);
@@ -677,6 +684,21 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_mouse_cursor_set_pointer);
    lua_setglobal(L, "mouse_cursor_set_pointer");
+
+   lua_pushcfunction(L, nscript_wait);
+   lua_setglobal(L, "script_wait");
+
+   lua_pushcfunction(L, nscript_mapwindow_center_at_loc);
+   lua_setglobal(L, "mapwindow_center_at_location");
+
+   lua_pushcfunction(L, nscript_mapwindow_get_loc);
+   lua_setglobal(L, "mapwindow_get_location");
+
+   lua_pushcfunction(L, nscript_mapwindow_set_loc);
+   lua_setglobal(L, "mapwindow_set_location");
+
+   lua_pushcfunction(L, nscript_mapwindow_set_enable_blacking);
+   lua_setglobal(L, "mapwindow_set_enable_blacking");
 
    seed_random();
 
@@ -3105,4 +3127,79 @@ static int nscript_mouse_cursor_set_pointer(lua_State *L)
 	}
 
 	return 0;
+}
+
+static int nscript_wait(lua_State *L)
+{
+  uint32 duration = (uint32)luaL_checkinteger(L, 1);
+
+  AsyncEffect *e = new AsyncEffect(new TimedEffect(duration));
+  e->run(EFFECT_PROCESS_GUI_INPUT);
+
+
+  return 0;
+}
+
+static int nscript_mapwindow_center_at_loc(lua_State *L)
+{
+  MapWindow *map_window = Game::get_game()->get_map_window();
+
+  uint16 x = (uint16) luaL_checkinteger(L, 1);
+  uint16 y = (uint16) luaL_checkinteger(L, 2);
+  uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+  map_window->centerMap(x, y, z);
+
+  return 0;
+}
+
+static int nscript_mapwindow_get_loc(lua_State *L)
+{
+  MapWindow *map_window = Game::get_game()->get_map_window();
+
+  uint16 x = map_window->get_cur_x();
+  uint16 y = map_window->get_cur_y();
+  uint8 z;
+  map_window->get_level(&z);
+
+  lua_newtable(L);
+  lua_pushstring(L, "x");
+  lua_pushinteger(L, x);
+  lua_settable(L, -3);
+
+  lua_pushstring(L, "y");
+  lua_pushinteger(L, y);
+  lua_settable(L, -3);
+
+  lua_pushstring(L, "z");
+  lua_pushinteger(L, z);
+  lua_settable(L, -3);
+
+  return 1;
+}
+
+static int nscript_mapwindow_set_loc(lua_State *L)
+{
+  MapWindow *map_window = Game::get_game()->get_map_window();
+
+  uint16 x = (uint16) luaL_checkinteger(L, 1);
+  uint16 y = (uint16) luaL_checkinteger(L, 2);
+  uint8 z = (uint8) luaL_checkinteger(L, 3);
+
+  map_window->moveMap(x, y, z);
+
+  map_window->set_enable_blacking(false);
+
+  return 0;
+}
+
+static int nscript_mapwindow_set_enable_blacking(lua_State *L)
+{
+  MapWindow *map_window = Game::get_game()->get_map_window();
+
+  bool enable_blacking = lua_toboolean(L, 1);
+
+  map_window->set_enable_blacking(enable_blacking);
+
+  return 0;
 }

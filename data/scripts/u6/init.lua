@@ -570,3 +570,7 @@ end
 
 -- init magic
 magic_init = nuvie_load("u6/magic.lua"); magic_init();
+
+-- init usecode
+usecode_init = nuvie_load("u6/usecode.lua"); usecode_init();
+
