@@ -1,11 +1,15 @@
+2014-03-02  Eric Fry <efry at users.sourceforge.net> r1916
+	* Added U6 use silver horn
+
 2014-03-02 Malignant Manor <malignantmanor@users.sourceforge.net> r1915
 	* Fix r1828 regression that stopped letters from being accepted in alt-214
 	  cheat.
 
-2014-02-28  Eric Fry <efry at users.sourceforge.net> r1914
+2014-03-01  Eric Fry <efry at users.sourceforge.net> r1914
 	* Added use telescope
 	* Added the ability to use lua script for U6 usecode.
-	* Added script_wait() script function.
+	* Added script_wait() script function. This cycles the mapwindow for a number
+	  of milliseconds.
 	* Added map window script functions mapwindow_center_at_location(),
 	  mapwindow_get_location(), mapwindow_set_location()
 	  and mapwindow_set_enable_blacking()

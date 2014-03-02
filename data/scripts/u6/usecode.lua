@@ -33,9 +33,31 @@ function use_telescope(obj, actor)
 	
 end
 
+function use_silver_horn(obj, actor)
+	local i
+	for i=0,0xff do
+		local tmp_actor = Actor.get(i)
+		if tmp_actor.obj_n == 413 and tmp_actor.alive == true and actor_find_max_xy_distance(tmp_actor, actor.x, actor.y) <= 8 then
+			print("Not now!\n")
+			return
+		end
+	end
+	
+	local random = math.random
+	
+	for i=1,3 do
+		local new_x = random(1, 7) + random(1, 7) + actor.x - 8
+		local new_y = random(1, 7) + random(1, 7) + actor.y - 8
+		local snake = Actor.new(413, new_x, new_y, actor.z, ALIGNMENT_CHAOTIC)
+	end
+	
+	print("Silver snakes are generated!\n")
+end
+
 
 local usecode_table = {
-[154]=use_telescope
+[154]=use_telescope,
+[313]=use_silver_horn
 }
 
 function has_usecode(obj, usecode_type)
