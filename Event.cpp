@@ -1705,7 +1705,7 @@ void Event::alt_code_input(const char *in)
                     scroll->display_string("\n<uai>: ");
                 else
                     scroll->display_string("\ny: ");
-                get_scroll_input();
+                get_scroll_input(NULL, true, false, false);
             }
             else if(alt_code_input_num == 2)
             {
@@ -1713,7 +1713,7 @@ void Event::alt_code_input(const char *in)
                     scroll->display_string("\n<zi>: ");
                 else
                     scroll->display_string("\nz: ");
-                get_scroll_input();
+                get_scroll_input(NULL, true, false, false);
             }
             else
             {
@@ -1910,7 +1910,7 @@ void Event::alt_code(const char *cs)
                     scroll->display_string("\n<gotu eks>: ");
                 else
                     scroll->display_string("\ngoto x: ");
-                get_scroll_input();
+                get_scroll_input(NULL, true, false, false);
                 active_alt_code = c;
             }
             break;
