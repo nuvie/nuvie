@@ -378,7 +378,8 @@ void Event::get_direction(const char *prompt)
     map_window->centerCursor();
     map_window->set_show_cursor(false);
 //    map_window->set_show_use_cursor(true); // set in moveCursorToMapWindow()
-
+    if(do_not_show_target_cursor && direction_selects_target)
+       map_window->set_show_use_cursor(false);
     input.target_init = new MapCoord(map_window->get_cursorCoord()); // depends on MapWindow size
 }
 /* This version of get_direction() doesn't show the cursor. */
@@ -3930,7 +3931,8 @@ bool Event::dont_show_target_cursor()
 
 bool Event::input_really_needs_directon()
 {
-    if((input.get_direction && (map_window->get_interface() == INTERFACE_NORMAL || last_mode == CAST_MODE)) || push_actor)
+    if((input.get_direction && (map_window->get_interface() == INTERFACE_NORMAL || last_mode == CAST_MODE)) ||
+       dont_show_target_cursor())
         return true;
     else
         return false;

@@ -24,6 +24,17 @@ function get_direction(prompt)
 	return dir
 end
 
+function really_get_direction(prompt)
+
+	if prompt ~= nil then
+		print(prompt)
+	end
+
+	local dir = coroutine.yield("need_dir")
+
+	return dir
+end
+
 function direction_string(dir)
 	if dir ~= nil then
 		if dir == DIR_NORTH then return "north" end

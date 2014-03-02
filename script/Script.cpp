@@ -392,6 +392,11 @@ uint8 ScriptThread::resume(int narg)
             {
                state = NUVIE_SCRIPT_GET_DIRECTION;
             }
+            else if(!strcmp(s, "need_dir")) // input_really_needs_directon()
+            {
+               Game::get_game()->get_event()->do_not_show_target_cursor = true;
+               state = NUVIE_SCRIPT_GET_DIRECTION;
+            }
             else if(!strcmp(s, "spell"))
             {
                state = NUVIE_SCRIPT_GET_SPELL;

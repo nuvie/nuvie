@@ -2,7 +2,7 @@ local USE_EVENT_USE = 0x01
 
 function use_telescope(obj, actor)
 	mapwindow_center_at_location(obj.x, obj.y, obj.z)
-	local dir = get_direction("Direction-")
+	local dir = really_get_direction("Direction-")
 	if dir == nil or dir == DIR_NONE then
 		mapwindow_center_at_location(actor.x, actor.y, actor.z)
 		print("nowhere.\n")
