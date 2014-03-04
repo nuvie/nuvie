@@ -61,6 +61,7 @@ Source: data\images\actors\U6\actor_003_0339.bmp; DestDir: {app}\data\images\act
 Source: data\images\actors\U6\actor_003_0377.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_004_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_004_0386.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\actor_004_0392.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_009_0354.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_062_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_062_0387.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
