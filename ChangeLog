@@ -1,3 +1,7 @@
+2014-03-08 Malignant Manor <malignantmanor@users.sourceforge.net> r1921
+	* Fix multiuse with telescope. Don't let the telescope be used when not on
+	  the map.
+
 2014-03-08 Malignant Manor <malignantmanor@users.sourceforge.net> r1920
 	* Add Gwenno's musician playing frames by HiPhish.
 

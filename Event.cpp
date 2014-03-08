@@ -3031,9 +3031,8 @@ void Event::multiuse(uint16 wx, uint16 wy)
     }
     else // use a real object
     {
-        scroll->display_string("Use-", MSGSCROLL_NO_MAP_DISPLAY);
-        set_mode(USE_MODE);
-        use(obj);
+        if(newAction(USE_MODE))
+            select_obj(obj);
     }
 }
 

@@ -1,7 +1,12 @@
 local USE_EVENT_USE = 0x01
 
 function use_telescope(obj, actor)
-	mapwindow_center_at_location(obj.x, obj.y, obj.z)
+	if obj.on_map == true then
+		mapwindow_center_at_location(obj.x, obj.y, obj.z)
+	else -- FIXME - should probably work in the inventory (can't be done without cheating though)
+		print("Not usable\n")
+		return
+	end
 	local dir = really_get_direction("Direction-")
 	if dir == nil or dir == DIR_NONE then
 		mapwindow_center_at_location(actor.x, actor.y, actor.z)
