@@ -940,3 +940,12 @@ Tile *TileManager::addNewTiles(uint16 num_tiles)
   return tileDataPtr;
 }
 
+void TileManager::freeCustomTiles()
+{
+  if(extendedTiles)
+  {
+    free(extendedTiles);
+    extendedTiles = NULL;
+    numTiles = NUM_ORIGINAL_TILES;
+  }
+}

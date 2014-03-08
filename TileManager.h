@@ -179,7 +179,7 @@ class TileManager
    const Tile *get_gump_cursor_tile();
 
    Tile *loadCustomTiles(const std::string filename, bool overwrite_tiles, bool copy_tileflags, uint16 tile_num_start_offset);
-
+   void freeCustomTiles();
  protected:
 
    bool loadAnimData();

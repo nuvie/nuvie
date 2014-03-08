@@ -257,6 +257,8 @@ bool SaveGame::load_objlist()
  view_manager = game->get_view_manager();
  weather = game->get_weather();
  
+ portrait->load(&objlist); //load avatar portrait number.
+
  clock->load(&objlist);
  game->set_ethereal(false); // needs to go before actor_manager->load(&objlist);
  actor_manager->load(&objlist);
@@ -268,8 +270,6 @@ bool SaveGame::load_objlist()
  
  command_bar->set_combat_mode(party->is_in_combat_mode()); // update CommandBar
  command_bar->load(&objlist);
-
- portrait->load(&objlist); //load avatar portrait number.
 
  game->get_script()->call_load_game(&objlist);
  game->get_event()->set_control_cheat(false);

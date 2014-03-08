@@ -40,6 +40,7 @@
 #include "GameClock.h"
 #include "Game.h"
 #include "Party.h"
+#include "Portrait.h"
 #include "Script.h"
 #include "U6objects.h"
 
@@ -1190,20 +1191,72 @@ bool ActorManager::loadCustomTiles(nuvie_game_t game_type)
     return false;
   }
 
-  NuvieFileList filelist;
   std::string datadir = GUI::get_gui()->get_data_dir();
-  std::string imagefile, path;
+  std::string path;
 
   build_path(datadir, "images", path);
   datadir = path;
   build_path(datadir, "actors", path);
   datadir = path;
-  build_path(datadir, get_game_tag(1), path);
+  build_path(datadir, get_game_tag(game_type), path);
   datadir = path;
+
+  tile_manager->freeCustomTiles(); //FIXME this might need to change if we start using custom tiles outside of ActorManager. eg custom map/object tilesets
+
+  loadAvatarTiles(datadir);
+  loadNPCTiles(datadir);
+
+  return true;
+}
+
+void ActorManager::loadAvatarTiles(std::string datadir)
+{
+  NuvieFileList filelist;
+  std::string imagefile;
+
+  uint8 avatar_portrait = Game::get_game()->get_portrait()->get_avatar_portrait_num();
+
+  if(filelist.open(datadir.c_str(), "avatar_", NUVIE_SORT_NAME_ASC) == false)
+  {
+    return;
+  }
+
+  int num_files = filelist.get_num_files();
+
+  for(int i=0;i<num_files;i++)
+  {
+    std::string *filename = filelist.next();
+    if(filename == NULL || filename->length() != 19) // avatar_nnn_nnnn.bmp
+    {
+      continue;
+    }
+    std::string num_str = filename->substr(7,3);
+    uint8 portrait_num = (uint8)strtol(num_str.c_str(), NULL, 10);
+
+    if(portrait_num == avatar_portrait)
+    {
+      num_str = filename->substr(11,4);
+      uint16 obj_n = (uint16)strtol(num_str.c_str(), NULL, 10);
+
+      build_path(datadir, filename->c_str(), imagefile);
+      Tile *start_tile = tile_manager->loadCustomTiles(imagefile,false,true,actors[1]->get_tile_num());
+      if(start_tile)
+      {
+        actors[1]->set_custom_tile_num(obj_n, start_tile->tile_num);
+      }
+    }
+  }
+  return;
+}
+
+void ActorManager::loadNPCTiles(std::string datadir)
+{
+  NuvieFileList filelist;
+  std::string imagefile;
 
   if(filelist.open(datadir.c_str(), "actor_", NUVIE_SORT_NAME_ASC) == false)
   {
-    return false;
+    return;
   }
 
   int num_files = filelist.get_num_files();
@@ -1228,5 +1281,5 @@ bool ActorManager::loadCustomTiles(nuvie_game_t game_type)
       actors[actor_num]->set_custom_tile_num(obj_n, start_tile->tile_num);
     }
   }
-  return true;
+  return;
 }

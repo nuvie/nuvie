@@ -55,6 +55,8 @@ Source: data\defaultkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\u6keys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\sekeys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\mdkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
+Source: data\images\actors\U6\avatar_010_0410.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
+Source: data\images\actors\U6\avatar_010_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_002_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_002_0376.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
 Source: data\images\actors\U6\actor_003_0339.bmp; DestDir: {app}\data\images\actors\U6; Flags: ignoreversion
