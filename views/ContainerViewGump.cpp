@@ -39,6 +39,7 @@
 #include "Keys.h"
 
 #define CONTAINER_WIDGET_OFFSET 29
+#define CHECK_X 0
 
 ContainerViewGump::ContainerViewGump(Configuration *cfg) : DraggableView(cfg)
 {
@@ -113,8 +114,8 @@ void ContainerViewGump::init_container_type(std::string datadir, Obj *obj_type)
 void ContainerViewGump::init_backpack(std::string datadir, bool extend_area_w)
 {
 	std::string imagefile, path;
-
-	gump_button = loadButton(datadir, "gump", 0, 27);
+	uint8 check_y = 27;
+	gump_button = loadButton(datadir, "gump", CHECK_X, check_y);
 
 	build_path(datadir, "container", path);
 	datadir = path;
@@ -134,7 +135,7 @@ void ContainerViewGump::init_backpack(std::string datadir, bool extend_area_w)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = CONTAINER_WIDGET_OFFSET;
-	container_widget->init(actor, 21, container_widget_y_offset, 4, 3, tile_manager, obj_manager, font);
+	container_widget->init(actor, 21, container_widget_y_offset, 4, 3, tile_manager, obj_manager, font, CHECK_X, check_y);
 
 	AddWidget(container_widget);
 	if(extend_area_w) // text extends beyond the gump
@@ -144,8 +145,8 @@ void ContainerViewGump::init_backpack(std::string datadir, bool extend_area_w)
 void ContainerViewGump::init_chest(std::string datadir)
 {
 	std::string imagefile, path;
-
-	gump_button = loadButton(datadir, "gump", 0, 56);
+	uint8 check_y = 56;
+	gump_button = loadButton(datadir, "gump", CHECK_X, check_y);
 
 	build_path(datadir, "container", path);
 	datadir = path;
@@ -161,7 +162,7 @@ void ContainerViewGump::init_chest(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = CONTAINER_WIDGET_OFFSET - 1;
-	container_widget->init(actor, 21, container_widget_y_offset, 4, 2, tile_manager, obj_manager, font);
+	container_widget->init(actor, 21, container_widget_y_offset, 4, 2, tile_manager, obj_manager, font, CHECK_X, check_y);
 
 	AddWidget(container_widget);
 }
@@ -169,8 +170,8 @@ void ContainerViewGump::init_chest(std::string datadir)
 void ContainerViewGump::init_crate(std::string datadir)
 {
 	std::string imagefile, path;
-
-	gump_button = loadButton(datadir, "gump", 0, 63);
+	uint8 check_y = 63;
+	gump_button = loadButton(datadir, "gump", CHECK_X, check_y);
 
 	build_path(datadir, "container", path);
 	datadir = path;
@@ -186,7 +187,7 @@ void ContainerViewGump::init_crate(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 10;
-	container_widget->init(actor, 21, container_widget_y_offset, 5, 3, tile_manager, obj_manager, font);
+	container_widget->init(actor, 21, container_widget_y_offset, 5, 3, tile_manager, obj_manager, font, CHECK_X, check_y);
 
 	AddWidget(container_widget);
 }
@@ -194,8 +195,8 @@ void ContainerViewGump::init_crate(std::string datadir)
 void ContainerViewGump::init_barrel(std::string datadir)
 {
 	std::string imagefile, path;
-
-	gump_button = loadButton(datadir, "gump", 0, 55);
+	uint8 check_y = 55;
+	gump_button = loadButton(datadir, "gump", CHECK_X, check_y);
 
 	build_path(datadir, "container", path);
 	datadir = path;
@@ -211,7 +212,7 @@ void ContainerViewGump::init_barrel(std::string datadir)
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 24;
-	container_widget->init(actor, 38, container_widget_y_offset, 4, 2, tile_manager, obj_manager, font);
+	container_widget->init(actor, 38, container_widget_y_offset, 4, 2, tile_manager, obj_manager, font, CHECK_X, check_y);
 
 	AddWidget(container_widget);
 }
@@ -219,8 +220,8 @@ void ContainerViewGump::init_barrel(std::string datadir)
 void ContainerViewGump::init_corpse(std::string datadir, std::string bg_filename)
 {
 	std::string imagefile, path;
-
-	gump_button = loadButton(datadir, "gump", 0, 25);
+	uint8 check_y = 25;
+	gump_button = loadButton(datadir, "gump", CHECK_X, check_y);
 
 	build_path(datadir, "container", path);
 	datadir = path;
@@ -236,7 +237,7 @@ void ContainerViewGump::init_corpse(std::string datadir, std::string bg_filename
 
 	container_widget = new ContainerWidgetGump(config, this);
 	container_widget_y_offset = 26;
-	container_widget->init(actor, 20, container_widget_y_offset, 3, 4, tile_manager, obj_manager, font);
+	container_widget->init(actor, 20, container_widget_y_offset, 3, 4, tile_manager, obj_manager, font, CHECK_X, check_y);
 
 	AddWidget(container_widget);
 }

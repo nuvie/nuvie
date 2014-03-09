@@ -1,3 +1,9 @@
+2014-03-09 Malignant Manor <malignantmanor@users.sourceforge.net> r1922
+	* Fix keyboard cursor position for check marks in gumps that are not
+	  backpacks.
+	* Add Leodon's musician playing frames by HiPhish.
+	* Add outline fixes for Gwenno, Leodon, Leonna, and Jaana by HiPhish.
+
 2014-03-08 Malignant Manor <malignantmanor@users.sourceforge.net> r1921
 	* Fix multiuse with telescope. Don't let the telescope be used when not on
 	  the map.

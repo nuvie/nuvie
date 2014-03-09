@@ -38,6 +38,7 @@ class ContainerWidgetGump : public ContainerWidget {
  private:
  sint16 cursor_x;
  uint16 cursor_y;
+ sint16 check_x, check_y;
  const Tile *cursor_tile;
  bool show_cursor;
 
@@ -45,7 +46,7 @@ class ContainerWidgetGump : public ContainerWidget {
  ContainerWidgetGump(Configuration *cfg, GUI_CallBack *callback = NULL);
  ~ContainerWidgetGump();
 
- bool init(Actor *a, uint16 x, uint16 y, uint8 Cols, uint8 Rows, TileManager *tm, ObjManager *om, Font *f);
+ bool init(Actor *a, uint16 x, uint16 y, uint8 Cols, uint8 Rows, TileManager *tm, ObjManager *om, Font *f, uint8 check_xoff, uint8 check_yoff);
 
  void Display(bool full_redraw);
  GUI_status KeyDown(SDL_keysym key);

@@ -85,14 +85,15 @@ ContainerWidgetGump::~ContainerWidgetGump()
 
 }
 
-bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint8 Cols, uint8 Rows,TileManager *tm, ObjManager *om, Font *f)
+bool ContainerWidgetGump::init(Actor *a, uint16 x, uint16 y, uint8 Cols, uint8 Rows,TileManager *tm, ObjManager *om, Font *f, uint8 check_xoff, uint8 check_yoff)
 {
  tile_manager = tm;
  obj_manager = om;
 
  rows = Rows;
  cols = Cols;
-
+ check_x = - x + check_xoff;
+ check_y = - y + check_yoff;
  //objlist_offset_x = 0;
  //objlist_offset_y = 0;
 
@@ -112,7 +113,7 @@ void ContainerWidgetGump::Display(bool full_redraw)
 	display_inventory_list();
 	if(show_cursor)
 	{
-		screen->blit(area.x+(cursor_x < 0 ? -21 : cursor_x*16),area.y+(cursor_x < 0 ? -2 : cursor_y*16),(unsigned char *)cursor_tile->data,8,16,16,16,true);
+		screen->blit(area.x+(cursor_x < 0 ? check_x : cursor_x*16),area.y+(cursor_x < 0 ? check_y : cursor_y*16),(unsigned char *)cursor_tile->data,8,16,16,16,true);
 	}
 	screen->update(area.x, area.y, area.w, area.h);
 }
