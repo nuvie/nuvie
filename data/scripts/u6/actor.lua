@@ -249,10 +249,10 @@ function subtract_movement_pts(actor, pts)
    if pts < 1 then pts = 1 end
    
    actor.mpts = actor.mpts - pts
---[[ doesn't seem needed anymore
+
    if g_avatar_died == true then
       actor_avatar_death()
-   end --]]
+   end
 end
 
 function subtract_map_movement_pts(actor)

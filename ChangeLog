@@ -1,3 +1,6 @@
+2014-03-13 Malignant Manor <malignantmanor@users.sourceforge.net> r1923
+	* Restore an Avatar death check removed in r1890.
+
 2014-03-09 Malignant Manor <malignantmanor@users.sourceforge.net> r1922
 	* Fix keyboard cursor position for check marks in gumps that are not
 	  backpacks.
