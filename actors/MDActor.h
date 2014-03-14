@@ -40,6 +40,7 @@ class MDActor: public Actor
  uint8 get_maxhp() { return(((level * 24 + strength * 2) < 255) ? (level * 24 + strength * 2) : 255); }
 
  bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
+ virtual uint16 get_downward_facing_tile_num();
 };
 
 #endif /* __MDActor_h__ */

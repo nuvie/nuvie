@@ -23,6 +23,8 @@
 
 #include "MDActor.h"
 
+#define MD_DOWNWARD_FACING_FRAME_N 9
+
 MDActor::MDActor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
 {
 }
@@ -53,4 +55,9 @@ bool MDActor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
     return false;
 
  return map->is_passable(new_x,new_y,new_z);
+}
+
+uint16 MDActor::get_downward_facing_tile_num()
+{
+ return get_tile_num(obj_n) + MD_DOWNWARD_FACING_FRAME_N;
 }
