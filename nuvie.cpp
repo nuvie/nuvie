@@ -136,7 +136,7 @@ bool Nuvie::init(int argc, char **argv)
 
 
  ConsoleInit(config, screen, gui, 320, 200);
- ConsoleAddInfo("\n Nuvie: ver 0.4 rev 1577 \n");
+ ConsoleAddInfo("\n Nuvie: ver 0.5 rev 1927 \n");
  ConsoleAddInfo("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t");
 
  if(show_virtue_msg)
