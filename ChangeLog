@@ -1,3 +1,7 @@
+2014-03-14 Malignant Manor <malignantmanor@users.sourceforge.net> r1924
+	* Use isprint instead of isalnum when determining whether to use custom
+	  key bindings in cutscenes and intro menus.
+
 2014-03-13 Malignant Manor <malignantmanor@users.sourceforge.net> r1923
 	* Restore an Avatar death check removed in r1890.
 
