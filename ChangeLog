@@ -1,3 +1,6 @@
+2014-03-18  Eric Fry <efry at users.sourceforge.net> r1931
+	* Fixed crash when loading save with multi-tile actor at pos (0,0)
+
 2014-03-14 Malignant Manor <malignantmanor@users.sourceforge.net> r1929
 	* Remove extra frame in Iolo's custom tile set.
 

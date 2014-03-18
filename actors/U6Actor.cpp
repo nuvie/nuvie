@@ -79,7 +79,7 @@ bool U6Actor::init(uint8 obj_status)
  if(has_surrounding_objs())
    clear_surrounding_objs_list(); //clean up the old list if required.
 
- if(is_alive()) //only try to init multi-tile actors if they are alive.
+ if(is_alive() && x != 0 && y != 0) //only try to init multi-tile actors if they are alive.
  {
   switch(obj_n) //gather surrounding objects from map if required
   {
