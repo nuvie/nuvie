@@ -2203,7 +2203,11 @@ function actor_update_flags(actor)
 		end
 		
 		if actor.poisoned == true and actor.protected == false and random(0, 7) == 0 then
-			actor_hit(actor, 1)
+			if map_is_on_screen(actor.x, actor.y, actor.z) == true then
+				actor_hit(actor, 1)
+			else -- don't show the animation or play the sfx
+				actor_hit(actor, 1, nil, true)
+			end
 		end
 	end
 

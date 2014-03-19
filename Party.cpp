@@ -1080,6 +1080,8 @@ void Party::update_light_sources()
 
 bool Party::has_light_source()
 {
+	if(!game->get_player()->get_actor())
+		return false;
 	if(lightsources > 0) { // the original engine didn't care about distance
 		if(game->get_event()->using_control_cheat()) {
 			if(game->get_player()->get_actor()->get_num_light_sources() > 0)
