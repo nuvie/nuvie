@@ -1,3 +1,7 @@
+2014-03-19 Malignant Manor <malignantmanor@users.sourceforge.net> r1933
+	* Add custom actor tiles for black-haired female Avatar with a headband by
+	  DMagnus.
+
 2014-03-19 Malignant Manor <malignantmanor@users.sourceforge.net> r1932
 	* Fix crash on initial save game load cause by player being uninitialized
 	  when the party has a light source.
