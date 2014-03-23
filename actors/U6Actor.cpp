@@ -1703,20 +1703,10 @@ void U6Actor::revert_worktype()
         set_worktype(WORKTYPE_U6_PLAYER);
 }
 
-/* Maximum magic points is derived from Intelligence and actor type. */
+/* Maximum magic points is derived from Intelligence and base_obj_n. */
 uint8 U6Actor::get_maxmagic()
 {
-    // FIXME: Handle other classes. If we discover the magic factor varies
-    // greatly between types, we'll need to put it in U6ActorType.
-    uint16 obj_n = actor_type->base_obj_n;
-    if(obj_n == OBJ_U6_MUSICIAN || obj_n == OBJ_U6_SWASHBUCKLER)
-        return uint8(intelligence*0.5);
-    if(obj_n == OBJ_U6_MAGE)
-        return uint8(intelligence);
-    if(obj_n == OBJ_U6_AVATAR)
-        return uint8(intelligence*2);
-    if(!is_in_party()) DEBUG(0,LEVEL_WARNING,"FIXME: %s (%d) has unknown max. magic points\n", get_name(), id_n);
-    return 0;
+	return Game::get_game()->get_script()->actor_get_max_magic_points(this);
 }
 
 bool U6Actor::will_not_talk()

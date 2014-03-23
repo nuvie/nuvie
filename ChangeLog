@@ -1,3 +1,8 @@
+2014-03-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1934
+	* Fix check for max mp that broke when the actor changes shape (horsed, etc)
+	  and have U6Actor use the lua script for max mp
+	* Remove no longer used variable in magic.lua.
+
 2014-03-19 Malignant Manor <malignantmanor@users.sourceforge.net> r1933
 	* Add custom actor tiles for black-haired female Avatar with a headband by
 	  DMagnus.

@@ -923,6 +923,15 @@ int Script::call_obj_get_readiable_location(Obj *obj)
    return lua_tointeger(L,-1);
 }
 
+uint8 Script::actor_get_max_magic_points(Actor *actor)
+{
+	lua_getglobal(L, "actor_get_max_magic_points");
+	nscript_new_actor_var(L, actor->get_actor_num());
+
+	if(call_function("actor_get_max_magic_points", 1, 1) == false)
+		return 0;
+	return (uint8)lua_tointeger(L,-1);
+}
 
 bool Script::call_actor_get_obj(Actor *actor, Obj *obj)
 {

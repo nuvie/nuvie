@@ -514,7 +514,7 @@ function actor_tile_dmg(actor, map_tile)
 end
 
 function actor_get_max_magic_points(actor)
-   local obj_n = actor.obj_n
+   local obj_n = actor.base_obj_n
    if obj_n == 410 then --avatar
       return actor.int * 2
    end

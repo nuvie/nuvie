@@ -46,7 +46,7 @@ function magic_cast_spell(spell_num, caster, target)
 	g_magic_caster = nil
 	g_magic_target = nil
 	if g_avatar_died == true then
-		actor_avatar_death(Actor.get(1))
+		actor_avatar_death()
 	end
 end
 

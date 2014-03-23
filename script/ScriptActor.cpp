@@ -165,6 +165,7 @@ static const char *actor_get_vars[] =
    "align",
    "alive",
    "asleep",
+   "base_obj_n",
    "charmed",
    "combat_mode",
    "corpser_flag",
@@ -269,6 +270,7 @@ static int nscript_actor_get_actor_num(Actor *actor, lua_State *L);
 static int nscript_actor_get_align(Actor *actor, lua_State *L);
 static int nscript_actor_get_alive(Actor *actor, lua_State *L);
 static int nscript_actor_get_asleep_flag(Actor *actor, lua_State *L);
+static int nscript_actor_get_base_obj_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_charmed_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_combat_mode(Actor *actor, lua_State *L);
 static int nscript_actor_get_corpser_flag(Actor *actor, lua_State *L);
@@ -311,6 +313,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_align,
    nscript_actor_get_alive,
    nscript_actor_get_asleep_flag,
+   nscript_actor_get_base_obj_n,
    nscript_actor_get_charmed_flag,
    nscript_actor_get_combat_mode,
    nscript_actor_get_corpser_flag,
@@ -733,6 +736,11 @@ static int nscript_actor_get_alive(Actor *actor, lua_State *L)
 static int nscript_actor_get_asleep_flag(Actor *actor, lua_State *L)
 {
 	lua_pushboolean(L, (int)actor->is_sleeping()); return 1;
+}
+
+static int nscript_actor_get_base_obj_n(Actor *actor, lua_State *L)
+{
+	lua_pushinteger(L, actor->get_base_obj_n()); return 1;
 }
 
 static int nscript_actor_get_cursed_flag(Actor *actor, lua_State *L)
