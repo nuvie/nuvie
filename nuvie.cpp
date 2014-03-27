@@ -357,25 +357,28 @@ void Nuvie::SharedDefaultConfigValues()
 		config->set(game_str[i] + "skip_intro", false);
 		config->set(game_str[i] + "show_eggs", false);
 		if(i == 0) { // U6
-			config->set("config/ultima6/show_stealing", false);
+			config->set(game_str[i] + "show_stealing", false);
 			config->set(game_str[i] + "roof_mode", false);
 		}
+		config->set(game_str[i] + "use_new_dolls", false);
 		config->set(game_str[i] + "cb_position", "default");
 		config->set(game_str[i] + "show_orig_style_cb", "default");
 		if(i == 0) // U6
-			config->set("config/ultima6/cb_text_color", 115);
+			config->set(game_str[i] + "cb_text_color", 115);
 		config->set(game_str[i] + "map_tile_lighting", i == 1 ? false : true); // MD has canals lit up so disable
 		config->set(game_str[i] + "custom_actor_tiles", "default");
 		config->set(game_str[i] + "converse_solid_bg", false);
 		config->set(game_str[i] + "converse_bg_color", bg_color[i]);
 		config->set(game_str[i] + "converse_width", "default");
 		config->set(game_str[i] + "converse_height", "default");
-		if(i == 0) // U6
+		if(i == 0) { // U6
+			config->set(game_str[i] + "displayed_wind_dir", "from");
 			config->set(game_str[i] + "free_balloon_movement", false);
+		}
 		config->set(game_str[i] + "game_specific_keys", "(default)");
 		config->set(game_str[i] + "newscroll/width", 30);
 		config->set(game_str[i] + "newscroll/height", 19);
-		config->set(game_str[i] + "newscroll/solid_bg", "no");
+		config->set(game_str[i] + "newscroll/solid_bg", false);
 		config->set(game_str[i] + "newscroll/bg_color", bg_color[i]);
 		config->set(game_str[i] + "newscroll/border_color", border_color[i]); 
 	}

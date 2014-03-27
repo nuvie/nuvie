@@ -110,6 +110,7 @@
   <converse_bg_color>218</converse_bg_color>
   <converse_width>default</converse_width>
   <converse_height>default</converse_height>
+  <displayed_wind_dir>from</displayed_wind_dir>
   <free_balloon_movement>no</free_balloon_movement>
   <game_specific_keys>(default)</game_specific_keys>
   <music>native</music>

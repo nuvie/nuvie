@@ -186,6 +186,15 @@ void SunMoonRibbon::display_surface_strip()
     display_moons(clock->get_day(), clock->get_hour());
 
   src.x = SUNMOON_RIBBON_WIDTH + weather->get_wind_dir() * SUNMOON_RIBBON_DIR_WIDTH;
+  uint8 dir;
+  if(weather->is_displaying_from_wind_dir()) { // points dir wind is coming from
+    const uint8 from_wind_pos[] = { 1, 3, 5, 7, 2, 4, 6, 8, 0 };
+    dir = from_wind_pos[weather->get_wind_dir()];
+  } else { // points dir wind is blowing to
+    const uint8 to_wind_pos[] = { 5, 7, 1, 3, 6, 8, 2, 4, 0 };
+    dir = to_wind_pos[weather->get_wind_dir()];
+  }
+  src.x = SUNMOON_RIBBON_WIDTH + dir * SUNMOON_RIBBON_DIR_WIDTH;
   src.y = 0;
   src.w = SUNMOON_RIBBON_DIR_WIDTH;
   src.h = SUNMOON_RIBBON_HEIGHT;

@@ -52,6 +52,12 @@ Weather::Weather(Configuration *cfg, GameClock *c, nuvie_game_t type)
  
 	wind_dir = NUVIE_DIR_NONE;
 	wind_timer = NULL;
+	string s;
+	config->value(config_get_game_key(config) + "/displayed_wind_dir", s, "from");
+	if(s == "to")
+		display_from_wind_dir = false;
+	else
+		display_from_wind_dir = true;
 }
 
 Weather::~Weather()
@@ -194,11 +200,15 @@ bool Weather::is_moon_visible()
 
 string Weather::get_wind_dir_str()
 {
-	const char names[9][3] = {"N","E","S","W","NE","SE","SW","NW","C"};
 	string s;
- 
-	s = names[wind_dir];
-    
+	if(display_from_wind_dir) {
+		const char from_names[9][3] = {"N","E","S","W","NE","SE","SW","NW","C"};
+		s = from_names[wind_dir];
+	} else {
+		const char to_names[9][3] = {"S","W","N","E","SW","NW","NE","SE","C"};
+		s = to_names[wind_dir];
+	}
+
 	return s;
 }
 

@@ -64,6 +64,7 @@ class Weather: public CallBack
  
 	std::string get_wind_dir_str();
 	uint8 get_wind_dir() { return wind_dir; }
+	bool is_displaying_from_wind_dir() { return display_from_wind_dir; }
 	bool set_wind_dir(uint8 new_wind_dir);
 	bool add_wind_change_notification_callback(CallBack *caller);
 	bool set_moonstone(uint8 moonstone,MapCoord where);
@@ -83,6 +84,7 @@ class Weather: public CallBack
 	inline void set_wind_change_callback();
 	inline void send_wind_change_notification_callback();
 	void clear_wind();
+	bool display_from_wind_dir;
 };
 
 #endif /* __Weather_h__ */
