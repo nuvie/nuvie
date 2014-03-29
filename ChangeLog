@@ -1,3 +1,11 @@
+2014-03-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1936
+	* Use actor_get_max_magic_points in advance_time when checking for mp regen.
+
+2014-03-27  Malignant Manor <malignantmanor@users.sourceforge.net> r1935
+	* Fix wind direction in celestial gump. Add ultima6 specific
+	  displayed_wind_dir cfg setting. Values are "from" (default) or "to".
+	* Add missing use_new_dolls to generated cfg settings.
+
 2014-03-23 Malignant Manor <malignantmanor@users.sourceforge.net> r1934
 	* Fix check for max mp that broke when the actor changes shape (horsed, etc)
 	  and have U6Actor use the lua script for max mp

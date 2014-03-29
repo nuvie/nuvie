@@ -2136,10 +2136,9 @@ function advance_time(num_turns)
 		--update magic points
 		local party_actor
 		for party_actor in party_members() do 
-			local obj_n = party_actor.obj_n
-			if obj_n == 0x19a or obj_n == 0x17a or obj_n == 0x179 or obj_n == 0x182 then -- Avatar, Mage, Swashbuckler, Musician
+			local max_magic = actor_get_max_magic_points(party_actor)
+			if max_magic ~= 0 then -- Avatar, Mage, Swashbuckler, Musician
 				local magic_pts = party_actor.magic + party_actor.level
-				local max_magic = actor_get_max_magic_points(party_actor)
 				if magic_pts > max_magic then
 					magic_pts = max_magic
 				end
