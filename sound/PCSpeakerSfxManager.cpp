@@ -116,6 +116,10 @@ bool PCSpeakerSfxManager::playSfxLooping(SfxIdType sfx_id, Audio::SoundHandle *h
 	{
 		stream = makePCSpeakerHailStoneSfxStream(mixer->getOutputRate());
 	}
+  else if(sfx_id == NUVIE_SFX_EARTH_QUAKE)
+  {
+    stream = makePCSpeakerEarthQuakeSfxStream(mixer->getOutputRate());
+  }
 
 	if(stream)
 	{

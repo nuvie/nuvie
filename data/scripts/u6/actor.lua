@@ -63,6 +63,8 @@ wt_num_monsters_near = 0
 
 g_time_stopped = false
 
+g_update_volcano = false;
+
 --Actor stats table
 --[objnum] = {str,dex,int,hp,dmg,alignment,can talk,drops blood,?,?,?,lives in water,flies-immune to tremor,repel undead,poisonous,strength_based,double dmg from fire,immune to magic (fire only),immune to poison,undead and immune to death spells,immune to sleep spell,{spell table},{weapon table},{armor table},{treasure table},exp_related see actor_hit()}
 actor_tbl = {
@@ -2012,6 +2014,21 @@ function actor_update_all()
 	player_set_actor(selected_actor)
 	old_player.wt = WT_PLAYER --reset worktype to player as it gets changed to follow in Player::set_actor() :-(
    end
+   
+	if g_update_volcano == true then
+		local obj = find_volcano_near_player()
+		if obj ~= nil then
+			if obj.obj_n == 307 then --volcano
+				play_sfx(SFX_EARTH_QUAKE, false)
+				quake_start(1,200)
+			else
+				local temp_fumarole = Obj.new(obj) --duplicate the fumarole object so we can explode it.
+				explode_obj(temp_fumarole)
+			end
+		end
+		g_update_volcano = false
+	end
+   
    display_prompt(true)
 end
 
@@ -2150,6 +2167,10 @@ function advance_time(num_turns)
 	end
 	if g_avatar_died == true then
 		actor_avatar_death()
+	end
+	
+	if random(0,7) == 0 then
+		g_update_volcano = true
 	end
 end
 

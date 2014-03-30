@@ -173,6 +173,7 @@
 
 #define OBJ_U6_RUBBER_DUCKY        169
 
+#define OBJ_U6_FUMAROLE            171
 #define OBJ_U6_SPIKES              172
 #define OBJ_U6_TRAP                173
 #define OBJ_U6_SWITCH              174
@@ -260,6 +261,7 @@
 
 #define OBJ_U6_DOORWAY             301
 #define OBJ_U6_LADDER              305
+#define OBJ_U6_VOLCANO             307
 #define OBJ_U6_HOLE                308
 #define OBJ_U6_PORTCULLIS          310
 #define OBJ_U6_STONE_LION          312

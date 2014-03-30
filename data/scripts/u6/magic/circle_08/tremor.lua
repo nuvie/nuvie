@@ -8,6 +8,7 @@ local loc_y = y
 
 magic_casting_fade_effect(caster)
 
+play_sfx(SFX_EARTH_QUAKE, false)
 quake_start(1,1024)
 
 local random = math.random

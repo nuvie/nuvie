@@ -71,4 +71,6 @@ typedef uint16 SfxIdType;
 
 #define NUVIE_SFX_SE_TICK 38
 
+#define NUVIE_SFX_EARTH_QUAKE 39
+
 #endif

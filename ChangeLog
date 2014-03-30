@@ -1,3 +1,11 @@
+2014-03-30  Eric Fry <efry at users.sourceforge.net> r1937
+	* Added U6 volcano and fumarole logic.
+	* Added PC Speaker earth quake sound effect.
+	* Fixed Obj.new(obj) script function. It wasn't referencing the source object
+	  correctly.
+	* Added find_volcano_near_player() script function. This find the first occurence
+	  of either a volcano or fumarole object on the map surrounding the player.
+
 2014-03-29  Malignant Manor <malignantmanor@users.sourceforge.net> r1936
 	* Use actor_get_max_magic_points in advance_time when checking for mp regen.
 

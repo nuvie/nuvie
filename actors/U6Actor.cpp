@@ -551,8 +551,10 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
    
    // Cyclops: shake ground if player is near
    if(actor_type->base_obj_n == OBJ_U6_CYCLOPS && is_nearby(player->get_actor()))
+   {
+     Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_EARTH_QUAKE);
      new QuakeEffect(1, 200, player->get_actor());
-
+   }
 
  if(has_surrounding_objs()) //add our surrounding objects back onto the map.
    add_surrounding_objs_to_map();

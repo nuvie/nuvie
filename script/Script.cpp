@@ -27,6 +27,7 @@
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6misc.h"
+#include "U6objects.h"
 
 #include "Game.h"
 #include "GameClock.h"
@@ -189,6 +190,7 @@ static int nscript_input_select_integer(lua_State *L);
 
 //obj manager
 static int nscript_objs_at_loc(lua_State *L);
+static int nscript_find_volcano_obj_near_player(lua_State *L);
 static int nscript_map_get_obj(lua_State *L);
 static int nscript_map_remove_obj(lua_State *L);
 static int nscript_map_is_water(lua_State *L);
@@ -549,6 +551,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
    
+   lua_pushcfunction(L, nscript_find_volcano_obj_near_player);
+   lua_setglobal(L, "find_volcano_near_player");
+
    lua_pushcfunction(L, nscript_map_get_obj);
    lua_setglobal(L, "map_get_obj");
 
@@ -1380,8 +1385,11 @@ sint32 nscript_dec_obj_ref_count(Obj *obj)
 
 inline bool nscript_obj_init_from_obj(lua_State *L, Obj *s_obj)
 {
-   Obj *ptr = (Obj *)luaL_checkudata(L, 1, "nuvie.Obj");
+   Obj **tmp_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
+   if(tmp_obj == NULL)
+     return false;
 
+   Obj *ptr = *tmp_obj;
    if(ptr == NULL)
       return false;
 
@@ -3048,6 +3056,37 @@ static int nscript_objs_at_loc(lua_State *L)
    lua_setmetatable(L, -2);
    
    return 2;
+}
+
+static int nscript_find_volcano_obj_near_player(lua_State *L)
+{
+  uint16 x, y;
+  uint8 z;
+  const uint8 range = 5;
+  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+
+  Game::get_game()->get_player()->get_location(&x, &y, &z);
+
+  for(uint16 i=y-range;i<y+range;i++)
+  {
+    for(uint16 j=x-range;j<x+range;j++)
+    {
+      U6LList *obj_list = obj_manager->get_obj_list(j, i, z);
+      if(obj_list)
+      {
+        for(U6Link *link=obj_list->start();link;link=link->next)
+        {
+          Obj *o = (Obj *)link->data;
+          if(o->obj_n == OBJ_U6_VOLCANO || o->obj_n == OBJ_U6_FUMAROLE)
+          {
+            nscript_new_obj_var(L, o);
+            return 1;
+          }
+        }
+      }
+    }
+  }
+  return 0;
 }
 
 static int nscript_container(lua_State *L)

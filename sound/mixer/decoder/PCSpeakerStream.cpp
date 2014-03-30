@@ -460,3 +460,15 @@ Audio::AudioStream *makePCSpeakerHailStoneSfxStream(uint32 rate)
 
 	return stream;
 }
+
+Audio::AudioStream *makePCSpeakerEarthQuakeSfxStream(uint32 rate)
+{
+  Audio::QueuingAudioStream *stream = Audio::makeQueuingAudioStream(rate, false);
+
+  for(uint16 i=0;i<0x28;i++)
+  {
+    stream->queueAudioStream(new PCSpeakerFreqStream((NUVIE_RAND()%0xb5)+0x13, 8), DisposeAfterUse::YES);
+  }
+
+  return stream;
+}
