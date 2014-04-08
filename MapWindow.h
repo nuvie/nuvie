@@ -286,6 +286,7 @@ protected:
  void drawRain();
  inline void drawLensAnim();
 
+ void updateLighting();
  void generateTmpMap();
  void boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uint16 y);
  bool floorTilesVisible();

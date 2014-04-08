@@ -791,6 +791,10 @@ void U6Actor::do_twitch()
 	}
 
    frame_n = actor_type->tile_start_offset + (direction * actor_type->tiles_per_direction + (walk_frame * actor_type->tiles_per_frame)  + actor_type->tiles_per_frame - 1);
+   if(obj_n == OBJ_U6_WISP)
+   {
+     Game::get_game()->get_map_window()->updateAmbience();
+   }
 }
 
 void U6Actor::set_poisoned(bool poisoned)

@@ -1,3 +1,13 @@
+2014-04-08  Eric Fry <efry at users.sourceforge.net> r1938
+	* Fixed bug #293 Lighting calculations are wrong
+	  lighting should now show for objects that are just offscreen.
+	* Changed actor light logic to use new get_light_level() method.
+	  Update light map when twitching wisp actors.
+	  Still need to fix actor light update to handle actor movement.
+	* Moved lighting code into new method MapWindow::updateLighting()
+	* Added 2 tile border to tmp map and shading data to handle offscreen
+	  light sources.
+
 2014-03-30  Eric Fry <efry at users.sourceforge.net> r1937
 	* Added U6 volcano and fumarole logic.
 	* Added PC Speaker earth quake sound effect.

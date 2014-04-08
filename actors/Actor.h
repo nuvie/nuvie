@@ -348,6 +348,7 @@ class Actor
  void set_magic(uint8 val) { magic = val; }
  void set_alignment(uint8 a) { alignment = a; }
  void set_old_alignment(uint8 a) { if(a > 0 && a < 5) { movement_flags |= (a - 1) << 5; } }
+ uint8 get_light_level();
  void add_light(uint8 val);
  void subtract_light(uint8 val);
  void heal() { set_hp(get_maxhp()); }

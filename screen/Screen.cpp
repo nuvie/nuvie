@@ -46,6 +46,7 @@
 
 //Ultima 6 light globe sizes.
 #define NUM_GLOBES 5
+#define SHADING_BORDER 2 // should be the same as MapWindow's TMP_MAP_BORDER
 static const sint32 globeradius[]   = { 36, 112, 148, 192, 448 };
 static const sint32 globeradius_2[] = { 18, 56, 74, 96, 224 };
 
@@ -58,12 +59,14 @@ Screen::Screen(Configuration *cfg)
  scaler = NULL;
  update_rects = NULL;
  shading_data = NULL;
- updatingalphamap = true;
  scaler_index = 0;
  scale_factor = 2;
  fullscreen = false;
  doubleBuffer = false;
  is_no_darkness = false;
+ shading_ambient = 255;
+ width = 320;
+ height = 200;
 
  std::string str_lighting_style;
  config->value( "config/general/lighting", str_lighting_style );
@@ -979,13 +982,13 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
         shading_rect.y = y;
         if(lighting_style == LIGHTING_STYLE_ORIGINAL)
         {
-        	shading_rect.w = w;
-        	shading_rect.h = h;
+        	shading_rect.w = w + (SHADING_BORDER * 2);
+        	shading_rect.h = h + (SHADING_BORDER * 2);
         }
         else // LIGHTING_STYLE_SMOOTH
         {
-        	shading_rect.w = w * 16 + 8;
-        	shading_rect.h = h * 16 + 8;
+        	shading_rect.w = (w + (SHADING_BORDER * 2)) * 16 + 8;
+        	shading_rect.h = (h + (SHADING_BORDER * 2)) * 16 + 8;
         }
         shading_data = (unsigned char*)malloc(sizeof(char)*shading_rect.w*shading_rect.h);
         if( shading_data == NULL )
@@ -1003,7 +1006,6 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
     {
         memset( shading_data, shading_ambient, sizeof(char)*shading_rect.w*shading_rect.h );
     }
-    updatingalphamap = true;
     sint16 x_off;
     if(Game::get_game()->is_original_plus_full_map())
         x_off = - Game::get_game()->get_background()->get_border_width();
@@ -1011,9 +1013,9 @@ void Screen::clearalphamap8( uint16 x, uint16 y, uint16 w, uint16 h, uint8 opaci
         x_off = 0;
     //Light globe around the avatar
     if( lighting_style == LIGHTING_STYLE_ORIGINAL )
-        drawalphamap8globe( (shading_rect.w-1 + x_off/16)/2, (shading_rect.h-1)/2, opacity/20 + 4); //range 4 - 10
+        drawalphamap8globe( (shading_rect.w-1 + x_off/16)/2 - SHADING_BORDER, (shading_rect.h-1)/2 - SHADING_BORDER, opacity/20 + 4); //range 4 - 10
     else if( lighting_style == LIGHTING_STYLE_SMOOTH )
-        drawalphamap8globe( (((shading_rect.w-8 + x_off)/16)-1)/2, (((shading_rect.h-8)/16)-1)/2, party_light_source ? 5 : 4 );
+        drawalphamap8globe( (((shading_rect.w-8 + x_off)/16)-1)/2 - SHADING_BORDER, (((shading_rect.h-8)/16)-1)/2 - SHADING_BORDER, party_light_source ? 5 : 4 );
 }
 
 void Screen::buildalphamap8()
@@ -1083,6 +1085,8 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 			rad = r - 1;
 		else
 			rad = 5;
+		x += SHADING_BORDER;
+		y += SHADING_BORDER;
         //Draw using "original" lighting
 		for( j = 0; j <= rad*2; j++ )
 			for( i = 0; i <= rad*2; i++ )
@@ -1095,8 +1099,8 @@ void Screen::drawalphamap8globe( sint16 x, sint16 y, uint16 r )
 			}
         return;
     }
-    x = x*16 + 8;
-    y = y*16 + 8;
+    x = (x+SHADING_BORDER)*16 + 8;
+    y = (y+SHADING_BORDER)*16 + 8;
 
     //Draw using "smooth" lighting
     //The x and y are relative to (0,0) of the mapwindow itself, and are absolute coordinates, so are i and j
@@ -1127,26 +1131,26 @@ void Screen::blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect)
 
     uint16 i,j;
     Game *game = Game::get_game();
-    updatingalphamap = false;
 
     if( lighting_style == LIGHTING_STYLE_ORIGINAL )
     {
-        for( j = 0; j < shading_rect.h; j++ )
+
+        for( j = SHADING_BORDER; j < shading_rect.h-SHADING_BORDER; j++ )
         {
-            for( i = 0; i < shading_rect.w; i++ )
+            for( i = SHADING_BORDER; i < shading_rect.w-SHADING_BORDER; i++ )
             {
                 if( shading_data[j*shading_rect.w+i] < 4 )
-                    blit(x+i*16,y+j*16,shading_tile[shading_data[j*shading_rect.w+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
+                    blit(x+(i-SHADING_BORDER)*16,y+(j-SHADING_BORDER)*16,shading_tile[shading_data[j*shading_rect.w+i]],8,16,16,16,true,game->get_map_window()->get_clip_rect());
             }
         }
         return;
     }
 
-    uint16 src_w = shading_rect.w;
-    uint16 src_h = shading_rect.h;
+    uint16 src_w = shading_rect.w - (SHADING_BORDER*2*16);
+    uint16 src_h = shading_rect.h - (SHADING_BORDER*2*16);
 
-    uint16 src_x = 0;
-    uint16 src_y = 0;
+    uint16 src_x = SHADING_BORDER*16;
+    uint16 src_y = SHADING_BORDER*16;
 
     uint8 *src_buf = shading_data;
 
@@ -1192,15 +1196,15 @@ void Screen::blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect)
 
       if(clip_rect->x > x)
          {
-          src_x = clip_rect->x - x;
-          src_w -= src_x;
+          src_x += (clip_rect->x - x);
+          src_w -= (clip_rect->x - x);
           x = clip_rect->x;
          }
 
       if(clip_rect->y > y)
         {
-         src_y = clip_rect->y - y;
-         src_h -= src_y;
+         src_y += (clip_rect->y - y);
+         src_h -= (clip_rect->y - y);
          y = clip_rect->y;
         }
 
@@ -1659,7 +1663,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 			scaler = scaler_reg.GetPointScaler();
 		}
 		// If the scaler selected is 2x only, and we are in a > than 2x mode, use Point
-		else if (scale_factor > 2 && scaler->flags & SCALER_FLAG_2X_ONLY)
+		else if (scale_factor > 2 && (scaler->flags & SCALER_FLAG_2X_ONLY))
 		{
 			DEBUG(0,LEVEL_NOTIFICATION,"Scaler %s only supports 2x. %dx requested\n", scaler->name, scale_factor);
 			scaler = scaler_reg.GetPointScaler();

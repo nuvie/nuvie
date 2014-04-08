@@ -1798,6 +1798,12 @@ void Actor::repel_from(Actor *target)
     ((CombatPathFinder*)pathfinder)->set_distance(2);
 }
 
+uint8 Actor::get_light_level()
+{
+  Tile *tile = get_tile();
+  return MAX(light, GET_TILE_LIGHT_LEVEL(tile));
+}
+
 void Actor::add_light(uint8 val)
 {
     if(is_in_party() || (Actor*)this == Game::get_game()->get_player()->get_actor())

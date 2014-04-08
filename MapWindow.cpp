@@ -61,6 +61,8 @@
 #define ACTION_BUTTON 3
 #define DRAG_BUTTON 1
 
+#define TMP_MAP_BORDER 2
+
 // This should make the mouse-cursor hovering identical to that in U6.
 static const uint8 movement_array[9 * 9] =
 {
@@ -278,8 +280,8 @@ bool MapWindow::set_windowSize(uint16 width, uint16 height)
  // The additional +1 on the right/bottom edges is needed
  // to hide objects on boundarys when wall is in darkness
 
- tmp_map_width = win_width + 3;
- tmp_map_height = win_height + 3;
+ tmp_map_width = win_width + (TMP_MAP_BORDER * 2);// + 1;
+ tmp_map_height = win_height + (TMP_MAP_BORDER * 2);// + 1;
 
  tmp_map_buf = (uint16 *)nuvie_realloc(tmp_map_buf, tmp_map_width * tmp_map_height * sizeof(uint16));
  if(tmp_map_buf == NULL)
@@ -527,13 +529,13 @@ bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
     return false;
  if(!MapCoord(x,y,cur_level).is_visible()) // tmpBufTileIsBlack will crash if called (doesn't happen in gdb)
     return true;
- if(tmpBufTileIsBlack(x - cur_x +1,y - cur_y +1))
+ if(tmpBufTileIsBlack(x - cur_x + TMP_MAP_BORDER,y - cur_y + TMP_MAP_BORDER))
     return true;
  else if(obj)
  {
     Tile *tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-    if(!tile || (tmpBufTileIsBlack(x - cur_x +2, y - cur_y +1)  && !(tile->flags1 & TILEFLAG_WALL))
-       || (tmpBufTileIsBlack(x - cur_x +1, y - cur_y +2) && !(tile->flags1 & TILEFLAG_WALL)))
+    if(!tile || (tmpBufTileIsBlack(x - cur_x + TMP_MAP_BORDER + 1, y - cur_y + TMP_MAP_BORDER)  && !(tile->flags1 & TILEFLAG_WALL))
+       || (tmpBufTileIsBlack(x - cur_x + TMP_MAP_BORDER, y - cur_y + TMP_MAP_BORDER + 1) && !(tile->flags1 & TILEFLAG_WALL)))
         return true;
  }
 
@@ -544,7 +546,7 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 {
  Actor *actor;
 
- if(tmp_map_buf[(y+1) * tmp_map_width + (x+1)] == 0) //black area
+ if(tmp_map_buf[(y+TMP_MAP_BORDER) * tmp_map_width + (x+TMP_MAP_BORDER)] == 0) //black area
    return "darkness."; // nothing to see here. ;)
 
  actor = actor_manager->get_actor(cur_x + x, cur_y + y, cur_level);
@@ -558,7 +560,7 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 Obj *MapWindow::get_objAtCursor()
 {
 
- if(tmp_map_buf[(cursor_y+1) * tmp_map_width + (cursor_x+1)] == 0) //black area
+ if(tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)] == 0) //black area
    return NULL; // nothing to see here. ;)
 
  return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
@@ -568,7 +570,7 @@ Actor *MapWindow::get_actorAtCursor()
 {
  //Actor *actor;
 
- if(tmp_map_buf[(cursor_y+1) * tmp_map_width + (cursor_x+1)] == 0) //black area
+ if(tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)] == 0) //black area
    return NULL; // nothing to see here. ;)
 
  return actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
@@ -781,6 +783,70 @@ void MapWindow::updateAmbience()
 
      //Clear the opacity map
      screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient(), party_light_source );
+
+     updateLighting();
+}
+
+void MapWindow::updateLighting()
+{
+  uint16 x, y;
+  if(using_map_tile_lighting)
+  {
+    uint16 *ptr = tmp_map_buf;
+    for(y=0;y<tmp_map_height;y++)
+    {
+      for(x=0;x<tmp_map_width;x++)
+      {
+        if(tmp_map_buf[x+y*tmp_map_width] != 0)
+        {
+          Tile *tile = tile_manager->get_tile(*ptr);
+          if(GET_TILE_LIGHT_LEVEL(tile) > 0)
+            screen->drawalphamap8globe(x-TMP_MAP_BORDER, y-TMP_MAP_BORDER, GET_TILE_LIGHT_LEVEL(tile));
+
+          U6LList *obj_list =obj_manager->get_obj_list(cur_x-TMP_MAP_BORDER + x,cur_y - TMP_MAP_BORDER + y,cur_level); //FIXME wrapped coords.
+          if(obj_list)
+          {
+            for(U6Link *link=obj_list->start();link != NULL;link=link->next)
+            {
+              Obj *obj = (Obj *)link->data;
+              tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj)+obj->frame_n); //FIXME do we need to check the light for each tile in a multi-tile object.
+              if(GET_TILE_LIGHT_LEVEL(tile) > 0)
+                screen->drawalphamap8globe( x-TMP_MAP_BORDER, y-TMP_MAP_BORDER, GET_TILE_LIGHT_LEVEL(tile) );
+            }
+          }
+        }
+        ptr++;
+      }
+    }
+  }
+
+  /* draw light coming from the actor
+     Wisps can change the light level depending on their current tile so we can't use actor->light for an actor's innate lighting.
+  */
+  Actor *actor;
+
+  for(uint16 i=0;i < 256;i++)
+    {
+     actor = actor_manager->get_actor(i);
+
+     if(actor->z == cur_level)
+       {
+        if(actor->x >= cur_x - TMP_MAP_BORDER && actor->x < cur_x + win_width + TMP_MAP_BORDER)
+          {
+           if(actor->y >= cur_y - TMP_MAP_BORDER && actor->y < cur_y + win_height + TMP_MAP_BORDER)
+             {
+              if(tmp_map_buf[(actor->y - cur_y + TMP_MAP_BORDER) * tmp_map_width + (actor->x - cur_x + TMP_MAP_BORDER)] != 0)
+                {
+                 uint8 light = actor->get_light_level();
+                 if(light > 0)
+                 {
+                   screen->drawalphamap8globe(actor->x - cur_x, actor->y - cur_y, light);
+                 }
+                }
+             }
+          }
+       }
+    }
 }
 
 void MapWindow::updateBlacking()
@@ -814,7 +880,7 @@ void MapWindow::Display(bool full_redraw)
 
  //map_ptr += cur_y * map_width + cur_x;
   map_ptr = tmp_map_buf;
-  map_ptr += (1 * tmp_map_width + 1);// * sizeof(uint16); //remember our tmp map is 1 bigger all around.
+  map_ptr += (TMP_MAP_BORDER * tmp_map_width + TMP_MAP_BORDER);// * sizeof(uint16); //remember our tmp map is TMP_MAP_BORDER bigger all around.
 
   for(i=0;i<win_height;i++)
   {
@@ -852,16 +918,6 @@ void MapWindow::Display(bool full_redraw)
    //map_ptr += map_width;
    map_ptr += tmp_map_width ;//* sizeof(uint16);
   }
-
- if(screen->updatingalphamap && using_map_tile_lighting)
- {
-    for(std::vector<TileInfo>::iterator ti = m_ViewableMapTiles.begin();
-        ti != m_ViewableMapTiles.end(); ti++)
-    {
-        if(GET_TILE_LIGHT_LEVEL((*ti).t) > 0)
-            screen->drawalphamap8globe((*ti).x, (*ti).y, GET_TILE_LIGHT_LEVEL((*ti).t));
-    }
- }
 
  drawObjs();
 
@@ -953,7 +1009,7 @@ void MapWindow::drawActors()
          {
           if(actor->y >= cur_y && actor->y < cur_y + win_height)
             {
-             if(tmp_map_buf[(actor->y - cur_y + 1) * tmp_map_width + (actor->x - cur_x + 1)] != 0)
+             if(tmp_map_buf[(actor->y - cur_y + TMP_MAP_BORDER) * tmp_map_width + (actor->x - cur_x + TMP_MAP_BORDER)] != 0)
                {
                 drawActor(actor);
                }
@@ -1022,17 +1078,6 @@ inline void MapWindow::drawActor(Actor *actor)
                     }
                 }
             }
-        }
-        /* draw light coming from the actor
-           Wisps can change the light level depending on their current tile so we can't use actor->light for an actor's innate lighting.
-           TODO - I don't know of a nice way to force the lighting to update for wisps.
-                  The original only updated them when the rest of the lighting needed an update, like when moving.
-        */
-        if(screen->updatingalphamap && (actor->light > 0 || GET_TILE_LIGHT_LEVEL(tile) > 0))
-        {
-            //if(actor->light > 5)
-            //    DEBUG(0,LEVEL_WARNING,"%s's light level is %d\n",actor->get_name(),actor->light);
-            screen->drawalphamap8globe(actor->x-cur_x, actor->y-cur_y, MAX(actor->light, GET_TILE_LIGHT_LEVEL(tile)));
         }
     }
 }
@@ -1124,7 +1169,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  {
    m_ViewableObjects.push_back(obj);
 
-   if(game_type == NUVIE_GAME_U6 && cur_level == 0 && obj->y == 0x353 && tmp_map_buf[(y+1)*tmp_map_width+(x+1)] != 0)
+   if(game_type == NUVIE_GAME_U6 && cur_level == 0 && obj->y == 0x353 && tmp_map_buf[(y+TMP_MAP_BORDER)*tmp_map_width+(x+TMP_MAP_BORDER)] != 0)
    {
 	   if(obj->obj_n == 394 && obj->x == 0x399)
 	   {
@@ -1149,25 +1194,17 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  if(draw_lowertiles == true && !(tile->flags3 & 0x4))
    return;
 
- if(tmp_map_buf[(y+1)*tmp_map_width+(x+1)] == 0) //don't draw object if area is in darkness.
+ if(tmp_map_buf[(y+TMP_MAP_BORDER)*tmp_map_width+(x+TMP_MAP_BORDER)] == 0) //don't draw object if area is in darkness.
     return;
  else
     {
 	 // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
-     if(tmp_map_buf[(y+1)*tmp_map_width+(x+2)] == 0 || tmp_map_buf[(y+2)*tmp_map_width+(x+1)] == 0)
+     if(tmp_map_buf[(y+TMP_MAP_BORDER)*tmp_map_width+(x+TMP_MAP_BORDER+1)] == 0 || tmp_map_buf[(y+TMP_MAP_BORDER+1)*tmp_map_width+(x+TMP_MAP_BORDER)] == 0)
      {
       if((!(tile->flags1 & TILEFLAG_WALL) || (game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_BARS)))
     	  return;
      }
     }
-
- //Draw a lightglobe in the middle of the 16x16 tile.
- if( !draw_lowertiles &&
-     toptile &&
-     GET_TILE_LIGHT_LEVEL(tile) > 0 &&
-     screen->updatingalphamap )
-	 	 screen->drawalphamap8globe( obj->x - cur_x, obj->y - cur_y, GET_TILE_LIGHT_LEVEL(tile) );
-
 
   drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
 
@@ -1438,8 +1475,8 @@ void MapWindow::generateTmpMap()
 	{
 		for(x=0;x<tmp_map_width;x++)
 		{
-			uint16 x1 = cur_x + x - 1;
-			uint16 y1 = cur_y + y - 1;
+			uint16 x1 = cur_x + x - TMP_MAP_BORDER;
+			uint16 y1 = cur_y + y - TMP_MAP_BORDER;
 			WRAP_COORD(x1,cur_level);
 			WRAP_COORD(y1,cur_level);
 			*ptr = map_ptr[y1 * pitch + x1];
@@ -1495,8 +1532,8 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  uint16 pos;
  uint16 p_cur_x, p_cur_y; //wrapped cur_x - 1 and wrapped cur_y - 1
  
- p_cur_x = WRAPPED_COORD(cur_x - 1,cur_level);
- p_cur_y = WRAPPED_COORD(cur_y - 1,cur_level);
+ p_cur_x = WRAPPED_COORD(cur_x - TMP_MAP_BORDER,cur_level);
+ p_cur_y = WRAPPED_COORD(cur_y - TMP_MAP_BORDER,cur_level);
 	
  if(x == WRAPPED_COORD(p_cur_x - 1, cur_level) || x == WRAPPED_COORD(p_cur_x + tmp_map_width, cur_level))
    return;
@@ -1746,7 +1783,7 @@ bool MapWindow::tmpBufTileIsBoundary(uint16 x, uint16 y)
  if(tile->boundary)
    return true;
 
- if(obj_manager->is_boundary(WRAPPED_COORD(cur_x-1+x, cur_level), WRAPPED_COORD(cur_y-1+y, cur_level), cur_level))
+ if(obj_manager->is_boundary(WRAPPED_COORD(cur_x-TMP_MAP_BORDER+x, cur_level), WRAPPED_COORD(cur_y-TMP_MAP_BORDER+y, cur_level), cur_level))
    return true;
 
  return false;
