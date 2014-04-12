@@ -141,6 +141,8 @@ class MapWindow: public GUI_Widget
 // std::vector<TileInfo> m_ViewableObjTiles; // shouldn't need this for in_town checks
  std::vector<TileInfo> m_ViewableMapTiles;
 
+ bool lighting_update_required;
+
  public:
 
  MapWindow(Configuration *cfg);
@@ -302,6 +304,9 @@ protected:
  bool is_wizard_eye_mode() { if(wizard_eye_info.moves_left != 0) return true; else return false; }
 
  void loadRoofTiles();
+
+private:
+ void createLightOverlay();
 };
 
 #endif /* __MapWindow_h__ */

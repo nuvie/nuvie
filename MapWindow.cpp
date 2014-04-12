@@ -177,6 +177,9 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
 
  window_updated = true;
  roof_display = ROOF_DISPLAY_NORMAL;
+
+ lighting_update_required = true;
+
  set_interface();
 }
 
@@ -702,6 +705,12 @@ void MapWindow::update()
 // moved from updateBlacking() so you don't have to update all blacking (SB-X)
 void MapWindow::updateAmbience()
 {
+  lighting_update_required = true;
+}
+
+// moved from updateBlacking() so you don't have to update all blacking (SB-X)
+void MapWindow::createLightOverlay()
+{
      //Dusk starts at 19:00
      //It's completely dark by 20:00
      //Dawn starts at 5:00
@@ -785,6 +794,8 @@ void MapWindow::updateAmbience()
      screen->clearalphamap8( 0, 0, win_width, win_height, screen->get_ambient(), party_light_source );
 
      updateLighting();
+
+     lighting_update_required = false;
 }
 
 void MapWindow::updateLighting()
@@ -873,7 +884,10 @@ void MapWindow::Display(bool full_redraw)
  Tile *tile;
  //unsigned char *ptr;
 
-
+ if(lighting_update_required)
+ {
+   createLightOverlay();
+ }
 
  //map_ptr = map->get_map_data(cur_level);
 // map_width = map->get_width(cur_level);
@@ -2805,7 +2819,7 @@ bool MapWindow::in_town()
     for(std::vector<TileInfo>::iterator ti = m_ViewableMapTiles.begin();
         ti != m_ViewableMapTiles.end(); ti++)
         if(MapCoord((*ti).x+cur_x, (*ti).y+cur_y, cur_level).distance(player_loc) <= 5 && // make sure tile is close enough
-           (*ti).t->flags1&TILEFLAG_WALL && (*ti).t->flags1&TILEFLAG_WALL_MASK) //only wall tiles with wall direction bits set.
+           ((*ti).t->flags1&TILEFLAG_WALL) && ((*ti).t->flags1&TILEFLAG_WALL_MASK)) //only wall tiles with wall direction bits set.
         {
             return true;
         }
