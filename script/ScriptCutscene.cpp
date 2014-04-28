@@ -86,6 +86,7 @@ static const struct luaL_Reg nscript_spritelib_m[] =
 };
 
 static int nscript_sprite_new(lua_State *L);
+static int nscript_sprite_move_to_front(lua_State *L);
 
 static int nscript_canvas_set_bg_color(lua_State *L);
 static int nscript_canvas_set_palette(lua_State *L);
@@ -144,6 +145,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_sprite_new);
    lua_setglobal(L, "sprite_new");
+
+   lua_pushcfunction(L, nscript_sprite_move_to_front);
+   lua_setglobal(L, "sprite_move_to_front");
 
    lua_pushcfunction(L, nscript_image_bubble_effect_add_color);
    lua_setglobal(L, "image_bubble_effect_add_color");
@@ -568,6 +572,19 @@ static int nscript_image_static(lua_State *L)
 	return 0;
 }
 
+CSSprite *nscript_get_sprite_from_args(lua_State *L, int lua_stack_offset)
+{
+	CSSprite **s_sprite;
+	CSSprite *sprite;
+
+	s_sprite = (CSSprite **)lua_touserdata(L, 1);
+	if(s_sprite == NULL)
+		return NULL;
+
+	sprite = *s_sprite;
+	return sprite;
+}
+
 bool nscript_new_sprite_var(lua_State *L, CSSprite *sprite)
 {
    CSSprite **userdata;
@@ -796,6 +813,18 @@ static int nscript_sprite_new(lua_State *L)
 
 	nscript_new_sprite_var(L, sprite);
 	return 1;
+}
+
+static int nscript_sprite_move_to_front(lua_State *L)
+{
+	CSSprite *sprite = nscript_get_sprite_from_args(L, 1);
+	if(sprite)
+	{
+		cutScene->remove_sprite(sprite);
+		cutScene->add_sprite(sprite);
+	}
+
+	return 0;
 }
 
 static int nscript_canvas_set_bg_color(lua_State *L)
@@ -1051,6 +1080,18 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	    font->initWithBuffer(buf, lib_file.get_item_size(0)); //buf will be freed by ~Font()
 	}
 
+	if(game_type == NUVIE_GAME_MD)
+	{
+	    std::string path;
+	    U6Lib_n lib_file;
+
+	    config_get_path(config, "fonts.lzc", path);
+
+	    lib_file.open(path,4,NUVIE_GAME_MD);
+
+	    unsigned char *buf = lib_file.get_item(0);
+	    font->initWithBuffer(buf, lib_file.get_item_size(0)); //buf will be freed by ~Font()
+	}
 	next_time = 0;
 	loop_interval = 40;
 

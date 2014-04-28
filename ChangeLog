@@ -1,3 +1,11 @@
+2014-04-28  Eric Fry <efry at users.sourceforge.net> r1940
+	* Added sprite_move_to_front() lua function to bring a sprite to the front
+	  of the display stack.
+	* Added fireworks to the origin fx intro sequence.
+	* Started on the MD intro sequence.
+	* Added new intro_common.lua script for common cutscene functions.
+	* Added MD font to the cutscene class.
+
 2014-04-12  Eric Fry <efry at users.sourceforge.net> r1939
 	* Update lighting when actors move.
 

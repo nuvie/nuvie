@@ -1,3 +1,8 @@
+local lua_file = nil
+
+--load common functions
+lua_file = nuvie_load("common/intro_common.lua"); lua_file();
+
 -- TODO - ALL TRANSITIONS - FADE IN/OUT, STAR FADE
 -- TODO - CURSORS
 -- TODO - CONFIRM/CONFIGURE KEYS TO ADVANCE/BYPASS
@@ -49,62 +54,9 @@ local function poll_for_key_or_button(cycles)
 	return false
 end
 
-local function poll_for_esc(cycles)
-	local input
-	if cycles == nil then
-		input = input_poll()
-		if input ~= nil and input == SDLK_ESCAPE then
-			return true
-		end
-	else
-		local i
-		for i=0,cycles,1 do
-			local input = input_poll()
-			if input ~= nil and input == SDLK_ESCAPE then
-				return true
-			end
-			canvas_update()
-		end
-	end
-	return false
-end
-
-local function wait_for_input()
-	local input = nil
-	while input == nil do
-		canvas_update()
-		input = input_poll()
-		if input ~= nil then
-			break
-		end
-	end
-	
-	return input
-end
-
 local function should_exit(input)
 	if input ~=nil and input == SDLK_ESCAPE then
 		return true
-	end
-	
-	return false
-end
-
-local function fade_in()
-	local i
-	for i=0x0,0xff,3 do
-		canvas_set_opacity(i)
-		canvas_update()
-	end
-	
-	return false
-end
-
-local function fade_out()
-	local i
-	for i=0xff,0,-3 do
-		canvas_set_opacity(i)
-		canvas_update()
 	end
 	
 	return false
@@ -195,31 +147,6 @@ local function fade_in_sprites(sprites, speed, number)
 	end
 
 	return false
-end
-
-local function update_players(players, g_img_tbl)
-local rand = math.random
-
-	players[1].image = g_img_tbl[1][rand(0,12)]
-	players[2].image = g_img_tbl[2][rand(0,8)]
-	players[3].image = g_img_tbl[3][rand(0,2)]
-	players[4].image = g_img_tbl[4][rand(0,6)]
-	players[5].image = g_img_tbl[5][rand(0,4)]
-	players[6].image = g_img_tbl[6][rand(0,2)]
-	players[7].image = g_img_tbl[7][rand(0,4)]
-	players[8].image = g_img_tbl[8][rand(0,4)]
-	players[9].image = g_img_tbl[9][rand(0,3)]
-		
-end
-
-local function create_player_sprite(image, x, y)
-	local sprite = sprite_new(image, x, y, true)
-	sprite.clip_x = 0
-	sprite.clip_y = 0
-	sprite.clip_w = 320
-	sprite.clip_h = 152
-
-	return sprite
 end
 
 local function origin_fx_sequence()
@@ -347,7 +274,7 @@ local function origin_fx_sequence()
 		if poll_for_key_or_button(4) == true then return end
 	end
 	
-	if poll_for_key_or_button(200) == true then return end
+	fireworks(g_img_tbl, logo)
 end
 
 local function intro_sequence(g_img_tbl)
@@ -1259,7 +1186,7 @@ canvas_set_opacity(0)
 --TODO Fireworks
 origin_fx_sequence()
 	
-fade_out()
+--canvas_hide_all_sprites()
 
 -- Load Graphics for Intro & Main Menu
 local g_img_tbl = image_load_all("intro.lzc")
