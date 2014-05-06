@@ -129,7 +129,8 @@ private:
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	~ScriptCutscene();
-	CSImage *load_image(const char *filename, int idx);
+
+	CSImage *load_image(const char *filename, int idx, int sub_idx=0);
 	std::vector<std::vector<CSImage *> > load_all_images(const char *filename);
 	void add_sprite(CSSprite *s) { sprite_list.push_back(s); }
 	void remove_sprite(CSSprite *s) { sprite_list.remove(s); }
@@ -160,6 +161,10 @@ public:
 	void set_bg_color(uint8 new_color) { bg_color = new_color; }
 
 	Screen *get_screen() { return screen; }
+
+private:
+  bool is_lzc(const char *filename);
+  CSImage *load_image_from_lzc(std::string filename, uint16 idx, uint16 sub_idx);
 };
 
 #endif /* __ScriptCutscene_h__ */

@@ -100,6 +100,7 @@ static int nscript_canvas_hide_all_sprites(lua_State *L);
 static int nscript_canvas_string_length(lua_State *L);
 
 static int nscript_music_play(lua_State *L);
+static int nscript_music_stop(lua_State *L);
 static int nscript_get_mouse_x(lua_State *L);
 static int nscript_get_mouse_y(lua_State *L);
 static int nscript_input_poll(lua_State *L);
@@ -194,6 +195,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_music_play);
    lua_setglobal(L, "music_play");
+
+   lua_pushcfunction(L, nscript_music_stop);
+   lua_setglobal(L, "music_stop");
 
    lua_pushcfunction(L, nscript_get_mouse_x);
    lua_setglobal(L, "get_mouse_x");
@@ -926,6 +930,13 @@ static int nscript_music_play(lua_State *L)
 	return 0;
 }
 
+static int nscript_music_stop(lua_State *L)
+{
+  cutScene->get_sound_manager()->musicStop();
+
+  return 0;
+}
+
 static int nscript_get_mouse_x(lua_State *L)
 {
 	int x, y;
@@ -1104,7 +1115,53 @@ ScriptCutscene::~ScriptCutscene()
 	delete font;
 }
 
-CSImage *ScriptCutscene::load_image(const char *filename, int idx)
+bool ScriptCutscene::is_lzc(const char *filename)
+{
+  if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lzc") == 0)
+    return true;
+
+  return false;
+}
+
+CSImage *ScriptCutscene::load_image_from_lzc(std::string filename, uint16 idx, uint16 sub_idx)
+{
+  CSImage *image;
+  U6Lib_n lib_n;
+  unsigned char *buf = NULL;
+
+  if(!lib_n.open(filename, 4, NUVIE_GAME_MD))
+  {
+    return NULL;
+  }
+
+  if(idx >= lib_n.get_num_items())
+  {
+    return NULL;
+  }
+
+  buf = lib_n.get_item(idx,NULL);
+  NuvieIOBuffer io;
+  io.open(buf, lib_n.get_item_size(idx), false);
+  U6Lib_n lib1;
+  lib1.open(&io, 4, NUVIE_GAME_MD);
+
+  if(sub_idx >= lib1.get_num_items())
+  {
+    return NULL;
+  }
+
+  U6Shape *shp = new U6Shape();
+  if(shp->load(&lib1, (uint32)sub_idx))
+  {
+    image = new CSImage(shp);
+  }
+
+  free(buf);
+
+  return image;
+}
+
+CSImage *ScriptCutscene::load_image(const char *filename, int idx, int sub_idx)
 {
 	U6Lib_n lib_n;
 	std::string path;
@@ -1112,25 +1169,30 @@ CSImage *ScriptCutscene::load_image(const char *filename, int idx)
 
 	config_get_path(config, filename, path);
 
+  if(is_lzc(filename))
+  {
+    return load_image_from_lzc(path, (uint16)idx, (uint16)sub_idx);
+  }
+
 	U6Shape *shp = new U6Shape();
 
 	if(idx >= 0)
 	{
-		U6Lzw lzw;
+	  U6Lzw lzw;
 
-		U6Lib_n lib_n;
-		uint32 decomp_size;
-		unsigned char *buf = lzw.decompress_file(path.c_str(), decomp_size);
-		NuvieIOBuffer io;
-		io.open(buf, decomp_size, false);
-		if(lib_n.open(&io, 4, NUVIE_GAME_MD))
-		{
-			if(shp->load(&lib_n, (uint32)idx))
-			{
-				image = new CSImage(shp);
-			}
-		}
-		free(buf);
+	  U6Lib_n lib_n;
+	  uint32 decomp_size;
+	  unsigned char *buf = lzw.decompress_file(path.c_str(), decomp_size);
+	  NuvieIOBuffer io;
+	  io.open(buf, decomp_size, false);
+	  if(lib_n.open(&io, 4, NUVIE_GAME_MD))
+	  {
+	    if(shp->load(&lib_n, (uint32)idx))
+	    {
+	      image = new CSImage(shp);
+	    }
+	  }
+	  free(buf);
 	}
 	else
 	{
@@ -1161,7 +1223,7 @@ std::vector<std::vector<CSImage *> > ScriptCutscene::load_all_images(const char 
 	U6Lib_n lib_n;
 	unsigned char *buf = NULL;
 
-	if(strlen(filename) > 4 && strcasecmp((const char *)&filename[strlen(filename)-4], ".lzc") == 0)
+	if(is_lzc(filename))
 	{
 		if(!lib_n.open(path, 4, NUVIE_GAME_MD))
 		{
@@ -1174,7 +1236,7 @@ std::vector<std::vector<CSImage *> > ScriptCutscene::load_all_images(const char 
 			io.open(buf, lib_n.get_item_size(idx), false);
 			U6Lib_n lib1;
 			lib1.open(&io, 4, NUVIE_GAME_MD);
-			printf("lib_size = %d\n", lib1.get_num_items());
+			//printf("lib_size = %d\n", lib1.get_num_items());
 			std::vector<CSImage *> v1;
 			for(uint32 idx1=0;idx1<lib1.get_num_items();idx1++)
 			{

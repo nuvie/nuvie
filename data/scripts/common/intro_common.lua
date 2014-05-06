@@ -1,4 +1,28 @@
-local function wait_for_input()
+-- input value constants
+MOUSE_CLICK       = 0
+MOUSE_MOTION      = 1
+SDLK_BACKSPACE    = 8
+SDLK_RETURN       = 13
+SDLK_ESCAPE       = 27
+SDLK_SPACE        = 32
+SDLK_a            = 97
+SDLK_b            = 98
+SDLK_c            = 99
+SDLK_j            = 106
+SDLK_q            = 113
+SDLK_s            = 115
+SDLK_t            = 116
+SDLK_KP2          = 258
+SDLK_KP4          = 260
+SDLK_KP6          = 262
+SDLK_KP8          = 264
+SDLK_KP_ENTER     = 271
+SDLK_UP           = 273
+SDLK_DOWN         = 274
+SDLK_RIGHT        = 275
+SDLK_LEFT         = 276
+
+function wait_for_input()
    local input = nil
    while input == nil do
       canvas_update()
@@ -11,11 +35,20 @@ local function wait_for_input()
    return input
 end
 
+local g_should_exit = false
+
+function should_exit()
+   return g_should_exit
+end
+
 function poll_for_key_or_button(cycles)
    local input
    if cycles == nil then
       input = input_poll()
       if input ~= nil then
+         if input == SDLK_ESCAPE then
+            g_should_exit = true
+         end
          return true
       end
    else
@@ -23,6 +56,9 @@ function poll_for_key_or_button(cycles)
       for i=0,cycles,1 do
          local input = input_poll()
          if input ~= nil then
+            if input == SDLK_ESCAPE then
+               g_should_exit = true
+            end
             return true
          end
          canvas_update()
@@ -51,9 +87,13 @@ function poll_for_esc(cycles)
    return false
 end
 
-function fade_in()
+function fade_in(speed)
+   if speed == nil then
+      speed = 3
+   end
+   
    local i
-   for i=0x0,0xff,3 do
+   for i=0x0,0xff,speed do
       canvas_set_opacity(i)
       canvas_update()
    end
@@ -173,24 +213,38 @@ function fireworks(img_tbl, logo)
 
 end
 
-function display_image_table(img_tbl)
-   local sprite = sprite_new(nil, 160, 100, true)
+function display_image_table(img_tbl, x, y)
+   if x == nil then
+      x = 160
+   end
+   
+   if y == nil then
+      y = 100
+   end
+   
+   local sprite = sprite_new(nil, x, y, true)
    
    local text_sprite = sprite_new(nil, 100, 180, true)
             
    local i = 0
    for k,v in pairs(img_tbl) do
       if type(v) == "table" then
-      local j = 0
-      for l,m in pairs(v) do
-
+         local j = 0
+         for l,m in pairs(v) do
+   
+            local img = image_new(50,20)
+            text_sprite.image = img
+            image_print(img, "("..k..","..l..")", 0, 50, 0, 8, 0x6)
+            sprite.image = m
+            wait_for_input()
+            j = j + 1
+         end
+      else
          local img = image_new(50,20)
          text_sprite.image = img
-         image_print(img, "("..i..","..j..")", 0, 50, 0, 8, 0x6)
-         sprite.image = m
+         image_print(img, "("..k..",x)", 0, 50, 0, 8, 0x6)
+         sprite.image = v
          wait_for_input()
-         j = j + 1
-      end
       end
       i = i + 1
    end

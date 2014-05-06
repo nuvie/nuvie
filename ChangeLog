@@ -1,3 +1,8 @@
+2014-05-06  Eric Fry <efry at users.sourceforge.net> r1941
+	* Added music_stop() script function
+	* Added lzc file support to the image_load() script function
+	* More work on MD intro sequence
+
 2014-04-28  Eric Fry <efry at users.sourceforge.net> r1940
 	* Added sprite_move_to_front() lua function to bring a sprite to the front
 	  of the display stack.

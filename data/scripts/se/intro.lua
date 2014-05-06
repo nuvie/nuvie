@@ -10,29 +10,7 @@ lua_file = nuvie_load("common/intro_common.lua"); lua_file();
 -- TODO - CREATE NEW CHARACTER OVER EXISTING?
 -- TODO - CHANGE MENU FOR NO CHARACTER YET CREATED? (new install)
 
--- input value constants
-MOUSE_CLICK       = 0
-MOUSE_MOTION      = 1
-SDLK_BACKSPACE    = 8
-SDLK_RETURN       = 13
-SDLK_ESCAPE       = 27
-SDLK_SPACE        = 32
-SDLK_a            = 97
-SDLK_b            = 98
-SDLK_c            = 99
-SDLK_j            = 106
-SDLK_q            = 113
-SDLK_s            = 115
-SDLK_t            = 116
-SDLK_KP2          = 258
-SDLK_KP4          = 260
-SDLK_KP6          = 262
-SDLK_KP8          = 264
-SDLK_KP_ENTER     = 271
-SDLK_UP           = 273
-SDLK_DOWN         = 274
-SDLK_RIGHT        = 275
-SDLK_LEFT         = 276
+
 
 local function poll_for_key_or_button(cycles)
 	local input
