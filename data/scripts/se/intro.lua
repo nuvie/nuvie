@@ -10,28 +10,6 @@ lua_file = nuvie_load("common/intro_common.lua"); lua_file();
 -- TODO - CREATE NEW CHARACTER OVER EXISTING?
 -- TODO - CHANGE MENU FOR NO CHARACTER YET CREATED? (new install)
 
-
-
-local function poll_for_key_or_button(cycles)
-	local input
-	if cycles == nil then
-		input = input_poll()
-		if input ~= nil then
-			return true
-		end
-	else
-		local i
-		for i=0,cycles,1 do
-			local input = input_poll()
-			if input ~= nil then
-				return true
-			end
-			canvas_update()
-		end
-	end
-	return false
-end
-
 local function should_exit(input)
 	if input ~=nil and input == SDLK_ESCAPE then
 		return true
@@ -62,10 +40,11 @@ local function destroy_sprite(sprite)
 --	sprite_gc(sprite)
 end
 
-local function destroy_sprites(sprites, number)
-	for j=0,number-1,1 do
-		destroy_sprite(sprites[j+1])
-	end
+local function destroy_sprites(sprites)
+   local k,v
+   for k,v in pairs(sprites) do
+      destroy_sprite(v)
+   end
 	return false
 end
 
@@ -775,7 +754,7 @@ local function create_new_character(img_tbl2)
 		input = input_poll()
 		if input ~= nil then
 			if should_exit(input) == true then
-				destroy_sprites(create_char_sprites, num_sprites)
+				destroy_sprites(create_char_sprites)
 				canvas_set_palette("savage.pal", 0)
 				return false -- back to main menu
 			end
@@ -876,7 +855,7 @@ local function create_new_character(img_tbl2)
 
 	--io.stderr:write("str "..g_stats[0].." dex "..g_stats[1].." int "..g_stats[2].."\n")
 
-	destroy_sprites(create_char_sprites, num_sprites)
+	destroy_sprites(create_char_sprites)
 	canvas_set_palette("savage.pal", 0)
 	return true -- Journey onward
 end
@@ -886,70 +865,42 @@ local credit_heights = {
       182, 157, 100, 188, 136, 193, 183, 176, 97, 190, 190, 50
 }
 
+function create_about_sprite(image, x, y)
+   local sprite = sprite_new(image, x, y, true)
+   sprite.clip_x = 0
+   sprite.clip_y = 100
+   sprite.clip_w = 320
+   sprite.clip_h = 100
+   return sprite
+end
+
 local function about_the_savage_empire(img_tbl2)
-	local next_sprite = 3
 	local ypos = 200
 	local about_sprites = {}
-	-- TODO Set Speed to appropriate scroll speed
-	local speed = 2
-	local s1 = sprite_new(img_tbl2[6][0],   100, ypos, true)
-	about_sprites[1] = s1
-	ypos = ypos + credit_heights[1]
-	local s2 = sprite_new(img_tbl2[6][1],   100, ypos, true)
-	about_sprites[2] = s1
-	ypos = ypos + credit_heights[2]
-	local s3 = sprite_new(img_tbl2[6][2],   100, ypos, true)
-	about_sprites[3] = s1
-	ypos = ypos + credit_heights[3]
-	local s4 = sprite_new(img_tbl2[6][3],   100, ypos, true)
-	about_sprites[4] = s1
-	ypos = ypos + credit_heights[4]
-	local s5 = sprite_new(img_tbl2[6][4],   100, ypos, true)
-	about_sprites[5] = s1
-	ypos = ypos + credit_heights[5]
-	local s6 = sprite_new(img_tbl2[6][5],   100, ypos, true)
-	about_sprites[6] = s1
-	ypos = ypos + credit_heights[6]
-	local s7 = sprite_new(img_tbl2[6][6],   100, ypos, true)
-	about_sprites[7] = s1
-	ypos = ypos + credit_heights[7]
-	local s8 = sprite_new(img_tbl2[6][7],   100, ypos, true)
-	about_sprites[8] = s1
-	ypos = ypos + credit_heights[8]
-	local s9 = sprite_new(img_tbl2[6][8],   100, ypos, true)
-	about_sprites[9] = s1
-	ypos = ypos + credit_heights[9]
-	local s10 = sprite_new(img_tbl2[6][9],  100, ypos, true)
-	about_sprites[10] = s1
-	ypos = ypos + credit_heights[10]
-	local s11 = sprite_new(img_tbl2[6][10], 100, ypos, true)
-	about_sprites[11] = s1
-	ypos = ypos + credit_heights[11]
-	local s12 = sprite_new(img_tbl2[6][11], 100, ypos, true)
-	about_sprites[12] = s1
-	ypos = ypos + credit_heights[12]
+
+	local speed = 1
+	local i
+	for i=0,11 do
+	  table.insert(about_sprites, create_about_sprite(img_tbl2[6][i],   100, ypos))
+	  ypos = ypos + credit_heights[i+1]
+	end
+	
 	local done = 0
-	-- TODO SET CLIP RECT, Approximately line 75
+
+   local k,v
 	while done < ypos do
-		canvas_update()
-		s1.y = s1.y - speed
-		s2.y = s2.y - speed
-		s3.y = s3.y - speed
-		s4.y = s4.y - speed
-		s5.y = s5.y - speed
-		s6.y = s6.y - speed
-		s7.y = s7.y - speed
-		s8.y = s8.y - speed
-		s9.y = s9.y - speed
-		s10.y = s10.y - speed
-		s11.y = s11.y - speed
-		s12.y = s12.y - speed
+
+		for k,v in pairs(about_sprites) do
+		 v.y = v.y - speed
+		end
+
 		done = done + speed
-		if poll_for_key_or_button() == true then
+		if poll_for_key_or_button(1) == true then
 			break
 		end
 	end
-	destroy_sprites(about_sprites, 12)
+   
+	destroy_sprites(about_sprites)
 end
 
 	g_menu_idx = 0
@@ -1161,7 +1112,6 @@ canvas_set_update_interval(25)
 canvas_set_bg_color(0)
 canvas_set_opacity(0)
 
---TODO Fireworks
 origin_fx_sequence()
 	
 --canvas_hide_all_sprites()
@@ -1172,6 +1122,7 @@ local img_tbl2 = image_load_all("create.lzc")
 intro_sequence(g_img_tbl)
 
 if main_menu(img_tbl2) == "Q" then -- returns "Q" for quit or "J" for Journey Onward
+   fade_out(6)
 	config_set("config/quit", true)
 end
 

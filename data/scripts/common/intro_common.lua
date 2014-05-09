@@ -101,9 +101,13 @@ function fade_in(speed)
    return false
 end
 
-function fade_out()
+function fade_out(speed)
+   if speed == nil then
+      speed = 3
+   end
+    
    local i
-   for i=0xff,0,-3 do
+   for i=0xff,0,-speed do
       canvas_set_opacity(i)
       canvas_update()
    end

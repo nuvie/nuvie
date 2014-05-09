@@ -1,3 +1,8 @@
+2014-05-09  Eric Fry <efry at users.sourceforge.net> r1942
+	* Fixed sprite clipping on the "Abount The Savage Empire" menu item
+	* Fixed fade logic on about SE menu item.
+	* Fade out when quitting from SE start menu.
+
 2014-05-06  Eric Fry <efry at users.sourceforge.net> r1941
 	* Added music_stop() script function
 	* Added lzc file support to the image_load() script function
