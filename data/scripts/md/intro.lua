@@ -6,134 +6,134 @@ lua_file = nuvie_load("common/intro_common.lua"); lua_file();
 
 
 local function origin_fx_sequence()
-	local g_img_tbl = image_load_all("title.lzc")
-	
-	canvas_set_palette("strax.pal", 0)
+   local g_img_tbl = image_load_all("title.lzc")
+   
+   canvas_set_palette("strax.pal", 0)
 
-	
-	local stars = sprite_new(g_img_tbl[0][0], 0, 24, true)
-	local logo_image = image_new(282,82)
-	image_blit(logo_image, g_img_tbl[0][1],0,16)
-	image_blit(logo_image, g_img_tbl[0][2],g_img_tbl[0][1].w,14)
-	image_blit(logo_image, g_img_tbl[0][3],g_img_tbl[0][1].w+g_img_tbl[0][2].w,0)
-	
-	local  logo = sprite_new(logo_image, 20, 70, false)
-	
-	local planet = sprite_new(g_img_tbl[12], 160, 48, true)
+   
+   local stars = sprite_new(g_img_tbl[0][0], 0, 24, true)
+   local logo_image = image_new(282,82)
+   image_blit(logo_image, g_img_tbl[0][1],0,16)
+   image_blit(logo_image, g_img_tbl[0][2],g_img_tbl[0][1].w,14)
+   image_blit(logo_image, g_img_tbl[0][3],g_img_tbl[0][1].w+g_img_tbl[0][2].w,0)
+   
+   local  logo = sprite_new(logo_image, 20, 70, false)
+   
+   local planet = sprite_new(g_img_tbl[12], 160, 48, true)
 
-	planet.clip_x = 0
-	planet.clip_y = 0
-	planet.clip_w = 320
-	planet.clip_h = 152
-	local players = {}
-	players[1] = create_player_sprite(g_img_tbl[1][0], 58, 118)
-	players[2] = create_player_sprite(g_img_tbl[2][0], 186, 118)
-	players[3] = create_player_sprite(g_img_tbl[3][0], 278, 118)
-	
-	players[4] = create_player_sprite(g_img_tbl[4][0], 58, 126)
-	players[5] = create_player_sprite(g_img_tbl[5][0], 186, 126)
-	players[6] = create_player_sprite(g_img_tbl[6][0], 278, 126)
-	
-	players[7] = create_player_sprite(g_img_tbl[7][0], 58, 134)
-	players[8] = create_player_sprite(g_img_tbl[8][0], 186, 134)
-	players[9] = create_player_sprite(g_img_tbl[9][0], 278, 134)
-	
-	local conductor = sprite_new(g_img_tbl[10][0], 158, 98, true)
-	conductor.clip_x = 0
-	conductor.clip_y = 24
-	conductor.clip_w = 320
-	conductor.clip_h = 128
+   planet.clip_x = 0
+   planet.clip_y = 0
+   planet.clip_w = 320
+   planet.clip_h = 152
+   local players = {}
+   players[1] = create_player_sprite(g_img_tbl[1][0], 58, 118)
+   players[2] = create_player_sprite(g_img_tbl[2][0], 186, 118)
+   players[3] = create_player_sprite(g_img_tbl[3][0], 278, 118)
+   
+   players[4] = create_player_sprite(g_img_tbl[4][0], 58, 126)
+   players[5] = create_player_sprite(g_img_tbl[5][0], 186, 126)
+   players[6] = create_player_sprite(g_img_tbl[6][0], 278, 126)
+   
+   players[7] = create_player_sprite(g_img_tbl[7][0], 58, 134)
+   players[8] = create_player_sprite(g_img_tbl[8][0], 186, 134)
+   players[9] = create_player_sprite(g_img_tbl[9][0], 278, 134)
+   
+   local conductor = sprite_new(g_img_tbl[10][0], 158, 98, true)
+   conductor.clip_x = 0
+   conductor.clip_y = 24
+   conductor.clip_w = 320
+   conductor.clip_h = 128
 
-	music_play("strx_mus.lzc", 0)
-	
-	fade_in()
-	  
-	local i = 0
-	for i=0,6,1 do
-		conductor.image = g_img_tbl[10][i]
+   music_play("strx_mus.lzc", 0)
+   
+   fade_in()
+     
+   local i = 0
+   for i=0,6,1 do
+      conductor.image = g_img_tbl[10][i]
 
-		update_players(players, g_img_tbl)
-		if poll_for_key_or_button(4) == true then return end
-	end
-	for i=7,13,1 do
-		conductor.image = g_img_tbl[10][i]
+      update_players(players, g_img_tbl)
+      if poll_for_key_or_button(4) == true then return end
+   end
+   for i=7,13,1 do
+      conductor.image = g_img_tbl[10][i]
 
-		update_players(players, g_img_tbl)
-		if poll_for_key_or_button(4) == true then return end
-	end
-	for i=7,12,1 do
-		conductor.image = g_img_tbl[10][i]
+      update_players(players, g_img_tbl)
+      if poll_for_key_or_button(4) == true then return end
+   end
+   for i=7,12,1 do
+      conductor.image = g_img_tbl[10][i]
 
-		update_players(players, g_img_tbl)
-		if poll_for_key_or_button(4) == true then return end
-	end
-	local j
-	for i=1,4,1 do
-		for j=13,15,1 do
-			conductor.image = g_img_tbl[10][j]
-			if poll_for_key_or_button(1) == true then return end
-		end
-	
-		conductor.image = g_img_tbl[10][14]
-		if poll_for_key_or_button(2) == true then return end
-		conductor.image = g_img_tbl[10][13]
-		if poll_for_key_or_button(2) == true then return end
-		conductor.image = g_img_tbl[10][16]
+      update_players(players, g_img_tbl)
+      if poll_for_key_or_button(4) == true then return end
+   end
+   local j
+   for i=1,4,1 do
+      for j=13,15,1 do
+         conductor.image = g_img_tbl[10][j]
+         if poll_for_key_or_button(1) == true then return end
+      end
+   
+      conductor.image = g_img_tbl[10][14]
+      if poll_for_key_or_button(2) == true then return end
+      conductor.image = g_img_tbl[10][13]
+      if poll_for_key_or_button(2) == true then return end
+      conductor.image = g_img_tbl[10][16]
 
-		if poll_for_key_or_button(1) == true then return end
-			play_sfx(38, false)
-	end
-	
-	for i=16,20,1 do
-		conductor.image = g_img_tbl[10][i]
-		if poll_for_key_or_button(4) == true then return end
-	end
-	if poll_for_key_or_button(135) == true then return end
-	
-	--play_sfx(12, false)
-	
-	conductor.image = g_img_tbl[10][6]
-	
-	for i=1,21,1 do
-		conductor.y = 98 + i * 12
-		conductor.image.scale = 100 + i * 15
-		
-		for j=1,9,1 do
-			players[j].y = players[j].y + 5
-			players[j].image.scale = 100 + i * 5
-			if j == 1 or j == 4 or j == 7 then
-				players[j].x = players[j].x - 2
-			end
-			if j == 3 or j == 6 or j == 9 then
-				players[j].x = players[j].x + 2
-			end
-		end
-	
-		if poll_for_esc(4) == true then return end
-	end
-	
-	
-	logo.visible = true
-	logo.image.scale = 10	
-	
-	
-	for i=1,18,1 do
-		planet.y = planet.y + 6
+      if poll_for_key_or_button(1) == true then return end
+         play_sfx(38, false)
+   end
+   
+   for i=16,20,1 do
+      conductor.image = g_img_tbl[10][i]
+      if poll_for_key_or_button(4) == true then return end
+   end
+   if poll_for_key_or_button(135) == true then return end
+   
+   --play_sfx(12, false)
+   
+   conductor.image = g_img_tbl[10][6]
+   
+   for i=1,21,1 do
+      conductor.y = 98 + i * 12
+      conductor.image.scale = 100 + i * 15
+      
+      for j=1,9,1 do
+         players[j].y = players[j].y + 5
+         players[j].image.scale = 100 + i * 5
+         if j == 1 or j == 4 or j == 7 then
+            players[j].x = players[j].x - 2
+         end
+         if j == 3 or j == 6 or j == 9 then
+            players[j].x = players[j].x + 2
+         end
+      end
+   
+      if poll_for_esc(4) == true then return end
+   end
+   
+   
+   logo.visible = true
+   logo.image.scale = 10   
+   
+   
+   for i=1,18,1 do
+      planet.y = planet.y + 6
 
-		logo.image.scale = logo.image.scale + 5
-		logo.x = math.floor((320 - logo.image.w) / 2)
-		if i < 10 then
-			logo.y = logo.y - 4
-		else
-			logo.y = logo.y + 1
-		end
-	
-		if poll_for_key_or_button(4) == true then return end
-	end
-	
-	if poll_for_esc(45) == true then return end
-	
-	fireworks(g_img_tbl, logo)
+      logo.image.scale = logo.image.scale + 5
+      logo.x = math.floor((320 - logo.image.w) / 2)
+      if i < 10 then
+         logo.y = logo.y - 4
+      else
+         logo.y = logo.y + 1
+      end
+   
+      if poll_for_key_or_button(4) == true then return end
+   end
+   
+   if poll_for_esc(45) == true then return end
+   
+   fireworks(g_img_tbl, logo)
    fade_out()
 end
 
@@ -363,13 +363,47 @@ function show_mars_flash()
    local g_img_tbl = image_load_all("mars.lzc")
    
    music_play("mdd_mus.lzc", 6)
-      
-   --display_image_table(g_img_tbl, 0, 24)
    
    local bg = sprite_new(g_img_tbl[0][0], 0, 24, true)
-   local flash = sprite_new(g_img_tbl[0][3], 0, 24, true)
+   local flash = sprite_new(g_img_tbl[0][1], 0, 24, true)
    
-   --FIXME flash here
+   fade_in(12)
+   
+   if poll_for_key_or_button(60) == false then
+
+   local i
+   for i=-1,1 do
+      local j
+      for j=0,2 do
+      local k
+         for k=-1,2 do
+            flash.image = g_img_tbl[0][3-math.abs(k)]
+
+            local delay = 3
+            if i == 0 and k == 0 then
+               delay = 10
+            end
+            if poll_for_key_or_button(delay) == true then
+               flash_effect(image_load("credits.lzc", 5))
+               return
+            end
+         end
+
+         if poll_for_key_or_button(5) == true then
+            flash_effect(image_load("credits.lzc", 5))
+            return
+         end
+      end
+      
+      if poll_for_key_or_button(30) == true then
+         flash_effect(image_load("credits.lzc", 5))
+         return
+      end
+   end
+   
+   end
+   
+   poll_for_key_or_button(40)
    
    flash_effect(image_load("credits.lzc", 5))
 end
@@ -397,15 +431,151 @@ function play_intro()
     
    show_cabin()
    if should_exit() then return end
-   
+ 
    show_mars_flash()
    if should_exit() then return end
    
-   wait_for_input()
-   
 end
 
-function  main_menu()
+function run_introduction()
+end
+
+function create_character()
+end
+
+function about_martian_dreams()
+end
+
+function journey_onward()
+end
+
+local g_menu_idx = 0
+local g_menu_cursor_sprite = nil
+
+function execute_menu_item(cursor_pos)
+   if cursor_pos ~= nil then
+      set_menu_cursor_pos(cursor_pos)
+   end
+   
+   if g_menu_idx == 0 then -- story so far
+      run_introduction()
+   elseif g_menu_idx == 1 then -- create char
+      if create_character() == true then
+         return "J" -- starting new game
+      end
+   elseif g_menu_idx == 2 then -- journey onward
+      journey_onward()
+      return "J"
+   elseif g_menu_idx == 3 then -- about md
+      about_martian_dreams()
+   end
+   
+   return "";
+end
+
+function update_menu_cursor()
+   local box_y_tbl = {[0]=130,[1]=147,[2]=164,[3]=181}
+   g_menu_cursor_sprite.y = box_y_tbl[g_menu_idx]
+end
+
+function set_menu_cursor_pos(new_pos)
+   g_menu_idx = new_pos
+   update_menu_cursor()
+end
+
+function menu_cursor_down()
+   g_menu_idx = (g_menu_idx + 1) % 4
+   update_menu_cursor()
+end
+
+function menu_cursor_up()
+   g_menu_idx = g_menu_idx - 1
+   if g_menu_idx < 0 then
+      g_menu_idx = 3
+   end
+   update_menu_cursor()
+end
+
+local g_mouse_cursor_visible = false
+
+function show_mouse_cursor()
+   if g_mouse_cursor_visible == false then
+      mouse_cursor_set_pointer(9)
+      mouse_cursor_visible(true)
+      g_mouse_cursor_visible = true
+   end
+end
+
+function hide_mouse_cursor()
+   if g_mouse_cursor_visible == true then
+      mouse_cursor_visible(false)
+      g_mouse_cursor_visible = false
+   end
+end
+
+function main_menu()
+   canvas_hide_all_sprites()
+   music_stop()
+   local g_img_tbl = image_load_all("mdmenu.lzc")
+      
+   --display_image_table(g_img_tbl)
+
+   local bg = sprite_new(g_img_tbl[0][0], 0, 0, true)
+
+   fade_in()
+
+   g_menu_cursor_sprite = sprite_new(g_img_tbl[0][2], 26, 0, true)
+   update_menu_cursor()
+
+   while true do
+      canvas_update()
+      input = input_poll(true)
+      if input ~= nil then
+         if input == SDLK_q then -- q
+            return "Q"
+         elseif input == SDLK_RETURN or input == SDLK_SPACE or input == KP_ENTER then -- space or return
+            if execute_menu_item() == "J" then
+               return "J"
+            end
+         elseif input == SDLK_r or input == SDLK_i then -- Run Introduction
+            execute_menu_item(0)
+         elseif input == SDLK_c then -- c (create char)
+            if execute_menu_item(1) == "J" then
+               return "J" -- starting new game
+            end
+         elseif input == SDLK_j or input == SDLK_g then -- j, g (journey onward, continue Game)
+            execute_menu_item(2)
+            return "J"
+         elseif input == SDLK_a then -- a (about MD)
+            execute_menu_item(3)
+         elseif input == SDLK_DOWN or input == SDL_KP2 then -- down key
+            menu_cursor_down()
+         elseif input == SDLK_UP or input == SDL_KP8 then -- up key
+            menu_cursor_up()
+         elseif input == MOUSE_MOTION or input == MOUSE_CLICK then --mouse movement
+            show_mouse_cursor()
+            local x = get_mouse_x()
+            local y = get_mouse_y()
+            if x > 57 and x < 260 and y > 130 then
+               if y > 130 and y < 148 then -- run introduction
+                  set_menu_cursor_pos(0)
+               elseif y > 147 and y < 164 then -- create new char
+                  set_menu_cursor_pos(1)
+               elseif y > 163 and y < 181 then -- continue game
+                  set_menu_cursor_pos(2)
+               elseif y > 180 then -- about MD
+                  set_menu_cursor_pos(3)
+               end
+               if input == MOUSE_CLICK then
+                  if execute_menu_item() == "J" then
+                     return "J"
+                  end
+               end
+            end
+         end
+      end
+   end
+
 end
 
 
@@ -418,5 +588,10 @@ origin_fx_sequence()
 canvas_hide_all_sprites()
 play_intro()
 
-main_menu()
+if main_menu() == "Q" then -- returns "Q" for quit or "J" for Journey Onward
+   hide_mouse_cursor()
+   fade_out(6)
+   config_set("config/quit", true)
+end
+
 canvas_hide()

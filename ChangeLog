@@ -1,3 +1,7 @@
+2014-05-11  Eric Fry <efry at users.sourceforge.net> r1943
+	* Added MD main menu
+	* Added SOS flash to MD intro sequence
+
 2014-05-09  Eric Fry <efry at users.sourceforge.net> r1942
 	* Fixed sprite clipping on the "Abount The Savage Empire" menu item
 	* Fixed fade logic on about SE menu item.
