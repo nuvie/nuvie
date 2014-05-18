@@ -47,9 +47,10 @@ class BMPFont : public Font
    bool init(std::string bmp_filename, bool dual_fontmap=false);
 
    uint16 getCharWidth(uint8 c);
+   uint16 getCharHeight() { return 16; }
    uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color);
-   uint16 getStringWidth(const char *str);
+   uint16 getStringWidth(const char *str, uint16 string_len);
   protected:
 
 };

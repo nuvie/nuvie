@@ -40,6 +40,10 @@ end
 
 local g_should_exit = false
 
+function clear_should_exit_flag()
+   g_should_exit = false
+end
+
 function should_exit()
    return g_should_exit
 end

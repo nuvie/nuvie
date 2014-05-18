@@ -88,6 +88,8 @@ static const struct luaL_Reg nscript_spritelib_m[] =
 static int nscript_sprite_new(lua_State *L);
 static int nscript_sprite_move_to_front(lua_State *L);
 
+static int nscript_text_load(lua_State *L);
+
 static int nscript_canvas_set_bg_color(lua_State *L);
 static int nscript_canvas_set_palette(lua_State *L);
 static int nscript_canvas_set_palette_entry(lua_State *L);
@@ -161,6 +163,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_image_blit);
    lua_setglobal(L, "image_blit");
+
+   lua_pushcfunction(L, nscript_text_load);
+   lua_setglobal(L, "text_load");
 
    lua_pushcfunction(L, nscript_canvas_set_bg_color);
    lua_setglobal(L, "canvas_set_bg_color");
@@ -693,6 +698,11 @@ static int nscript_sprite_set(lua_State *L)
 		sprite->text_color = lua_tointeger(L, 3);
 		return 0;
 	}
+  if(!strcmp(key, "text_align_centre"))
+  {
+    sprite->text_centred = lua_toboolean(L, 3);
+    return 0;
+  }
    return 0;
 }
 
@@ -829,6 +839,30 @@ static int nscript_sprite_move_to_front(lua_State *L)
 	}
 
 	return 0;
+}
+
+static int nscript_text_load(lua_State *L)
+{
+  const char *filename = lua_tostring(L, 1);
+  uint8 idx = lua_tointeger(L, 2);
+
+  std::vector<std::string> text = cutScene->load_text(filename, idx);
+
+  if(text.empty())
+  {
+    return 0;
+  }
+
+  lua_newtable(L);
+
+  for(uint16 i=0;i<text.size();i++)
+  {
+    lua_pushinteger(L, i);
+    lua_pushstring(L,text[i].c_str());
+    lua_settable(L, -3);
+  }
+
+  return 1;
 }
 
 static int nscript_canvas_set_bg_color(lua_State *L)
@@ -1283,6 +1317,45 @@ std::vector<std::vector<CSImage *> > ScriptCutscene::load_all_images(const char 
 	return v;
 
 }
+
+std::vector<std::string> ScriptCutscene::load_text(const char *filename, uint8 idx)
+{
+  std::string path;
+  U6Lib_n lib_n;
+  std::vector<string> v;
+  unsigned char *buf = NULL;
+
+  config_get_path(config, filename, path);
+
+  if(!lib_n.open(path, 4, NUVIE_GAME_MD) || idx >= lib_n.get_num_items())
+  {
+    return v;
+  }
+
+  buf = lib_n.get_item(idx, NULL);
+  uint16 len = lib_n.get_item_size(idx);
+  if(buf != NULL)
+  {
+    uint16 start=0;
+    for(uint16 i=0;i<len;i++)
+    {
+      if(buf[i] == '\r')
+      {
+        buf[i] = '\0';
+        v.push_back(string((const char*)&buf[start]));
+        i++;
+        buf[i] = '\0'; // skip the '\n' character
+        i++;
+        start=i;
+      }
+    }
+
+    free(buf);
+  }
+
+  return v;
+}
+
 void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color)
 {
 	int len=*x-startx;
@@ -1503,14 +1576,21 @@ void ScriptCutscene::Display(bool full_redraw)
 
 				if(s->text.length() > 0)
 				{
+				  if(s->text_centred)
+				  {
+            display_wrapped_text(s);
+				  }
+				  else
+				  {
 				    if (s->text_color == 0xffff)
 				    {
-					font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off);
+				      font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off);
 				    }
 				    else
 				    {
-					font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off, (uint8) s->text_color, (uint8) s->text_color);
+				      font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off, (uint8) s->text_color, (uint8) s->text_color);
 				    }
+				  }
 				}
 			}
 		}
@@ -1530,6 +1610,83 @@ void ScriptCutscene::Display(bool full_redraw)
 		screen->update(x_off,y_off,320, 200);
 }
 
+void ScriptCutscene::display_wrapped_text(CSSprite *s)
+{
+  uint8 text_color = (uint8) s->text_color;
+
+  size_t start=0;
+  size_t found;
+  std::string str = s->text + "^";
+  std::list<std::string> tokens;
+  int y = s->y;
+
+
+  std::string line = "";
+
+    found=str.find_first_of("^", start);
+    while (found!=string::npos)
+    {
+      std::string token = str.substr(start,found-start);
+
+      y = display_wrapped_text_line(token, text_color, s->x, y);
+
+      start = found + 1;
+      found=str.find_first_of("^", start);
+    }
+}
+
+int ScriptCutscene::display_wrapped_text_line(std::string str, uint8 text_color, int x, int y)
+{
+
+  //font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off, text_color, text_color);
+  int len=0;
+  size_t start=0;
+  size_t found;
+  str = str + " ";
+  std::list<std::string> tokens;
+  int space_width = font->getStringWidth(" ");
+  //uint16 x1 = startx;
+  int width = 320 - x * 2;
+
+  int char_height = font->getCharHeight();
+
+  std::string line = "";
+
+    found=str.find_first_of(" ", start);
+    while (found!=string::npos)
+    {
+      std::string token = str.substr(start,found-start);
+
+      int token_len = font->getStringWidth(token.c_str());
+
+      if(len + token_len > width)
+      {
+        if(len > 0)
+        {
+          len -= space_width;
+        }
+        font->drawString(screen, line.c_str(), x + x_off + (width - len) / 2, y + y_off, text_color, text_color);
+        line = "";
+        y += char_height + 2;
+        len = 0;
+      }
+
+      len += token_len + space_width;
+      line = line + token + " ";
+
+      start = found + 1;
+      found=str.find_first_of(" ", start);
+    }
+
+    if(len > 0)
+    {
+      len -= space_width;
+      font->drawString(screen, line.c_str(), x + x_off + (width - len) / 2, y + y_off, text_color, text_color);
+      y += char_height + 2;
+    }
+
+    return y;
+}
 void CSImage::setScale(uint16 percentage)
 {
 	if(scale == percentage)

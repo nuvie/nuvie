@@ -54,7 +54,7 @@ private:
    uint8 drawCharToShape(U6Shape *shp, uint8 char_num, uint16 x, uint16 y, uint8 color);
 
    virtual uint16 getCharWidth(uint8 c);
-
+   virtual uint16 getCharHeight() { return height; }
  private:
    bool initCharBuf();
 };

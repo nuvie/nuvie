@@ -88,6 +88,7 @@ struct CSSprite {
 	SDL_Rect clip_rect;
 	std::string text;
 	uint16 text_color;
+	bool text_centred;
 
 	CSSprite()
 	{
@@ -102,6 +103,7 @@ struct CSSprite {
 		clip_rect.h = 0;
 		text = "";
 		text_color = 0xffff;
+		text_centred = false;
 	}
 };
 
@@ -129,6 +131,8 @@ private:
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	~ScriptCutscene();
+
+	std::vector<std::string> load_text(const char *filename, uint8 idx);
 
 	CSImage *load_image(const char *filename, int idx, int sub_idx=0);
 	std::vector<std::vector<CSImage *> > load_all_images(const char *filename);
@@ -165,6 +169,8 @@ public:
 private:
   bool is_lzc(const char *filename);
   CSImage *load_image_from_lzc(std::string filename, uint16 idx, uint16 sub_idx);
+  void display_wrapped_text(CSSprite *s);
+  int display_wrapped_text_line(std::string str, uint8 text_color, int x, int y);
 };
 
 #endif /* __ScriptCutscene_h__ */

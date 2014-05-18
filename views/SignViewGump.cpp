@@ -48,7 +48,7 @@ SignViewGump::SignViewGump(Configuration *cfg) : DraggableView(cfg)
 
 	build_path(datadir, "sign_font", imagefile);
 
-	font->init(imagefile, true);
+	((BMPFont *)font)->init(imagefile, true);
 
 	sign_text = NULL;
 }

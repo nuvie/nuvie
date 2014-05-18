@@ -31,11 +31,11 @@ class TileManager;
 class ObjManager;
 class Screen;
 class Font;
-class BMPFont;
+//class BMPFont;
 
 class SignViewGump : public DraggableView {
 
-	BMPFont *font;
+	Font *font;
 	char *sign_text;
 
 public:

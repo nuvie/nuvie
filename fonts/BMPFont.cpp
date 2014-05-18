@@ -89,13 +89,10 @@ bool BMPFont::init(std::string bmp_filename, bool dual_fontmap)
 	return true;
 }
 
-uint16 BMPFont::getStringWidth(const char *str)
+uint16 BMPFont::getStringWidth(const char *str, uint16 string_len)
 {
 	uint16 i;
-	uint16 string_len;
 	uint16 w=0;
-
-	string_len = strlen(str);
 
 	for(i=0;i<string_len;i++)
 	{

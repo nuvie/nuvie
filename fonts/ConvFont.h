@@ -42,6 +42,7 @@ class ConvFont : public Font
    bool init(unsigned char *data, uint8 *width_data, uint16 num_chars, uint16 char_offset);
 
    uint16 getCharWidth(uint8 c);
+   uint16 getCharHeight() { return 0; }
    uint16 drawChar(Screen *screen, uint8 char_num, uint16 x, uint16 y,
                  uint8 color);
   protected:

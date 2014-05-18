@@ -95,11 +95,13 @@ uint8 Font::get_char_num(uint8 c)
 
 uint16 Font::getStringWidth(const char *str)
 {
-	uint16 i;
-	uint16 string_len;
-	uint16 w=0;
+  return getStringWidth(str, strlen(str));
+}
 
-	string_len = strlen(str);
+uint16 Font::getStringWidth(const char *str, uint16 string_len)
+{
+	uint16 i;
+	uint16 w=0;
 
 	for(i=0;i<string_len;i++)
 	{

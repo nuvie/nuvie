@@ -1,3 +1,11 @@
+2014-05-18  Eric Fry <efry at users.sourceforge.net> r1944
+	* Added text_load() script function to load MD intro text
+	* Added sprite.text_align_centre boolean to allow for centred / wrapped
+	  text in the MD intros
+	* Tightened up the timings on the first MD intro sequence.
+	* Started work on the MD "Run Introduction" sequence.
+	* Added Font::getCharHeight() method.
+
 2014-05-11  Eric Fry <efry at users.sourceforge.net> r1943
 	* Added MD main menu
 	* Added SOS flash to MD intro sequence

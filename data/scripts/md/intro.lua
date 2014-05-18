@@ -159,7 +159,11 @@ function show_logos()
    sprite.visible = false
 end
 
-function flash_effect(image)
+function flash_effect(image, text_delay)
+   if text_delay == nil then
+      text_delay = 300
+   end
+   
    canvas_hide_all_sprites()
 
    local s = sprite_new(image, 0, 0, true)
@@ -174,7 +178,7 @@ function flash_effect(image)
       canvas_update()
    end
 
-   return poll_for_key_or_button(300)
+   return poll_for_key_or_button(text_delay)
 end
 
 function show_fair_ground()
@@ -227,12 +231,12 @@ function show_lowell()
    
    for i=1,20 do
       lowell.image = g_img_tbl[0][i]
-      if poll_for_key_or_button(7) == true then return end
+      if poll_for_key_or_button(5) == true then return end
    end
    
    flash_effect(image_load("credits.lzc", 1))
    
-   if poll_for_key_or_button(60) == true then return end
+   if poll_for_key_or_button(70) == true then return end
 end
 
 function show_fuse()
@@ -245,11 +249,11 @@ function show_fuse()
    
    music_play("mdd_mus.lzc", 2)
       
-   fade_in()
+   fade_in(4)
          
    for i=1,28 do
       fuse.image = g_img_tbl[0][i]
-      if poll_for_key_or_button(4) == true then return end
+      if poll_for_key_or_button(2) == true then return end
    end
    
       flash_effect(image_load("credits.lzc", 2))
@@ -273,7 +277,8 @@ function show_flash()
    
    g_img_tbl = image_load_all("flash.lzc")
 
-   fade_in()
+   fade_in(8)
+   play_sfx(12, false) --explosion FIXME this might not be the correct sfx
    local s = sprite_new(g_img_tbl[0][0], 80, 24, true)
    local i
    for i=0,9 do
@@ -282,10 +287,10 @@ function show_flash()
    end
    for i=0,8 do
       s.image = g_img_tbl[1][i]
-      if poll_for_key_or_button(7) == true then return end
+      if poll_for_key_or_button(6) == true then return end
    end
    
-   flash_effect(image_load("credits.lzc", 3))
+   flash_effect(image_load("credits.lzc", 3), 215)
 end
 
 function show_flight()
@@ -295,7 +300,7 @@ function show_flight()
    local bg = sprite_new(g_img_tbl[0], 0, 24, true)
    music_play("mdd_mus.lzc", 4)
    fade_in(12)
-   local capsule = create_sprite(g_img_tbl[1], 270, 140) --sprite_new(g_img_tbl[1], 270, 140, true)
+   local capsule = create_sprite(g_img_tbl[1], 270, 140)
 
    local i
    for i=0,12 do
@@ -305,17 +310,17 @@ function show_flight()
       if poll_for_key_or_button(6) == true then return end
    end
    
-   poll_for_key_or_button(105)
-   --display_image_table(g_img_tbl)
+   if poll_for_key_or_button(98) == true then return end
+   music_stop()
+   if poll_for_key_or_button(8) == true then return end
+
 end
 
 function show_cabin()
    canvas_hide_all_sprites()
 
    local g_img_tbl = image_load_all("cabin.lzc")
-   
-   --display_image_table(g_img_tbl)
-   
+
    local bg = sprite_new(g_img_tbl[0], 0, 24, true)
    local cloud = sprite_new(g_img_tbl[1][0], 116, 28, true)
    local cloud1 = sprite_new(g_img_tbl[1][0], 222, 53, true)
@@ -354,7 +359,7 @@ function show_cabin()
       if poll_for_key_or_button(8) == true then return end
    end
    
-   flash_effect(image_load("credits.lzc", 4))
+   flash_effect(image_load("credits.lzc", 4),250)
 end
 
 function show_mars_flash()
@@ -409,7 +414,6 @@ function show_mars_flash()
 end
 
 function play_intro()
-   canvas_set_palette("md_title.pal", 0)
 
    show_logos()
    if should_exit() then return end
@@ -437,7 +441,269 @@ function play_intro()
    
 end
 
+function show_home()
+   canvas_hide_all_sprites()
+
+   local text_tbl = text_load("scenetxt.lzc", 0)
+   
+   local g_img_tbl = image_load_all("scene1.lzc")
+   
+   local bg = sprite_new(g_img_tbl[0][0], 0, 24, true)
+   local door = sprite_new(g_img_tbl[0][1], 0, 24, true)
+   local avatar = sprite_new(g_img_tbl[1][0], 240, 151, true)
+   local text = sprite_new(nil, 0, 160, true)
+   text.text = text_tbl[1]
+   text.text_color = 14
+   text.text_align_centre = true
+   fade_in()
+   music_play("mdd_mus.lzc", 8)
+   
+   poll_for_key_or_button(50)
+   if should_exit() then return end
+
+   local woman = sprite_new(g_img_tbl[8][0], 0, 151, true)
+   local spector = create_sprite(g_img_tbl[2][0], 60, 151)
+   
+   door.visible = false
+   avatar.image = g_img_tbl[1][1]
+   text.text = text_tbl[2]
+   
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   avatar.image = g_img_tbl[1][3]
+   spector.image = g_img_tbl[2][1]
+   spector.x = 80
+   text.text = text_tbl[3]
+   text.text_color = 2
+      
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   woman.image = g_img_tbl[8][1]
+   text.text = text_tbl[4]
+   text.text_color = 14
+      
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   woman.image = g_img_tbl[8][2]
+   spector.image = g_img_tbl[2][2]
+   spector.x = 100
+   text.text = text_tbl[5]
+   text.text_color = 2
+
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   woman.image = g_img_tbl[3][0]
+   woman.x = -10
+   woman.y = 155
+   spector.image = g_img_tbl[2][3]
+   spector.x = 145
+   text.text = text_tbl[6]
+   text.text_color = 9
+   
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+      
+   --woman hands spector note
+   text.text = text_tbl[7]
+   local i
+   for i=0,10 do
+      if i <= 9 then
+         woman.image = g_img_tbl[3][i]
+      end
+      spector.image = g_img_tbl[2][i + 5]
+      poll_for_key_or_button(5)
+   end
+   
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   text.text = text_tbl[8]
+   text.text_color = 2
+   
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   
+   --close up on woman
+   canvas_hide_all_sprites()
+      
+   bg.image = g_img_tbl[7]
+   bg.visible = true
+   text.text = text_tbl[9]
+   text.text_color = 9
+   text.visible = true
+      
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+    
+   --spector, avatar review papers
+   
+   bg.image = g_img_tbl[0][0]
+   avatar.image = g_img_tbl[1][1]
+   avatar.x = 270
+   avatar.visible = true
+   
+   spector.image = g_img_tbl[2][16]
+   spector.x = 193
+   spector.y = 161
+   spector.visible = true
+
+   text.text = text_tbl[10]
+   text.text_color = 2
+
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+          
+   --close up on papers
+   canvas_hide_all_sprites()   
+   bg.image = g_img_tbl[5][0]
+   bg.visible = true
+   
+   local letter = sprite_new(g_img_tbl[5][1], 50, 24, true)
+   local hand = sprite_new(g_img_tbl[4], 235, 78, true)
+   
+   text.text = text_tbl[11]
+   text.text_color = 14
+   text.visible = true
+   
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   hand.visible = false
+   text.text = text_tbl[12]
+   text.text_color = 2
+   
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   --pickup letter
+   letter.image = g_img_tbl[6]
+   letter.x = 0
+   
+   text.text = text_tbl[13]
+   --FIXME need to rotate the letter sprite.
+   for i=0,19 do
+      letter.y = -20 - i
+      poll_for_key_or_button(5)
+   end
+   
+   letter.visible = false
+   text.text = text_tbl[14]
+   text.text_color = 14
+      
+   poll_for_key_or_button(100)
+   if should_exit() then return end
+   
+   fade_out(6)
+end
+
+function show_map()
+
+   local xhair_tbl = {
+      {["x"]=190, ["y"]=80},
+      {["x"]=180, ["y"]=82},
+      {["x"]=170, ["y"]=84},
+      {["x"]=162, ["y"]=81},
+      {["x"]=154, ["y"]=75},
+      {["x"]=145, ["y"]=73},
+      {["x"]=135, ["y"]=73},
+      {["x"]=125, ["y"]=74},
+      {["x"]=115, ["y"]=76},
+      {["x"]=105, ["y"]=78},
+      {["x"]=95, ["y"]=81},
+      {["x"]=86, ["y"]=86}
+   }
+
+   canvas_hide_all_sprites()
+   
+   local bg = sprite_new(image_load("scene2.lzc", 0), 0, 24, true)
+   fade_in(6)
+   
+   poll_for_key_or_button(50)
+   if should_exit() then return end
+
+   local i
+   for i=1,12 do
+      image_draw_line(bg.image, xhair_tbl[i].x-1, xhair_tbl[i].y-24-5, xhair_tbl[i].x+3, xhair_tbl[i].y-24-5, 9)
+      image_draw_line(bg.image, xhair_tbl[i].x+1, xhair_tbl[i].y-1-24-5, xhair_tbl[i].x+1, xhair_tbl[i].y+1-24-5, 9)
+      poll_for_key_or_button(20)
+      if should_exit() then return end
+   end
+   
+   poll_for_key_or_button(50)
+      
+   fade_out(6)
+
+end
+
+function show_hike()
+   canvas_hide_all_sprites()
+   local g_img_tbl = image_load_all("scene2.lzc")
+   
+   local bg = sprite_new(g_img_tbl[1], 0, 24, true)
+   local avatar = sprite_new(g_img_tbl[3][0], -15, 148, true)
+   local spector = sprite_new(g_img_tbl[4][0], -45, 149, true)
+   local fg = sprite_new(g_img_tbl[2], 0, 24, true)
+   
+   fade_in(6)
+   
+   local i
+   for i=0,94 do
+      avatar.image = g_img_tbl[3][i % 12]
+      avatar.x = i * 4 + -15
+      spector.image = g_img_tbl[4][(i+4) % 12]
+      spector.x = i * 4 + -45
+      poll_for_key_or_button(3)
+      if should_exit() then return end      
+   end
+   
+   fade_out(6)
+end
+
+function show_lab_present_day()
+   canvas_hide_all_sprites()
+   local g_img_tbl = image_load_all("scene3.lzc")
+   local text_tbl = text_load("scenetxt.lzc", 1)
+
+   local text = sprite_new(nil, 0, 160, true)
+   text.text = text_tbl[1]
+   text.text_color = 14
+   text.text_align_centre = true
+      
+   local bg = sprite_new(g_img_tbl[0], 0, 24, true)
+   local spector = sprite_new(g_img_tbl[3][0], 165, 137,true)
+   local table = create_sprite(g_img_tbl[1][0], 151, 82)
+   local avatar = create_sprite(g_img_tbl[2][0], 65, 150)
+
+   --local s = sprite_new(g_img_tbl[4][0], 0, 24,true)
+   music_play("mdd_mus.lzc", 9)
+   
+   fade_in(6)
+   
+   
+   --display_image_table(g_img_tbl)
+end
+
 function run_introduction()
+
+   show_home()
+   if should_exit() then return end
+   
+   show_map()
+   if should_exit() then return end
+
+   show_hike()
+   if should_exit() then return end
+   
+   show_lab_present_day()
+   if should_exit() then return end
+   
+   --display_image_table(g_img_tbl)
+   wait_for_input()
 end
 
 function create_character()
@@ -451,11 +717,14 @@ end
 
 local g_menu_idx = 0
 local g_menu_cursor_sprite = nil
+local g_menu_bg_sprite = nil
 
 function execute_menu_item(cursor_pos)
    if cursor_pos ~= nil then
       set_menu_cursor_pos(cursor_pos)
    end
+   
+   hide_mouse_cursor()
    
    if g_menu_idx == 0 then -- story so far
       run_introduction()
@@ -470,6 +739,12 @@ function execute_menu_item(cursor_pos)
       about_martian_dreams()
    end
    
+   clear_should_exit_flag()
+   canvas_hide_all_sprites()
+   music_stop()
+   g_menu_bg_sprite.visible = true
+   g_menu_cursor_sprite.visible = true
+
    return "";
 end
 
@@ -516,11 +791,10 @@ end
 function main_menu()
    canvas_hide_all_sprites()
    music_stop()
+   clear_should_exit_flag()
    local g_img_tbl = image_load_all("mdmenu.lzc")
-      
-   --display_image_table(g_img_tbl)
 
-   local bg = sprite_new(g_img_tbl[0][0], 0, 0, true)
+   g_menu_bg_sprite = sprite_new(g_img_tbl[0][0], 0, 0, true)
 
    fade_in()
 
@@ -585,6 +859,8 @@ canvas_set_bg_color(0)
 canvas_set_opacity(0)
 
 origin_fx_sequence()
+
+canvas_set_palette("md_title.pal", 0)
 canvas_hide_all_sprites()
 play_intro()
 
