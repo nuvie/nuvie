@@ -1,3 +1,6 @@
+2014-05-21  Eric Fry <efry at users.sourceforge.net> r1945
+	* Work on present day lab sequence for MD.
+
 2014-05-18  Eric Fry <efry at users.sourceforge.net> r1944
 	* Added text_load() script function to load MD intro text
 	* Added sprite.text_align_centre boolean to allow for centred / wrapped

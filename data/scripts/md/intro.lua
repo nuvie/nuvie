@@ -671,10 +671,16 @@ function show_lab_present_day()
 
    local text = sprite_new(nil, 0, 160, true)
    text.text = text_tbl[1]
-   text.text_color = 14
+   text.text_color = 2
    text.text_align_centre = true
-      
+
+   local moongate_tbl = image_load_all("moongate.lzc")
+         
    local bg = sprite_new(g_img_tbl[0], 0, 24, true)
+
+   local moongate = create_sprite(moongate_tbl[0][0], 125, 130)
+   moongate.visible = false
+   
    local spector = sprite_new(g_img_tbl[3][0], 165, 137,true)
    local table = create_sprite(g_img_tbl[1][0], 151, 82)
    local avatar = create_sprite(g_img_tbl[2][0], 65, 150)
@@ -684,8 +690,97 @@ function show_lab_present_day()
    
    fade_in(6)
    
+   local lab_tbl = {
+      {1, 2,  0, 0, 50},
+      {1, 2,  0, 1, 100},
+      {2, 14, 0, 1, 100},
+      {3, 2,  0, 2, 100},
+      {4, 2, -1, 0, 100},
+      {5, 14,-2, 0, 100},
+      {6, 2, -1, 0, 100},
+      {7, 14, 1, 3, 100},
+      {8, 2,  1, 2, 100},
+      {9, 14, 0, 2, 100}
+
+   }
    
-   --display_image_table(g_img_tbl)
+   local i
+   for i=1,7 do
+      if lab_tbl[i][3] >= 0 then
+         spector.image = g_img_tbl[3][lab_tbl[i][4]]
+      else
+         spector.visible = false
+         table.visible = false
+         avatar.visible = false
+         bg.image = g_img_tbl[4][math.abs(lab_tbl[i][3])-1]
+      end
+
+      text.text = text_tbl[lab_tbl[i][1]]
+      text.text_color = lab_tbl[i][2]      
+      poll_for_key_or_button(lab_tbl[i][5])
+      if should_exit() then return end
+   end
+   
+   bg.image = g_img_tbl[0]
+   spector.visible = true
+   avatar.visible = true
+   table.visible = true
+   table.image = g_img_tbl[1][1]
+   
+   spector.image = g_img_tbl[3][3]
+   avatar.image = g_img_tbl[2][1]
+   
+   moongate.visible = true
+
+   --moongate rises up from floor
+   for i=0,8 do
+      moongate.image = moongate_tbl[0][i]
+      poll_for_key_or_button(4)
+      if should_exit() then return end
+   end
+   
+   --avatar, spector discuss moongate
+   moongate.image = moongate_tbl[1][0]
+   for i=8,10 do
+      local j
+      for j=0,39 do
+         moongate.image = moongate_tbl[1][j % 8]
+         avatar.image = g_img_tbl[2][lab_tbl[i][3]]
+         spector.image = g_img_tbl[3][lab_tbl[i][4]]
+         text.text = text_tbl[lab_tbl[i][1]]
+         text.text_color = lab_tbl[i][2]  
+               
+         poll_for_key_or_button(4)
+         if should_exit() then return end
+      end
+   end
+   
+   
+   spector.image = moongate_tbl[4][0]
+   for i=0,64 do
+      moongate.image = moongate_tbl[1][i % 8]
+      avatar.image = moongate_tbl[2][math.floor(i/2)]
+      
+      poll_for_key_or_button(4)
+      if should_exit() then return end
+   end
+   
+   avatar.visible = false
+   
+   for i=0,39 do
+      moongate.image = moongate_tbl[1][i % 8]
+      if i ~= 39 then
+         spector.image = moongate_tbl[4][math.floor(i/2)]
+      end
+      
+      poll_for_key_or_button(4)
+      if should_exit() then return end
+   end
+   
+   --fade_out(6)
+end
+
+function show_lab_1895()
 end
 
 function run_introduction()
@@ -701,9 +796,12 @@ function run_introduction()
    
    show_lab_present_day()
    if should_exit() then return end
-   
+
+   show_lab_1895()
+   if should_exit() then return end
+      
    --display_image_table(g_img_tbl)
-   wait_for_input()
+   --wait_for_input()
 end
 
 function create_character()
