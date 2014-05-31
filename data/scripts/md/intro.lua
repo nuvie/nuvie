@@ -777,10 +777,203 @@ function show_lab_present_day()
       if should_exit() then return end
    end
    
-   --fade_out(6)
+   fade_out(6)
 end
 
 function show_lab_1895()
+   canvas_hide_all_sprites()
+   local scene4a_tbl = image_load_all("scene4a.lzc")
+   local scene4b_tbl = image_load_all("scene4b.lzc")
+   local moongate_tbl = image_load_all("moongate.lzc")
+      
+   local text_tbl = text_load("scenetxt.lzc", 2)
+
+   local text = sprite_new(nil, 0, 160, true)
+   text.text = text_tbl[1]
+   text.text_color = 6
+   text.text_align_centre = true
+   
+   local bg = sprite_new(scene4a_tbl[0], 0, 24, true)
+      
+   local moongate = create_sprite(moongate_tbl[0][0], 140, 125)
+   moongate.visible = false
+      
+   local tesla = sprite_new(scene4a_tbl[6][0], 187, 125, true)
+   local spark = sprite_new(scene4b_tbl[2][0], 32, 24, false)
+
+   local freud_body = create_sprite(scene4a_tbl[4][0], 0, 74)
+   local freud_head = create_sprite(scene4a_tbl[4][2], 23, 100)
+     
+   local blood = sprite_new(scene4a_tbl[5][0], 240, 40, true)
+   
+   fade_in(6)
+   
+   music_play("mdd_mus.lzc", 10)
+      
+   local i
+   for i=1,2 do
+      text.text = text_tbl[i]
+      local j
+      for j=0,20 do
+         if 10 - math.abs(j-10) > 5 then
+            tesla.image = scene4a_tbl[6][5]
+         else
+            tesla.image = scene4a_tbl[6][10 - math.abs(j-10)]
+         end
+         
+         if j > 4 and j < 16 then
+            --FIXME need spark sfx
+            spark.visible = true
+            spark.image = scene4b_tbl[2][j % 10]
+         else
+            spark.visible = false
+         end 
+                  
+         poll_for_key_or_button(4)
+         if should_exit() then return end
+      end
+      text.text_color = 7
+   end
+   
+   moongate.visible = true
+
+   --moongate rises up from floor
+   tesla.x = 188
+   tesla.y = 128
+   tesla.image = scene4a_tbl[6][6]
+   
+   for i=0,8 do
+      moongate.image = moongate_tbl[0][i]
+      if i == 5 then
+         tesla.image = scene4a_tbl[6][7]
+      end
+      
+      if i == 2 then
+         blood.image = scene4a_tbl[5][1]
+      end
+      
+      poll_for_key_or_button(4)
+      if should_exit() then return end
+   end
+   
+   --avatar walks out of the newly risen moongate
+   local avatar = create_sprite(moongate_tbl[3][0], 80, 150)
+
+   tesla.x = 180
+   tesla.y = 133
+   tesla.image = scene4a_tbl[6][8]
+
+   for i=0,68 do
+      moongate.image = moongate_tbl[1][i % 8]
+      avatar.image = moongate_tbl[3][math.floor(i/2)]
+      if i == 3 then
+         blood.image = scene4a_tbl[5][2]
+      end
+      
+      if i == 4 then
+         freud_head.image = scene4a_tbl[4][3]
+      end
+      
+      if i == 11 then
+         text.text = text_tbl[3]
+         text.text_color = 7
+      end
+      
+      poll_for_key_or_button(3)
+      if should_exit() then return end
+   end
+   
+   --spector walks out of moongate
+   local spector = create_sprite(moongate_tbl[5][0], 140, 130)
+   
+   text.text = text_tbl[4]
+   text.text_color = 14
+
+   for i=0,24 do
+      moongate.image = moongate_tbl[1][i % 8]
+      spector.image = moongate_tbl[5][math.floor(i/2)]
+      
+      poll_for_key_or_button(3)
+      if should_exit() then return end
+   end
+   
+   --spector face closeup shot
+   canvas_hide_all_sprites()
+   
+   bg.image = scene4a_tbl[9][0]
+   bg.visible = true
+   
+   local face = sprite_new(scene4a_tbl[9][1], 0, 24, true)
+   
+   text.text = text_tbl[5]
+   text.text_color = 2
+   text.visible = true
+   
+   poll_for_key_or_button(200)
+   if should_exit() then return end
+   
+   --spector shows note to tesla
+   text.text = text_tbl[6]
+   face.visible = false
+   bg.image = scene4a_tbl[0]
+   
+   tesla.visible = true
+   tesla.image = scene4a_tbl[6][9]
+   
+   blood.visible = true
+
+   freud_head.image = scene4a_tbl[4][2]
+   freud_head.visible = true
+
+   freud_body.visible = true
+   
+   avatar.visible = true
+   avatar.x = 80
+   avatar.y = 150
+   avatar.image = scene4a_tbl[2][1]
+   
+   spector.visible = true
+   spector.x = 145
+   spector.y = 140
+   spector.image = scene4a_tbl[3][1]
+   
+   poll_for_key_or_button(200)
+   if should_exit() then return end
+   
+   --tesla face closeup shot
+   canvas_hide_all_sprites()
+   
+   bg.image = scene4a_tbl[7][0]
+   bg.visible = true
+   
+   face.image = scene4a_tbl[7][1]
+   face.visible = true
+   
+   text.text = text_tbl[7]
+   text.text_color = 7
+   text.visible = true
+      
+   poll_for_key_or_button(200)
+   if should_exit() then return end
+
+   --blood closeup.    
+   canvas_hide_all_sprites()
+   
+   bg.image = scene4a_tbl[8][0]
+   bg.visible = true
+   
+   face.visible = true
+   text.visible = true
+   text.text_color = 4
+   
+   for i=8,9 do
+      face.image = scene4a_tbl[8][i - 7]
+      text.text = text_tbl[i]
+      
+      poll_for_key_or_button(200)
+      if should_exit() then return end
+   end
+   
 end
 
 function run_introduction()
