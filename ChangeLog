@@ -1,3 +1,7 @@
+2014-06-01  Eric Fry <efry at users.sourceforge.net> r1947
+	* More work on 1895 lab sequence. It is complete now. I just need to fix the
+	  timings.
+
 2014-05-31  Eric Fry <efry at users.sourceforge.net> r1946
 	* Work on 1895 lab sequence for MD.
 

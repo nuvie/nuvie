@@ -803,8 +803,13 @@ function show_lab_1895()
 
    local freud_body = create_sprite(scene4a_tbl[4][0], 0, 74)
    local freud_head = create_sprite(scene4a_tbl[4][2], 23, 100)
-     
+
+   local nellie = sprite_new(scene4b_tbl[1][0], 242, 24, false)
+   
+   local bookcase = sprite_new(scene4a_tbl[1], 242, 24, false)
+      
    local blood = sprite_new(scene4a_tbl[5][0], 240, 40, true)
+   local garrett = sprite_new(scene4b_tbl[0][0], 270, 45, false)
    
    fade_in(6)
    
@@ -974,6 +979,193 @@ function show_lab_1895()
       if should_exit() then return end
    end
    
+   --Tesla calls Mr Garrett.
+   text.text = text_tbl[10]
+   text.text_color = 7
+   face.visible = false
+   bg.image = scene4a_tbl[0]
+   
+   tesla.visible = true
+   tesla.image = scene4a_tbl[6][10]
+   
+   blood.visible = true
+
+   freud_head.visible = true
+   freud_body.visible = true
+   
+   avatar.visible = true
+   avatar.image = scene4a_tbl[2][0]
+   
+   spector.visible = true
+   spector.image = scene4a_tbl[3][0]
+   
+   poll_for_key_or_button(200)
+   if should_exit() then return end
+
+   --Mr Garrett entrance
+   garrett.visible = true
+   spector.x = 150
+   spector.y = 140
+   text.text = text_tbl[11]
+   text.text_color = 9
+   for i=0,31 do
+      if i == 5 then
+         spector.image = scene4a_tbl[3][2]
+      end
+      if i <= 10 then
+         avatar.image = scene4a_tbl[2][i]
+      end
+      
+      garrett.image = scene4b_tbl[0][i]
+      
+      poll_for_key_or_button(3)
+      if should_exit() then return end
+   end
+   
+   --Tesla checks note, talks about mission.
+   
+   spector.image = scene4a_tbl[3][1]
+   spector.x = 155
+   avatar.image = scene4a_tbl[2][10]
+   freud_head.image = scene4a_tbl[4][1]
+
+   local text_color_tbl = {4, 6, 7, 7, 14, 2, 2, 7, 4, 4, 7, 9, 7, 4, 7, 4, 7, 2, 7, 7, 7, 7, 7, 11, 2, 7, 7}
+   
+   for i=12,20 do
+      if i==13 or i==16 or i==20 then
+         face.visible = true
+         tesla.visible = false
+         blood.visible = false
+         freud_head.visible = false
+         freud_body.visible = false
+         avatar.visible = false
+         spector.visible = false
+         garrett.visible = false
+         local idx
+         if i==13 then
+            idx = 8
+         else
+            idx = 7   
+         end
+         bg.image = scene4a_tbl[idx][0]
+         
+         if i==16 then
+            face.image = scene4a_tbl[idx][2]
+         else
+            face.image = scene4a_tbl[idx][1]
+         end 
+      else
+         local idx
+         if i == 14 then
+            spector.image = scene4a_tbl[3][0]
+         end
+         if i == 12 or i == 17 then
+            idx = 9
+         elseif i == 14 or i == 15 then
+            idx = 10
+         else
+            idx = 11
+         end
+         tesla.image = scene4a_tbl[6][idx]
+      end
+      
+      text.text = text_tbl[i]
+      text.text_color = text_color_tbl[i+1]
+      
+      poll_for_key_or_button(200)
+      if should_exit() then return end  
+               
+      face.visible = false
+      tesla.visible = true
+      blood.visible = true
+      freud_head.visible = true
+      freud_body.visible = true
+      avatar.visible = true
+      spector.visible = true
+      garrett.visible = true
+      bg.image = scene4a_tbl[0]
+   end
+   
+   
+   --Nellie walks in
+      
+   tesla.image = scene4a_tbl[6][10]
+   
+   text.text = text_tbl[21]
+   text.text_color = text_color_tbl[22]
+   
+   nellie.visible = true
+   nellie.y = 125         
+   bookcase.visible = true
+   
+   for i=0,31 do
+      if i == 7 then
+         freud_head.image = scene4a_tbl[4][2]
+      end
+      nellie.image = scene4b_tbl[1][i%4]
+      nellie.x = 320 - i * 3
+      if i > 25 then
+         nellie.y = 125 + (i - 26) * 2
+      end
+      
+      local avatar_idx = 20 - i
+      if avatar_idx > 10 then
+      avatar_idx = 10
+      end
+      
+      if avatar_idx < 4 then
+      avatar_idx = 4
+      end
+      avatar.image = scene4a_tbl[2][avatar_idx]
+
+      local garrett_idx = 45 - i
+      if garrett_idx > 31 then
+         garrett_idx = 31
+      end
+      
+      if garrett_idx < 18 then
+         garrett_idx = 18
+      end
+      garrett.image = scene4b_tbl[0][garrett_idx]
+      
+      poll_for_key_or_button(3)
+      if should_exit() then return end
+   end
+   
+   --Nellie shakes hands with Spector, Avatar
+   
+   spector.x = 165
+   nellie.x = 227
+   nellie.y = 135
+   
+   for i=22,26 do
+      if i == 24 then
+         nellie.image = scene4b_tbl[1][7]
+         spector.image = scene4a_tbl[3][3]
+      else
+         if i == 23 then
+            nellie.image = scene4b_tbl[1][6]
+         else
+            nellie.image = scene4b_tbl[1][5]
+         end
+         spector.image = scene4a_tbl[3][0]
+      end
+      
+      if i == 25 then
+         tesla.image = scene4a_tbl[6][9]
+      elseif i == 26 then
+         tesla.image = scene4a_tbl[6][11]
+      else
+         tesla.image = scene4a_tbl[6][12]
+      end
+
+      text.text = text_tbl[i]
+      text.text_color = text_color_tbl[i+1]
+      
+      poll_for_key_or_button(200)
+      if should_exit() then return end
+   end
+   
 end
 
 function run_introduction()
@@ -992,9 +1184,8 @@ function run_introduction()
 
    show_lab_1895()
    if should_exit() then return end
-      
-   --display_image_table(g_img_tbl)
-   --wait_for_input()
+   
+   fade_out(6)
 end
 
 function create_character()
@@ -1032,6 +1223,7 @@ function execute_menu_item(cursor_pos)
    
    clear_should_exit_flag()
    canvas_hide_all_sprites()
+   canvas_set_opacity(0xff)
    music_stop()
    g_menu_bg_sprite.visible = true
    g_menu_cursor_sprite.visible = true
