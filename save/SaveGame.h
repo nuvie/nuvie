@@ -98,6 +98,7 @@ class SaveGame
  void update_objlist_for_new_game();
  void update_objlist_for_new_game_u6();
  void update_objlist_for_new_game_se();
+ void update_objlist_for_new_game_md();
 };
 
 #endif /* __SaveGame_h__ */

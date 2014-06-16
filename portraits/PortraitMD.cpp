@@ -58,9 +58,9 @@ bool PortraitMD::load(NuvieIO *objlist)
 {
  objlist->seek(OBJLIST_OFFSET_MD_GENDER);
 
- avatar_portrait_num = objlist->read1(); //read in the avatar portrait number from objlist.
- if(avatar_portrait_num > 0)
-   avatar_portrait_num--;
+ avatar_portrait_num = objlist->read1() == 0 ? 1 : 0; //read in the avatar portrait number from objlist.
+ //if(avatar_portrait_num > 0)
+ //  avatar_portrait_num--;
 
  return true;
 }

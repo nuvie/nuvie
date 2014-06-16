@@ -187,7 +187,7 @@ bool ActorManager::load(NuvieIO *objlist)
 
  //old obj_n & frame_n values
  
- objlist->seek(0x15f1);
+ objlist->seek(game_type == NUVIE_GAME_U6 ? 0x15f1 : 0x16f1);
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {
@@ -396,7 +396,7 @@ bool ActorManager::save(NuvieIO *objlist)
 
  //old obj_n & frame_n values
 
- objlist->seek(0x15f1);
+ objlist->seek(game_type == NUVIE_GAME_U6 ? 0x15f1 : 0x16f1);
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {

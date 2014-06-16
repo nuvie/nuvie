@@ -37,6 +37,7 @@
 #include "Configuration.h"
 #include "Game.h"
 #include "ObjManager.h"
+#include "Objlist.h"
 #include "ActorManager.h"
 #include "EggManager.h"
 #include "Actor.h"
@@ -578,15 +579,20 @@ void SaveGame::clean_up()
 
 void SaveGame::update_objlist_for_new_game()
 {
-  if(Game::get_game()->get_game_type() == NUVIE_GAME_SE)
+  nuvie_game_t type = Game::get_game()->get_game_type();
+  if(type == NUVIE_GAME_SE)
   {
     update_objlist_for_new_game_se();
+  }
+  else if(type == NUVIE_GAME_MD)
+  {
+    update_objlist_for_new_game_md();
   }
   else
   {
     update_objlist_for_new_game_u6();
   }
-  //FIXME need a save game loader for MD.
+
 }
 
 void SaveGame::update_objlist_for_new_game_u6()
@@ -666,4 +672,62 @@ void SaveGame::update_objlist_for_new_game_se()
 
   objlist.seek(0x14f2);
   objlist.write1(dex); //movement points
+}
+
+void SaveGame::update_objlist_for_new_game_md()
+{
+  std::string name = "";
+
+  int gender;
+  config->value("config/newgamedata/gender", gender, 0);
+
+  config->value("config/newgamedata/name", name, "Avatar");
+  objlist.seek(0xf00);
+  int len = name.length();
+  if(len > 13)
+    len = 13;
+
+  objlist.writeBuf((unsigned char *)name.c_str(), len+1);
+
+  int str,dex,intelligence;
+  config->value("config/newgamedata/str", str, 0xf);
+  objlist.seek(0x901);
+  objlist.write1(str);
+
+  config->value("config/newgamedata/dex", dex, 0xf);
+  objlist.seek(0xa01);
+  objlist.write1(dex);
+
+  config->value("config/newgamedata/int", intelligence, 0xf);
+  objlist.seek(0xb01);
+  objlist.write1(intelligence);
+
+  objlist.seek(0xe01);
+  objlist.write1(str*2+intelligence); //hp
+
+  objlist.seek(0x14f2);
+  objlist.write1(dex); //movement points
+
+  objlist.seek(OBJLIST_OFFSET_MD_GENDER);
+  objlist.write1(gender);
+
+  //read in avatar's obj_n + frame_n data
+  objlist.seek(0x403);
+  uint8 b2 = objlist.read1();
+  uint16 obj_n = gender == 0 ? 343 : 344;
+  uint8 frame_n = (b2 & 0xfc) >> 2;
+
+  //write out adjusted avatar gender obj_n + frame_n
+  objlist.seek(0x402);
+  objlist.write1(obj_n & 0xff);
+  b2 = obj_n >> 8;
+  b2 += frame_n << 2;
+  objlist.write1(b2);
+
+  //also write to the old obj_n + frame_n data.
+  objlist.seek(0x16f3);
+  objlist.write1(obj_n & 0xff);
+  b2 = obj_n >> 8;
+  b2 += frame_n << 2;
+  objlist.write1(b2);
 }
