@@ -48,6 +48,17 @@ function should_exit()
    return g_should_exit
 end
 
+function poll_for_input()
+   input = input_poll()
+   if input ~= nil then
+      if input == SDLK_ESCAPE then
+         g_should_exit = true
+      end
+   end
+
+   return input
+end
+
 function poll_for_key_or_button(cycles)
    local input
    if cycles == nil then

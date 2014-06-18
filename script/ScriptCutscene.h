@@ -27,10 +27,10 @@
 #include "GUI.h"
 #include "GUI_widget.h"
 #include "U6Shape.h"
+#include "WOUFont.h"
 #include "Configuration.h"
 
 class SoundManager;
-class WOUFont;
 class Font;
 class U6LineWalker;
 class Cursor;
@@ -165,6 +165,8 @@ public:
 	void set_bg_color(uint8 new_color) { bg_color = new_color; }
 
 	Screen *get_screen() { return screen; }
+
+	uint16 get_text_width(const char *text) { return font->getStringWidth(text); }
 
 private:
   bool is_lzc(const char *filename);

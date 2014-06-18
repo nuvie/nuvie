@@ -1303,6 +1303,132 @@ function insert_player_name(text)
    return output
 end
 
+local g_keycode_tbl =
+{
+[32]=" ",
+[39]="'",
+[44]=",",
+[45]="-",
+[46]=".",
+[48]="0",
+[49]="1",
+[50]="2",
+[51]="3",
+[52]="4",
+[53]="5",
+[54]="6",
+[55]="7",
+[56]="8",
+[57]="9",
+[65]="A",
+[66]="B",
+[67]="C",
+[68]="D",
+[69]="E",
+[70]="F",
+[71]="G",
+[72]="H",
+[73]="I",
+[74]="J",
+[75]="K",
+[76]="L",
+[77]="M",
+[78]="N",
+[79]="O",
+[80]="P",
+[81]="Q",
+[82]="R",
+[83]="S",
+[84]="T",
+[85]="U",
+[86]="V",
+[87]="W",
+[88]="X",
+[89]="Y",
+[90]="Z",
+
+[97]="a",
+[98]="b",
+[99]="c",
+[100]="d",
+[101]="e",
+[102]="f",
+[103]="g",
+[104]="h",
+[105]="i",
+[106]="j",
+[107]="k",
+[108]="l",
+[109]="m",
+[110]="n",
+[111]="o",
+[112]="p",
+[113]="q",
+[114]="r",
+[115]="s",
+[116]="t",
+[117]="u",
+[118]="v",
+[119]="w",
+[120]="x",
+[121]="y",
+[122]="z",
+}
+
+local g_name_sprite = sprite_new(nil, 120, 184, false)
+g_name_sprite.text_color = 14
+local g_cursor_sprite = sprite_new(nil, 120, 184, false)
+g_cursor_sprite.text = "_"
+g_cursor_sprite.text_color = 14
+local g_cursor_timer = 0
+
+
+function collect_player_name()
+   local name_text = g_name_sprite.text
+   local len = string.len(name_text)
+   
+   g_name_sprite.visible = true
+   
+   local input = poll_for_input()
+   if input ~= nil then
+      if should_exit() then
+         return false
+      end
+
+      if (input == SDLK_BACKSPACE or input == SDLK_LEFT) and len > 0 then
+         g_name_sprite.text = string.sub(name_text, 1, len - 1)
+         len = len - 1
+      elseif (input == SDLK_RETURN or input == SDLK_KP_ENTER) and len > 0 then --return
+         g_name_sprite.visible = false
+         g_cursor_sprite.visible = false
+         g_player_name = g_name_sprite.text
+         return true
+      elseif g_keycode_tbl[input] ~= nil and len < 13 then
+         g_name_sprite.text = name_text..g_keycode_tbl[input]
+         len = len + 1
+      end
+
+   end
+
+   if len == 13 then
+      g_cursor_sprite.visible = false
+   else
+      g_cursor_sprite.x = 120 + g_name_sprite.text_width
+      if g_cursor_timer == 0 then
+         g_cursor_timer = 8
+         if g_cursor_sprite.visible == true then
+            g_cursor_sprite.visible = false
+         else
+            g_cursor_sprite.visible = true
+         end
+      else
+         g_cursor_timer = g_cursor_timer - 1
+      end
+   end
+   
+   return false
+end
+
 function ask_question(question_idx, text, eyes, pen, create_tbl, text_tbl)
    question_idx = question_idx + 1
    
@@ -1331,21 +1457,25 @@ function ask_question(question_idx, text, eyes, pen, create_tbl, text_tbl)
             continue_loop = false
          elseif action == -2 then
             -- A, B input
-            local input = input_poll()
+            local input = poll_for_input()
             if input ~= nil and (input == SDLK_a or input == SDLK_b) then
                key_input = input
                continue_loop = false
             end
          elseif action == -3 then
-            local input = input_poll()
+            local input = poll_for_input()
             if input ~= nil and (input == SDLK_a or input == SDLK_b or input == SDLK_c) then
                key_input = input
                continue_loop = false
             end
          elseif action == -4 then
-            g_player_name = "Avatar"
-            wait_for_input()
-            continue_loop = false
+            if collect_player_name() == true then
+               continue_loop = false
+            end
+         end
+         
+         if should_exit() then
+            return nil
          end
          
          canvas_update()
@@ -1603,6 +1733,10 @@ function create_character()
       question_1_answer_b(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
    elseif answer == SDLK_c then
       question_1_answer_c(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
+   end
+   
+   if should_exit() then
+      return false
    end
    
    ask_question(69, text, eyes, pen, create_tbl, text_tbl)

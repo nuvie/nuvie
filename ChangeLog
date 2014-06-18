@@ -1,3 +1,8 @@
+2014-06-18  Eric Fry <efry at users.sourceforge.net> r1949
+	* Added player name input logic the to MD character creation sequence.
+	* Added new sprite.text_width getter method. This returns the width
+	  of the sprite's text field in pixels.
+ 
 2014-06-16  Eric Fry <efry at users.sourceforge.net> r1948
 	* Work on MD character creation logic.
 

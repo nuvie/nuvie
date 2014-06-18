@@ -768,6 +768,12 @@ static int nscript_sprite_get(lua_State *L)
 		return 1;
 	}
 
+  if(!strcmp(key, "text_width"))
+  {
+    lua_pushinteger(L, cutScene->get_text_width(sprite->text.c_str()));
+    return 1;
+  }
+
 return 0;
 }
 
