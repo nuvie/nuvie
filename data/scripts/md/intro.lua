@@ -3,7 +3,8 @@ local lua_file = nil
 --load common functions
 lua_file = nuvie_load("common/intro_common.lua"); lua_file();
 
-
+local FREUD_STATE_STARING  = 0
+local FREUD_STATE_WRITING  = 1
 
 local function origin_fx_sequence()
    local g_img_tbl = image_load_all("title.lzc")
@@ -1189,99 +1190,99 @@ function run_introduction()
 end
 
 local char_creation_tbl = {
-   {["text"]=-1, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=-2, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=3,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=4,  ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=5,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -4},
-   {["text"]=6,  ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=7,  ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=8,  ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=9,  ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=10, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=11, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=12, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=13, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=14, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -3},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=15, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=16, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=17, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=18, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=19, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=20, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=21, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=22, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=23, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=24, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=25, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=26, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=27, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=28, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=29, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=30, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=31, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=32, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=33, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=34, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=35, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=36, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=37, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=38, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=39, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=40, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=41, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=42, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=43, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=44, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=45, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=46, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=47, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=48, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=49, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=50, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=51, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=52, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=53, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=54, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=55, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=56, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=57, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=58, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=59, ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -2},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=60, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=61, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=62, ["eye_sprite"]=3, ["move_pen"]=1, ["action_code"]= -1},
-   {["text"]=63, ["eye_sprite"]=1, ["move_pen"]=0, ["action_code"]= -1},
-   {["text"]=0,  ["eye_sprite"]=2, ["move_pen"]=0, ["action_code"]= -1}
+   {["text"]=-1, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=-2, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=3,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=4,  ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=5,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -4},
+   {["text"]=6,  ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=7,  ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=8,  ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=9,  ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=10, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=11, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=12, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=13, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=14, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -3},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=15, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=16, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=17, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=18, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=19, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=20, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=21, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=22, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=23, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=24, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=25, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=26, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=27, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=28, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=29, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=30, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=31, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=32, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=33, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=34, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=35, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=36, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=37, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=38, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=39, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=40, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=41, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=42, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=43, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=44, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=45, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=46, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=47, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=48, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=49, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=50, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=51, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=52, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=53, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=54, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=55, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=56, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=57, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=58, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=59, ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -2},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=60, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=61, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=62, ["eye_sprite"]=3, ["can_move_pen"]=true, ["action_code"]= -1},
+   {["text"]=63, ["eye_sprite"]=1, ["can_move_pen"]=false, ["action_code"]= -1},
+   {["text"]=0,  ["eye_sprite"]=2, ["can_move_pen"]=false, ["action_code"]= -1}
 }
 
 local g_player_name = ""
@@ -1429,7 +1430,56 @@ function collect_player_name()
    return false
 end
 
-function ask_question(question_idx, text, eyes, pen, create_tbl, text_tbl)
+function update_freud(freud)
+   if freud.eyes.blink_timer < 200 then
+      if freud.timer == 0 then
+         freud.timer = math.random(100, 350)
+         freud.state = math.random(0,1)
+      else
+         freud.timer = freud.timer - 1
+      end
+      
+      local state = freud.state
+      if state == FREUD_STATE_STARING then
+         if freud.can_move_pen == true then
+            freud.eyes.sprite.image = freud.images[0][1]
+         else
+            freud.eyes.sprite.image = freud.images[0][freud.eyes.sprite_idx]
+         end
+      elseif state == FREUD_STATE_WRITING and freud.can_move_pen == true then
+         freud.eyes.sprite.image = freud.images[0][freud.eyes.sprite_idx]
+         if freud.timer % 4 == 0 then
+            freud.pen.sprite.image = freud.images[2][math.random(0,6)]
+            freud.pen.x_off = freud.pen.x_off + math.random(0, 3)
+            if freud.pen.x_off >= 30 then
+               freud.pen.x_off = freud.pen.x_off % 30
+               freud.pen.y_off = (freud.pen.y_off + 2) % 20
+            end
+
+            freud.pen.sprite.x = 128 - freud.pen.x_off
+            freud.pen.sprite.y = 83 + freud.pen.y_off
+         end
+      end
+   end
+   
+   if freud.eyes.blink_timer == 200 then
+      if freud.eyes.sprite_idx == 2 then
+         freud.eyes.sprite.image = freud.images[0][5]
+      else
+         freud.eyes.sprite.image = freud.images[0][4]
+      end
+   elseif freud.eyes.blink_timer == 215 then
+      if state == FREUD_STATE_WRITING or freud.can_move_pen == false then
+         freud.eyes.sprite.image = freud.images[0][freud.eyes.sprite_idx]
+      else
+         freud.eyes.sprite.image = freud.images[0][1]
+      end
+      freud.eyes.blink_timer = -1
+   end
+   freud.eyes.blink_timer = freud.eyes.blink_timer + 1   
+end
+
+function ask_question(question_idx, text, freud)
    question_idx = question_idx + 1
    
    local key_input = nil
@@ -1444,17 +1494,22 @@ function ask_question(question_idx, text, eyes, pen, create_tbl, text_tbl)
          text.text_color = 6
       end
       
-      text.text = insert_player_name(text_tbl[math.abs(text_offset)])
+      text.text = insert_player_name(freud.text_tbl[math.abs(text_offset)])
       
-      eyes.image = create_tbl[0][char_creation_tbl[question_idx].eye_sprite]
-      
+      freud.eyes.sprite_idx = char_creation_tbl[question_idx].eye_sprite
+      freud.eyes.sprite.image = freud.images[0][freud.eyes.sprite_idx]
+      freud.eyes.blink_timer = 0
+      freud.state = FREUD_STATE_STARING
+      freud.can_move_pen = char_creation_tbl[question_idx].can_move_pen
       local action = char_creation_tbl[question_idx].action_code
 
       local continue_loop = true
       while continue_loop do 
          if action == -1 then
-            wait_for_input()
-            continue_loop = false
+            local input = poll_for_input()
+            if input ~= nil then
+               continue_loop = false
+            end
          elseif action == -2 then
             -- A, B input
             local input = poll_for_input()
@@ -1478,6 +1533,7 @@ function ask_question(question_idx, text, eyes, pen, create_tbl, text_tbl)
             return nil
          end
          
+         update_freud(freud)
          canvas_update()
       end
       
@@ -1488,201 +1544,201 @@ function ask_question(question_idx, text, eyes, pen, create_tbl, text_tbl)
    return key_input
 end
 
-function question_1_answer_a(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
-      ask_question(18, text, eyes, pen, create_tbl, text_tbl)
-      local var_14 = ask_question(20, text, eyes, pen, create_tbl, text_tbl)
+function question_1_answer_a(text, freud, rand_high, rand_low)
+      ask_question(18, text, freud)
+      local var_14 = ask_question(20, text, freud)
       if var_14 == SDLK_a then
-         local var_16 = ask_question(23, text, eyes, pen, create_tbl, text_tbl)
+         local var_16 = ask_question(23, text, freud)
          if var_16 == SDLK_a then
-            local answer = ask_question(29, text, eyes, pen, create_tbl, text_tbl)
+            local answer = ask_question(29, text, freud)
             if answer == SDLK_a then
                avatar_str = rand_high
                avatar_int = rand_low
                if gender_answer == SDLK_a then
-                  ask_question(31, text, eyes, pen, create_tbl, text_tbl)
+                  ask_question(31, text, freud)
                else
-                  ask_question(34, text, eyes, pen, create_tbl, text_tbl)
+                  ask_question(34, text, freud)
                end
             elseif answer == SDLK_b then
                avatar_int = rand_high
                avatar_str = rand_low
             end
          elseif var_16 == SDLK_b then
-            local answer = ask_question(37, text, eyes, pen, create_tbl, text_tbl)
+            local answer = ask_question(37, text, freud)
             if answer == SDLK_a then
                avatar_int = rand_high
                avatar_dex = rand_low
-               ask_question(40, text, eyes, pen, create_tbl, text_tbl)              
+               ask_question(40, text, freud)              
             elseif answer == SDLK_b then
                avatar_dex = rand_high
                avatar_int = rand_low
-               ask_question(43, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(43, text, freud)
             end
          end
       elseif var_14 == SDLK_b then
-         local var_16 = ask_question(26, text, eyes, pen, create_tbl, text_tbl)
+         local var_16 = ask_question(26, text, freud)
          if var_16 == SDLK_a then
-            local answer = ask_question(46, text, eyes, pen, create_tbl, text_tbl)
+            local answer = ask_question(46, text, freud)
             if answer == SDLK_a then
                avatar_str = rand_high
                avatar_dex = rand_low               
                if gender_answer == SDLK_a then
-                  ask_question(49, text, eyes, pen, create_tbl, text_tbl)
+                  ask_question(49, text, freud)
                else
-                  ask_question(52, text, eyes, pen, create_tbl, text_tbl)
+                  ask_question(52, text, freud)
                end               
             elseif answer == SDLK_b then
                avatar_dex = rand_high
                avatar_str = rand_low               
                if gender_answer == SDLK_a then
-                  ask_question(58, text, eyes, pen, create_tbl, text_tbl)
+                  ask_question(58, text, freud)
                else
-                  ask_question(55, text, eyes, pen, create_tbl, text_tbl)
+                  ask_question(55, text, freud)
                end                
             end
          elseif var_16 == SDLK_b then
-            local answer = ask_question(61, text, eyes, pen, create_tbl, text_tbl)
+            local answer = ask_question(61, text, freud)
             if answer == SDLK_a then
                avatar_int = rand_high
                avatar_dex = rand_low
-               ask_question(64, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(64, text, freud)
             elseif answer == SDLK_b then
                avatar_dex = rand_high
                avatar_int = rand_low
-               ask_question(66, text, eyes, pen, create_tbl, text_tbl)               
+               ask_question(66, text, freud)               
             end
          end
       end
 end
 
-function question_1_answer_b(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
-   local var_14 = ask_question(26, text, eyes, pen, create_tbl, text_tbl)
+function question_1_answer_b(text, freud, rand_high, rand_low)
+   local var_14 = ask_question(26, text, freud)
    if var_14 == SDLK_a then
-      local var_16 = ask_question(23, text, eyes, pen, create_tbl, text_tbl)
+      local var_16 = ask_question(23, text, freud)
       if var_16 == SDLK_a then
-         local answer = ask_question(29, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(29, text, freud)
          if answer == SDLK_a then
             avatar_str = rand_high
             avatar_int = rand_low
             if gender_answer == SDLK_a then
-               ask_question(31, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(31, text, freud)
             else
-               ask_question(34, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(34, text, freud)
             end 
          elseif answer == SDLK_b then
             avatar_int = rand_high
             avatar_str = rand_low            
          end
       elseif var_16 == SDLK_b then
-         local answer = ask_question(37, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(37, text, freud)
          if answer == SDLK_a then
             avatar_int = rand_high
             avatar_dex = rand_low
-            ask_question(40, text, eyes, pen, create_tbl, text_tbl)
+            ask_question(40, text, freud)
          elseif answer == SDLK_b then
             avatar_dex = rand_high
             avatar_int = rand_low
-            ask_question(43, text, eyes, pen, create_tbl, text_tbl)            
+            ask_question(43, text, freud)            
          end
       end
    elseif var_14 == SDLK_b then
-      local var_16 = ask_question(20, text, eyes, pen, create_tbl, text_tbl)
+      local var_16 = ask_question(20, text, freud)
       if var_16 == SDLK_a then
-         local answer = ask_question(72, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(72, text, freud)
          if answer == SDLK_a then
             avatar_int = rand_high
             avatar_str = rand_low
-            ask_question(75, text, eyes, pen, create_tbl, text_tbl)
+            ask_question(75, text, freud)
          elseif answer == SDLK_b then
             avatar_str = rand_high
             avatar_int = rand_low
-            ask_question(78, text, eyes, pen, create_tbl, text_tbl)         
+            ask_question(78, text, freud)         
          end
       elseif var_16 == SDLK_b then
-         local answer = ask_question(46, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(46, text, freud)
          if answer == SDLK_a then
             avatar_str = rand_high
             avatar_dex = rand_low
             if gender_answer == SDLK_a then
-               ask_question(49, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(49, text, freud)
             else
-               ask_question(52, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(52, text, freud)
             end 
          elseif answer == SDLK_b then
             avatar_dex = rand_high
             avatar_str = rand_low
             if gender_answer == SDLK_a then
-               ask_question(58, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(58, text, freud)
             else
-               ask_question(55, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(55, text, freud)
             end            
          end         
       end
    end
 end
 
-function question_1_answer_c(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
-   ask_question(81, text, eyes, pen, create_tbl, text_tbl)
-   local var_14 = ask_question(23, text, eyes, pen, create_tbl, text_tbl)
+function question_1_answer_c(text, freud, rand_high, rand_low)
+   ask_question(81, text, freud)
+   local var_14 = ask_question(23, text, freud)
    if var_14 == SDLK_a then
-      local var_16 = ask_question(26, text, eyes, pen, create_tbl, text_tbl)
+      local var_16 = ask_question(26, text, freud)
       if var_16 == SDLK_a then
-         local answer = ask_question(46, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(46, text, freud)
          if answer == SDLK_a then
             avatar_str = rand_high
             avatar_dex = rand_low
             if gender_answer == SDLK_a then
-               ask_question(49, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(49, text, freud)
             else
-               ask_question(52, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(52, text, freud)
             end           
          elseif answer == SDLK_b then
             avatar_dex = rand_high
             avatar_str = rand_low
             if gender_answer == SDLK_a then
-               ask_question(58, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(58, text, freud)
             else
-               ask_question(55, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(55, text, freud)
             end              
          end
       elseif var_16 == SDLK_b then
-         local answer = ask_question(37, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(37, text, freud)
          if answer == SDLK_a then
             avatar_int = rand_high
             avatar_dex = rand_low
-            ask_question(40, text, eyes, pen, create_tbl, text_tbl)
+            ask_question(40, text, freud)
          elseif answer == SDLK_b then
             avatar_dex = rand_high
             avatar_int = rand_low
-            ask_question(43, text, eyes, pen, create_tbl, text_tbl)            
+            ask_question(43, text, freud)            
          end         
       end
    elseif var_14 == SDLK_b then
-      local var_16 = ask_question(20, text, eyes, pen, create_tbl, text_tbl)
+      local var_16 = ask_question(20, text, freud)
       if var_16 == SDLK_a then
-         local answer = ask_question(29, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(29, text, freud)
          if answer == SDLK_a then
             avatar_str = rand_high
             avatar_int = rand_low
             if gender_answer == SDLK_a then
-               ask_question(31, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(31, text, freud)
             else
-               ask_question(34, text, eyes, pen, create_tbl, text_tbl)
+               ask_question(34, text, freud)
             end 
          elseif answer == SDLK_b then
             avatar_int = rand_high
             avatar_str = rand_low
          end
       elseif var_16 == SDLK_b then
-         local answer = ask_question(84, text, eyes, pen, create_tbl, text_tbl)
+         local answer = ask_question(84, text, freud)
          if answer == SDLK_a then
             avatar_dex = rand_high
             avatar_str = rand_low
-            ask_question(87, text, eyes, pen, create_tbl, text_tbl)
+            ask_question(87, text, freud)
          elseif answer == SDLK_b then
             avatar_str = rand_high
             avatar_dex = rand_low
-            ask_question(90, text, eyes, pen, create_tbl, text_tbl)               
+            ask_question(90, text, freud)               
          end
       end
    end
@@ -1691,7 +1747,7 @@ end
 function create_character()
    canvas_hide_all_sprites()
    local create_tbl = image_load_all("create.lzc")
-
+   
    local text_tbl = text_load("scenetxt.lzc", 5)
 
    local text = sprite_new(nil, 0, 160, true)
@@ -1700,10 +1756,14 @@ function create_character()
    text.text_align_centre = true
    
    local bg = sprite_new(create_tbl[0][0], 0, 24, true)
-   local eyes = sprite_new(create_tbl[0][4], 0, 24, true)
-   local pen = sprite_new(create_tbl[2][0], 128, 83, true)
+   local eyes_sprite = sprite_new(create_tbl[0][4], 0, 24, true)
+   local pen_sprite = sprite_new(create_tbl[2][0], 128, 83, true)
    local clipboard = sprite_new(create_tbl[1], 89, 109, true)
-         
+   
+   local eyes ={["sprite"]=eyes_sprite, ["sprite_idx"]=4, ["blink_timer"]=0}
+   local pen = {["sprite"]=pen_sprite,["x_off"]=0,["y_off"]=0,["sprite_idx"]=0,["timer"]=0,}
+   local freud = {["eyes"]=eyes, ["pen"]=pen, ["state"]=FREUD_STATE_STARING, ["timer"] = 0, ["can_move_pen"] = false, ["images"]=create_tbl, ["text_tbl"]=text_tbl}
+   
    music_play("mdd_mus.lzc", 7)
 
    local rand_high = math.random(24,26)
@@ -1716,30 +1776,30 @@ function create_character()
    
    local gender
    
-   gender_answer = ask_question(0, text, eyes, pen, create_tbl, text_tbl)
+   gender_answer = ask_question(0, text, freud)
    if gender_answer == SDLK_a then
       gender = 0 --male
-      ask_question(8, text, eyes, pen, create_tbl, text_tbl)
+      ask_question(8, text, freud)
    elseif gender_answer == SDLK_b then
       gender = 1 --female
-      ask_question(11, text, eyes, pen, create_tbl, text_tbl)
+      ask_question(11, text, freud)
    end
    
-   local answer = ask_question(14, text, eyes, pen, create_tbl, text_tbl)
+   local answer = ask_question(14, text, freud)
    
    if answer == SDLK_a then
-      question_1_answer_a(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
+      question_1_answer_a(text, freud, rand_high, rand_low)
    elseif answer == SDLK_b then
-      question_1_answer_b(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
+      question_1_answer_b(text, freud, rand_high, rand_low)
    elseif answer == SDLK_c then
-      question_1_answer_c(text, eyes, pen, create_tbl, text_tbl, rand_high, rand_low)
+      question_1_answer_c(text, freud, rand_high, rand_low)
    end
    
    if should_exit() then
       return false
    end
    
-   ask_question(69, text, eyes, pen, create_tbl, text_tbl)
+   ask_question(69, text, freud)
    
    config_set("config/newgame", true)
    config_set("config/newgamedata/name", g_player_name)

@@ -1,3 +1,6 @@
+2014-06-24  Eric Fry <efry at users.sourceforge.net> r1950
+	* Added writing and blinking animation to character creation sequence.
+
 2014-06-18  Eric Fry <efry at users.sourceforge.net> r1949
 	* Added player name input logic the to MD character creation sequence.
 	* Added new sprite.text_width getter method. This returns the width
