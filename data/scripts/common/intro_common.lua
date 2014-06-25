@@ -25,6 +25,10 @@ SDLK_DOWN         = 274
 SDLK_RIGHT        = 275
 SDLK_LEFT         = 276
 
+function trim_string(s)
+   return s:match'^%s*(.*%S)' or ''
+end
+
 function wait_for_input()
    local input = nil
    while input == nil do

@@ -1,3 +1,10 @@
+2014-06-25  Eric Fry <efry at users.sourceforge.net> r1951
+	* Added About Martian Dreams 'Credits' sequence.
+	* Fixed bug in text_load() script function.
+	* Added sub index to image_load() script function.
+	* Trim whitespace from player name in MD character creation sequence.
+	* Tweaked Freud logic to have him write more often.
+
 2014-06-24  Eric Fry <efry at users.sourceforge.net> r1950
 	* Added writing and blinking animation to character creation sequence.
 

@@ -1399,10 +1399,10 @@ function collect_player_name()
       if (input == SDLK_BACKSPACE or input == SDLK_LEFT) and len > 0 then
          g_name_sprite.text = string.sub(name_text, 1, len - 1)
          len = len - 1
-      elseif (input == SDLK_RETURN or input == SDLK_KP_ENTER) and len > 0 then --return
+      elseif (input == SDLK_RETURN or input == SDLK_KP_ENTER) and string.len(trim_string(name_text)) > 0 then --return
          g_name_sprite.visible = false
          g_cursor_sprite.visible = false
-         g_player_name = g_name_sprite.text
+         g_player_name = trim_string(name_text)
          return true
       elseif g_keycode_tbl[input] ~= nil and len < 13 then
          g_name_sprite.text = name_text..g_keycode_tbl[input]
@@ -1434,7 +1434,11 @@ function update_freud(freud)
    if freud.eyes.blink_timer < 200 then
       if freud.timer == 0 then
          freud.timer = math.random(100, 350)
-         freud.state = math.random(0,1)
+         if freud.state == FREUD_STATE_STARING then
+            freud.state = FREUD_STATE_WRITING
+         else
+            freud.state = FREUD_STATE_STARING
+         end
       else
          freud.timer = freud.timer - 1
       end
@@ -1816,6 +1820,45 @@ end
 
 
 function about_martian_dreams()
+   canvas_hide_all_sprites()
+   local bg = sprite_new(image_load("mars.lzc", 0), 0, 24, true)   
+
+   local text_tbl = text_load("scenetxt.lzc", 4)
+   music_play("mdd_mus.lzc", 8)
+
+   local sprites = {}
+   local i
+   for i=0,81 do
+      local s = sprite_new(nil, 11, 153 + i * 14, true)
+      s.text_color = 6
+      s.text = text_tbl[i]
+      table.insert(sprites, s)
+      
+      s = sprite_new(nil, 12, 152 + i * 14, true)
+      s.text_color = 14
+      s.text = text_tbl[i]
+      table.insert(sprites, s)
+   end
+ 
+   --black bars for the top and bottom of the screen.
+   --These hide the text as it is scrolling in and out.
+   sprite_new(image_new(220, 24, 0), 0, 0, true)  
+   sprite_new(image_new(220, 48, 0), 0, 152, true)
+   
+   --scroll the text up the screen
+   for i=0,90*14 do
+      local j
+      for j=1,82*2 do
+         sprites[j].y = sprites[j].y - 1
+      end
+      poll_for_key_or_button(2)
+      if should_exit() then
+         fade_out()
+         return
+      end
+   end
+   music_stop()
+   fade_out()
 end
 
 function journey_onward()

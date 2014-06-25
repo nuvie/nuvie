@@ -398,11 +398,15 @@ static int nscript_image_load(lua_State *L)
 {
 	const char *filename = lua_tostring(L, 1);
 	int idx = -1;
+	int sub_idx = 0;
 
 	if(lua_gettop(L) >= 2)
 		idx = lua_tointeger(L, 2);
 
-	CSImage *image = cutScene->load_image(filename, idx);
+  if(lua_gettop(L) >= 3)
+    sub_idx = lua_tointeger(L, 3);
+
+	CSImage *image = cutScene->load_image(filename, idx, sub_idx);
 
 	if(image)
 	{
@@ -1351,8 +1355,7 @@ std::vector<std::string> ScriptCutscene::load_text(const char *filename, uint8 i
         v.push_back(string((const char*)&buf[start]));
         i++;
         buf[i] = '\0'; // skip the '\n' character
-        i++;
-        start=i;
+        start=i+1;
       }
     }
 
