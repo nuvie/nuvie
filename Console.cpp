@@ -108,6 +108,14 @@ void ConsoleAddError(std::string s)
 	}
 }
 
+void ConsoleAddWarning(std::string s)
+{
+  if(g_console != NULL)
+  {
+    DEBUG(0,LEVEL_WARNING, s.c_str());
+    g_console->AddLine("Warning: " + s);
+  }
+}
 void ConsolePause()
 {
 	if(g_console == NULL)

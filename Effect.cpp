@@ -1208,8 +1208,8 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to)
 
     while(p < pixels_to_check)
     {
-        uint16 x = NUVIE_RAND()%fade_width + fade_x,
-               y = NUVIE_RAND()%fade_height + fade_y;
+        uint16 x = uint16(float(NUVIE_RAND())*(fade_width-1)/NUVIE_RAND_MAX) + fade_x,
+               y = uint16(float(NUVIE_RAND())*(fade_height-1)/NUVIE_RAND_MAX) + fade_y;
         if(x >= overlay->w) x = overlay->w-1; // prevent overflow if fade_from is too big
         if(y >= overlay->h) y = overlay->h-1;
         rnum = y*overlay->w + x;

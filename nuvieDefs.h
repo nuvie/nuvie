@@ -110,8 +110,10 @@ typedef unsigned char BOOL;
 
 #ifdef MACOSX
 #define NUVIE_RAND random
+#define NUVIE_RAND_MAX 0x7fffffff // POSIX: 2^(31)-1
 #else
 #define NUVIE_RAND rand
+#define NUVIE_RAND_MAX RAND_MAX
 #endif
 
 #define MAXPATHLEN 256

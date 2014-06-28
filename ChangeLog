@@ -1,3 +1,12 @@
+2014-06-28  Eric Fry <efry at users.sourceforge.net> r1952
+	* Added patch from Yorick Hardy. This removes the use of modulo random
+	  logic from FadeEffect::pixelated_fade_core() this should give better
+	  randomness on systems with a bad rand() implmentation.
+	* Hide console when transitioning from main menu to game window.
+	* Removed console error from NuvieFileList.
+	* Added ConsoleAddWarning() this prints to the console but doesn't force
+	  the console to be displayed if it is hidden.
+
 2014-06-25  Eric Fry <efry at users.sourceforge.net> r1951
 	* Added About Martian Dreams 'Credits' sequence.
 	* Fixed bug in text_load() script function.

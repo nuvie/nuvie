@@ -634,6 +634,7 @@ bool Nuvie::playIntro()
 		config->value("config/quit", should_quit, false);
 		if(!should_quit)
 		{
+		  ConsoleHide();
 			return true;
 		}
 	}

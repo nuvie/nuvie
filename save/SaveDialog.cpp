@@ -38,6 +38,7 @@
 #include "NuvieFileList.h"
 #include "Keys.h"
 #include "Event.h"
+#include "Console.h"
 
 #define CURSOR_HIDDEN 0
 #define CURSOR_AT_TOP 1
@@ -79,8 +80,10 @@ bool SaveDialog::init(const char *save_directory, const char *search_prefix)
  GUI_Color *color_ptr;
 
  if(filelist.open(save_directory, search_prefix, NUVIE_SORT_TIME_DESC) == false)
+ {
+   ConsoleAddError(std::string("Failed to open ") + save_directory);
    return false;
-
+ }
 
  scroller = new GUI_Scroller(20,26, 280, NUVIE_SAVE_SCROLLER_HEIGHT, 135,119,76, NUVIE_SAVESLOT_HEIGHT );
  widget = (GUI_Widget *) new GUI_Text(20, 12, 0, 0, 0, "Load/Save", gui->get_font());

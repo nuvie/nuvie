@@ -54,6 +54,7 @@ void ConsoleInit(Configuration *c, Screen *s, GUI *gui, uint16 w, uint16 h);
 void ConsoleDelete();
 void ConsoleAddInfo(const char *s, ...);
 void ConsoleAddError(std::string s);
+void ConsoleAddWarning(std::string s);
 void ConsolePause();
 void ConsoleShow();
 void ConsoleHide();

@@ -59,8 +59,7 @@ bool NuvieFileList::open(const char *directory, const char *search, uint8 s_mode
  dir = opendir(directory);
  if(dir == NULL)
    {
-    //DEBUG(0,LEVEL_ERROR,"Error: Failed to open %s\n", directory);
-    ConsoleAddError(std::string("Failed to open ") + directory);
+    ConsoleAddWarning(std::string("Failed to open ") + directory);
     return false;
    }
 

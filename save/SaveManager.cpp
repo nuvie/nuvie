@@ -153,8 +153,10 @@ bool SaveManager::load_latest_save()
  std::string fullpath;
 
  if(filelist.open(savedir.c_str(), search_prefix.c_str(), NUVIE_SORT_TIME_DESC) == false)
+ {
+   ConsoleAddError("Opening " + savedir);
    return false;
-
+ }
  filename = filelist.get_latest();
 
  filelist.close();
