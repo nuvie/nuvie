@@ -702,11 +702,21 @@ void SaveGame::update_objlist_for_new_game_md()
   objlist.seek(0xb01);
   objlist.write1(intelligence);
 
-  objlist.seek(0xe01);
-  objlist.write1(str*2+intelligence); //hp
+  objlist.seek(0xc02);
+  objlist.write2(600); //experience
 
+  objlist.seek(0xe01);
+  objlist.write1(str*2+(4*24)); //hp = strength * 2 + level * 24
+
+  objlist.seek(0xff2);
+  objlist.write1(4); //level
+
+  //FIXME movement points where are they?
   objlist.seek(0x14f2);
   objlist.write1(dex); //movement points
+
+  objlist.seek(0x15f2);
+  objlist.write1(20); //movement points
 
   objlist.seek(OBJLIST_OFFSET_MD_GENDER);
   objlist.write1(gender);

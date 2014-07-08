@@ -1,3 +1,8 @@
+2014-07-08  Eric Fry <efry at users.sourceforge.net> r1953
+	* Started work on MD end sequence.
+	* Tweaked timings for MD 'Run Introduction' sequence
+	* Added more actor stats to MD create player.
+
 2014-06-28  Eric Fry <efry at users.sourceforge.net> r1952
 	* Added patch from Yorick Hardy. This removes the use of modulo random
 	  logic from FadeEffect::pixelated_fade_core() this should give better

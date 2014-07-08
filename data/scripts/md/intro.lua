@@ -459,7 +459,7 @@ function show_home()
    fade_in()
    music_play("mdd_mus.lzc", 8)
    
-   poll_for_key_or_button(50)
+   poll_for_key_or_button(75)
    if should_exit() then return end
 
    local woman = sprite_new(g_img_tbl[8][0], 0, 151, true)
@@ -494,7 +494,7 @@ function show_home()
    text.text = text_tbl[5]
    text.text_color = 2
 
-   poll_for_key_or_button(100)
+   poll_for_key_or_button(75)
    if should_exit() then return end
    
    woman.image = g_img_tbl[3][0]
@@ -505,7 +505,7 @@ function show_home()
    text.text = text_tbl[6]
    text.text_color = 9
    
-   poll_for_key_or_button(100)
+   poll_for_key_or_button(75)
    if should_exit() then return end
       
    --woman hands spector note
@@ -519,7 +519,7 @@ function show_home()
       poll_for_key_or_button(5)
    end
    
-   poll_for_key_or_button(100)
+   poll_for_key_or_button(50)
    if should_exit() then return end
    
    text.text = text_tbl[8]
@@ -556,7 +556,7 @@ function show_home()
    text.text = text_tbl[10]
    text.text_color = 2
 
-   poll_for_key_or_button(100)
+   poll_for_key_or_button(75)
    if should_exit() then return end
           
    --close up on papers
@@ -589,9 +589,9 @@ function show_home()
    --FIXME need to rotate the letter sprite.
    for i=0,19 do
       letter.y = -20 - i
-      poll_for_key_or_button(5)
+      poll_for_key_or_button(1)
    end
-   
+      
    letter.visible = false
    text.text = text_tbl[14]
    text.text_color = 14
