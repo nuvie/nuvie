@@ -1818,49 +1818,6 @@ function create_character()
    return true
 end
 
-
-function about_martian_dreams()
-   canvas_hide_all_sprites()
-   local bg = sprite_new(image_load("mars.lzc", 0), 0, 24, true)   
-
-   local text_tbl = text_load("scenetxt.lzc", 4)
-   music_play("mdd_mus.lzc", 8)
-
-   local sprites = {}
-   local i
-   for i=0,81 do
-      local s = sprite_new(nil, 11, 153 + i * 14, true)
-      s.text_color = 6
-      s.text = text_tbl[i]
-      table.insert(sprites, s)
-      
-      s = sprite_new(nil, 12, 152 + i * 14, true)
-      s.text_color = 14
-      s.text = text_tbl[i]
-      table.insert(sprites, s)
-   end
- 
-   --black bars for the top and bottom of the screen.
-   --These hide the text as it is scrolling in and out.
-   sprite_new(image_new(220, 24, 0), 0, 0, true)  
-   sprite_new(image_new(220, 48, 0), 0, 152, true)
-   
-   --scroll the text up the screen
-   for i=0,90*14 do
-      local j
-      for j=1,82*2 do
-         sprites[j].y = sprites[j].y - 1
-      end
-      poll_for_key_or_button(2)
-      if should_exit() then
-         fade_out()
-         return
-      end
-   end
-   music_stop()
-   fade_out()
-end
-
 function journey_onward()
 end
 
