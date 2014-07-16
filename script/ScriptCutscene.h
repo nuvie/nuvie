@@ -107,8 +107,12 @@ struct CSSprite {
 	}
 };
 
-void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundManager *sm);
+struct CSMidGameData {
+  std::vector<std::string> text;
+  std::vector<CSImage *> images;
+};
 
+void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundManager *sm);
 
 class ScriptCutscene : public GUI_Widget
 {
@@ -127,12 +131,16 @@ private:
 	uint32 loop_interval;
 	uint8 screen_opacity;
 	uint8 bg_color;
+	bool solid_bg;
+	bool rotate_game_palette;
 
 public:
 	ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm);
 	~ScriptCutscene();
 
 	std::vector<std::string> load_text(const char *filename, uint8 idx);
+
+	std::vector<CSMidGameData> load_midgame_file(const char *filename);
 
 	CSImage *load_image(const char *filename, int idx, int sub_idx=0);
 	std::vector<std::vector<CSImage *> > load_all_images(const char *filename);
@@ -143,6 +151,7 @@ public:
 	void set_palette_entry(uint8 idx, uint8 r, uint8 g, uint8 b);
 	void rotate_palette(uint8 idx, uint8 length);
 	void set_screen_opacity(uint8 new_opacity);
+	void enable_game_palette_rotation(bool val) { rotate_game_palette = val; }
 
 	void set_update_interval(uint16 interval);
 	void update();
@@ -163,6 +172,7 @@ public:
 	void hide_sprites();
 
 	void set_bg_color(uint8 new_color) { bg_color = new_color; }
+  void set_solid_bg(bool value) { solid_bg = value; }
 
 	Screen *get_screen() { return screen; }
 
@@ -174,5 +184,7 @@ private:
   void display_wrapped_text(CSSprite *s);
   int display_wrapped_text_line(std::string str, uint8 text_color, int x, int y);
 };
+
+ScriptCutscene *get_cutscene();
 
 #endif /* __ScriptCutscene_h__ */

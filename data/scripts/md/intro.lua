@@ -1977,4 +1977,5 @@ if main_menu() == "Q" then -- returns "Q" for quit or "J" for Journey Onward
    config_set("config/quit", true)
 end
 
+music_stop()
 canvas_hide()

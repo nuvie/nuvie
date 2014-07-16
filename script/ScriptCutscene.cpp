@@ -28,6 +28,7 @@
 #include "NuvieIOFile.h"
 #include "U6Lzw.h"
 #include "U6LineWalker.h"
+#include "GamePalette.h"
 
 #include "SoundManager.h"
 #include "Font.h"
@@ -40,6 +41,7 @@
 #define DELUXE_PAINT_MAGIC 0x4d524f46 // "FORM"
 
 static ScriptCutscene *cutScene = NULL;
+ScriptCutscene *get_cutscene() { return cutScene; }
 
 static int nscript_image_set(lua_State *L);
 static int nscript_image_get(lua_State *L);
@@ -89,6 +91,7 @@ static int nscript_sprite_new(lua_State *L);
 static int nscript_sprite_move_to_front(lua_State *L);
 
 static int nscript_text_load(lua_State *L);
+static int nscript_midgame_load(lua_State *L);
 
 static int nscript_canvas_set_bg_color(lua_State *L);
 static int nscript_canvas_set_palette(lua_State *L);
@@ -96,10 +99,13 @@ static int nscript_canvas_set_palette_entry(lua_State *L);
 static int nscript_canvas_rotate_palette(lua_State *L);
 static int nscript_canvas_set_update_interval(lua_State *L);
 static int nscript_canvas_set_opacity(lua_State *L);
+static int nscript_canvas_set_solid_bg(lua_State *L);
 static int nscript_canvas_update(lua_State *L);
+static int nscript_canvas_show(lua_State *L);
 static int nscript_canvas_hide(lua_State *L);
 static int nscript_canvas_hide_all_sprites(lua_State *L);
 static int nscript_canvas_string_length(lua_State *L);
+static int nscript_canvas_rotate_game_palette(lua_State *L);
 
 static int nscript_music_play(lua_State *L);
 static int nscript_music_stop(lua_State *L);
@@ -167,6 +173,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
    lua_pushcfunction(L, nscript_text_load);
    lua_setglobal(L, "text_load");
 
+   lua_pushcfunction(L, nscript_midgame_load);
+   lua_setglobal(L, "midgame_load");
+
    lua_pushcfunction(L, nscript_canvas_set_bg_color);
    lua_setglobal(L, "canvas_set_bg_color");
 
@@ -182,12 +191,17 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
    lua_pushcfunction(L, nscript_canvas_set_update_interval);
    lua_setglobal(L, "canvas_set_update_interval");
 
+   lua_pushcfunction(L, nscript_canvas_set_solid_bg);
+   lua_setglobal(L, "canvas_set_solid_bg");
+
    lua_pushcfunction(L, nscript_canvas_set_opacity);
    lua_setglobal(L, "canvas_set_opacity");
 
-
    lua_pushcfunction(L, nscript_canvas_update);
    lua_setglobal(L, "canvas_update");
+
+   lua_pushcfunction(L, nscript_canvas_show);
+   lua_setglobal(L, "canvas_show");
 
    lua_pushcfunction(L, nscript_canvas_hide);
    lua_setglobal(L, "canvas_hide");
@@ -197,6 +211,9 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_canvas_string_length);
    lua_setglobal(L, "canvas_string_length");
+
+   lua_pushcfunction(L, nscript_canvas_rotate_game_palette);
+   lua_setglobal(L, "canvas_rotate_game_palette");
 
    lua_pushcfunction(L, nscript_music_play);
    lua_setglobal(L, "music_play");
@@ -875,6 +892,50 @@ static int nscript_text_load(lua_State *L)
   return 1;
 }
 
+static int nscript_midgame_load(lua_State *L)
+{
+  const char *filename = lua_tostring(L, 1);
+  std::vector<CSMidGameData> v = cutScene->load_midgame_file(filename);
+
+  if(v.empty())
+  {
+    return 0;
+  }
+
+  lua_newtable(L);
+
+  for(uint16 i=0;i<v.size();i++)
+  {
+    lua_pushinteger(L, i);
+
+    lua_newtable(L);
+
+    lua_pushstring(L,"text");
+    lua_newtable(L);
+    for(uint16 j=0;j<v[i].text.size();j++)
+      {
+        lua_pushinteger(L, j);
+        lua_pushstring(L,v[i].text[j].c_str());
+        lua_settable(L, -3);
+      }
+    lua_settable(L, -3);
+
+    lua_pushstring(L,"images");
+    lua_newtable(L);
+    for(uint16 j=0;j<v[i].images.size();j++)
+      {
+        lua_pushinteger(L, j);
+        nscript_new_image_var(L, v[i].images[j]);
+        lua_settable(L, -3);
+      }
+    lua_settable(L, -3);
+
+    lua_settable(L, -3);
+  }
+
+  return 1;
+}
+
 static int nscript_canvas_set_bg_color(lua_State *L)
 {
 	uint8 color = lua_tointeger(L, 1);
@@ -923,6 +984,13 @@ static int nscript_canvas_set_update_interval(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_set_solid_bg(lua_State *L)
+{
+  bool solid_bg = lua_toboolean(L, 1);
+  cutScene->set_solid_bg(solid_bg);
+  return 0;
+}
+
 static int nscript_canvas_set_opacity(lua_State *L)
 {
 	uint8 opacity = lua_tointeger(L, 1);
@@ -937,10 +1005,15 @@ static int nscript_canvas_update(lua_State *L)
 	return 0;
 }
 
+static int nscript_canvas_show(lua_State *L)
+{
+  cutScene->moveToFront();
+  return 0;
+}
+
 static int nscript_canvas_hide(lua_State *L)
 {
 	cutScene->Hide();
-	cutScene->get_sound_manager()->musicStop();
 	return 0;
 }
 
@@ -957,6 +1030,13 @@ static int nscript_canvas_string_length(lua_State *L)
 
 	lua_pushinteger(L, font->getStringWidth(str));
 	return 1;
+}
+
+static int nscript_canvas_rotate_game_palette(lua_State *L)
+{
+  bool val = lua_toboolean(L, 1);
+  cutScene->enable_game_palette_rotation(val);
+  return 0;
 }
 
 static int nscript_music_play(lua_State *L)
@@ -1152,6 +1232,8 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 
 	screen_opacity = 255;
 	bg_color = 0;
+	solid_bg = true;
+	rotate_game_palette = false;
 }
 
 ScriptCutscene::~ScriptCutscene()
@@ -1326,6 +1408,73 @@ std::vector<std::vector<CSImage *> > ScriptCutscene::load_all_images(const char 
 
 	return v;
 
+}
+
+void load_images_from_lib(std::vector<CSImage *> *images, U6Lib_n *lib, uint32 index)
+{
+  unsigned char *buf = lib->get_item(index,NULL);
+  if(buf == NULL)
+  {
+    return;
+  }
+
+  NuvieIOBuffer io;
+  io.open(buf, lib->get_item_size(index), false);
+  U6Lib_n lib1;
+  lib1.open(&io, 4, NUVIE_GAME_MD);
+
+  for(uint16 i=0;i<lib1.get_num_items();i++)
+  {
+    U6Shape *shp = new U6Shape();
+    if(shp->load(&lib1, i))
+    {
+      images->push_back(new CSImage(shp));
+    }
+  }
+  free(buf);
+}
+
+std::vector<CSMidGameData> ScriptCutscene::load_midgame_file(const char *filename)
+{
+  std::string path;
+  U6Lib_n lib_n;
+  std::vector<CSMidGameData> v;
+  nuvie_game_t game_type = Game::get_game()->get_game_type();
+
+  config_get_path(config, filename, path);
+
+  if(!lib_n.open(path, 4, NUVIE_GAME_MD))
+  {
+    return v;
+  }
+
+  for(uint32 idx=0;idx<lib_n.get_num_items();)
+  {
+    if(game_type == NUVIE_GAME_MD && idx == 0) //Skip the first entry in the lib for MD it is *bogus*
+    {
+      idx++;
+      continue;
+    }
+
+    CSMidGameData data;
+    for(int i=0;i<3;i++,idx++)
+    {
+      unsigned char *buf = lib_n.get_item(idx, NULL);
+      data.text.push_back(string((const char*)buf));
+      free(buf);
+    }
+
+    load_images_from_lib(&data.images, &lib_n, idx++);
+
+    if(game_type == NUVIE_GAME_MD)
+    {
+      load_images_from_lib(&data.images, &lib_n, idx++);
+    }
+
+    v.push_back(data);
+  }
+
+  return v;
 }
 
 std::vector<std::string> ScriptCutscene::load_text(const char *filename, uint8 idx)
@@ -1537,6 +1686,14 @@ void ScriptCutscene::update()
 		gui->force_full_redraw();
 	}
 
+	if(rotate_game_palette)
+	{
+	  GamePalette *palette = Game::get_game()->get_palette();
+	  if(palette)
+	  {
+	    palette->rotatePalette();
+	  }
+	}
 	gui->Display();
 	screen->preformUpdate();
 	sound_manager->update();
@@ -1562,10 +1719,13 @@ void ScriptCutscene::Display(bool full_redraw)
 	if(cursor && cursor->is_visible())
 		cursor->clear();
 
-	if(full_redraw)
-		screen->fill(bg_color,0,0,area.w, area.h);
-	else
-		screen->fill(bg_color,x_off,y_off,320, 200);
+  if(solid_bg)
+  {
+    if(full_redraw)
+      screen->fill(bg_color,0,0,area.w, area.h);
+    else
+      screen->fill(bg_color,x_off,y_off,320, 200);
+  }
 
 	if(screen_opacity > 0)
 	{

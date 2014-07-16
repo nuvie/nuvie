@@ -141,6 +141,8 @@ class Script
 
    MapCoord call_moonstone_get_loc(uint8 phase);
    bool call_update_moongates(bool visible);
+
+   uint8 call_play_midgame_sequence(uint16 seq_num);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);

@@ -142,6 +142,7 @@ static const struct luaL_Reg nscript_u6linkrecursivelib_m[] =
 };
 
 static int nscript_print(lua_State *L);
+static int nscript_clear_scroll(lua_State *L);
 static int nscript_display_prompt(lua_State *L);
 //no longer used -- static int nscript_get_target(lua_State *L);
 static int nscript_load(lua_State *L);
@@ -152,6 +153,8 @@ static int nscript_objlist_seek(lua_State *L);
 static int nscript_objlist_read2(lua_State *L);
 static int nscript_objlist_write2(lua_State *L);
 
+static int nscript_game_get_ui_style(lua_State *L);
+static int nscript_player_get_gender(lua_State *L);
 static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
 static int nscript_player_set_karma(lua_State *L);
@@ -227,6 +230,9 @@ static int nscript_peer_effect(lua_State *L);
 static int nscript_wing_strike_effect(lua_State *L);
 static int nscript_hail_storm_effect(lua_State *L);
 static int nscript_wizard_eye_effect(lua_State *L);
+
+
+static int nscript_play_end_sequence(lua_State *L);
 
 static int nscript_play_sfx(lua_State *L);
 static int nscript_is_god_mode_enabled(lua_State *L);
@@ -488,6 +494,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_objlist_write2);
    lua_setglobal(L, "objlist_write2");
 
+   lua_pushcfunction(L, nscript_clear_scroll);
+   lua_setglobal(L, "clear_scroll");
+
    lua_pushcfunction(L, nscript_print);
    lua_setglobal(L, "print");
 
@@ -499,6 +508,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_input_select_integer);
    lua_setglobal(L, "input_select_integer");
+
+   lua_pushcfunction(L, nscript_play_end_sequence);
+   lua_setglobal(L, "play_end_sequence");
 
    lua_pushcfunction(L, nscript_play_sfx);
    lua_setglobal(L, "play_sfx");
@@ -586,6 +598,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_map_line_hit_check);
    lua_setglobal(L, "map_line_hit_check");
+
+   lua_pushcfunction(L, nscript_game_get_ui_style);
+   lua_setglobal(L, "game_get_ui_style");
+
+   lua_pushcfunction(L, nscript_player_get_gender);
+   lua_setglobal(L, "player_get_gender");
 
    lua_pushcfunction(L, nscript_player_get_location);
    lua_setglobal(L, "player_get_location");
@@ -1227,6 +1245,15 @@ uint8 Script::call_get_weapon_range(uint16 obj_n)
 	if(call_function("get_weapon_range", 1, 1) == false)
 		return 1;
 	return (uint8)lua_tointeger(L,-1);
+}
+
+uint8 Script::call_play_midgame_sequence(uint16 seq_num)
+{
+  lua_getglobal(L, "play_midgame_sequence");
+  lua_pushnumber(L, (lua_Number)seq_num);
+  if(call_function("play_midgame_sequence", 1, 1) == false)
+    return 1;
+  return (uint8)lua_tointeger(L,-1);
 }
 
 ScriptThread *Script::new_thread(const char *scriptfile)
@@ -1918,6 +1945,17 @@ static int nscript_u6link_recursive_gc(lua_State *L)
    return 0;
 }
 
+static int nscript_clear_scroll(lua_State *L)
+{
+  MsgScroll *scroll = Game::get_game()->get_scroll();
+  if(scroll)
+  {
+    scroll->clear_scroll();
+  }
+
+  return 0;
+}
+
 static int nscript_print(lua_State *L)
 {
    MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -2005,6 +2043,25 @@ static int nscript_objlist_write2(lua_State *L)
 
 	lua_pushboolean(L, ret);
 	return 1;
+}
+
+static int nscript_game_get_ui_style(lua_State *L)
+{
+  lua_pushinteger(L, Game::get_game()->get_game_style());
+  return 1;
+}
+
+static int nscript_player_get_gender(lua_State *L)
+{
+  uint8 gender = 0;
+  Player *player = Game::get_game()->get_player();
+  if(player)
+  {
+    gender = player->get_gender();
+  }
+
+  lua_pushinteger(L, gender);
+  return 1;
 }
 
 static int nscript_player_get_location(lua_State *L)
@@ -2700,6 +2757,17 @@ static int nscript_wizard_eye_effect(lua_State *L)
 
 
 	return 0;
+}
+
+static int nscript_play_end_sequence(lua_State *L)
+{
+  get_cutscene()->moveToFront();
+
+  Script::get_script()->play_cutscene("/ending.lua");
+
+  Game::get_game()->quit();
+
+  return 0;
 }
 
 static int nscript_play_sfx(lua_State *L)

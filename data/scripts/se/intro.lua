@@ -1126,5 +1126,6 @@ if main_menu(img_tbl2) == "Q" then -- returns "Q" for quit or "J" for Journey On
 	config_set("config/quit", true)
 end
 
+music_stop()
 canvas_hide_all_sprites()
 canvas_hide()

@@ -1,3 +1,22 @@
+2014-07-16  Eric Fry <efry at users.sourceforge.net> r1955
+	* Added support for mid-game cut sequences.
+	* Added new script functions
+	  player_get_gender() - Returns the Avatar's gender
+	  game_get_ui_style() - Returns an integer representing the current UI style.
+	  play_end_sequence() - Play the end sequence
+	  clear_scroll()      - Clear the message scroll.
+	* Added new cutscene scripting functions
+	  midgame_load()               - load a WOU midgame file. eg MIDGAME1.LZC
+	  canvas_set_solid_bg()        - enable / disable solid colour backgrounds
+	                                 for cutscenes this is used to display the
+                                   mid game cutscenes over the map window in
+                                   the original UI.
+	  canvas_show()                - Show the cutscene canvas.
+	  canvas_rotate_game_palette() - enable/disable the in-game palette rotation
+                                   effect. Used for mid-game sequences
+	* Added MD ruby slippers usecode.
+	* Added gender sprite selection logic to MD end sequence.
+
 2014-07-09  Eric Fry <efry at users.sourceforge.net> r1954
 	* More work on MD end sequence.
 	* Moved about_martian_dreams() function into common code so it can be 

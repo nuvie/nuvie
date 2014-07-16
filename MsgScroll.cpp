@@ -560,6 +560,8 @@ void MsgScroll::clear_scroll()
 
 	msg_buf.clear();
 	line_count = 0;
+  display_pos=0;
+  scroll_updated = true;
 	add_new_line();
 }
 

@@ -13,6 +13,12 @@ DIR_SOUTHWEST = 6
 DIR_NORTHWEST = 7
 DIR_NONE      = 8
 
+
+UI_STYLE_ORIG = 0
+UI_STYLE_NEW  = 1
+UI_STYLE_ORIG_PLUS_CUTOFF_MAP = 2
+UI_STYLE_ORIG_PLUS_FULL_MAP   = 3
+
 function get_direction(prompt)
 
 	if prompt ~= nil then
@@ -89,6 +95,89 @@ function abs(val)
    return val
 end
 
+function play_midgame_sequence(seq_num)
+   local ui_style = game_get_ui_style()
+   
+   canvas_show()
+   canvas_hide_all_sprites()
+   canvas_set_opacity(0xff);
+   canvas_set_update_interval(25)
+   canvas_rotate_game_palette(true)
+
+   local bg = sprite_new(nil, 8, 16, true)
+   local avatar = sprite_new(nil, 8, 16, false)
+   
+   local text_sprite
+   --local text_sprite_bg
+      
+   if ui_style == UI_STYLE_ORIG then
+      canvas_set_solid_bg(false)
+   else
+   --[[
+      text_sprite_bg = sprite_new(nil, 8, 160, true)
+      text_sprite_bg.text_align_centre = true
+      text_sprite_bg.text_color = 14
+      --]]
+      text_sprite = sprite_new(nil, 8, 160, true)
+      text_sprite.text_align_centre = true
+      text_sprite.text_color = 15
+      bg.x = 80
+      bg.y = 12
+      avatar.x = 80
+      avatar.y = 12
+   end
+
+   local midgame_data = midgame_load("midgame"..string.format("%x", seq_num)..".lzc")
+   local i = 0
+   local data = midgame_data[i]
+   
+
+      
+   while data ~= nil do
+      bg.image = data.images[0]
+      if data.images[1] ~= nil then
+         local gender = player_get_gender()
+         avatar.image = data.images[1+gender]
+         avatar.visible = true
+      else
+         avatar.visible = false
+      end
+      
+      local j = 0
+      local text = data.text[j]
+      while text ~= nil do
+         if text ~= "*END*" then
+            if ui_style == UI_STYLE_ORIG then
+               clear_scroll()
+               print(text)
+            else
+               text_sprite.text = text
+               --text_sprite_bg.text = text
+            end
+
+            local input = nil
+            while input == nil do
+               canvas_update()
+               input = input_poll()
+               if input ~= nil then
+                  break
+               end
+            end
+         end
+         j = j + 1
+         text = data.text[j]
+      end
+      i = i + 1
+      data = midgame_data[i]
+   end
+
+   if ui_style == UI_STYLE_ORIG then
+      clear_scroll()
+   end
+   canvas_set_solid_bg(true)
+   canvas_rotate_game_palette(false)
+   canvas_hide()
+end
 
 --load other common functions
 

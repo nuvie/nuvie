@@ -4,7 +4,7 @@ local lua_file = nil
 lua_file = nuvie_load("common/intro_common.lua"); lua_file();
 
 function play()
-   local gender = 0
+   local gender = player_get_gender()
    local g_img_tbl = image_load_all("endgame.lzc")
    local text_tbl = text_load("scenetxt.lzc", 3)
    local text = sprite_new(nil, 0, 160, true)

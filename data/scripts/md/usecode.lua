@@ -65,7 +65,8 @@ function use_prybar_on_hatch(obj, target_obj, actor)
 		Actor.set_talk_flag(tesla, 2)
 		Actor.talk(tesla)
 	else
-		--FIXME play cutscene here
+		play_midgame_sequence(1)
+		
 		Actor.set_talk_flag(tesla, 5)
 		target_obj.obj_n = 428
 		target_obj.frame_n = 0;
@@ -214,8 +215,34 @@ function use_shovel_on_pile_to_hole(obj, target_obj, to_obj, actor)
 	print("You filled in the hole.\n")
 end
 
+function use_ruby_slippers(obj, actor)
+   if obj.readied == false then
+      --FIXME check that we can ready this object.
+      Obj.removeFromEngine(obj)
+      Actor.inv_ready_obj(actor, obj)
+      return
+   end
+   
+   if obj.quality == 2 then
+      print("You may use the ruby slippers to go home. If you choose to, you may now view the Grand Finale.\n\n*")
+      print("Afterwards, you will exit to DOS. You will be able to resume play from your last saved game.\n\n*")
+      print("Would you like to see the Grand Finale now? If so, press Y. To resume play now, hit N: (Y N)\n")
+      local input = input_select("yn", false)
+      if input == "Y" then
+         play_end_sequence()
+      else
+         play_midgame_sequence(13)
+      end
+   else
+      print("Click.\n")
+      obj.quality = obj.quality + 1
+   end
+end
+
 
 local usecode_table = {
+--OBJ_RUBY_SLIPPERS
+[12]=use_ruby_slippers,
 --OBJ_PICK
 [65]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_SHOVEL
@@ -243,7 +270,14 @@ local usecode_table = {
 --OBJ_MARTIAN_HOE
 [263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL
-[267]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+[267]={
+--on
+   [255]=use_misc_text,
+   [257]=use_misc_text,
+   [258]={ --OBJ_DIRT_PILE
+      --to
+      [257]=use_shovel_on_pile_to_hole},
+   [0]=use_tool_on_ground}, --hole in ice, hole
 [273]={[86]=use_crate}, --Hammer needs more codes
 [284]=use_container,
 --OBJ_DREAM_MACHINE1
