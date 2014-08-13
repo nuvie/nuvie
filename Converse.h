@@ -63,6 +63,7 @@ typedef struct {
 #define U6TALK_VAR_HP        0x19 // avatar's health
 #define U6TALK_VAR_PLAYER_NAME 0x19
 #define U6TALK_VAR_QUESTF    0x1A // 0="Thou art not upon a sacred quest!"
+#define WOUTALK_VAR_ADD_TO_INVENTORY_FAILED 0x1D
 #define U6TALK_VAR_WORKTYPE  0x20 // current activity of npc, from schedule
 #define U6TALK_VAR_YSTRING   0x22 // value of $Y variable.
 #define U6TALK_VAR_INPUT     0x23 // previous input from player ($Z)
@@ -77,6 +78,7 @@ class Converse
     friend class ConverseInterpret;
     friend class SETalkInterpret;
     friend class MDTalkInterpret;
+    friend class WOUConverseInterpret;
     friend class U6ConverseInterpret;
 
     // game system objects from nuvie

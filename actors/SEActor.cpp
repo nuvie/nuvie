@@ -23,7 +23,7 @@
 
 #include "SEActor.h"
 
-SEActor::SEActor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
+SEActor::SEActor(Map *m, ObjManager *om, GameClock *c): WOUActor(m,om,c)
 {
 }
 

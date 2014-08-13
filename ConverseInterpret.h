@@ -217,6 +217,8 @@ protected:
     virtual bool evop(stack<converse_typed_value> &i);
     virtual bool op(stack<converse_typed_value> &i);
 
+    virtual bool op_create_new(stack<converse_typed_value> &i);
+
     converse_value evop_eq(stack<converse_typed_value> &vs);
 
 public:
@@ -264,6 +266,14 @@ public:
 //    ~U6ConverseInterpret();
 };
 
+class WOUConverseInterpret : public ConverseInterpret
+{
+public:
+  WOUConverseInterpret(Converse *owner) : ConverseInterpret(owner) { }
+
+protected:
+  virtual bool op_create_new(stack<converse_typed_value> &i);
+};
 
 class SETalkInterpret : public ConverseInterpret
 {
@@ -272,10 +282,10 @@ public:
 };
 
 
-class MDTalkInterpret : public ConverseInterpret
+class MDTalkInterpret : public WOUConverseInterpret
 {
 public:
-    MDTalkInterpret(Converse *owner) : ConverseInterpret(owner) { }
+    MDTalkInterpret(Converse *owner) : WOUConverseInterpret(owner) { }
 };
 
 

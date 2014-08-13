@@ -1,3 +1,10 @@
+2014-08-13  Eric Fry <efry at users.sourceforge.net> r1956
+	* Added new WOUActor base class.
+	* Added MD specific 'new object' op code in the conversation engine.
+	  This fixes problems with actors not thinking you've got the object they
+	  gave you.
+	* Added bool U6Shape::load_from_lzc(std::string filename, uint32 idx, uint32 sub_idx)
+
 2014-07-16  Eric Fry <efry at users.sourceforge.net> r1955
 	* Added support for mid-game cut sequences.
 	* Added new script functions

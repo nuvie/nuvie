@@ -104,6 +104,9 @@ using std::vector;
 #define ACTOR_VEHICLE_ID_N 0
 #define ACTOR_AVATAR_ID_N  1
 
+#define INV_EXCLUDE_READIED_OBJECTS false
+#define INV_INCLUDE_READIED_OBJECTS true
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -454,8 +457,8 @@ class Actor
  void all_items_to_container(Obj *container_obj, bool stack);
  bool can_carry_weight(Obj *obj);
  bool can_carry_weight(float obj_weight); // return from get_obj_weight()
- bool can_carry_object(uint16 obj_n, uint32 qty = 0);
- bool can_carry_object(Obj *obj);
+ virtual bool can_carry_object(uint16 obj_n, uint32 qty = 0);
+ virtual bool can_carry_object(Obj *obj);
 
  virtual uint8 get_object_readiable_location(Obj *obj);
  virtual const CombatType *get_object_combat_type(uint16 obj_n) { return NULL; }

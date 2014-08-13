@@ -516,7 +516,14 @@ bool ActorManager::save(NuvieIO *objlist)
     objlist->write1(actors[i]->status_flags);
    }
 
- objlist->seek(0x17f1); // Start of Talk flags
+ if(game_type == NUVIE_GAME_U6)
+ {
+   objlist->seek(0x17f1); // Start of Talk flags
+ }
+ else
+ {
+   objlist->seek(0x18f1); //MD talk flags location. FIXME: check SE
+ }
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)
    {

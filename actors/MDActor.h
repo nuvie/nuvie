@@ -23,10 +23,10 @@
 
 #ifndef __MDActor_h__
 #define __MDActor_h__
-#include "Actor.h"
+#include "WOUActor.h"
 
 
-class MDActor: public Actor
+class MDActor: public WOUActor
 {
  protected:
 

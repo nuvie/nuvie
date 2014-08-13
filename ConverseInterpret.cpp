@@ -154,7 +154,7 @@ void ConverseInterpret::step()
         else
         {
 #ifdef CONVERSE_DEBUG
-            DEBUG(0,LEVEL_DEBUGGING, "Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
+            DEBUG(1,LEVEL_DEBUGGING, "Converse: skipped 0x%02x at %04x\n", cs->peek(), cs->pos());
 #endif
             converse->print("[Tried to print a control char.]\n");
             cs->skip();
@@ -202,7 +202,7 @@ void ConverseInterpret::leave()
     {
         struct convi_frame_s *fp = b_frame->top();
 #ifdef CONVERSE_DEBUG
-        DEBUG(0,LEVEL_DEBUGGING,"Converse: ...leave %02x...\n", fp->start_c);
+        DEBUG(1,LEVEL_DEBUGGING,"Converse: ...leave %02x...\n", fp->start_c);
 #endif
         delete fp; fp = NULL;
         b_frame->pop();
@@ -227,7 +227,7 @@ void ConverseInterpret::enter(converse_value c)
         b_frame = new stack<struct convi_frame_s *>;
     b_frame->push(ef);
 #ifdef CONVERSE_DEBUG
-DEBUG(0,LEVEL_DEBUGGING,"Converse: ...enter %02x...\n", ef->start_c);
+DEBUG(1,LEVEL_DEBUGGING,"Converse: ...enter %02x...\n", ef->start_c);
 #endif
 }
 
@@ -272,7 +272,7 @@ void ConverseInterpret::exec()
     }
 #ifdef CONVERSE_DEBUG
     else if(get_val(0) != 0x00) // show stepped over ctrl code (not text)
-        DEBUG(0,LEVEL_DEBUGGING,"Converse: %04x ----: %02x\n", in_start, get_val(0));
+        DEBUG(1,LEVEL_DEBUGGING,"Converse: %04x ----: %02x\n", in_start, get_val(0));
 #endif
     flush();
     converse->set_output(""); // clear output
@@ -403,10 +403,10 @@ void ConverseInterpret::do_ctrl()
 {
     stack<converse_typed_value> st;
 #ifdef CONVERSE_DEBUG
-    DEBUG(0,LEVEL_DEBUGGING,"Converse: %04x INSTR:", in_start);
+    DEBUG(1,LEVEL_DEBUGGING,"Converse: %04x INSTR:", in_start);
     for(uint32 v = 0; v < val_count(); v++)
-        DEBUG(0,LEVEL_DEBUGGING," 0x%02x", get_val(v));
-    DEBUG(0,LEVEL_DEBUGGING,"\n");
+        DEBUG(1,LEVEL_DEBUGGING," 0x%02x", get_val(v));
+    DEBUG(1,LEVEL_DEBUGGING,"\n");
 #endif
 
     converse_typed_value v = {U6OP_VAR, 0};
@@ -535,6 +535,56 @@ bool MDTalkInterpret::op(stack<converse_value> &i)
 }
 #endif
 
+bool ConverseInterpret::op_create_new(stack<converse_typed_value> &i)
+{
+  converse_value v[4];
+  Actor *cnpc = NULL;
+
+  v[0] = pop_arg(i); // npc
+  v[1] = pop_arg(i); // obj
+  v[2] = pop_arg(i); // qual
+  v[3] = pop_arg(i); // quant
+  cnpc = converse->actors->get_actor(npc_num(v[0]));
+  if(cnpc)
+  {
+    if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 && v[1] == 76) // Amulet of Submission
+    {
+      cnpc->remove_readied_object(ACTOR_NECK);
+      Obj *cnpc_obj = cnpc->inventory_new_object(76, 1, 0);
+      cnpc->add_readied_object(cnpc_obj);
+    }
+    else
+      cnpc->inventory_new_object(v[1], v[3], v[2]);
+  }
+
+  return true;
+}
+
+bool WOUConverseInterpret::op_create_new(stack<converse_typed_value> &i)
+{
+  converse_value v[4];
+  Actor *cnpc = NULL;
+
+  v[0] = pop_arg(i); // npc
+  v[1] = pop_arg(i); // obj
+  v[2] = pop_arg(i); // qual
+  v[3] = pop_arg(i); // quant
+  cnpc = converse->actors->get_actor(npc_num(v[0]));
+  if(cnpc)
+  {
+    if(cnpc->can_carry_object(v[1], v[3]))
+    {
+      cnpc->inventory_new_object(v[1], v[3], v[2]);
+      converse->set_var(WOUTALK_VAR_ADD_TO_INVENTORY_FAILED, 0);
+    }
+    else
+    {
+      converse->set_var(WOUTALK_VAR_ADD_TO_INVENTORY_FAILED, 1); //This var is set to true when the object cannot be added to the actor's inventory
+    }
+  }
+
+  return true;
+}
 
 /* Run control code with arguments/operands (arranged on a stack from
  * top to bottom.)
@@ -553,7 +603,7 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
     in = pop_arg(i);
 
 #ifdef CONVERSE_DEBUG
-    DEBUG(0, LEVEL_DEBUGGING, "op %s(%x)\n", op_str(in), in);
+    DEBUG(1, LEVEL_DEBUGGING, "op %s(%x)\n", op_str(in), in);
 #endif
 
     switch(in)
@@ -617,7 +667,7 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
             			db_offset = v[1];
             		}
 #ifdef CONVERSE_DEBUG
-            		DEBUG(0, LEVEL_DEBUGGING, "DB lvar found. location = %x, offset = %x", db_loc, db_offset);
+            		DEBUG(1, LEVEL_DEBUGGING, "DB lvar found. location = %x, offset = %x", db_loc, db_offset);
 #endif
             	}
             }
@@ -663,7 +713,7 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
         case U6OP_JUMP: // 0xb0
             v[0] = pop_arg(i);
 #ifdef CONVERSE_DEBUG
-            DEBUG(0,LEVEL_DEBUGGING,"Converse: JUMP 0x%04x\n", v[0]);
+            DEBUG(1,LEVEL_DEBUGGING,"Converse: JUMP 0x%04x\n", v[0]);
 #endif
             cs->seek(v[0]);
             leave_all(); // always run
@@ -686,22 +736,7 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
             stop();
             break;
         case U6OP_NEW: // 0xb9 (npc, obj, qual, quant)
-            v[0] = pop_arg(i); // npc
-            v[1] = pop_arg(i); // obj
-            v[2] = pop_arg(i); // qual
-            v[3] = pop_arg(i); // quant
-            cnpc = converse->actors->get_actor(npc_num(v[0]));
-            if(cnpc)
-            {
-                if(Game::get_game()->get_game_type() == NUVIE_GAME_U6 && v[1] == 76) // Amulet of Submission
-                {
-                    cnpc->remove_readied_object(ACTOR_NECK);
-                    cnpc_obj = cnpc->inventory_new_object(76, 1, 0);
-                    cnpc->add_readied_object(cnpc_obj);
-                }
-                else
-                    cnpc->inventory_new_object(v[1], v[3], v[2]);
-            }
+            op_create_new(i);
             break;
         case U6OP_DELETE: // 0xba
 //bool Actor::inventory_del_object(uint16 obj_n, uint8 qty, uint8 quality);
@@ -881,7 +916,7 @@ bool ConverseInterpret::evop(stack<converse_typed_value> &i)
     in.val = pop_arg(i);
 
 #ifdef CONVERSE_DEBUG
-    DEBUG(0, LEVEL_DEBUGGING, "evop %s(%x)\n", evop_str(in.val), in.val);
+    DEBUG(1, LEVEL_DEBUGGING, "evop %s(%x)\n", evop_str(in.val), in.val);
 #endif
 
     switch(in.val)
@@ -995,7 +1030,7 @@ bool ConverseInterpret::evop(stack<converse_typed_value> &i)
             v[1] = pop_arg(i);
             v[0] = pop_arg(i);
 #ifdef CONVERSE_DEBUG
-    DEBUG(0, LEVEL_DEBUGGING, "v[0] %d v[1] %d\n", v[0], v[1]);
+    DEBUG(1, LEVEL_DEBUGGING, "npc=%d bit=%d\n", v[0], v[1]);
 #endif
             if(v[1] <= 7)
             {
@@ -1217,7 +1252,7 @@ void ConverseInterpret::eval(uint32 vi)
     stack<converse_typed_value> op_stk, r_stk;
     uint32 v = vi;
 #ifdef CONVERSE_DEBUG
-    DEBUG(0,LEVEL_DEBUGGING,"Converse: EVAL");
+    DEBUG(1,LEVEL_DEBUGGING,"Converse: EVAL");
     for(uint32 w = 0; w < val_count(); w++)
         DEBUG(1,LEVEL_DEBUGGING," %s0x%02x%s", (w == vi) ? "(" : "", get_val(w), (w == val_count() - 1) ? ")" : "");
 #endif
@@ -1421,7 +1456,7 @@ converse_value ConverseInterpret::get_db_integer(uint32 loc, uint32 i)
 void ConverseInterpret::set_db_integer(uint32 loc, uint32 i, converse_value val)
 {
 #ifdef CONVERSE_DEBUG
-	DEBUG(0, LEVEL_DEBUGGING, "set_db_integer(%x, %x, %d)\n", loc, i, val);
+	DEBUG(1, LEVEL_DEBUGGING, "set_db_integer(%x, %x, %d)\n", loc, i, val);
 #endif
 	uint32 p = 0; /* pointer into db */
 
@@ -1451,7 +1486,7 @@ converse_value ConverseInterpret::find_db_string(uint32 loc, const char *dstring
            p = 0, /* pointer into db */
            i = 0; /* item index */
 #ifdef CONVERSE_DEBUG
-DEBUG(0,LEVEL_DEBUGGING,"\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
+DEBUG(1,LEVEL_DEBUGGING,"\nConverse: find_db_string(0x%04x, \"%s\")\n", loc, dstring);
 #endif
     while((converse_value)(db[p]) != U6OP_ENDDATA)
     {

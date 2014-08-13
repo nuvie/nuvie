@@ -11,6 +11,8 @@ nuvie_SOURCES = \
 	actors/SEActor.h \
 	actors/MDActor.cpp \
 	actors/MDActor.h \
+	actors/WOUActor.cpp \
+	actors/WOUActor.h \
 \
 	conf/Configuration.cpp \
 	conf/Configuration.h \

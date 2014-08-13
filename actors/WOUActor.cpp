@@ -1,9 +1,9 @@
 /*
- *  SEActor.h
+ *  WOUActor.cpp
  *  Nuvie
  *
- *  Created by the Nuvie Team on Thur July 12 2012.
- *  Copyright (c) 2012. All rights reserved.
+ *  Created by the Nuvie Team on Sun Jul 20 2014.
+ *  Copyright (c) 2014. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,23 +21,24 @@
  *
  */
 
-#ifndef __SEActor_h__
-#define __SEActor_h__
 #include "WOUActor.h"
-#include "ActorList.h"
 
-class SEActor: public WOUActor
+bool WOUActor::can_carry_object(Obj *obj)
 {
- protected:
+  if(inventory_count_objects(INV_EXCLUDE_READIED_OBJECTS) >= 16)
+  {
+    return false;
+  }
 
- public:
+  return Actor::can_carry_object(obj);
+}
 
- SEActor(Map *m, ObjManager *om, GameClock *c);
- ~SEActor();
+bool WOUActor::can_carry_object(uint16 obj_n, uint32 qty)
+{
+  if(inventory_count_objects(INV_EXCLUDE_READIED_OBJECTS) >= 16)
+  {
+    return false;
+  }
 
- bool init();
- bool will_not_talk();
- uint8 get_maxhp() { return(((level * 4 + strength * 2) < 255) ? (level * 4 + strength * 2) : 255); }
-};
-
-#endif /* __SEActor_h__ */
+  return Actor::can_carry_object(obj_n, qty);
+}

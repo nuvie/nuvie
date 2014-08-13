@@ -1,9 +1,9 @@
 /*
- *  SEActor.h
+ *  WOUActor.h
  *  Nuvie
  *
- *  Created by the Nuvie Team on Thur July 12 2012.
- *  Copyright (c) 2012. All rights reserved.
+ *  Created by the Nuvie Team on Sun Jul 20 2014.
+ *  Copyright (c) 2014. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,23 +21,23 @@
  *
  */
 
-#ifndef __SEActor_h__
-#define __SEActor_h__
-#include "WOUActor.h"
-#include "ActorList.h"
+#ifndef __WOUActor_h__
+#define __WOUActor_h__
+#include "Actor.h"
 
-class SEActor: public WOUActor
+
+class WOUActor: public Actor
 {
  protected:
 
  public:
 
- SEActor(Map *m, ObjManager *om, GameClock *c);
- ~SEActor();
+ WOUActor(Map *m, ObjManager *om, GameClock *c) : Actor(m,om,c) { }
+ ~WOUActor() { }
 
- bool init();
- bool will_not_talk();
- uint8 get_maxhp() { return(((level * 4 + strength * 2) < 255) ? (level * 4 + strength * 2) : 255); }
+ virtual bool can_carry_object(uint16 obj_n, uint32 qty = 0);
+ virtual bool can_carry_object(Obj *obj);
+
 };
 
-#endif /* __SEActor_h__ */
+#endif /* __WOUActor_h__ */

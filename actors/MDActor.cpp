@@ -25,7 +25,7 @@
 
 #define MD_DOWNWARD_FACING_FRAME_N 9
 
-MDActor::MDActor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c)
+MDActor::MDActor(Map *m, ObjManager *om, GameClock *c): WOUActor(m,om,c)
 {
 }
 

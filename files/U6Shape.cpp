@@ -34,6 +34,7 @@
 #include "U6misc.h"
 #include "U6Lzw.h"
 #include "U6Lib_n.h"
+#include "NuvieIO.h"
 #include "U6Shape.h"
 
 
@@ -153,6 +154,42 @@ bool U6Shape::load(U6Lib_n *file, uint32 index)
    }
 
  return false;
+}
+
+bool U6Shape::load_from_lzc(std::string filename, uint32 idx, uint32 sub_idx)
+{
+  U6Lib_n lib_n;
+  unsigned char *buf = NULL;
+
+  if(!lib_n.open(filename, 4, NUVIE_GAME_MD))
+  {
+    return NULL;
+  }
+
+  if(idx >= lib_n.get_num_items())
+  {
+    return NULL;
+  }
+
+  buf = lib_n.get_item(idx,NULL);
+  NuvieIOBuffer io;
+  io.open(buf, lib_n.get_item_size(idx), false);
+  U6Lib_n lib1;
+  lib1.open(&io, 4, NUVIE_GAME_MD);
+
+  if(sub_idx >= lib1.get_num_items())
+  {
+    return NULL;
+  }
+
+  if(load(&lib1, (uint32)sub_idx))
+  {
+    free(buf);
+    return true;
+  }
+
+  free(buf);
+  return false;
 }
 
 /*
