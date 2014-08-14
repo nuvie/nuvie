@@ -363,6 +363,8 @@ nuvie_SOURCES = \
 	views/ContainerWidgetGump.h \
 	views/DollViewGump.cpp \
 	views/DollViewGump.h \
+	views/MDSkyStripWidget.cpp \
+	views/MDSkyStripWidget.h \
 	views/MapEditorView.cpp \
 	views/MapEditorView.h \
 \

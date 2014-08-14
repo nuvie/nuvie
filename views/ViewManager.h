@@ -47,6 +47,7 @@ class ContainerViewGump;
 class DollViewGump;
 class DraggableView;
 class SunMoonRibbon;
+class MDSkyStripWidget;
 
 using std::list;
 
@@ -81,6 +82,8 @@ class ViewManager
  uint8 doll_next_party_member;
 
  SunMoonRibbon *ribbon;
+ MDSkyStripWidget *mdSkyWidget;
+
  std::string DollDataDirString;
 
  public:

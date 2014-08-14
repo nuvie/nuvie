@@ -1,3 +1,6 @@
+2014-08-14  Eric Fry <efry at users.sourceforge.net> r1957
+	* Added MD sky widget when using original style.
+
 2014-08-13  Eric Fry <efry at users.sourceforge.net> r1956
 	* Added new WOUActor base class.
 	* Added MD specific 'new object' op code in the conversation engine.

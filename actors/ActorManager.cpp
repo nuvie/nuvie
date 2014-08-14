@@ -44,6 +44,7 @@
 #include "Script.h"
 #include "U6objects.h"
 #include "MapWindow.h"
+#include "ViewManager.h"
 
 #define ACTOR_TEMP_INIT 255
 #define SCHEDULE_SIZE 5
@@ -730,6 +731,7 @@ void ActorManager::moveActors()
    Game::get_game()->pause_user();
    Game::get_game()->get_script()->call_actor_update_all();
    Game::get_game()->get_map_window()->updateAmbience();
+   Game::get_game()->get_view_manager()->update();
    //updateTime();
    Game::get_game()->unpause_user();
    wait_for_player = true;

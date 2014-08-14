@@ -145,6 +145,7 @@ end
 
 function actor_update_all()
 	--FIXME
+	advance_time(1)
 end
 
 -- [objectnum] = range

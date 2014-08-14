@@ -51,6 +51,7 @@
 #include "Portrait.h"
 #include "UseCode.h"
 #include "NuvieBmpFile.h"
+#include "MDSkyStripWidget.h"
 
 ViewManager::ViewManager(Configuration *cfg)
 {
@@ -62,6 +63,7 @@ ViewManager::ViewManager(Configuration *cfg)
  portrait_view = NULL; party_view = NULL; spell_view = NULL;
  doll_next_party_member = 0;
  ribbon = NULL;
+ mdSkyWidget = NULL;
 }
 
 ViewManager::~ViewManager()
@@ -72,6 +74,7 @@ ViewManager::~ViewManager()
  if (current_view != party_view)     delete party_view;
  if (current_view != portrait_view)  delete portrait_view;
  if (current_view != spell_view)  delete spell_view;
+
 }
 
 bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *tm, ObjManager *om, Portrait *por)
@@ -111,7 +114,12 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	 {
 	   party_view->init(this,176+x_off,6+y_off, font, party, player, tile_manager, obj_manager);
 	 }
-
+	 if(game_type == NUVIE_GAME_MD)
+	 {
+	   mdSkyWidget = new MDSkyStripWidget(config, Game::get_game()->get_clock(), player);
+	   mdSkyWidget->init(32, 2);
+	   gui->AddWidget(mdSkyWidget);
+	 }
  }
  else
  {
@@ -215,6 +223,11 @@ void ViewManager::update()
  if(ribbon && ribbon->Status() == WIDGET_HIDDEN)
  {
 	 ribbon->Show();
+ }
+
+ if(mdSkyWidget)
+ {
+   mdSkyWidget->Redraw();
  }
 
  return;
