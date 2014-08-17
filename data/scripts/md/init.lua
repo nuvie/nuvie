@@ -15,7 +15,7 @@ function save_game()
 end
 
 function look_obj(obj)
-	print("you see " .. obj.look_string);
+	printfl("YOU_SEE", obj.look_string);
 
 	--FIXME usecode look description should be lua code.
 	if usecode_look(obj) then

@@ -17,20 +17,16 @@ function use_door(obj, actor)
 	end
 end
 
-function use_hatch(obj, actor)
-	print("\nIt is stuck.\n")
-end
-
 function use_crate(obj, target_obj, actor)
 	if target_obj.frame_n == 2 then
 		target_obj.frame_n = 1
-		print("You pried the nails out of the crate.\n")
+		printl("YOU_PRIED_THE_NAILS_OUT_OF_THE_CRATE")
 	else
 		if target_obj.frame_n == 1 and obj.obj_n == 273 then
 			target_obj.frame_n = 2
-			print("You nail the crate shut.\n")
+			printl("YOU_NAIL_THE_CRATE_SHUT")
 		else
-			print("It has no effect.\n")
+			printl("IT_HAS_NO_EFFECT")
 		end
 	end
 	
@@ -39,9 +35,9 @@ end
 function use_container(obj, actor)
 	if obj.frame_n == 2 then
 		if obj.obj_n == 86 or obj.obj_n == 284 then
-			print("It is nailed shut.\n")
+			printl("IT_IS_NAILED_SHUT")
 		else
-			print("It is locked.\n")
+			printl("IT_IS_LOCKED")
 		end
 	else
 		if obj.frame_n == 1 then
@@ -56,7 +52,7 @@ end
 function use_prybar_on_hatch(obj, target_obj, actor)
 
 	if actor.actor_num ~= 1 then
-		print(actor.name.." is not strong enough.\n")
+		printfl("IS_NOT_STRONG_ENOUGH", actor.name)
 		return
 	end
 	
@@ -82,7 +78,7 @@ end
 
 function use_sextant(obj, actor)
 	if actor.z ~= 0 then
-		print("Not while underground.\n")
+		printl("NOT_WHILE_UNDERGROUND")
 		return
 	end
 
@@ -110,34 +106,35 @@ function use_sextant(obj, actor)
 	
 	lat = math.abs(lat)
 	long = 180 - math.abs(long)
-	print("You are somewhere near \nLat:" ..lat.." "..lat_str.."\nLong:"..long.." "..long_str.."\n")
+	printl("YOU_ARE_SOMEWHERE_NEAR")
+	print(" \nLat:" ..lat.." "..lat_str.."\nLong:"..long.." "..long_str.."\n")
 end
 
 function use_misc_text(obj)
 
 	local obj_n = obj.obj_n
 	if obj_n == 65 or obj_n == 66 or obj_n == 67 or obj_n == 263 or obj_n == 267 or obj_n == 327 then
-		print("You can't dig any deeper.\n")
+		printl("YOU_CANT_DIG_ANY_DEEPER")
 	elseif obj_n == 427 then
-		print("It is stuck.\n")
+		printl("IT_IS_STUCK")
 	elseif obj_n == 288 then
-		print("The control panel operates the dream machine.\n")
+		printl("THE_CONTROL_PANEL_OPERATES_THE_DREAM_MACHINE")
 	elseif obj_n == 199 then
-		print("You need to use pliers to attach the cable.")
+		printl("YOU_NEED_TO_USE_PLIERS_TO_ATTACH_THE_CABLE")
 	elseif obj_n == 131 then
-		print("You will chew it instinctively.\n")
+		printl("YOU_WILL_CHEW_IT_INSTINCTIVELY")
 	elseif obj_n == 184 then
-		print("The plate in the camera has already been exposed.\n")
+		printl("THE_PLATE_IN_THE_CAMERA_HAS_ALREADY_BEEN_EXPOSED")
 	elseif obj_n == 442 or obj_n == 443 or obj_n == 444 then
-		print("You must use a shovel to move that.\n")
+		printl("YOU_MUST_USE_A_SHOVEL_TO_MOVE_THAT")
 	elseif obj_n == 293 then
-		print("You can't determine how to read the time.\n")
+		printl("YOU_CANT_DETERMINE_HOW_TO_READ_THE_TIME")
 	elseif obj_n == 77 or obj_n == 78 then
-		print("The berries are not edible.\n")
+		printl("THE_BERRIES_ARE_NOT_EDIBLE")
 	elseif obj_n == 323 then
-		print("You don't know how it works.\n")
+		printl("YOU_DONT_KNOW_HOW_IT_WORKS")
 	else
-		print("It has no effect.\n")
+		printl("IT_HAS_NO_EFFECT")
 	end
 end
 
@@ -173,7 +170,7 @@ end
 function use_tool_on_ground(obj, target_obj, actor, target_x, target_y, target_z)
 	if target_obj ~= nil then
 		--check tile flag here.
-		print("The ground is not clear for digging.\n")
+		printl("THE_GROUND_IS_NOT_CLEAR_FOR_DIGGING")
 		return
 	end
 		
@@ -182,7 +179,7 @@ function use_tool_on_ground(obj, target_obj, actor, target_x, target_y, target_z
 	local pile_obj_num = get_pile_obj_num(map_tile)
 	
 	if pile_obj_num == 0 then
-		print("It has no effect.\n")
+		printl("IT_HAS_NO_EFFECT")
 		return
 	end
 
@@ -204,7 +201,7 @@ function use_tool_on_ground(obj, target_obj, actor, target_x, target_y, target_z
 		Obj.moveToMap(pile, loc.x, loc.y, loc.z)
 	else
 		Obj.removeFromEngine(hole)
-		print("You can't dig here.\n")
+		printl("YOU_CANT_DIG_HERE")
 	end
 end
 
@@ -212,7 +209,7 @@ function use_shovel_on_pile_to_hole(obj, target_obj, to_obj, actor)
 	Obj.removeFromEngine(target_obj)
 	Obj.removeFromEngine(to_obj)
 	--FIXME play sfx here. 1B (twice)
-	print("You filled in the hole.\n")
+	printl("YOU_FILLED_IN_THE_HOLE")
 end
 
 function use_ruby_slippers(obj, actor)
@@ -224,9 +221,7 @@ function use_ruby_slippers(obj, actor)
    end
    
    if obj.quality == 2 then
-      print("You may use the ruby slippers to go home. If you choose to, you may now view the Grand Finale.\n\n*")
-      print("Afterwards, you will exit to DOS. You will be able to resume play from your last saved game.\n\n*")
-      print("Would you like to see the Grand Finale now? If so, press Y. To resume play now, hit N: (Y N)\n")
+      printl("YOU_MAY_USE_THE_RUBY_SLIPPERS_TO_GO_HOME")
       local input = input_select("yn", false)
       if input == "Y" then
          play_end_sequence()
@@ -234,7 +229,7 @@ function use_ruby_slippers(obj, actor)
          play_midgame_sequence(13)
       end
    else
-      print("Click.\n")
+      printl("CLICK")
       obj.quality = obj.quality + 1
    end
 end
@@ -309,9 +304,9 @@ function has_usecode(obj, usecode_type)
 end
 
 function use_obj_on_to(obj, target_obj, actor, use_to_tbl)
-	local dir = get_direction("To - ")
+	local dir = get_direction(i18n("TO"))
 	if dir == nil then
-		print("nothing!\n")
+		printl("NOTHING")
 		return
 	end
 	
@@ -326,14 +321,14 @@ function use_obj_on_to(obj, target_obj, actor, use_to_tbl)
 			func(obj, target_obj, to_obj, actor)
 		end
 	else
-		print("something")
+		printl("SOMETHING")
 	end
 end
 
 function use_obj_on(obj, actor, use_on_tbl)
-	local dir = get_direction("On - ")
+	local dir = get_direction(i18n("ON"))
 	if dir == nil then
-		print("nothing!\n")
+      printl("NOTHING")
 		return
 	end
 
@@ -356,7 +351,7 @@ function use_obj_on(obj, actor, use_on_tbl)
 			if func ~= nil then
 				func(obj, target_obj, actor)
 			else
-				print("\nNo effect\n")
+				printl("NO_EFFECT")
 			end
 		end
 	else
@@ -364,7 +359,7 @@ function use_obj_on(obj, actor, use_on_tbl)
 		if func ~= nil then
 			func(obj, nil, actor, target_x, target_y, actor.z)
 		else
-			print("nothing!\n")
+			printl("NOTHING")
 		end
 	end
 end

@@ -148,6 +148,8 @@ static int nscript_display_prompt(lua_State *L);
 static int nscript_load(lua_State *L);
 
 static int nscript_config_get_boolean_value(lua_State *L);
+static int nscript_config_get_game_type(lua_State *L);
+static int nscript_config_get_language(lua_State *L);
 
 static int nscript_objlist_seek(lua_State *L);
 static int nscript_objlist_read2(lua_State *L);
@@ -481,6 +483,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_config_get_boolean_value);
    lua_setglobal(L, "config_get_boolean_value");
+
+   lua_pushcfunction(L, nscript_config_get_game_type);
+   lua_setglobal(L, "config_get_game_type");
+
+   lua_pushcfunction(L, nscript_config_get_language);
+   lua_setglobal(L, "config_get_language");
 
    nscript_init_actor(L);
    nscript_init_cutscene(L, cfg, gui, sm);
@@ -1997,7 +2005,11 @@ static int nscript_load(lua_State *L)
    dir = path;
    build_path(dir, file, path);
 
-   luaL_loadfile(L, path.c_str());
+   if(luaL_loadfile(L, path.c_str()) == LUA_ERRFILE)
+   {
+     lua_pop(L, 1);
+     return 0;
+   }
 
    return 1;
 }
@@ -2010,6 +2022,20 @@ static int nscript_config_get_boolean_value(lua_State *L)
 
 	lua_pushboolean(L, value);
 	return 1;
+}
+
+static int nscript_config_get_game_type(lua_State *L)
+{
+  lua_pushstring(L, get_game_tag(Game::get_game()->get_game_type()));
+  return 1;
+}
+
+static int nscript_config_get_language(lua_State *L)
+{
+  std::string value;
+  Script::get_script()->get_config()->value(config_get_game_key(Script::get_script()->get_config()) + "/language", value, "en");
+  lua_pushstring(L, value.c_str());
+  return 1;
 }
 
 static int nscript_objlist_seek(lua_State *L)

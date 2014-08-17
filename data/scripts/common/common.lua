@@ -183,4 +183,10 @@ end
 
 local lua_file = nil
 
+lua_file = nuvie_load("common/lang.lua");
+lua_file();
+lang_init("game")
+
 lua_file = nuvie_load("common/actor.lua"); lua_file();
+
+

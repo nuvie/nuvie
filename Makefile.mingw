@@ -136,6 +136,9 @@ copy_scripts:
 	mkdir -p $(U6PATH)/data/scripts
 	mkdir -p $(U6PATH)/data/scripts/common
 	mkdir -p $(U6PATH)/data/scripts/md
+	mkdir -p $(U6PATH)/data/scripts/md/lang
+	mkdir -p $(U6PATH)/data/scripts/md/lang/en
+	mkdir -p $(U6PATH)/data/scripts/md/lang/it
 	mkdir -p $(U6PATH)/data/scripts/se
 	mkdir -p $(U6PATH)/data/scripts/u6
 	mkdir -p $(U6PATH)/data/scripts/u6/magic
@@ -157,6 +160,8 @@ copy_scripts:
 	cp data/scripts/u6/magic/circle_08/*.lua $(U6PATH)/data/scripts/u6/magic/circle_08
 	cp data/scripts/common/*.lua $(U6PATH)/data/scripts/common
 	cp data/scripts/md/*.lua $(U6PATH)/data/scripts/md
+	cp data/scripts/md/lang/en/*.lua $(U6PATH)/data/scripts/md/lang/en
+	cp data/scripts/md/lang/it/*.lua $(U6PATH)/data/scripts/md/lang/it
 	cp data/scripts/se/*.lua $(U6PATH)/data/scripts/se
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
 

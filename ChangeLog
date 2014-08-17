@@ -1,3 +1,17 @@
+2014-08-17  Eric Fry <efry at users.sourceforge.net> r1959
+	* Started work on adding multiple language support.
+	* Added sample Italian language file to MD for testing multiple language support.
+	* Added config_get_game_type() script function. This returns either "U6", "MD"
+	  or "SE".
+	* Added config_get_language() script function. This returns the currently selected
+	  language. This is a two character code. The default is "en" for English.
+	* Added lang.lua This is responsible for language translations in script.
+	* Added i18n(), printl() and printfl() script functions. These provide language
+	  support.
+	* Converted MD script files to use the new multiple language system.
+	* Changed nuvie_load() script function to return nil if it cannot open the
+	  requested file. 
+
 2014-08-15  Malignant Manor <malignantmanor@users.sourceforge.net> r1958
 	* Fix MD sky widget offset and don't use it in original+ (at least for now).
 
