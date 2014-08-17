@@ -301,6 +301,7 @@ Source: data\maps\u6\roof_map_00.dat; DestDir: {app}\data\maps\u6; Flags: ignore
 Source: data\scripts\common\actor.lua; DestDir: {app}\data\scripts\common; Flags: ignoreversion
 Source: data\scripts\common\common.lua; DestDir: {app}\data\scripts\common; Flags: ignoreversion
 Source: data\scripts\common\intro_common.lua; DestDir: {app}\data\scripts\common; Flags: ignoreversion
+Source: data\scripts\common\lang.lua; DestDir: {app}\data\scripts\common; Flags: ignoreversion
 Source: data\scripts\md\actor.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\ending.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\init.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
