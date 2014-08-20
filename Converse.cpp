@@ -571,7 +571,7 @@ const char *Converse::npc_name(uint8 num)
 
         // read name up to LOOK section, convert "_" to "."
         uint32 c;
-        for(c = 0; s_pt[c+2] != 0xf1 && s_pt[c+2] != 0xf3 && c <= 15; c++)
+        for(c = 0; s_pt[c+2] != 0xf1 && s_pt[c+2] != 0xf3 && c <= 14; c++)
             aname[c] = s_pt[c+2] != '_' ? s_pt[c+2] : '.';
 
         aname[c] = '\0';

@@ -308,14 +308,17 @@ void ContainerViewGump::display_inventory_weight()
 
 void ContainerViewGump::left_arrow()
 {
-	uint8 party_mem_num = party->get_member_num(actor);
-	if(party_mem_num > 0)
-		party_mem_num--;
-	else
-		party_mem_num = party->get_party_size() - 1;
+	sint8 party_mem_num = party->get_member_num(actor);
+	if(party_mem_num >= 0)
+	{
+    if(party_mem_num > 0)
+      party_mem_num--;
+    else
+      party_mem_num = party->get_party_size() - 1;
 
-	set_actor(party->get_actor(party_mem_num));
-	force_full_redraw_if_needed();
+    set_actor(party->get_actor(party_mem_num));
+    force_full_redraw_if_needed();
+	}
 }
 
 void ContainerViewGump::right_arrow()

@@ -1334,15 +1334,19 @@ bool HailstormAnim::update()
 	{
 		if(NUVIE_RAND()%2 == 0)
 		{
-			uint8 idx = (uint8)find_free_hailstone();
+		  sint8 ret = find_free_hailstone();
+		  if(ret >= 0)
+		  {
+        const uint8 idx = (uint8)ret;
 
-			hailstones[idx].x = target.x * 16 + (NUVIE_RAND()%30) + (NUVIE_RAND()%30) - 23 - 52;
-			hailstones[idx].y = target.y * 16 + (NUVIE_RAND()%30) + (NUVIE_RAND()%30) - 23 - 52;
+        hailstones[idx].x = target.x * 16 + (NUVIE_RAND()%30) + (NUVIE_RAND()%30) - 23 - 52;
+        hailstones[idx].y = target.y * 16 + (NUVIE_RAND()%30) + (NUVIE_RAND()%30) - 23 - 52;
 
-			hailstones[idx].p_tile = add_tile(hailstone_tile, hailstones[idx].x/16, hailstones[idx].y/16, hailstones[idx].x%16, hailstones[idx].y%16);
-			hailstones[idx].length_left = 52;
-			num_hailstones_left--;
-			num_active++;
+        hailstones[idx].p_tile = add_tile(hailstone_tile, hailstones[idx].x/16, hailstones[idx].y/16, hailstones[idx].x%16, hailstones[idx].y%16);
+        hailstones[idx].length_left = 52;
+        num_hailstones_left--;
+        num_active++;
+		  }
 		}
 	}
 

@@ -253,9 +253,12 @@ bool PartyPathFinder::try_moving_to_target(uint32 p, bool avoid_damage_tiles)
     get_target_dir(p, rel_x, rel_y);
     if(!move_member(p, rel_x, rel_y, false, false)) // don't ignore position, don't bump other followers
     {
+      sint8 leader = get_leader();
+      if(leader >= 0)
+      {
         // try both adjacent directions, first the one which is
         // perpendicular to the leader's facing direction
-        uint8 ldir = get_member(get_leader()).actor->get_direction();
+        uint8 ldir = get_member(leader).actor->get_direction();
         sint8 dx = (ldir==NUVIE_DIR_W)?-1:(ldir==NUVIE_DIR_E)?1:0;
         sint8 dy = (ldir==NUVIE_DIR_N)?-1:(ldir==NUVIE_DIR_S)?1:0;
         sint8 relx2 = rel_x, rely2 = rel_y; // adjacent directions, counter-clockwise
@@ -276,6 +279,7 @@ bool PartyPathFinder::try_moving_to_target(uint32 p, bool avoid_damage_tiles)
                 // block him
                 return false;
             }
+      }
     }
     return true;
 }

@@ -918,7 +918,7 @@ Obj *Actor::inventory_new_object(uint16 obj_n, uint32 qty, uint8 quality)
  Obj *obj = 0;
  uint8 frame_n = 0;
 
- if(obj_n > 1024)
+ if(obj_n >= 1024)
    {
     frame_n = (uint8)floorf(obj_n / 1024);
 	obj_n -= frame_n * 1024;

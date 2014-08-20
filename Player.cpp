@@ -209,6 +209,10 @@ void Player::set_mapwindow_centered(bool state)
 void Player::set_actor(Actor *new_actor)
 {
     MsgScroll *scroll = Game::get_game()->get_scroll();
+    if(new_actor == NULL)
+    {
+      return;
+    }
     
     if(actor != NULL)
     {

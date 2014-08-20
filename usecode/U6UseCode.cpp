@@ -1880,7 +1880,7 @@ bool U6UseCode::use_potion(Obj *obj, UseCodeEvent ev)
                         //items.actor2_ref->set_worktype(WORKTYPE_U6_SLEEP);
                         items.actor2_ref->set_asleep(true);
                         //party->set_active(party_num, !(items.actor2_ref->is_sleeping() || items.actor2_ref->is_paralyzed()));
-                        player->set_actor(party->get_actor(party->get_leader()));
+                        player->set_actor(party->get_leader_actor());
                         player->set_mapwindow_centered(true);
                         destroy_obj(obj);
                         break;
@@ -2280,7 +2280,7 @@ bool U6UseCode::use_balloon(Obj *obj, UseCodeEvent ev)
 
  if (Game::get_game()->get_player()->in_party_mode())
  {
-   balloonist=Game::get_game()->get_party()->get_actor(Game::get_game()->get_party()->get_leader());
+   balloonist=Game::get_game()->get_party()->get_leader_actor();
  } else
  {
    balloonist=Game::get_game()->get_player()->get_actor();

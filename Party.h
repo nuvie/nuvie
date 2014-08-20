@@ -158,6 +158,7 @@ class Party {
  Actor *get_actor(uint8 member_num);
  sint8 get_member_num(Actor *actor);
  sint8 get_member_num(uint8 a);
+ Actor *get_leader_actor();
  char *get_actor_name(uint8 member_num);
  bool is_leader(Actor *actor) { return(get_member_num(actor) == get_leader()); }
  bool contains_actor(Actor *actor);

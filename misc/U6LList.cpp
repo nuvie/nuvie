@@ -196,7 +196,7 @@ bool U6LList::remove(void *data)
 
      deleteU6Link(link);
 
-     if(prev->next)
+     if(link != prev && prev->next)
       {
        link = prev->next;
        link->prev = prev;

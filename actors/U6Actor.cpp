@@ -912,7 +912,7 @@ void U6Actor::set_worktype(uint8 new_worktype, bool init)
  if((!is_in_party() || worktype > 0xe) && base_actor_type->base_obj_n != OBJ_U6_NOTHING) //don't revert for party worktypes as they might be riding a horse.
    set_actor_obj_n(base_actor_type->base_obj_n);
 
- if(worktype == WORKTYPE_U6_SLEEP && status_flags & ACTOR_STATUS_ASLEEP) //FIXME do we still need this??
+ if(worktype == WORKTYPE_U6_SLEEP && (status_flags & ACTOR_STATUS_ASLEEP)) //FIXME do we still need this??
 	 status_flags ^= ACTOR_STATUS_ASLEEP;
 
  Actor::set_worktype(new_worktype);
@@ -1705,7 +1705,7 @@ void U6Actor::revert_worktype()
     Party *party = Game::get_game()->get_party();
     if(is_in_party())
         set_worktype(WORKTYPE_U6_IN_PARTY);
-    if(party->get_leader() >= 0 && party->get_actor(party->get_leader()) == this)
+    if(party->get_leader_actor() == this)
         set_worktype(WORKTYPE_U6_PLAYER);
 }
 

@@ -293,6 +293,17 @@ uint8 Party::get_party_size()
  return num_in_party;
 }
 
+Actor *Party::get_leader_actor()
+{
+  sint8 leader = get_leader();
+  if(leader < 0)
+  {
+    return NULL;
+  }
+
+  return get_actor(leader);
+}
+
 Actor *Party::get_actor(uint8 member_num)
 {
  if(num_in_party <= member_num)
@@ -462,9 +473,10 @@ MapCoord Party::get_formation_coords(uint8 m)
 {
     MapCoord a = get_location(m); // my location
     MapCoord l = get_leader_location(); // leader location
-    if(get_leader() < 0)
+    sint8 leader = get_leader();
+    if(leader < 0)
         return(a);
-    uint8 ldir = member[get_leader()].actor->get_direction(); // leader direciton
+    uint8 ldir = member[leader].actor->get_direction(); // leader direction
     // intended location
     return(MapCoord((ldir == NUVIE_DIR_N) ? l.x + member[m].form_x : // X
                     (ldir == NUVIE_DIR_E) ? l.x - member[m].form_y :
@@ -502,8 +514,8 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     defer_removing_dead_members = true;
 
     // set previous leader location first, just in case the leader changed
-    prev_leader_x = member[get_leader()].actor->x - rel_x;
-    prev_leader_y = member[get_leader()].actor->y - rel_y;
+    prev_leader_x = member[leader].actor->x - rel_x;
+    prev_leader_y = member[leader].actor->y - rel_y;
     // PASS 1: Keep actors chained together.
     for(uint32 p = (leader+1); p < num_in_party; p++)
     {
@@ -523,7 +535,11 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
         pathfinder->follow_passB(p);
         if(!pathfinder->is_contiguous(p))
         {
-            DEBUG(0,LEVEL_DEBUGGING,"%s is looking for %s.\n", get_actor_name(p), get_actor_name(get_leader()));
+            sint8 l = get_leader();
+            if(l >= 0)
+            {
+              DEBUG(0,LEVEL_DEBUGGING,"%s is looking for %s.\n", get_actor_name(p), get_actor_name(l));
+            }
             pathfinder->seek_leader(p); // enter/update seek mode
         }
         else if(member[p].actor->get_pathfinder())
@@ -917,16 +933,19 @@ Actor *Party::get_slowest_actor()
 /* Gather everyone around a campfire to Rest. */
 void Party::rest_gather()
 {
-    Actor *player_actor = member[get_leader()].actor;
-    MapCoord player_loc = player_actor->get_location();
-    rest_campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
-    rest_campfire->set_temporary();
-    rest_campfire->qty = 1; //this is set so the campfire may be destroyed by being attacked.
-    game->get_obj_manager()->add_obj(rest_campfire, true); // addOnTop
+    Actor *player_actor = get_leader_actor();
+    if(player_actor)
+    {
+      MapCoord player_loc = player_actor->get_location();
+      rest_campfire = new_obj(OBJ_U6_CAMPFIRE,1, player_loc.x,player_loc.y,player_loc.z);
+      rest_campfire->set_temporary();
+      rest_campfire->qty = 1; //this is set so the campfire may be destroyed by being attacked.
+      game->get_obj_manager()->add_obj(rest_campfire, true); // addOnTop
 
-    game->get_player()->set_mapwindow_centered(false);
-    game->pause_user();
-    new TimedRestGather(player_loc.x, player_loc.y);
+      game->get_player()->set_mapwindow_centered(false);
+      game->pause_user();
+      new TimedRestGather(player_loc.x, player_loc.y);
+    }
 }
 
 /* Start Resting for the specified number of hours, optionally with a party

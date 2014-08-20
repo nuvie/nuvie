@@ -2556,7 +2556,7 @@ bool Event::toggle_combat()
         else
         {
             scroll->display_string("Break off combat!\n\n");
-            player->set_actor(party->get_actor(party->get_leader())); // return control to leader
+            player->set_actor(party->get_leader_actor()); // return control to leader
             player->set_mapwindow_centered(true); // center mapwindow
         }
         scroll->display_prompt();
@@ -3139,7 +3139,11 @@ void Event::doAction()
             if(!game->is_new_style())
             {
               view_manager->get_inventory_view()->release_focus();
-              view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
+              sint8 leader = game->get_party()->get_leader();
+              if(leader >= 0)
+              {
+                view_manager->get_inventory_view()->set_party_member(leader);
+              }
             }
             else
               view_manager->close_all_gumps();

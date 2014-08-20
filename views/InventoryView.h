@@ -66,7 +66,7 @@ class InventoryView : public View {
  ~InventoryView();
 
  bool init(Screen *tmp_screen, void *view_manager, uint16 x, uint16 y, Font *f, Party *p, TileManager *tm, ObjManager *om);
- bool set_party_member(uint8 party_member);
+ bool set_party_member(sint8 party_member);
  bool set_actor(Actor *actor, bool pickpocket = false);
  void set_show_cursor(bool state);
  void moveCursorToSlot(uint8 slot_num);

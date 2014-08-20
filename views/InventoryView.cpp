@@ -61,8 +61,13 @@ InventoryView::~InventoryView()
 {
 }
 
-bool InventoryView::set_party_member(uint8 party_member)
+bool InventoryView::set_party_member(sint8 party_member)
 {
+ if(party_member < 0)
+ {
+   return false;
+ }
+
  picking_pocket = false;
 
  if(View::set_party_member(party_member)

@@ -432,7 +432,7 @@ bool SaveGame::save(const char *filename, std::string *save_description)
  int game_type;
  char game_tag[3];
  unsigned char player_name[14];
- unsigned char save_desc[MAX_SAVE_DESC_LENGTH];
+ unsigned char save_desc[MAX_SAVE_DESC_LENGTH+1];
  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
  Player *player = Game::get_game()->get_player();
  Actor *avatar = Game::get_game()->get_actor_manager()->get_actor(1); // get the avatar actor.
@@ -472,6 +472,7 @@ bool SaveGame::save(const char *filename, std::string *save_description)
 
  memset(save_desc, 0, MAX_SAVE_DESC_LENGTH);
  strncpy((char *)save_desc, save_description->c_str(), MAX_SAVE_DESC_LENGTH);
+ save_desc[MAX_SAVE_DESC_LENGTH] = '\0';
  savefile->writeBuf(save_desc, MAX_SAVE_DESC_LENGTH);
  
  memset(player_name, 0, 14);

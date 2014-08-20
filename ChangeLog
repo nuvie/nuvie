@@ -1,3 +1,9 @@
+2014-08-17  Eric Fry <efry at users.sourceforge.net> r1961
+	* Bug fixes as a result of Coverity code scan.
+
+2014-08-17  Kirben r1960
+	* Add common language script to Windows installer.
+
 2014-08-17  Eric Fry <efry at users.sourceforge.net> r1959
 	* Started work on adding multiple language support.
 	* Added sample Italian language file to MD for testing multiple language support.

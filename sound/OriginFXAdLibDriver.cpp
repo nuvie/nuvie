@@ -571,6 +571,10 @@ void OriginFXAdLibDriver::interrupt_vector()
 		unsigned char *cur_tim_data = NULL;
 		bool update_adlib = false;
 		sint8 channel = adlib_ins[i].channel;
+		if(channel < 0 || channel >= 32)
+		{
+		  continue;
+		}
 		uint8 var_8 = byte_229[adlib_ins[i].byte_68];
 		sint16 var_10 = 0;
 		if(adlib_ins[i].tim_data == NULL)
@@ -609,7 +613,7 @@ void OriginFXAdLibDriver::interrupt_vector()
 			update_adlib = true;
 		}
 
-		if(channel < 32 && midi_chan_tim_off_10[channel] != 0)
+		if(midi_chan_tim_off_10[channel] != 0)
 		{
 			adlib_ins[i].byte_137 += midi_chan_tim_off_10[channel];
 			sint8 var_11 = adlib_ins[i].byte_137;

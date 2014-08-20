@@ -1586,7 +1586,7 @@ void ScriptCutscene::print_text(CSImage *image, const char *s, uint16 *x, uint16
 void ScriptCutscene::load_palette(const char *filename, int idx)
 {
 	NuvieIOFileRead file;
-	uint8 buf[0x240];
+	uint8 buf[0x240+1];
 	uint8 unpacked_palette[0x300];
 	std::string path;
 
@@ -1619,6 +1619,7 @@ void ScriptCutscene::load_palette(const char *filename, int idx)
 		file.seek(idx * 0x240);
 
 		file.readToBuf(buf, 0x240);
+		buf[0x240] = 0; //protect from buf[byte_pos+1] overflow when processing last byte of data.
 
 	    for (int i = 0; i < 0x100; i++)
 	    {

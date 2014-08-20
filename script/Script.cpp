@@ -2223,12 +2223,12 @@ static int nscript_party_update_leader(lua_State *L)
 	Party *party = Game::get_game()->get_party();
 	Player *player = Game::get_game()->get_player();
 
-	Actor *leader = party->get_actor(party->get_leader());
+  Actor *leader = party->get_leader_actor();
 
-	if(leader)
-	{
-		player->update_player(leader);
-	}
+  if(leader)
+  {
+    player->update_player(leader);
+  }
 
 	return 0;
 }
