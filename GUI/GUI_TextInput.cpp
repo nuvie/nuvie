@@ -33,6 +33,8 @@ GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str
 {
  max_height = height;
  callback_object = callback;
+ cursor_color = 0;
+ selected_bgcolor = 0;
 
  text = (char *)malloc(max_width * max_height + 1);
 

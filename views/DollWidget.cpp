@@ -141,8 +141,6 @@ bool DollWidget::init(Actor *a, uint16 x, uint16 y, TileManager *tm, ObjManager 
  case NUVIE_GAME_MD : blocked_tile = tile_manager->get_tile(TILE_MD_BLOCKED_EQUIP); // FIXME: different depending on npc
                       empty_tile = tile_manager->get_tile(TILE_MD_EQUIP); // FIXME: different depending on npc
                       break;
-	 config->value(config_get_game_key(config) + "/use_new_dolls", use_new_dolls, false);
-	 old_use_new_dolls = use_new_dolls;
  }
  }
  else

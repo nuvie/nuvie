@@ -1,3 +1,8 @@
+2014-08-26  Eric Fry <efry at users.sourceforge.net> r1962
+	* Added search logic to MD when looking at containers.
+	* Added player_is_in_solo_mode() script function.
+	* More coverity bug fixes.
+
 2014-08-17  Eric Fry <efry at users.sourceforge.net> r1961
 	* Bug fixes as a result of Coverity code scan.
 

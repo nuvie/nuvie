@@ -38,6 +38,8 @@ NuvieBmpFile::NuvieBmpFile()
  prev_width = 0;
  prev_height = 0;
  prev_bits = 0;
+ memset(&header, 0, sizeof(header));
+ memset(&infoHeader, 0, sizeof(infoHeader));
 }
 
 NuvieBmpFile::~NuvieBmpFile()

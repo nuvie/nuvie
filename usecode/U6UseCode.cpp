@@ -1941,7 +1941,7 @@ bool U6UseCode::use_key(Obj *obj, UseCodeEvent ev)
         USECODE_SELECT_OBJ(door_obj, "On "); // door_obj <- items.obj_ref or from user
         if(!door_obj)
         {
-            nuprint("nothing\n");
+            scroll->display_string("nothing\n");
             return true;
         }
         else

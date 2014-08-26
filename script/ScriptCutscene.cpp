@@ -1109,7 +1109,7 @@ static int nscript_input_poll(lua_State *L)
 		if(event.type == SDL_KEYDOWN)
 		{
 			SDL_keysym key = event.key.keysym;
-			if((((key.mod & KMOD_CAPS) == KMOD_CAPS && (key.mod & KMOD_SHIFT) == 0) || ((key.mod & KMOD_CAPS) == 0 && key.mod & KMOD_SHIFT))
+			if((((key.mod & KMOD_CAPS) == KMOD_CAPS && (key.mod & KMOD_SHIFT) == 0) || ((key.mod & KMOD_CAPS) == 0 && (key.mod & KMOD_SHIFT)))
 			   && key.sym >= SDLK_a && key.sym <= SDLK_z)
 				key.sym = (SDLKey)(key.sym -32);
 			if(!isprint(key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_META))
@@ -1234,6 +1234,7 @@ ScriptCutscene::ScriptCutscene(GUI *g, Configuration *cfg, SoundManager *sm) : G
 	bg_color = 0;
 	solid_bg = true;
 	rotate_game_palette = false;
+	palette = NULL;
 }
 
 ScriptCutscene::~ScriptCutscene()

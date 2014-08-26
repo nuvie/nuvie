@@ -1224,7 +1224,7 @@ bool Event::search(Obj *obj)
     if(obj->get_engine_loc() == OBJ_LOC_MAP && player_loc.distance(target_loc) <= 1)
     {
         scroll->display_string("\nSearching here, you find ");
-        if(!obj || !usecode->search_obj(obj, player->get_actor()))
+        if(!usecode->search_obj(obj, player->get_actor()))
             scroll->display_string("nothing.\n");
         else
         {

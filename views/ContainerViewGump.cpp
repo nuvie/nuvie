@@ -246,7 +246,8 @@ void ContainerViewGump::set_actor(Actor *a)
 	actor = a;
 	container_obj = NULL;
 	container_widget->set_actor(a);
-	doll_button->Show();
+	if(doll_button)
+	  doll_button->Show();
 	if(party->get_member_num(a) >= 0)
 	{
 		if(left_arrow_button)

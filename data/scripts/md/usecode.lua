@@ -234,6 +234,13 @@ function use_ruby_slippers(obj, actor)
    end
 end
 
+function use_tent(obj, actor)
+   if player_is_in_solo_mode() then
+      printl("NOT_WHILE_IN_SOLO_MODE")
+      return
+   end
+end
+
 
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
@@ -253,6 +260,8 @@ local usecode_table = {
 [96]=use_sextant,
 [102]={[86]=use_crate,[427]=use_prybar_on_hatch},
 [104]=use_container,
+--OBJ_FOLDED_TENT
+[106]=use_tent,
 --OBJ_BLOB_OF_OXIUM
 [131]=use_misc_text,
 --OBJ_DOOR 

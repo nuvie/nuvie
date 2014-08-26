@@ -33,8 +33,8 @@ class GUI_Color {
 
  public:
 
- GUI_Color(uint8 red, uint8 green, uint8 blue) { r=red; g=green; b=blue; };
- GUI_Color() {};
+ GUI_Color(uint8 red, uint8 green, uint8 blue) { r=red; g=green; b=blue; sdl_color = 0;};
+ GUI_Color() {r = g = b = 0; sdl_color = 0;};
  void map_color(SDL_Surface *surface) { sdl_color = SDL_MapRGB(surface->format, r, g, b); };
 
 };

@@ -27,6 +27,10 @@ YOU_CANT_DIG_HERE="You can't dig here.\n",
 YOU_FILLED_IN_THE_HOLE="You filled in the hole.\n",
 YOU_MAY_USE_THE_RUBY_SLIPPERS_TO_GO_HOME="You may use the ruby slippers to go home. If you choose to, you may now view the Grand Finale.\n\n*Afterwards, you will exit to DOS. You will be able to resume play from your last saved game.\n\n*Would you like to see the Grand Finale now? If so, press Y. To resume play now, hit N: (Y N)\n",
 CLICK="Click.\n",
+NOT_WHILE_IN_SOLO_MODE="Not while in solo mode!\n",
 SOMETHING="something",
-
+SEARCHING_HERE_YOU_FIND="Searching here, you find %s",
+SEARCHING_HERE_YOU_FIND_NOTHING="Searching here, you find nothing.\n",
+SEARCH_NEXT_OBJ=", %s",
+SEARCH_LAST_OBJ=" and %s",
 }

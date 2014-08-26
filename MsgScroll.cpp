@@ -284,7 +284,7 @@ int MsgScroll::printf(std::string format, ...)
 {
 
   va_list ap;
-  size_t printed=0;
+  int printed=0;
   static size_t bufsize=128; // will be resized if needed
   static char * buffer=(char *) malloc(bufsize); // static so we don't have to reallocate all the time.
   
@@ -315,8 +315,7 @@ int MsgScroll::printf(std::string format, ...)
       buffer=(char *) malloc(bufsize); // if this fails, will be caught later on
       /* try again */
       continue;
-    } 
-    if (printed>=bufsize) {
+    } else if ((size_t)printed>=bufsize) {
       DEBUG(0,LEVEL_DEBUGGING,"MsgScroll::printf: needed buffer of %d bytes, only had %d bytes.\n",printed+1,bufsize);
       bufsize=printed+1; //this should be enough
       free(buffer);
@@ -497,6 +496,11 @@ bool MsgScroll::parse_token(MsgText *token)
       {
         token->s[0] = toupper(token->s[0]);
         capitalise_next_letter = false;
+      }
+
+      if(msg_line == NULL)
+      {
+        msg_line = add_new_line();
       }
 
       add_token(token);

@@ -57,7 +57,7 @@ struct SaveHeader
  SDL_Surface *thumbnail;
  unsigned char *thumbnail_data;
 
- SaveHeader() { num_saves = 0; actual_play_time = 0; game_play_time = 0; thumbnail = NULL; thumbnail_data = NULL; };
+ SaveHeader() { num_saves = 0; actual_play_time = 0; game_play_time = 0; player_gender = 0; str = 0; intelligence = 0; dex = 0; level = 0; exp = 0; thumbnail = NULL; thumbnail_data = NULL; };
 };
 
 class SaveGame

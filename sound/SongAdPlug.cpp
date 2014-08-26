@@ -42,7 +42,10 @@ SongAdPlug::~SongAdPlug() {
 }
 
 bool SongAdPlug::Init(const char *filename, uint16 song_num) {
-    if(filename) m_Filename = filename; // SB-X
+    if(filename == NULL)
+      return false;
+
+    m_Filename = filename; // SB-X
 
     stream = new U6AdPlugDecoderStream(opl, string(filename), song_num);
 

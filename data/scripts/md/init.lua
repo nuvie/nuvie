@@ -14,6 +14,61 @@ end
 function save_game()
 end
 
+local g_container_obj_tbl = {
+[80]=1, [81]=1, [82]=1,
+[83]=1, [85]=1, [86]=1,
+[87]=1, [89]=1,[304]=1,
+[139]=1,[341]=1,[257]=1,
+[104]=1,[284]=1,[285]=1
+}
+
+function is_container_obj(obj_num)
+   if g_container_obj_tbl[obj_num] ~= nil then
+      return true
+   end
+   return false
+end
+
+function search(obj)
+   if obj.on_map == false then
+      return
+   end
+   
+   local found_obj = false
+   local child
+   local first_loop = true
+   local prev_obj = nil
+   for child in container_objs(obj) do
+      if prev_obj ~= nil then
+         printfl("SEARCH_NEXT_OBJ", prev_obj.look_string)
+         Obj.moveToMap(prev_obj, obj.x, obj.y, obj.z)
+      end
+
+      if first_loop == true then
+         found_obj = true
+         printfl("SEARCHING_HERE_YOU_FIND", child.look_string)
+         Obj.moveToMap(child, obj.x, obj.y, obj.z)
+      else
+         prev_obj = child
+      end
+
+      script_wait(50)
+      first_loop = false
+   end
+   
+   if prev_obj ~= nil then
+      printfl("SEARCH_LAST_OBJ", prev_obj.look_string)
+      Obj.moveToMap(prev_obj, obj.x, obj.y, obj.z)
+   end
+   
+   if found_obj == false then
+      printl("SEARCHING_HERE_YOU_FIND_NOTHING")
+   else
+      print(".\n")
+   end
+   
+end
+
 function look_obj(obj)
 	printfl("YOU_SEE", obj.look_string);
 
@@ -24,7 +79,12 @@ function look_obj(obj)
 	end
 
 	print(".\n");
-	return true
+	
+	if is_container_obj(obj.obj_n) then
+	  search(obj)
+	end
+
+	return false
 end
 
 

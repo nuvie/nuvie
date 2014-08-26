@@ -457,6 +457,7 @@ unsigned char U6LzwStack::gettop(void)
 U6LzwDict::U6LzwDict()
 {
  this->reset();
+ memset(&dict, 0, sizeof(dict));
 }
 
 void U6LzwDict::reset(void)

@@ -183,6 +183,18 @@ bool TileManager::loadTiles()
                          break;
    }
 
+ if(tile_data == NULL)
+ {
+   ConsoleAddError("Loading maptiles.vga");
+   return false;
+ }
+
+ if(masktype == NULL)
+ {
+   ConsoleAddError("Loading masktype.vga");
+   return false;
+ }
+
  config_get_path(config,"objtiles.vga",path);
  if(objtiles_vga.open(path) == false)
  {

@@ -50,6 +50,7 @@ U6Actor::U6Actor(Map *m, ObjManager *om, GameClock *c): Actor(m,om,c), actor_typ
  base_actor_type(NULL)
 {
  walk_frame_inc = 1;
+ current_movetype = MOVETYPE_U6_NONE;
 }
 
 U6Actor::~U6Actor()
@@ -519,7 +520,7 @@ bool U6Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags
  rel_x = new_x - x;
  rel_y = new_y - y;
 
- if(flags&ACTOR_OPEN_DOORS && worktype != WORKTYPE_U6_WALK_TO_LOCATION)
+ if((flags&ACTOR_OPEN_DOORS) && worktype != WORKTYPE_U6_WALK_TO_LOCATION)
     flags^=ACTOR_OPEN_DOORS; // only use doors when walking to schedule location
  ret = Actor::move(new_x,new_y,new_z,flags);
 
@@ -584,7 +585,11 @@ bool U6Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
                                      map_tile = map->get_tile(new_x, new_y, new_z, MAP_ORIGINAL_TILE);
                                      if(map_tile->tile_num >= 16 && map_tile->tile_num <= 47)
                                        return false;
-                                    //fall through to MOVETYPE_U6_WATER_LOW
+
+                                     if(!map->is_water(new_x, new_y, new_z))
+                                       return false;
+                                     break;
+
        case MOVETYPE_U6_WATER_LOW : if(!map->is_water(new_x, new_y, new_z))
                                        return false;
                                     break;
@@ -594,12 +599,11 @@ bool U6Actor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
                                     return false;
 
                                   map_tile = obj_manager->get_obj_tile(new_x, new_y, new_z, false);
-                                  if(map_tile && (map_tile->flags1 & TILEFLAG_WALL ||
+                                  if(map_tile && ((map_tile->flags1 & TILEFLAG_WALL) ||
                                      (map_tile->flags2 & (TILEFLAG_DOUBLE_WIDTH | TILEFLAG_DOUBLE_HEIGHT)) == (TILEFLAG_DOUBLE_WIDTH | TILEFLAG_DOUBLE_HEIGHT)))
                                     return false;
                                   break;
 
-                                  //fall through to MOVETYPE_U6_AIR_HIGH
        case MOVETYPE_U6_AIR_HIGH : if(map->is_boundary(new_x, new_y, new_z))
                                     return false; //FIX for proper air boundary
                                   break;
