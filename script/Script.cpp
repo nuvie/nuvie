@@ -56,6 +56,10 @@ extern "C"
 #include "lualib.h"
 }
 
+///
+// Print a string to the message scroll
+// @return
+//
 extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 struct ScriptObjRef
@@ -1957,6 +1961,10 @@ static int nscript_u6link_recursive_gc(lua_State *L)
    return 0;
 }
 
+/***
+   Clear the message scroll
+   @function clear_scroll
+ */
 static int nscript_clear_scroll(lua_State *L)
 {
   MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -1968,6 +1976,11 @@ static int nscript_clear_scroll(lua_State *L)
   return 0;
 }
 
+/***
+   Print a string to the message scroll
+   @function print
+   @param string the string to print
+*/
 static int nscript_print(lua_State *L)
 {
    MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -1983,6 +1996,11 @@ static int nscript_print(lua_State *L)
    return 0;
 }
 
+/***
+   Print the prompt string to the message scroll
+   @function display_prompt
+   @param string the string to print
+*/
 static int nscript_display_prompt(lua_State *L)
 {
    MsgScroll *scroll = Game::get_game()->get_scroll();
@@ -1997,6 +2015,14 @@ static int nscript_display_prompt(lua_State *L)
    return 0;
 }
 
+/***
+   Load a lua script from the data/scripts/ directory
+   @function nuvie_load
+   @param path lua file relative to data/scripts directory
+   @return contents of the lua file as a function block on success.
+           A string is returned on compilation failure.
+           nil is returned if the file cannot be opened
+ */
 static int nscript_load(lua_State *L)
 {
    const char *file = luaL_checkstring(L, 1);
@@ -2018,6 +2044,12 @@ static int nscript_load(lua_State *L)
    return 1;
 }
 
+/***
+   Get a boolean value for a given key from the config file
+   @function config_get_boolean_value
+   @param config_key config key to be retrieved
+   @return boolean config value
+ */
 static int nscript_config_get_boolean_value(lua_State *L)
 {
 	bool value;
@@ -2028,12 +2060,22 @@ static int nscript_config_get_boolean_value(lua_State *L)
 	return 1;
 }
 
+/***
+   Get the currently running game type
+   @function config_get_game_type
+   @return a two character string representing the current game type. "U6", "MD" or "SE"
+ */
 static int nscript_config_get_game_type(lua_State *L)
 {
   lua_pushstring(L, get_game_tag(Game::get_game()->get_game_type()));
   return 1;
 }
 
+/***
+   Get the currently selected language
+   @function config_get_language
+   @return a two character string representing the currently selected language. "en" is the default if no language has been selected.
+ */
 static int nscript_config_get_language(lua_State *L)
 {
   std::string value;
@@ -2042,6 +2084,11 @@ static int nscript_config_get_language(lua_State *L)
   return 1;
 }
 
+/***
+   Seek to a given position in the objlist data
+   @function objlist_seek
+   @param position position to seek to in bytes relative to the start of the file
+ */
 static int nscript_objlist_seek(lua_State *L)
 {
 	uint32 position = (uint32)lua_tointeger(L, 1);
@@ -2051,6 +2098,12 @@ static int nscript_objlist_seek(lua_State *L)
 	return 0;
 }
 
+/***
+   Read a 2 byte integer number from the current position in the objlist data.
+   The current position is incremented by 2 after the read.
+   @function objlist_read2
+   @return value
+ */
 static int nscript_objlist_read2(lua_State *L)
 {
 	if(g_objlist_file)
@@ -2062,6 +2115,14 @@ static int nscript_objlist_read2(lua_State *L)
 	return 0;
 }
 
+/***
+   Overwrite objlist data at the current position with a 2 byte unsigned number.
+   The current position is incremented by 2 after the write.
+   @function objlist_write2
+   @param value number to write. This number will be cast to uint16
+   @return true on success false on failure
+
+ */
 static int nscript_objlist_write2(lua_State *L)
 {
 	bool ret = false;
@@ -2075,12 +2136,31 @@ static int nscript_objlist_write2(lua_State *L)
 	return 1;
 }
 
+/***
+Get the currently selected UI style
+@function game_get_ui_style
+@return The UI style
+
+-   0 = Original style
+-   1 = New style
+-   2 = Original+ cutoff map
+-   3 = Original+ full map
+ */
 static int nscript_game_get_ui_style(lua_State *L)
 {
   lua_pushinteger(L, Game::get_game()->get_game_style());
   return 1;
 }
 
+/***
+Get the gender of the player
+@function player_get_gender
+@return
+
+- 0 = Male
+- 1 = Female
+@within player
+ */
 static int nscript_player_get_gender(lua_State *L)
 {
   uint8 gender = 0;
@@ -2094,6 +2174,12 @@ static int nscript_player_get_gender(lua_State *L)
   return 1;
 }
 
+/***
+Get the location of the player
+@function player_get_location
+@treturn table {x=number, y=number, z=number}
+@within player
+ */
 static int nscript_player_get_location(lua_State *L)
 {
    Player *player = Game::get_game()->get_player();
@@ -2119,6 +2205,12 @@ static int nscript_player_get_location(lua_State *L)
    return 1;
 }
 
+/***
+Get the player's karma value (U6)
+@function player_get_karma
+@return karma value
+@within player
+ */
 static int nscript_player_get_karma(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
@@ -2126,6 +2218,12 @@ static int nscript_player_get_karma(lua_State *L)
 	return 1;
 }
 
+/***
+Set the karma value for the player (U6)
+@function player_set_karma
+@param value new karma value
+@within player
+ */
 static int nscript_player_set_karma(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
@@ -2133,6 +2231,14 @@ static int nscript_player_set_karma(lua_State *L)
 	return 0;
 }
 
+/***
+Decrement the player's alcohol counter (U6)
+
+If value is greater than the counter the the counter is left at zero.
+@function player_dec_alcohol
+@param value number to decrement counter by
+@within player
+ */
 static int nscript_player_dec_alcohol(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
@@ -2140,6 +2246,12 @@ static int nscript_player_dec_alcohol(lua_State *L)
 	return 0;
 }
 
+/***
+Check to see if the party is currently in combat mode
+@function party_is_in_combat_mode
+@treturn boolean true if the party is in combat mode otherwise false
+@within party
+ */
 static int nscript_party_is_in_combat_mode(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2147,6 +2259,12 @@ static int nscript_party_is_in_combat_mode(lua_State *L)
 	return 1;
 }
 
+/***
+Toggle combat mode
+@function party_set_combat_mode
+@tparam boolean value
+@within party
+ */
 static int nscript_party_set_combat_mode(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2276,6 +2394,14 @@ static int nscript_party_dismount_from_horses(lua_State *L)
 	return 0;
 }
 
+/***
+Get an object from the map
+@function map_get_obj
+@tparam ({x,y,z}|x,y,z) location
+@param[opt] obj_n object number
+@treturn obj|nil
+@within map
+ */
 static int nscript_map_get_obj(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -2307,6 +2433,16 @@ static int nscript_map_get_obj(lua_State *L)
    return 0;
 }
 
+/***
+Remove an object from the map.
+
+Once removed from the map the object has no engine location and will be cleaned up in the next GC
+@function map_remove_obj
+@tparam ({x,y,z}|x,y,z) location
+@param[opt] obj_n object number
+@treturn boolean success/failure
+@within map
+ */
 static int nscript_map_remove_obj(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -2324,6 +2460,13 @@ static int nscript_map_remove_obj(lua_State *L)
    return 1;
 }
 
+/***
+Can you put an actor at a given map location
+@function map_can_put
+@tparam ({x,y,z}|x,y,z) location
+@treturn boolean true if actor an be placed at location otherwise false
+@within map
+ */
 static int nscript_map_can_put_actor(lua_State *L)
 {
    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
@@ -2338,6 +2481,13 @@ static int nscript_map_can_put_actor(lua_State *L)
    return 1;
 }
 
+/***
+Can you put an object at a given map location
+@function map_can_put_obj
+@tparam ({x,y,z}|x,y,z) location
+@treturn bool true if an object an be placed at location otherwise false
+@within map
+ */
 static int nscript_map_can_put_obj(lua_State *L)
 {
    Map *map = Game::get_game()->get_game_map();

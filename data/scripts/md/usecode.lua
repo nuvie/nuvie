@@ -239,6 +239,14 @@ function use_tent(obj, actor)
       printl("NOT_WHILE_IN_SOLO_MODE")
       return
    end
+
+   if g_in_dream_mode then
+     printl("YOU_CANT_SLEEP_IN_A_DREAM")
+     return
+  end
+  
+  
+  
 end
 
 

@@ -14,6 +14,8 @@ end
 function save_game()
 end
 
+g_in_dream_mode = false
+
 local g_container_obj_tbl = {
 [80]=1, [81]=1, [82]=1,
 [83]=1, [85]=1, [86]=1,
