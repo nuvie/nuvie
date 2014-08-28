@@ -57,9 +57,38 @@ extern "C"
 }
 
 ///
-// Print a string to the message scroll
-// @return
+// @module script
 //
+
+/***
+An in-game object
+@table Obj
+@string[readonly] luatype This returns "obj"
+@int x x position
+@int y y position
+@int z z position
+@int obj_n object number
+@int frame_n frame number
+@int quality
+@int qty quantity
+@string[readonly] name The object name from the 'look' table.
+@string[readonly] look_string A printable look description
+     a book
+     an elephant
+     5 torches
+@bool[readonly] on_map Is the object on the map?
+@bool[readonly] readied Is this object readied in someone's inventory?
+@bool[readonly] stackable Is this object able to be stacked together?
+@number[readonly] weight The object's weight
+@int[readonly] tile_num The tile number corresponding to the obj_n + frame_num values
+@bool[readonly] getable Is this object getable by the player?
+@bool ok_to_take Is it considered stealing if the player gets this object?
+@int[writeonly] status Object status *writeonly*
+@bool[writeonly] invisible Toggle object visibility *writeonly*
+@bool[writeonly] temporary Toggle temporary status *writeonly*
+
+ */
+
 extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 struct ScriptObjRef
@@ -1344,6 +1373,21 @@ void nscript_new_obj_var(lua_State *L, Obj *obj)
     nscript_inc_obj_ref_count(obj);
 }
 
+/***
+Create a new Obj.
+This function can clone and existing object or create a new object from one or more parameters.
+@function Obj.new
+@tparam[opt] Obj obj Object to clone
+@int[opt] obj_n Object number
+@int[opt] frame_n Frame number
+@int[opt] quality Quality
+@int[opt] qty Quantity
+@int[opt] x x map position
+@int[opt] y y map position
+@int[opt] z z map position
+@treturn Obj The newly created object
+@within Object
+ */
 static int nscript_obj_newobj(lua_State *L)
 {
    return nscript_obj_new(L, NULL);
@@ -1763,6 +1807,13 @@ static int nscript_obj_get(lua_State *L)
    return 0;
 }
 
+/***
+Move an object to the map.
+@function Obj.moveToMap
+@tparam Obj obj Object to move
+@tparam[opt] {x=int,y=int,z=int}|x,y,z location Map location
+@within Object
+ */
 static int nscript_obj_movetomap(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -1799,6 +1850,13 @@ static int nscript_obj_movetomap(lua_State *L)
    return 0;
 }
 
+/***
+Move an object into an Actor's inventory
+@function Obj.moveToInv
+@tparam Obj obj Object to move
+@int actor_num Actor number
+@within Object
+ */
 static int nscript_obj_movetoinv(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -1833,6 +1891,13 @@ static int nscript_obj_movetoinv(lua_State *L)
    return 0;
 }
 
+/***
+Move an object into a container
+@function Obj.moveToCont
+@tparam Obj obj Object to move
+@tparam Obj container Container object to move into
+@within Object
+ */
 static int nscript_obj_movetocont(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -1864,6 +1929,13 @@ static int nscript_obj_movetocont(lua_State *L)
    return 0;
 }
 
+/***
+Remove an object from its container.
+The object will be unlinked from the engine after this operation. It will be freed after it goes out of scope.
+@function Obj.removeFromCont
+@tparam Obj obj Object to move
+@within Object
+ */
 static int nscript_container_remove_obj(lua_State *L)
 {
    Obj **s_obj = (Obj **)luaL_checkudata(L, 1, "nuvie.Obj");
@@ -1886,6 +1958,12 @@ static int nscript_container_remove_obj(lua_State *L)
    return 0;
 }
 
+/***
+Call the old C++ usecode logic for a given object. (U6)
+@function Obj.use
+@tparam Obj obj Object to use
+@within Object
+ */
 static int nscript_obj_use(lua_State *L)
 {
    UseCode *usecode = Game::get_game()->get_usecode();
@@ -1906,6 +1984,13 @@ static int nscript_obj_use(lua_State *L)
    return 0;
 }
 
+/***
+Remove an object from the game engine.
+The object will be unlinked from the engine after this operation. It will be freed after it goes out of scope.
+@function Obj.removeFromEngine
+@tparam Obj obj Object to unlink
+@within Object
+ */
 static int nscript_obj_removefromengine(lua_State *L)
 {
    ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -2399,7 +2484,7 @@ Get an object from the map
 @function map_get_obj
 @tparam ({x,y,z}|x,y,z) location
 @param[opt] obj_n object number
-@treturn obj|nil
+@treturn Obj|nil
 @within map
  */
 static int nscript_map_get_obj(lua_State *L)
@@ -2502,6 +2587,15 @@ static int nscript_map_can_put_obj(lua_State *L)
    return 1;
 }
 
+/***
+Check map location for water
+@function map_is_water
+@int x
+@int y
+@int z
+@treturn bool true if the map at location is a water tile otherwise false
+@within map
+ */
 static int nscript_map_is_water(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
@@ -2515,6 +2609,15 @@ static int nscript_map_is_water(lua_State *L)
 	return 1;
 }
 
+/***
+Checks if the map location is currently on screen
+@function map_is_on_screen
+@int x
+@int y
+@int z
+@treturn bool true if the map location is currently on screen otherwise false
+@within map
+ */
 static int nscript_map_is_on_screen(lua_State *L)
 {
 	MapWindow *map_window = Game::get_game()->get_map_window();
@@ -2528,6 +2631,17 @@ static int nscript_map_is_on_screen(lua_State *L)
 	return 1;
 }
 
+/***
+Get the impedance of a map location
+@function map_get_impedence
+@int x
+@int y
+@int z
+@bool[opt=true] ignore_objects Ignore objects while calculating impedance
+@treturn int impedance
+@fixme Rename this function to map_get_impedance()
+@within map
+ */
 static int nscript_map_get_impedence(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();

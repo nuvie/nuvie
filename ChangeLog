@@ -1,3 +1,7 @@
+2014-08-28  Eric Fry <efry at users.sourceforge.net> r1964
+	* Documented more lua script functions.
+	* Added generated ldoc html page for script API documentation.
+
 2014-08-28  Eric Fry <efry at users.sourceforge.net> r1963
 	* Started to document the Lua script API with LDoc.
 	* More work on use tent.

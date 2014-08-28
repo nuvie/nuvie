@@ -1,0 +1,1174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Nuvie Lua Scripting API</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Nuvie</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Object">Object</a></li>
+<li><a href="#player">player</a></li>
+<li><a href="#party">party</a></li>
+<li><a href="#map">map</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>script</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>script</code></h1>
+<p>
+</p>
+<p>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#clear_scroll">clear_scroll ()</a></td>
+	<td class="summary">Clear the message scroll</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#print">print (string)</a></td>
+	<td class="summary">Print a string to the message scroll</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#display_prompt">display_prompt (string)</a></td>
+	<td class="summary">Print the prompt string to the message scroll</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#nuvie_load">nuvie_load (path)</a></td>
+	<td class="summary">Load a lua script from the data/scripts/ directory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config_get_boolean_value">config_get_boolean_value (config_key)</a></td>
+	<td class="summary">Get a boolean value for a given key from the config file</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config_get_game_type">config_get_game_type ()</a></td>
+	<td class="summary">Get the currently running game type</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#config_get_language">config_get_language ()</a></td>
+	<td class="summary">Get the currently selected language</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_seek">objlist_seek (position)</a></td>
+	<td class="summary">Seek to a given position in the objlist data</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_read2">objlist_read2 ()</a></td>
+	<td class="summary">Read a 2 byte integer number from the current position in the objlist data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_write2">objlist_write2 (value)</a></td>
+	<td class="summary">Overwrite objlist data at the current position with a 2 byte unsigned number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#game_get_ui_style">game_get_ui_style ()</a></td>
+	<td class="summary">Get the currently selected UI style</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Obj">Obj</a></td>
+	<td class="summary">An in-game object</td>
+	</tr>
+</table>
+<h2><a href="#Object">Object</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Obj.new">Obj.new ([obj[, obj_n[, frame_n[, quality[, qty[, x[, y[, z]]]]]]]])</a></td>
+	<td class="summary">Create a new Obj.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.moveToMap">Obj.moveToMap (obj[, location])</a></td>
+	<td class="summary">Move an object to the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.moveToInv">Obj.moveToInv (obj, actor_num)</a></td>
+	<td class="summary">Move an object into an Actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.moveToCont">Obj.moveToCont (obj, container)</a></td>
+	<td class="summary">Move an object into a container</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.removeFromCont">Obj.removeFromCont (obj)</a></td>
+	<td class="summary">Remove an object from its container.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.use">Obj.use (obj)</a></td>
+	<td class="summary">Call the old C++ usecode logic for a given object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Obj.removeFromEngine">Obj.removeFromEngine (obj)</a></td>
+	<td class="summary">Remove an object from the game engine.</td>
+	</tr>
+</table>
+<h2><a href="#player">player</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#player_get_gender">player_get_gender ()</a></td>
+	<td class="summary">Get the gender of the player</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_get_location">player_get_location ()</a></td>
+	<td class="summary">Get the location of the player</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_get_karma">player_get_karma ()</a></td>
+	<td class="summary">Get the player&rsquo;s karma value (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_set_karma">player_set_karma (value)</a></td>
+	<td class="summary">Set the karma value for the player (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_dec_alcohol">player_dec_alcohol (value)</a></td>
+	<td class="summary">Decrement the player&rsquo;s alcohol counter (U6)</td>
+	</tr>
+</table>
+<h2><a href="#party">party</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#party_is_in_combat_mode">party_is_in_combat_mode ()</a></td>
+	<td class="summary">Check to see if the party is currently in combat mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_set_combat_mode">party_set_combat_mode (value)</a></td>
+	<td class="summary">Toggle combat mode</td>
+	</tr>
+</table>
+<h2><a href="#map">map</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#map_get_obj">map_get_obj (location[, obj_n])</a></td>
+	<td class="summary">Get an object from the map</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_remove_obj">map_remove_obj (location[, obj_n])</a></td>
+	<td class="summary">Remove an object from the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_can_put">map_can_put (location)</a></td>
+	<td class="summary">Can you put an actor at a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_can_put_obj">map_can_put_obj (location)</a></td>
+	<td class="summary">Can you put an object at a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_is_water">map_is_water (x, y, z)</a></td>
+	<td class="summary">Check map location for water</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_is_on_screen">map_is_on_screen (x, y, z)</a></td>
+	<td class="summary">Checks if the map location is currently on screen</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_impedence">map_get_impedence (x, y, z[, ignore_objects=true])</a></td>
+	<td class="summary">Get the impedance of a map location</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "clear_scroll"></a>
+    <strong>clear_scroll ()</strong>
+    </dt>
+    <dd>
+    Clear the message scroll
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "print"></a>
+    <strong>print (string)</strong>
+    </dt>
+    <dd>
+    Print a string to the message scroll
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">string</span>
+         the string to print
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "display_prompt"></a>
+    <strong>display_prompt (string)</strong>
+    </dt>
+    <dd>
+    Print the prompt string to the message scroll
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">string</span>
+         the string to print
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "nuvie_load"></a>
+    <strong>nuvie_load (path)</strong>
+    </dt>
+    <dd>
+    Load a lua script from the data/scripts/ directory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+         lua file relative to data/scripts directory
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <p> contents of the lua file as a function block on success.</p>
+
+<pre><code>       A string is returned on compilation failure.
+       nil is returned if the file cannot be opened
+</code></pre>
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "config_get_boolean_value"></a>
+    <strong>config_get_boolean_value (config_key)</strong>
+    </dt>
+    <dd>
+    Get a boolean value for a given key from the config file
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">config_key</span>
+         config key to be retrieved
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        boolean config value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "config_get_game_type"></a>
+    <strong>config_get_game_type ()</strong>
+    </dt>
+    <dd>
+    Get the currently running game type
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a two character string representing the current game type. &ldquo;U6&rdquo;, &ldquo;MD&rdquo; or &ldquo;SE&rdquo;
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "config_get_language"></a>
+    <strong>config_get_language ()</strong>
+    </dt>
+    <dd>
+    Get the currently selected language
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a two character string representing the currently selected language. &ldquo;en&rdquo; is the default if no language has been selected.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_seek"></a>
+    <strong>objlist_seek (position)</strong>
+    </dt>
+    <dd>
+    Seek to a given position in the objlist data
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">position</span>
+         position to seek to in bytes relative to the start of the file
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_read2"></a>
+    <strong>objlist_read2 ()</strong>
+    </dt>
+    <dd>
+    Read a 2 byte integer number from the current position in the objlist data.
+   The current position is incremented by 2 after the read.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_write2"></a>
+    <strong>objlist_write2 (value)</strong>
+    </dt>
+    <dd>
+    Overwrite objlist data at the current position with a 2 byte unsigned number.
+   The current position is incremented by 2 after the write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         number to write. This number will be cast to uint16
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true on success false on failure
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "game_get_ui_style"></a>
+    <strong>game_get_ui_style ()</strong>
+    </dt>
+    <dd>
+    Get the currently selected UI style
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <p> The UI style</p>
+
+<ul>
+<li>0 = Original style</li>
+<li>1 = New style</li>
+<li>2 = Original+ cutoff map</li>
+<li>3 = Original+ full map</li>
+</ul>
+
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Obj"></a>
+    <strong>Obj</strong>
+    </dt>
+    <dd>
+    An in-game object
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">luatype</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         This returns &ldquo;obj&rdquo;
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+         x position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+         y position
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+         z position
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">qty</span>
+            <span class="types"><span class="type">int</span></span>
+         quantity
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         The object name from the &lsquo;look&rsquo; table.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">look_string</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        <p> A printable look description</p>
+
+<pre><code> a book
+ an elephant
+ 5 torches
+</code></pre>
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">on_map</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the object on the map?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">readied</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this object readied in someone&rsquo;s inventory?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">stackable</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this object able to be stacked together?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">weight</span>
+            <span class="types"><span class="type">number</span></span>
+         The object&rsquo;s weight
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">tile_num</span>
+            <span class="types"><span class="type">int</span></span>
+         The tile number corresponding to the obj_n + frame_num values
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">getable</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this object getable by the player?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">ok_to_take</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is it considered stealing if the player gets this object?
+        </li>
+        <li><span class="parameter">status</span>
+            <span class="types"><span class="type">int</span></span>
+         Object status <em>writeonly</em>
+        </li>
+        <li><span class="parameter">invisible</span>
+            <span class="types"><span class="type">bool</span></span>
+         Toggle object visibility <em>writeonly</em>
+        </li>
+        <li><span class="parameter">temporary</span>
+            <span class="types"><span class="type">bool</span></span>
+         Toggle temporary status <em>writeonly</em>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Object"></a>Object</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Obj.new"></a>
+    <strong>Obj.new ([obj[, obj_n[, frame_n[, quality[, qty[, x[, y[, z]]]]]]]])</strong>
+    </dt>
+    <dd>
+    Create a new Obj.
+This function can clone and existing object or create a new object from one or more parameters.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to clone
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         Object number
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         Frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+         Quality
+        </li>
+        <li><span class="parameter">qty</span>
+            <span class="types"><span class="type">int</span></span>
+         Quantity
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+         x map position
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+         y map position
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+         z map position
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+        The newly created object
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.moveToMap"></a>
+    <strong>Obj.moveToMap (obj[, location])</strong>
+    </dt>
+    <dd>
+    Move an object to the map.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">{x=int,y=int,z=int}</span> or <span class="type">x,y,z</span></span>
+         Map location
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.moveToInv"></a>
+    <strong>Obj.moveToInv (obj, actor_num)</strong>
+    </dt>
+    <dd>
+    Move an object into an Actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+        <li><span class="parameter">actor_num</span>
+            <span class="types"><span class="type">int</span></span>
+         Actor number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.moveToCont"></a>
+    <strong>Obj.moveToCont (obj, container)</strong>
+    </dt>
+    <dd>
+    Move an object into a container
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+        <li><span class="parameter">container</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Container object to move into
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.removeFromCont"></a>
+    <strong>Obj.removeFromCont (obj)</strong>
+    </dt>
+    <dd>
+    Remove an object from its container.
+The object will be unlinked from the engine after this operation. It will be freed after it goes out of scope.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to move
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.use"></a>
+    <strong>Obj.use (obj)</strong>
+    </dt>
+    <dd>
+    Call the old C++ usecode logic for a given object.  (U6)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to use
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Obj.removeFromEngine"></a>
+    <strong>Obj.removeFromEngine (obj)</strong>
+    </dt>
+    <dd>
+    Remove an object from the game engine.
+The object will be unlinked from the engine after this operation. It will be freed after it goes out of scope.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         Object to unlink
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="player"></a>player</h2>
+    <dl class="function">
+    <dt>
+    <a name = "player_get_gender"></a>
+    <strong>player_get_gender ()</strong>
+    </dt>
+    <dd>
+    Get the gender of the player
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        <ul>
+<li>0 = Male</li>
+<li>1 = Female</li>
+</ul>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_get_location"></a>
+    <strong>player_get_location ()</strong>
+    </dt>
+    <dd>
+    Get the location of the player
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        {x=number, y=number, z=number}
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_get_karma"></a>
+    <strong>player_get_karma ()</strong>
+    </dt>
+    <dd>
+    Get the player&rsquo;s karma value (U6)
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        karma value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_set_karma"></a>
+    <strong>player_set_karma (value)</strong>
+    </dt>
+    <dd>
+    Set the karma value for the player (U6)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         new karma value
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_dec_alcohol"></a>
+    <strong>player_dec_alcohol (value)</strong>
+    </dt>
+    <dd>
+    Decrement the player&rsquo;s alcohol counter (U6) If value is greater than the counter the the counter is left at zero.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         number to decrement counter by
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="party"></a>party</h2>
+    <dl class="function">
+    <dt>
+    <a name = "party_is_in_combat_mode"></a>
+    <strong>party_is_in_combat_mode ()</strong>
+    </dt>
+    <dd>
+    Check to see if the party is currently in combat mode
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true if the party is in combat mode otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_set_combat_mode"></a>
+    <strong>party_set_combat_mode (value)</strong>
+    </dt>
+    <dd>
+    Toggle combat mode
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="map"></a>map</h2>
+    <dl class="function">
+    <dt>
+    <a name = "map_get_obj"></a>
+    <strong>map_get_obj (location[, obj_n])</strong>
+    </dt>
+    <dd>
+    Get an object from the map
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">({x,y,z}</span> or <span class="type">x,y,z)</span></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+         object number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a> or <span class="type">nil</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_remove_obj"></a>
+    <strong>map_remove_obj (location[, obj_n])</strong>
+    </dt>
+    <dd>
+    Remove an object from the map. </p>
+
+<p>Once removed from the map the object has no engine location and will be cleaned up in the next GC
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">({x,y,z}</span> or <span class="type">x,y,z)</span></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+         object number
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        success/failure
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_can_put"></a>
+    <strong>map_can_put (location)</strong>
+    </dt>
+    <dd>
+    Can you put an actor at a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">({x,y,z}</span> or <span class="type">x,y,z)</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        true if actor an be placed at location otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_can_put_obj"></a>
+    <strong>map_can_put_obj (location)</strong>
+    </dt>
+    <dd>
+    Can you put an object at a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">({x,y,z}</span> or <span class="type">x,y,z)</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if an object an be placed at location otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_is_water"></a>
+    <strong>map_is_water (x, y, z)</strong>
+    </dt>
+    <dd>
+    Check map location for water
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the map at location is a water tile otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_is_on_screen"></a>
+    <strong>map_is_on_screen (x, y, z)</strong>
+    </dt>
+    <dd>
+    Checks if the map location is currently on screen
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the map location is currently on screen otherwise false
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_impedence"></a>
+    <strong>map_get_impedence (x, y, z[, ignore_objects=true])</strong>
+    </dt>
+    <dd>
+    Get the impedance of a map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">ignore_objects</span>
+            <span class="types"><span class="type">bool</span></span>
+         Ignore objects while calculating impedance
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        impedance
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
