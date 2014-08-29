@@ -2357,6 +2357,11 @@ static int nscript_party_set_combat_mode(lua_State *L)
 	return 0;
 }
 
+/***
+Set party mode. The first member in the party becomes the leader.
+@function party_set_party_mode
+@within party
+ */
 static int nscript_party_set_party_mode(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
@@ -2365,6 +2370,12 @@ static int nscript_party_set_party_mode(lua_State *L)
 	return 0;
 }
 
+/***
+Move party to a given map location
+@function party_move
+@tparam {x,y,z}|x,y,z location map location to move party to.
+@within party
+ */
 static int nscript_party_move(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2379,6 +2390,13 @@ static int nscript_party_move(lua_State *L)
 	return 0;
 }
 
+/***
+Move player to given map location
+@function player_move
+@tparam {x,y,z}|x,y,z location map location to move player to.
+@bool teleport spawn eggs if true
+@within player
+ */
 static int nscript_player_move(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
@@ -2393,6 +2411,12 @@ static int nscript_player_move(lua_State *L)
 	return 0;
 }
 
+/***
+Make the given actor the player controlled actor.
+@function player_set_actor
+@tparam Actor actor
+@within player
+ */
 static int nscript_player_set_actor(lua_State *L)
 {
 	Player *player = Game::get_game()->get_player();
@@ -2404,6 +2428,12 @@ static int nscript_player_set_actor(lua_State *L)
 	return 0;
 }
 
+/***
+Check if the player is currently in solo mode
+@function player_is_in_solo_mode
+@treturn bool true if the player is in solo mode otherwise false
+@within player
+ */
 static int nscript_player_is_in_solo_mode(lua_State *L)
 {
   Player *player = Game::get_game()->get_player();
@@ -2412,7 +2442,12 @@ static int nscript_player_is_in_solo_mode(lua_State *L)
   return 1;
 }
 
-
+/***
+Returns the number of members in the party
+@function party_get_size
+@treturn int number of party members
+@within party
+ */
 static int nscript_party_get_size(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2420,6 +2455,13 @@ static int nscript_party_get_size(lua_State *L)
 	return 1;
 }
 
+/***
+Get the Actor object for a given party member
+@function party_get_member
+@int member_num index of party member to retrieve
+@treturn Actor|nil returns nil if actor cannot be found for given index
+@within party
+ */
 static int nscript_party_get_member(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2434,6 +2476,11 @@ static int nscript_party_get_member(lua_State *L)
 	return 1;
 }
 
+/***
+Get the current party leader and update player
+@function party_update_leader
+@within party
+ */
 static int nscript_party_update_leader(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2449,6 +2496,11 @@ static int nscript_party_update_leader(lua_State *L)
 	return 0;
 }
 
+/***
+Resurrect dead party members
+@function party_resurrect_dead_members
+@within party
+ */
 static int nscript_party_resurrect_dead_members(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2457,6 +2509,12 @@ static int nscript_party_resurrect_dead_members(lua_State *L)
 	return 0;
 }
 
+/***
+Exit party members from vehicle
+@function party_exit_vehicle
+@tparam {x,y,z}|x,y,z location map location to move party to once they exit the vehicle
+@within party
+ */
 static int nscript_party_exit_vehicle(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2472,6 +2530,11 @@ static int nscript_party_exit_vehicle(lua_State *L)
 	return 0;
 }
 
+/***
+Dismount all party members from their horses (U6)
+@function party_dismount_from_horses
+@within party
+ */
 static int nscript_party_dismount_from_horses(lua_State *L)
 {
 	Party *party = Game::get_game()->get_party();
@@ -2482,7 +2545,7 @@ static int nscript_party_dismount_from_horses(lua_State *L)
 /***
 Get an object from the map
 @function map_get_obj
-@tparam ({x,y,z}|x,y,z) location
+@tparam {x,y,z}|x,y,z location
 @param[opt] obj_n object number
 @treturn Obj|nil
 @within map
@@ -2660,6 +2723,15 @@ static int nscript_map_get_impedence(lua_State *L)
 	return 1;
 }
 
+/***
+get the map tile number for a given map location
+@function map_get_tile_num
+@int x
+@int y
+@int z
+@treturn int|nil
+@within map
+ */
 static int nscript_map_get_tile_num(lua_State *L)
 {
   Map *map = Game::get_game()->get_game_map();
@@ -2678,6 +2750,18 @@ static int nscript_map_get_tile_num(lua_State *L)
   return 0;
 }
 
+/***
+get the tile number for given location if the map tile can do damage.
+If the base map tile does not do damage then objects at the map location
+are also searched and the tile number of the first object that can damage the player
+is returned.
+@function map_get_dmg_tile_num
+@int x
+@int y
+@int z
+@treturn int|nil tile number of the damaging tile or nil if no damaging tiles are found at the location
+@within map
+ */
 static int nscript_map_get_dmg_tile_num(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
@@ -2696,6 +2780,17 @@ static int nscript_map_get_dmg_tile_num(lua_State *L)
 	return 0;
 }
 
+/***
+Returns true if a line between points x,y and x1, y1 does not cross any missile boundary tiles
+@function map_can_reach_point
+@int x
+@int y
+@int x1
+@int y1
+@int z
+@treturn bool
+@within map
+ */
 static int nscript_map_line_test(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
@@ -2716,6 +2811,18 @@ static int nscript_map_line_test(lua_State *L)
 	return 1;
 }
 
+/***
+Returns the first point on a line between x,y and x1, y1 where a missile boundary tile is crossed
+If no boundary tiles are crossed on the line then x1, y1 are returned
+@function map_line_hit_check
+@int x
+@int y
+@int x1
+@int y1
+@int z
+@treturn int,int an x,y coord
+@within map
+ */
 static int nscript_map_line_hit_check(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
@@ -2742,6 +2849,14 @@ static int nscript_map_line_hit_check(lua_State *L)
 	return 2;
 }
 
+/***
+get a tile flag for a given tile number
+@function tile_get_flag
+@int tile_number
+@int flag_set either 1, 2 or 3
+@int bit_number bit number of flag from flag_set 0..7
+@treturn bool|nil return flag or nil on error
+ */
 static int nscript_tile_get_flag(lua_State *L)
 {
 	uint16 tile_num = (uint16) luaL_checkinteger(L, 1);
@@ -2772,6 +2887,14 @@ static int nscript_tile_get_flag(lua_State *L)
 	return 1;
 }
 
+/***
+start earthquake effect. This shakes the mapwindow and makes a sound.
+@function quake_start
+@int magnitude quake strength
+@int duration duration of effect in milliseconds
+@treturn bool always returns true
+@within effects
+ */
 static int nscript_quake_start(lua_State *L)
 {
    Player *player = Game::get_game()->get_player();

@@ -35,6 +35,7 @@
 <li><a href="#player">player</a></li>
 <li><a href="#party">party</a></li>
 <li><a href="#map">map</a></li>
+<li><a href="#effects">effects</a></li>
 </ul>
 
 
@@ -100,6 +101,10 @@
 	<td class="name" nowrap><a href="#game_get_ui_style">game_get_ui_style ()</a></td>
 	<td class="summary">Get the currently selected UI style</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#tile_get_flag">tile_get_flag (tile_number, flag_set, bit_number)</a></td>
+	<td class="summary">get a tile flag for a given tile number</td>
+	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
@@ -161,6 +166,18 @@
 	<td class="name" nowrap><a href="#player_dec_alcohol">player_dec_alcohol (value)</a></td>
 	<td class="summary">Decrement the player&rsquo;s alcohol counter (U6)</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_move">player_move (location, teleport)</a></td>
+	<td class="summary">Move player to given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_set_actor">player_set_actor (actor)</a></td>
+	<td class="summary">Make the given actor the player controlled actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#player_is_in_solo_mode">player_is_in_solo_mode ()</a></td>
+	<td class="summary">Check if the player is currently in solo mode</td>
+	</tr>
 </table>
 <h2><a href="#party">party</a></h2>
 <table class="function_list">
@@ -171,6 +188,38 @@
 	<tr>
 	<td class="name" nowrap><a href="#party_set_combat_mode">party_set_combat_mode (value)</a></td>
 	<td class="summary">Toggle combat mode</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_set_party_mode">party_set_party_mode ()</a></td>
+	<td class="summary">Set party mode.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_move">party_move (location)</a></td>
+	<td class="summary">Move party to a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_get_size">party_get_size ()</a></td>
+	<td class="summary">Returns the number of members in the party</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_get_member">party_get_member (member_num)</a></td>
+	<td class="summary">Get the Actor object for a given party member</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_update_leader">party_update_leader ()</a></td>
+	<td class="summary">Get the current party leader and update player</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_resurrect_dead_members">party_resurrect_dead_members ()</a></td>
+	<td class="summary">Resurrect dead party members</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_exit_vehicle">party_exit_vehicle (location)</a></td>
+	<td class="summary">Exit party members from vehicle</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_dismount_from_horses">party_dismount_from_horses ()</a></td>
+	<td class="summary">Dismount all party members from their horses (U6)</td>
 	</tr>
 </table>
 <h2><a href="#map">map</a></h2>
@@ -202,6 +251,30 @@
 	<tr>
 	<td class="name" nowrap><a href="#map_get_impedence">map_get_impedence (x, y, z[, ignore_objects=true])</a></td>
 	<td class="summary">Get the impedance of a map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (x, y, z)</a></td>
+	<td class="summary">get the map tile number for a given map location</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_dmg_tile_num">map_get_dmg_tile_num (x, y, z)</a></td>
+	<td class="summary">get the tile number for given location if the map tile can do damage.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_can_reach_point">map_can_reach_point (x, y, x1, y1, z)</a></td>
+	<td class="summary">Returns true if a line between points x,y and x1, y1 does not cross any missile boundary tiles</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_line_hit_check">map_line_hit_check (x, y, x1, y1, z)</a></td>
+	<td class="summary">Returns the first point on a line between x,y and x1, y1 where a missile boundary tile is crossed
+If no boundary tiles are crossed on the line then x1, y1 are returned</td>
+	</tr>
+</table>
+<h2><a href="#effects">effects</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#quake_start">quake_start (magnitude, duration)</a></td>
+	<td class="summary">start earthquake effect.</td>
 	</tr>
 </table>
 
@@ -446,6 +519,42 @@
 </ul>
 
 
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tile_get_flag"></a>
+    <strong>tile_get_flag (tile_number, flag_set, bit_number)</strong>
+    </dt>
+    <dd>
+    get a tile flag for a given tile number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tile_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">flag_set</span>
+            <span class="types"><span class="type">int</span></span>
+         either 1, 2 or 3
+        </li>
+        <li><span class="parameter">bit_number</span>
+            <span class="types"><span class="type">int</span></span>
+         bit number of flag from flag_set 0..7
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span> or <span class="type">nil</span></span>
+        return flag or nil on error
     </ol>
 
 
@@ -873,6 +982,73 @@ The object will be unlinked from the engine after this operation. It will be fre
 
 
 </dd>
+    <dt>
+    <a name = "player_move"></a>
+    <strong>player_move (location, teleport)</strong>
+    </dt>
+    <dd>
+    Move player to given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">{x,y,z}</span> or <span class="type">x,y,z</span></span>
+         map location to move player to.
+        </li>
+        <li><span class="parameter">teleport</span>
+            <span class="types"><span class="type">bool</span></span>
+         spawn eggs if true
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_set_actor"></a>
+    <strong>player_set_actor (actor)</strong>
+    </dt>
+    <dd>
+    Make the given actor the player controlled actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><span class="type">Actor</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "player_is_in_solo_mode"></a>
+    <strong>player_is_in_solo_mode ()</strong>
+    </dt>
+    <dd>
+    Check if the player is currently in solo mode
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        true if the player is in solo mode otherwise false
+    </ol>
+
+
+
+
+</dd>
 </dl>
     <h2><a name="party"></a>party</h2>
     <dl class="function">
@@ -918,6 +1094,151 @@ The object will be unlinked from the engine after this operation. It will be fre
 
 
 </dd>
+    <dt>
+    <a name = "party_set_party_mode"></a>
+    <strong>party_set_party_mode ()</strong>
+    </dt>
+    <dd>
+    Set party mode.  The first member in the party becomes the leader.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_move"></a>
+    <strong>party_move (location)</strong>
+    </dt>
+    <dd>
+    Move party to a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">{x,y,z}</span> or <span class="type">x,y,z</span></span>
+         map location to move party to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_get_size"></a>
+    <strong>party_get_size ()</strong>
+    </dt>
+    <dd>
+    Returns the number of members in the party
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        number of party members
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_get_member"></a>
+    <strong>party_get_member (member_num)</strong>
+    </dt>
+    <dd>
+    Get the Actor object for a given party member
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">member_num</span>
+            <span class="types"><span class="type">int</span></span>
+         index of party member to retrieve
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Actor</span> or <span class="type">nil</span></span>
+        returns nil if actor cannot be found for given index
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_update_leader"></a>
+    <strong>party_update_leader ()</strong>
+    </dt>
+    <dd>
+    Get the current party leader and update player
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_resurrect_dead_members"></a>
+    <strong>party_resurrect_dead_members ()</strong>
+    </dt>
+    <dd>
+    Resurrect dead party members
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_exit_vehicle"></a>
+    <strong>party_exit_vehicle (location)</strong>
+    </dt>
+    <dd>
+    Exit party members from vehicle
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">{x,y,z}</span> or <span class="type">x,y,z</span></span>
+         map location to move party to once they exit the vehicle
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_dismount_from_horses"></a>
+    <strong>party_dismount_from_horses ()</strong>
+    </dt>
+    <dd>
+    Dismount all party members from their horses (U6)
+
+
+
+
+
+
+
+</dd>
 </dl>
     <h2><a name="map"></a>map</h2>
     <dl class="function">
@@ -932,7 +1253,7 @@ The object will be unlinked from the engine after this operation. It will be fre
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">location</span>
-            <span class="types"><span class="type">({x,y,z}</span> or <span class="type">x,y,z)</span></span>
+            <span class="types"><span class="type">{x,y,z}</span> or <span class="type">x,y,z</span></span>
 
 
         </li>
@@ -1155,6 +1476,218 @@ The object will be unlinked from the engine after this operation. It will be fre
 
            <span class="types"><span class="type">int</span></span>
         impedance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_tile_num"></a>
+    <strong>map_get_tile_num (x, y, z)</strong>
+    </dt>
+    <dd>
+    get the map tile number for a given map location
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span> or <span class="type">nil</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_dmg_tile_num"></a>
+    <strong>map_get_dmg_tile_num (x, y, z)</strong>
+    </dt>
+    <dd>
+    get the tile number for given location if the map tile can do damage.
+If the base map tile does not do damage then objects at the map location
+are also searched and the tile number of the first object that can damage the player
+is returned.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span> or <span class="type">nil</span></span>
+        tile number of the damaging tile or nil if no damaging tiles are found at the location
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_can_reach_point"></a>
+    <strong>map_can_reach_point (x, y, x1, y1, z)</strong>
+    </dt>
+    <dd>
+    Returns true if a line between points x,y and x1, y1 does not cross any missile boundary tiles
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_line_hit_check"></a>
+    <strong>map_line_hit_check (x, y, x1, y1, z)</strong>
+    </dt>
+    <dd>
+    Returns the first point on a line between x,y and x1, y1 where a missile boundary tile is crossed
+If no boundary tiles are crossed on the line then x1, y1 are returned
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y1</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int,int</span></span>
+        an x,y coord
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="effects"></a>effects</h2>
+    <dl class="function">
+    <dt>
+    <a name = "quake_start"></a>
+    <strong>quake_start (magnitude, duration)</strong>
+    </dt>
+    <dd>
+    start earthquake effect.  This shakes the mapwindow and makes a sound.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">magnitude</span>
+            <span class="types"><span class="type">int</span></span>
+         quake strength
+        </li>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">int</span></span>
+         duration of effect in milliseconds
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        always returns true
     </ol>
 
 
