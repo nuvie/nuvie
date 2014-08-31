@@ -89,6 +89,13 @@ An in-game object
 
  */
 
+/***
+A map coordinate
+@table MapCoord
+@int x
+@int y
+@int z 0 for the 1024x1024 surface level, 1..5 for the dungeon levels
+ */
 extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 struct ScriptObjRef
@@ -1811,7 +1818,7 @@ static int nscript_obj_get(lua_State *L)
 Move an object to the map.
 @function Obj.moveToMap
 @tparam Obj obj Object to move
-@tparam[opt] {x=int,y=int,z=int}|x,y,z location Map location
+@tparam[opt] MapCoord|x,y,z location Map location
 @within Object
  */
 static int nscript_obj_movetomap(lua_State *L)
@@ -2262,7 +2269,7 @@ static int nscript_player_get_gender(lua_State *L)
 /***
 Get the location of the player
 @function player_get_location
-@treturn table {x=number, y=number, z=number}
+@treturn MapCoord
 @within player
  */
 static int nscript_player_get_location(lua_State *L)
@@ -2373,7 +2380,7 @@ static int nscript_party_set_party_mode(lua_State *L)
 /***
 Move party to a given map location
 @function party_move
-@tparam {x,y,z}|x,y,z location map location to move party to.
+@tparam MapCoord|x,y,z location map location to move party to.
 @within party
  */
 static int nscript_party_move(lua_State *L)
@@ -2393,7 +2400,7 @@ static int nscript_party_move(lua_State *L)
 /***
 Move player to given map location
 @function player_move
-@tparam {x,y,z}|x,y,z location map location to move player to.
+@tparam MapCoord|x,y,z location map location to move player to.
 @bool teleport spawn eggs if true
 @within player
  */
@@ -2512,7 +2519,7 @@ static int nscript_party_resurrect_dead_members(lua_State *L)
 /***
 Exit party members from vehicle
 @function party_exit_vehicle
-@tparam {x,y,z}|x,y,z location map location to move party to once they exit the vehicle
+@tparam MapCoord|x,y,z location map location to move party to once they exit the vehicle
 @within party
  */
 static int nscript_party_exit_vehicle(lua_State *L)
@@ -2545,7 +2552,7 @@ static int nscript_party_dismount_from_horses(lua_State *L)
 /***
 Get an object from the map
 @function map_get_obj
-@tparam {x,y,z}|x,y,z location
+@tparam MapCoord|x,y,z location
 @param[opt] obj_n object number
 @treturn Obj|nil
 @within map
@@ -2586,7 +2593,7 @@ Remove an object from the map.
 
 Once removed from the map the object has no engine location and will be cleaned up in the next GC
 @function map_remove_obj
-@tparam ({x,y,z}|x,y,z) location
+@tparam MapCoord|x,y,z location
 @param[opt] obj_n object number
 @treturn boolean success/failure
 @within map
@@ -2611,7 +2618,7 @@ static int nscript_map_remove_obj(lua_State *L)
 /***
 Can you put an actor at a given map location
 @function map_can_put
-@tparam ({x,y,z}|x,y,z) location
+@tparam MapCoord|x,y,z location
 @treturn boolean true if actor an be placed at location otherwise false
 @within map
  */
@@ -2632,7 +2639,7 @@ static int nscript_map_can_put_actor(lua_State *L)
 /***
 Can you put an object at a given map location
 @function map_can_put_obj
-@tparam ({x,y,z}|x,y,z) location
+@tparam MapCoord|x,y,z location
 @treturn bool true if an object an be placed at location otherwise false
 @within map
  */
@@ -2932,6 +2939,24 @@ static int nscript_new_hit_entities_tbl_var(lua_State *L, ProjectileEffect *effe
 	   return 1;
 }
 
+/***
+Create an explosion at x,y on the current level. This function returns an iterator function
+to iterate through a list of Actors and Objects that were hit by the explosion.
+@function explosion_start
+@int tile_number
+@int x
+@int y
+@treturn table A table containing the hit Actor and Obj objects.
+@usage
+    local hit_items = explosion_start(0x17e, actor.x, actor.y)
+
+    for k,v in pairs(hit_items) do
+      if v.luatype == "actor" then
+        actor_hit(v, random(1, 0x14))
+      end
+    end
+@within effects
+ */
 static int nscript_explosion_start(lua_State *L)
 {
    uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
@@ -2945,6 +2970,22 @@ static int nscript_explosion_start(lua_State *L)
    return nscript_new_hit_entities_tbl_var(L, (ProjectileEffect *)effect);
 }
 
+/***
+Creates a single tile projectile effect. This travels in a straight line from (startx,starty) to (targetx,targety)
+the tile can leave a trail and rotate whilst moving.
+@function projectile_anim
+@int startx
+@int starty
+@int targetx
+@int targety
+@int speed how far the tile travels each update. The tile will move speed * 2 pixels along the line each iteration
+@bool trail if true a copy of the tile will be left at intervals along the line
+@int initial_tile_rotation in degrees
+@int[opt=0] rotation_amount in degrees
+@int[opt=0] src_tile_y_offset use by U6 projectile tiles which need to be centred vertically before rotation. eg arrows.
+@treturn bool Always returns true
+@within effects
+ */
 static int nscript_projectile_anim(lua_State *L)
 {
 uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
@@ -2972,6 +3013,19 @@ uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
    return 1;
 }
 
+/***
+Create multiple projectile effects emanating from (startx,starty) going to multiple target locations
+@function projectile_anim_multi
+@int tile_number
+@int startx
+@int starty
+@tparam {MapCoord,...} targets
+@int speed
+@int trail
+@int initial_tile_rotation
+@treturn table|bool A table containing the hit Actor and Obj objects. Or false if argument 4 isn't a table
+@within effects
+ */
 static int nscript_projectile_anim_multi(lua_State *L)
 {
    uint16 tile_num = (uint16)luaL_checkinteger(L, 1);
@@ -3025,6 +3079,14 @@ static int nscript_projectile_anim_multi(lua_State *L)
    return nscript_new_hit_entities_tbl_var(L, effect);
 }
 
+/***
+Hit effect. Displays the hit/damage tile over the map at a given location for a short period of time. The hit sfx is also played.
+@function hit_anim
+@int x
+@int y
+@treturn bool Always returns true
+@within effects
+ */
 static int nscript_hit_anim(lua_State *L)
 {
    uint16 targetx = (uint16)luaL_checkinteger(L, 1);
@@ -3039,6 +3101,13 @@ static int nscript_hit_anim(lua_State *L)
 }
 
 
+/***
+Call the C++ usecode look function for a given Obj
+@function usecode_look
+@tparam Obj object object to look at
+@treturn bool returns true if the Obj has a C++ usecode look function
+@within Object
+ */
 //FIXME need to move this into lua script.
 static int nscript_usecode_look(lua_State *L)
 {
@@ -3054,6 +3123,11 @@ static int nscript_usecode_look(lua_State *L)
    return 1;
 }
 
+/***
+execute the pixelated map window fade out effect
+@function fade_out
+@within effects
+ */
 static int nscript_fade_out(lua_State *L)
 {
 	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_OUT));
@@ -3062,6 +3136,11 @@ static int nscript_fade_out(lua_State *L)
 	return 0;
 }
 
+/***
+execute the pixelated map window fade in effect
+@function fade_in
+@within effects
+ */
 static int nscript_fade_in(lua_State *L)
 {
 	AsyncEffect *e = new AsyncEffect(new FadeEffect(FADE_PIXELATED, FADE_IN));
@@ -3070,6 +3149,14 @@ static int nscript_fade_in(lua_State *L)
 	return 0;
 }
 
+/***
+pixel fade from one tile to another. If to_tile is not supplied the fade to blank
+@function fade_tile
+@tparam MapCoord|x,y,z location location for the effect to take place
+@int from_tile tile number of the tile to fade from
+@int[opt] to_tile tile number of the tile to fade to
+@within effects
+ */
 static int nscript_fade_tile(lua_State *L)
 {
 	MapCoord loc;
@@ -3095,6 +3182,14 @@ static int nscript_fade_tile(lua_State *L)
 	return 0;
 }
 
+/***
+black fade effect on a given object
+@function fade_obj
+@tparam Obj obj object to fade
+@int fade_color the colour (palette index) to fade the black pixels to.
+@int fade_speed
+@within effects
+ */
 static int nscript_black_fade_obj(lua_State *L)
 {
 	   Obj *obj = nscript_get_obj_from_args(L, 1);
@@ -3110,6 +3205,12 @@ static int nscript_black_fade_obj(lua_State *L)
 	   return 0;
 }
 
+/***
+xor effect. XOR the colours on the mapwindow
+@function xor_effect
+@int duration in milliseconds
+@within effects
+ */
 static int nscript_xor_effect(lua_State *L)
 {
 	uint16 duration = (uint16)luaL_checkinteger(L, 1);
@@ -3120,6 +3221,12 @@ static int nscript_xor_effect(lua_State *L)
 	return 0;
 }
 
+/***
+xray effect. Disable map blacking. (see through walls)
+@function xray_effect
+@int duration in milliseconds
+@within effects
+ */
 static int nscript_xray_effect(lua_State *L)
 {
 	uint16 duration = (uint16)luaL_checkinteger(L, 1);
@@ -3129,7 +3236,14 @@ static int nscript_xray_effect(lua_State *L)
 
 	return 0;
 }
-
+/***
+peer effect.
+Display an overview of the current area in the MapWindow. Any new actions
+cancel the effect and return to the script.
+(area is 48x48 tiles around the player, regardless of MapWindow size)
+@function peer_effect
+@within effects
+ */
 static int nscript_peer_effect(lua_State *L)
 {
 	uint16 x, y;
@@ -3143,6 +3257,11 @@ static int nscript_peer_effect(lua_State *L)
 		return 0;
 }
 
+/***
+wing strike effect. A dragon flies across the screen. (U6)
+@function wing_strike_effect
+@within effects
+ */
 static int nscript_wing_strike_effect(lua_State *L)
 {
 	Actor *actor = nscript_get_actor_from_args(L, 1);
@@ -3156,6 +3275,12 @@ static int nscript_wing_strike_effect(lua_State *L)
 	return 0;
 }
 
+/***
+hail storm effect (U6). Hail stones rain down on the mapwindow.
+@function hail_storm_effect
+@tparam MapCoord|x,y,z location
+@within effects
+ */
 static int nscript_hail_storm_effect(lua_State *L)
 {
 	MapCoord loc;
@@ -3170,6 +3295,12 @@ static int nscript_hail_storm_effect(lua_State *L)
 	return 0;
 }
 
+/***
+wizard's eye effect (U6).
+@function wizard_eye_effect
+@tparam MapCoord|x,y,z start_location
+@within effects
+ */
 static int nscript_wizard_eye_effect(lua_State *L)
 {
 	MapCoord loc;
@@ -3185,6 +3316,11 @@ static int nscript_wizard_eye_effect(lua_State *L)
 	return 0;
 }
 
+/***
+play the game end sequence then quit.
+The file ending.lua is used from the relevant game's script directory.
+@function play_end_sequence
+ */
 static int nscript_play_end_sequence(lua_State *L)
 {
   get_cutscene()->moveToFront();
@@ -3196,6 +3332,12 @@ static int nscript_play_end_sequence(lua_State *L)
   return 0;
 }
 
+/***
+play a sound effect
+@function play_sfx
+@int sfx_id the sound effect index number.
+@bool[opt=false] async_playback if true then the sfx is played back asynchronously.
+ */
 static int nscript_play_sfx(lua_State *L)
 {
 	bool play_mode = SFX_PLAY_SYNC;
@@ -3278,6 +3420,16 @@ int nscript_party_iter(lua_State *L)
    return 1;
 }
 
+/***
+Iterate through party members.
+@function party_members
+@usage
+  local actor
+  for actor in party_members() do
+    actor.poisoned = false
+  end
+@within party
+ */
 static int nscript_party(lua_State *L)
 {
    lua_pushinteger(L, 0);
@@ -3325,6 +3477,22 @@ int nscript_find_obj_iter(lua_State *L)
 	return 1;
 }
 
+/***
+Iterate through all objects of a specific type on a given map level.
+@function find_obj
+@int z map level to search
+@int obj_n object number to search for
+@int[opt] frame_n filter search based on specific frame number
+@int[opt] quality filter search based on specific quality value
+@usage
+  local loc = player_get_location()
+  for obj in find_obj(loc.z, 223, 1) do
+    if obj ~= nil then
+      explode_obj(obj)
+    end
+  end
+@within Object
+ */
 static int nscript_find_obj(lua_State *L)
 {
 	uint8 level = (uint8)luaL_checkinteger(L, 1);
@@ -3366,6 +3534,14 @@ static int nscript_find_obj(lua_State *L)
 	return 1;
 }
 
+/***
+Set specific game timer counter (U6).
+These counters are decremented each turn and are used for things like torch duration, eclipse etc.
+@function timer_set
+@int timer_idx
+@int value
+@within time
+ */
 static int nscript_timer_set(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3378,6 +3554,14 @@ static int nscript_timer_set(lua_State *L)
 	return 0;
 }
 
+/***
+Get specific game timer counter (U6).
+These counters are decremented each turn and are used for things like torch duration, eclipse etc.
+@function timer_get
+@int timer_idx
+@treturn integer value of the timer
+@within time
+ */
 static int nscript_timer_get(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3389,6 +3573,12 @@ static int nscript_timer_get(lua_State *L)
 	return 1;
 }
 
+/***
+Set all timer counters with a given value
+@function timer_update_all
+@int value
+@within time
+ */
 static int nscript_timer_update_all(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3400,6 +3590,12 @@ static int nscript_timer_update_all(lua_State *L)
 	return 0;
 }
 
+/***
+Get the current year
+@function clock_get_year
+@treturn integer
+@within time
+ */
 static int nscript_clock_get_year(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3412,6 +3608,12 @@ static int nscript_clock_get_year(lua_State *L)
 	return 1;
 }
 
+/***
+Get the current month
+@function clock_get_month
+@treturn integer
+@within time
+ */
 static int nscript_clock_get_month(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3424,6 +3626,12 @@ static int nscript_clock_get_month(lua_State *L)
 	return 1;
 }
 
+/***
+Get the current day
+@function clock_get_day
+@treturn integer
+@within time
+ */
 static int nscript_clock_get_day(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3436,6 +3644,12 @@ static int nscript_clock_get_day(lua_State *L)
 	return 1;
 }
 
+/***
+Get the clock minute value
+@function clock_get_minute
+@treturn integer
+@within time
+ */
 static int nscript_clock_get_minute(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3445,6 +3659,12 @@ static int nscript_clock_get_minute(lua_State *L)
 	return 1;
 }
 
+/***
+Get the clock hour value
+@function clock_get_hour
+@treturn integer the hour in 24 hour format
+@within time
+ */
 static int nscript_clock_get_hour(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3454,6 +3674,12 @@ static int nscript_clock_get_hour(lua_State *L)
 	return 1;
 }
 
+/***
+Increase the game clock by a number of minutes
+@function clock_inc
+@int minutes the number of minutes to increment the clock by
+@within time
+ */
 static int nscript_clock_inc(lua_State *L)
 {
 	GameClock *clock = Game::get_game()->get_clock();
@@ -3465,6 +3691,11 @@ static int nscript_clock_inc(lua_State *L)
 	return 0;
 }
 
+/***
+Set the current wind direction (U6).
+@function wind_set_dir
+@int direction new wind direction
+ */
 static int nscript_wind_set(lua_State *L)
 {
 	Weather *weather = Game::get_game()->get_weather();
@@ -3475,6 +3706,11 @@ static int nscript_wind_set(lua_State *L)
 	return 0;
 }
 
+/***
+Get the current wind direction (U6).
+@function wind_get_dir
+@treturn integer
+ */
 static int nscript_wind_get(lua_State *L)
 {
 	Weather *weather = Game::get_game()->get_weather();
@@ -3482,6 +3718,14 @@ static int nscript_wind_get(lua_State *L)
 	return 1;
 }
 
+/***
+Get input from the keyboard
+@function input_select
+@string allowed_characters set to nil if all characters are permitted
+@bool can_escape can the player use escape to skip input
+@treturn string characters input by the player
+@within io
+ */
 static int nscript_input_select(lua_State *L)
 {
 	const char *allowed_chars = NULL;
@@ -3502,6 +3746,16 @@ static int nscript_input_select(lua_State *L)
 	return 1;
 }
 
+/***
+Get an integer number as input from the player.
+The characters input by the player are converted into an integer using the
+C function strtol()
+@function input_select_integer
+@string allowed_characters set to nil if all characters are permitted
+@bool can_escape can the player use escape to skip input
+@treturn integer number input by the player
+@within io
+ */
 static int nscript_input_select_integer(lua_State *L)
 {
 	const char *allowed_chars = NULL;
@@ -3522,7 +3776,13 @@ static int nscript_input_select_integer(lua_State *L)
 
 	return 1;
 }
-//lua function objs_at_loc(x,y,z)
+
+/***
+Iterate through objects at a given map location
+@function objs_at_loc
+@tparam MapCoord|x,y,z location
+@within Object
+ */
 static int nscript_objs_at_loc(lua_State *L)
 {
    U6Link *link = NULL;
@@ -3552,6 +3812,14 @@ static int nscript_objs_at_loc(lua_State *L)
    return 2;
 }
 
+/***
+Find a volcano object near the player. This function searches an area +/- 5 tiles around the location specified.
+The search starts top left and finishes bottom right. The first volcano/fumarole object found is returned.
+@function find_volcano_near_player
+@tparam MapCoord|x,y,z location centre of the search area
+@treturn Obj|nil first volcano/fumarole object found or nil if none found.
+@within Object
+ */
 static int nscript_find_volcano_obj_near_player(lua_State *L)
 {
   uint16 x, y;
@@ -3583,6 +3851,22 @@ static int nscript_find_volcano_obj_near_player(lua_State *L)
   return 0;
 }
 
+/***
+Iterate through objects in a container.
+@function container_objs
+@tparam Obj container container object to search.
+@bool[opt=false] is_recursive should we search containers inside the container?
+@usage
+  local child
+  for child in container_objs(obj) do  -- look through container for effect object.
+    if child.obj_n == 337 then --effect
+      found = true
+      print("\nIt's trapped.\n");
+      break
+    end
+  end
+@within Object
+ */
 static int nscript_container(lua_State *L)
 {
 	bool is_recursive = false;
@@ -3633,6 +3917,11 @@ int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive)
 	return 2;
 }
 
+/***
+Is the god mode cheat currently active?
+@function is_god_mode_enabled
+@treturn bool
+ */
 static int nscript_is_god_mode_enabled(lua_State *L)
 {
 	bool god_mode = Game::get_game()->is_god_mode_enabled();
@@ -3640,12 +3929,23 @@ static int nscript_is_god_mode_enabled(lua_State *L)
 	return 1;
 }
 
+/***
+Set armageddon flag
+@function set_armageddon
+@bool new_value
+ */
 static int nscript_set_armageddon(lua_State *L)
 {
 	Game::get_game()->set_armageddon((bool)lua_toboolean(L, 1));
 	return 0;
 }
 
+/***
+Toggle mouse cursor visibility.
+@function mouse_cursor_visible
+@bool visible
+@within io
+ */
 static int nscript_mouse_cursor_show(lua_State *L)
 {
 	bool show_cursor = lua_toboolean(L, 1);
@@ -3664,6 +3964,12 @@ static int nscript_mouse_cursor_show(lua_State *L)
 	return 0;
 }
 
+/***
+Select which mouse cursor pointer to use.
+@function mouse_cursor_set_pointer
+@int pointer_index
+@within io
+ */
 static int nscript_mouse_cursor_set_pointer(lua_State *L)
 {
 	uint8 new_pointer = lua_tointeger(L, 1);
@@ -3676,6 +3982,11 @@ static int nscript_mouse_cursor_set_pointer(lua_State *L)
 	return 0;
 }
 
+/***
+Pause the script. Tile animation will continue while the script is paused.
+@function script_wait
+@int duration in milliseconds
+ */
 static int nscript_wait(lua_State *L)
 {
   uint32 duration = (uint32)luaL_checkinteger(L, 1);
@@ -3687,6 +3998,14 @@ static int nscript_wait(lua_State *L)
   return 0;
 }
 
+/***
+Centre the mapwindow at a given location.
+@function mapwindow_center_at_location
+@int x
+@int y
+@int z
+@within mapwindow
+ */
 static int nscript_mapwindow_center_at_loc(lua_State *L)
 {
   MapWindow *map_window = Game::get_game()->get_map_window();
@@ -3700,6 +4019,13 @@ static int nscript_mapwindow_center_at_loc(lua_State *L)
   return 0;
 }
 
+/***
+Get the current location that the mapwindow is displaying. This is the top left corner
+of the mapwindow.
+@function mapwindow_get_location
+@treturn MapCoord
+@within mapwindow
+ */
 static int nscript_mapwindow_get_loc(lua_State *L)
 {
   MapWindow *map_window = Game::get_game()->get_map_window();
@@ -3725,6 +4051,14 @@ static int nscript_mapwindow_get_loc(lua_State *L)
   return 1;
 }
 
+/***
+Set the current location that the mapwindow is displaying. This is the top left corner
+@function mapwindow_set_location
+@int x
+@int y
+@int z
+@within mapwindow
+ */
 static int nscript_mapwindow_set_loc(lua_State *L)
 {
   MapWindow *map_window = Game::get_game()->get_map_window();
@@ -3740,6 +4074,13 @@ static int nscript_mapwindow_set_loc(lua_State *L)
   return 0;
 }
 
+/***
+Toggle mapwindow 'blacking'. Blacking hides tiles that are not visiblt to the player because they are obscured
+by a wall.
+@function mapwindow_set_enable_blacking
+@bool enable_blacking
+@within mapwindow
+ */
 static int nscript_mapwindow_set_enable_blacking(lua_State *L)
 {
   MapWindow *map_window = Game::get_game()->get_map_window();
