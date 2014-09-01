@@ -34,6 +34,73 @@
 #include "UseCode.h"
 #include "PortraitView.h"
 
+///
+//@module script
+
+/***
+An Actor object
+@table Actor
+@string[readonly] luatype This returns "actor"
+@int[readonly] actor_num
+@int align alignment
+
+- 0 = DEFAULT
+- 1 = NEUTRAL
+- 2 = EVIL
+- 3 = GOOD
+- 4 = CHAOTIC
+
+@bool[readonly] alive
+@bool asleep
+@int base_obj_n
+@bool charmed
+@int combat_mode
+@bool corpser_flag (U6) Has the actor been dragged underground by a corpser
+@bool cursed
+@int dex dexterity
+@int direction The direction that the actor is facing.
+
+- 0 = NORTH
+- 1 = EAST
+- 2 = SOUTH
+- 3 = WEST
+- 4 = NORTHEAST
+- 5 = SOUTHEAST
+- 6 = SOUTHWEST
+- 7 = NORTHWEST
+- 8 = NONE
+
+@int exp experience
+@int frame_n
+@bool hit_flag Used by U6 to determine if an actor has been hit.
+@int hp hit points
+@bool[readonly] in_party Is the actor a mamber of the party?
+@bool[readonly] in_vehicle Is the actor currently in a vehicle?
+@int int intelligence
+@int level
+@int magic
+@int[readonly] max_hp
+@int mpts movement points
+@string[readonly] name
+@int obj_n
+@int old_align Old alignment
+@int[readonly] old_frame_n
+@bool paralyzed
+@bool poisoned
+@bool protected
+@int[readonly] sched_loc The location defined for the Actor's currently active schedule entry.
+@int[readonly] sched_wt The worktype of the currently active schedule.
+@int str strength
+@bool[readonly] temp Is this a temporary actor?
+@int[readonly] tile_num The tile number based on the obj_n + frame_n combination.
+@bool visible Is the actor currently visible?
+@int wt worktype
+@int x
+@int y
+@int z
+
+*/
+
 extern bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z, int lua_stack_offset=1);
 extern Obj *nscript_get_obj_from_args(lua_State *L, int lua_stack_offset);
 extern void nscript_new_obj_var(lua_State *L, Obj *obj);
@@ -389,6 +456,18 @@ bool nscript_new_actor_var(lua_State *L, uint16 actor_num)
    return true;
 }
 
+/***
+Create a new temporary Actor.
+@function Actor.new
+@int obj_n
+@int[opt=0] x
+@int[opt=0] y
+@int[opt=0] z
+@int[opt=NEUTRAL] alignment
+@int[opt=8] worktype
+@treturn Actor|nil
+@within Actor
+ */
 static int nscript_actor_new(lua_State *L)
 {
    Actor *actor;
@@ -459,6 +538,13 @@ static int nscript_actor_new(lua_State *L)
    return 1;
 }
 
+/***
+Clone an actor as a new temporary actor.
+@function Actor.clone
+@tparam Actor actor Actor to clone
+@tparam MapCoord|x,y,z location Location to place newly cloned actor.
+@within Actor
+ */
 static int nscript_actor_clone(lua_State *L)
 {
    Actor *actor, *new_actor;
@@ -481,13 +567,22 @@ static int nscript_actor_clone(lua_State *L)
 	return 0;
 }
 
+/***
+Get an Actor object from an actor number
+@function Actor.get
+@int actor_number
+@treturn Actor
+@within Actor
+ */
 static int nscript_get_actor_from_num(lua_State *L)
 {
    uint16 actor_num;
    actor_num = (uint16)lua_tointeger(L, 1);
 
    assert(actor_num < ACTORMANAGER_MAX_ACTORS);
-   return nscript_new_actor_var(L, actor_num);
+   nscript_new_actor_var(L, actor_num);
+
+   return 1;
 }
 
 Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset)
@@ -503,12 +598,18 @@ Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset)
    return actor;
 }
 
-
+/***
+Get the current player Actor object
+@function Actor.get_player_actor
+@treturn Actor
+@within Actor
+ */
 static int nscript_get_player_actor(lua_State *L)
 {
 	Actor *player_actor = Game::get_game()->get_player()->get_actor();
 
-	return nscript_new_actor_var(L, player_actor->get_actor_num());
+	nscript_new_actor_var(L, player_actor->get_actor_num());
+	return 1;
 }
 
 static int nscript_actor_set(lua_State *L)
@@ -530,7 +631,6 @@ static int nscript_actor_set(lua_State *L)
 
    return 0;
 }
-
 
 static int nscript_actor_set_align(Actor *actor, lua_State *L)
 {
@@ -938,6 +1038,13 @@ static int nscript_actor_get_z(Actor *actor, lua_State *L)
    lua_pushinteger(L, actor->get_z()); return 1;
 }
 
+/***
+Call the C++ Actor::die() method
+@function Actor.kill
+@tparam Actor actor
+@bool[opt=true] create_body Create a dead body on the map?
+@within Actor
+ */
 static int nscript_actor_kill(lua_State *L)
 {
    Actor *actor;
@@ -955,6 +1062,13 @@ static int nscript_actor_kill(lua_State *L)
    return 0;
 }
 
+/***
+Call the C++ Actor::hit() method
+@function Actor.hit
+@tparam Actor actor
+@int damage
+@within Actor
+ */
 static int nscript_actor_hit(lua_State *L)
 {
    Actor *actor;
@@ -971,6 +1085,15 @@ static int nscript_actor_hit(lua_State *L)
    return 0;
 }
 
+/***
+Calls the get_combat_range script function with the wrapped absolute x,y distances to the target
+@function Actor.get_range
+@tparam Actor actor
+@int target_x
+@int target_y
+@treturn int range
+@within Actor
+ */
 static int nscript_actor_get_range(lua_State *L)
 {
 	Actor *actor;
@@ -983,6 +1106,14 @@ static int nscript_actor_get_range(lua_State *L)
 	return 1;
 }
 
+/***
+Move actor to location.
+@function Actor.move
+@tparam Actor actor
+@tparam MapCoord|x,y,z location
+@treturn bool Returns true is the move was successful. False if the move fails.
+@within Actor
+ */
 static int nscript_actor_move(lua_State *L)
 {
    Actor *actor;

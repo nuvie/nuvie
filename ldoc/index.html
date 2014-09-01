@@ -39,6 +39,7 @@
 <li><a href="#time">time</a></li>
 <li><a href="#io">io</a></li>
 <li><a href="#mapwindow">mapwindow</a></li>
+<li><a href="#Actor">Actor</a></li>
 </ul>
 
 
@@ -146,6 +147,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#MapCoord">MapCoord</a></td>
 	<td class="summary">A map coordinate</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor">Actor</a></td>
+	<td class="summary">An Actor object</td>
 	</tr>
 </table>
 <h2><a href="#Object">Object</a></h2>
@@ -467,6 +472,41 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<tr>
 	<td class="name" nowrap><a href="#mapwindow_set_enable_blacking">mapwindow_set_enable_blacking (enable_blacking)</a></td>
 	<td class="summary">Toggle mapwindow &lsquo;blacking&rsquo;.</td>
+	</tr>
+</table>
+<h2><a href="#Actor">Actor</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Actor.new">Actor.new (obj_n[, x=0[, y=0[, z=0[, alignment=NEUTRAL[, worktype=8]]]]])</a></td>
+	<td class="summary">Create a new temporary Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.clone">Actor.clone (actor, location)</a></td>
+	<td class="summary">Clone an actor as a new temporary actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get">Actor.get (actor_number)</a></td>
+	<td class="summary">Get an Actor object from an actor number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_player_actor">Actor.get_player_actor ()</a></td>
+	<td class="summary">Get the current player Actor object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.kill">Actor.kill (actor[, create_body=true])</a></td>
+	<td class="summary">Call the C++ Actor::die() method</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.hit">Actor.hit (actor, damage)</a></td>
+	<td class="summary">Call the C++ Actor::hit() method</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_range">Actor.get_range (actor, target_x, target_y)</a></td>
+	<td class="summary">Calls the get_combat_range script function with the wrapped absolute x,y distances to the target</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.move">Actor.move (actor, location)</a></td>
+	<td class="summary">Move actor to location.</td>
 	</tr>
 </table>
 
@@ -1047,6 +1087,239 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
 
 </dd>
+    <dt>
+    <a name = "Actor"></a>
+    <strong>Actor</strong>
+    </dt>
+    <dd>
+    An Actor object
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">luatype</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         This returns &ldquo;actor&rdquo;
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">actor_num</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">align</span>
+            <span class="types"><span class="type">int</span></span>
+        <p> alignment</p>
+
+<ul>
+<li>0 = DEFAULT</li>
+<li>1 = NEUTRAL</li>
+<li>2 = EVIL</li>
+<li>3 = GOOD</li>
+<li>4 = CHAOTIC</li>
+</ul>
+
+
+        </li>
+        <li><span class="parameter">alive</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">asleep</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">base_obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">charmed</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">combat_mode</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">corpser_flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         (U6) Has the actor been dragged underground by a corpser
+        </li>
+        <li><span class="parameter">cursed</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">dex</span>
+            <span class="types"><span class="type">int</span></span>
+         dexterity
+        </li>
+        <li><span class="parameter">direction</span>
+            <span class="types"><span class="type">int</span></span>
+        <p> The direction that the actor is facing.</p>
+
+<ul>
+<li>0 = NORTH</li>
+<li>1 = EAST</li>
+<li>2 = SOUTH</li>
+<li>3 = WEST</li>
+<li>4 = NORTHEAST</li>
+<li>5 = SOUTHEAST</li>
+<li>6 = SOUTHWEST</li>
+<li>7 = NORTHWEST</li>
+<li>8 = NONE</li>
+</ul>
+
+
+        </li>
+        <li><span class="parameter">exp</span>
+            <span class="types"><span class="type">int</span></span>
+         experience
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">hit_flag</span>
+            <span class="types"><span class="type">bool</span></span>
+         Used by U6 to determine if an actor has been hit.
+        </li>
+        <li><span class="parameter">hp</span>
+            <span class="types"><span class="type">int</span></span>
+         hit points
+        </li>
+        <li><span class="parameter">in_party</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the actor a mamber of the party?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">in_vehicle</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the actor currently in a vehicle?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">int</span>
+            <span class="types"><span class="type">int</span></span>
+         intelligence
+        </li>
+        <li><span class="parameter">level</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">magic</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">max_hp</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">mpts</span>
+            <span class="types"><span class="type">int</span></span>
+         movement points
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">old_align</span>
+            <span class="types"><span class="type">int</span></span>
+         Old alignment
+        </li>
+        <li><span class="parameter">old_frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">paralyzed</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">poisoned</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">protected</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+        <li><span class="parameter">sched_loc</span>
+            <span class="types"><span class="type">int</span></span>
+         The location defined for the Actor&rsquo;s currently active schedule entry.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">sched_wt</span>
+            <span class="types"><span class="type">int</span></span>
+         The worktype of the currently active schedule.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">str</span>
+            <span class="types"><span class="type">int</span></span>
+         strength
+        </li>
+        <li><span class="parameter">temp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is this a temporary actor?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">tile_num</span>
+            <span class="types"><span class="type">int</span></span>
+         The tile number based on the obj_n + frame_n combination.
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">visible</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the actor currently visible?
+        </li>
+        <li><span class="parameter">wt</span>
+            <span class="types"><span class="type">int</span></span>
+         worktype
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
     <h2><a name="Object"></a>Object</h2>
     <dl class="function">
@@ -1547,7 +1820,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">actor</span>
-            <span class="types"><span class="type">Actor</span></span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
 
 
         </li>
@@ -1697,7 +1970,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><span class="type">Actor</span> or <span class="type">nil</span></span>
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a> or <span class="type">nil</span></span>
         returns nil if actor cannot be found for given index
     </ol>
 
@@ -3081,6 +3354,268 @@ by a wall.
         </li>
     </ul>
 
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Actor"></a>Actor</h2>
+    <dl class="function">
+    <dt>
+    <a name = "Actor.new"></a>
+    <strong>Actor.new (obj_n[, x=0[, y=0[, z=0[, alignment=NEUTRAL[, worktype=8]]]]])</strong>
+    </dt>
+    <dd>
+    Create a new temporary Actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">alignment</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> NEUTRAL)
+        </li>
+        <li><span class="parameter">worktype</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+         (<em>default</em> 8)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a> or <span class="type">nil</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.clone"></a>
+    <strong>Actor.clone (actor, location)</strong>
+    </dt>
+    <dd>
+    Clone an actor as a new temporary actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+         Actor to clone
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         Location to place newly cloned actor.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get"></a>
+    <strong>Actor.get (actor_number)</strong>
+    </dt>
+    <dd>
+    Get an Actor object from an actor number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_player_actor"></a>
+    <strong>Actor.get_player_actor ()</strong>
+    </dt>
+    <dd>
+    Get the current player Actor object
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.kill"></a>
+    <strong>Actor.kill (actor[, create_body=true])</strong>
+    </dt>
+    <dd>
+    Call the C++ Actor::die() method
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">create_body</span>
+            <span class="types"><span class="type">bool</span></span>
+         Create a dead body on the map?
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.hit"></a>
+    <strong>Actor.hit (actor, damage)</strong>
+    </dt>
+    <dd>
+    Call the C++ Actor::hit() method
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">damage</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_range"></a>
+    <strong>Actor.get_range (actor, target_x, target_y)</strong>
+    </dt>
+    <dd>
+    Calls the get_combat_range script function with the wrapped absolute x,y distances to the target
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">target_x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">target_y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        range
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.move"></a>
+    <strong>Actor.move (actor, location)</strong>
+    </dt>
+    <dd>
+    Move actor to location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        Returns true is the move was successful. False if the move fails.
+    </ol>
 
 
 
