@@ -133,10 +133,6 @@
 	<td class="name" nowrap><a href="#set_armageddon">set_armageddon (new_value)</a></td>
 	<td class="summary">Set armageddon flag</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#script_wait">script_wait (duration)</a></td>
-	<td class="summary">Pause the script.</td>
-	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
@@ -454,6 +450,10 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<td class="name" nowrap><a href="#mouse_cursor_set_pointer">mouse_cursor_set_pointer (pointer_index)</a></td>
 	<td class="summary">Select which mouse cursor pointer to use.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#script_wait">script_wait (duration)</a></td>
+	<td class="summary">Pause the script.</td>
+	</tr>
 </table>
 <h2><a href="#mapwindow">mapwindow</a></h2>
 <table class="function_list">
@@ -507,6 +507,114 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<tr>
 	<td class="name" nowrap><a href="#Actor.move">Actor.move (actor, location)</a></td>
 	<td class="summary">Move actor to location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.walk_path">Actor.walk_path (actor)</a></td>
+	<td class="summary">Move the actor one space along their pathfinding path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.is_at_scheduled_location">Actor.is_at_scheduled_location (actor)</a></td>
+	<td class="summary">Checks to see if the actor is currently at their scheduled worktype location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.can_carry_obj">Actor.can_carry_obj (actor, object)</a></td>
+	<td class="summary">Checks to see if the actor can carry an object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.can_carry_obj_weight">Actor.can_carry_obj_weight (actor, object)</a></td>
+	<td class="summary">Checks to see if the actor can carry an object&rsquo;s weight.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.black_fade_effect">Actor.black_fade_effect (actor, fade_color, fade_speed)</a></td>
+	<td class="summary">Fade the black pixels in the actor&rsquo;s tile to a specified color.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.fade_out">Actor.fade_out (actor, fade_speed)</a></td>
+	<td class="summary">Pixel fade out the actor&rsquo;s tile to nothing.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.show_portrait">Actor.show_portrait (actor)</a></td>
+	<td class="summary">Display the actor&rsquo;s portrait</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.hide_portrait">Actor.hide_portrait (actor)</a></td>
+	<td class="summary">Hide the actor&rsquo;s portrait.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.talk">Actor.talk (actor)</a></td>
+	<td class="summary">Talk to actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.unlink_surrounding_objs">Actor.unlink_surrounding_objs (actor, make_temp)</a></td>
+	<td class="summary">For multi-tile actors, disconnect their surrounding objects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.use">Actor.use (actor)</a></td>
+	<td class="summary">Call the C++ actor usecode logic.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.resurrect">Actor.resurrect (actor, location, body_obj)</a></td>
+	<td class="summary">Resurrect a dead actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_add_obj">Actor.inv_add_obj (actor, obj)</a></td>
+	<td class="summary">Add an object to the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_remove_obj">Actor.inv_remove_obj (actor, obj)</a></td>
+	<td class="summary">Remove an object from the actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_remove_obj_qty">Actor.inv_remove_obj_qty (actor, obj_n, qty)</a></td>
+	<td class="summary">Remove a number of stackable objects from the actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_get_readied_obj_n">Actor.inv_get_readied_obj_n (actor, location)</a></td>
+	<td class="summary">Returns the obj_n the object that is readied at a given location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_ready_obj">Actor.inv_ready_obj (actor, obj)</a></td>
+	<td class="summary">Ready an object from the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_unready_obj">Actor.inv_unready_obj (actor, obj)</a></td>
+	<td class="summary">Unready an object from the actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_has_obj_n">Actor.inv_has_obj_n (actor, obj_n)</a></td>
+	<td class="summary">Check if the actor has an object of type obj_n in their inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_get_obj_n">Actor.inv_get_obj_n (actor, obj_n[, frame_n[, quality]])</a></td>
+	<td class="summary">Get the first object of type obj_n from the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.inv_get_obj_total_qty">Actor.inv_get_obj_total_qty (actor, obj_n)</a></td>
+	<td class="summary">Get the total number of objects of type obj_n in the actor&rsquo;s inventory</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_get_actor">map_get_actor (location[, excluded_actor])</a></td>
+	<td class="summary">Get the actor at map location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#update_actor_schedules">update_actor_schedules ([teleport_actors=false])</a></td>
+	<td class="summary">Update all actor schedules.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#actor_inventory">actor_inventory (actor[, is_recursive=false])</a></td>
+	<td class="summary">Iterate through objects in the actor&rsquo;s inventory.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.set_talk_flag">Actor.set_talk_flag (actor, flag)</a></td>
+	<td class="summary">Set one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_talk_flag">Actor.get_talk_flag (actor, flag)</a></td>
+	<td class="summary">Get the value of one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.clear_talk_flag">Actor.clear_talk_flag (actor, flag)</a></td>
+	<td class="summary">Clear one of the actor&rsquo;s talk flags</td>
 	</tr>
 </table>
 
@@ -911,27 +1019,6 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
             <span class="types"><span class="type">bool</span></span>
 
 
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "script_wait"></a>
-    <strong>script_wait (duration)</strong>
-    </dt>
-    <dd>
-    Pause the script.  Tile animation will continue while the script is paused.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">duration</span>
-            <span class="types"><span class="type">int</span></span>
-         in milliseconds
         </li>
     </ul>
 
@@ -3247,6 +3334,27 @@ C function strtol()
 
 
 </dd>
+    <dt>
+    <a name = "script_wait"></a>
+    <strong>script_wait (duration)</strong>
+    </dt>
+    <dd>
+    Pause the script.  Tile animation will continue while the script is paused.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">duration</span>
+            <span class="types"><span class="type">int</span></span>
+         in milliseconds
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
     <h2><a name="mapwindow"></a>mapwindow</h2>
     <dl class="function">
@@ -3616,6 +3724,807 @@ by a wall.
            <span class="types"><span class="type">bool</span></span>
         Returns true is the move was successful. False if the move fails.
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.walk_path"></a>
+    <strong>Actor.walk_path (actor)</strong>
+    </dt>
+    <dd>
+    Move the actor one space along their pathfinding path.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.is_at_scheduled_location"></a>
+    <strong>Actor.is_at_scheduled_location (actor)</strong>
+    </dt>
+    <dd>
+    Checks to see if the actor is currently at their scheduled worktype location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.can_carry_obj"></a>
+    <strong>Actor.can_carry_obj (actor, object)</strong>
+    </dt>
+    <dd>
+    Checks to see if the actor can carry an object.
+It first checks that the object is get-able then checks that
+the actor can physically carry the object&rsquo;s weight.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">object</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.can_carry_obj_weight"></a>
+    <strong>Actor.can_carry_obj_weight (actor, object)</strong>
+    </dt>
+    <dd>
+    Checks to see if the actor can carry an object&rsquo;s weight.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">object</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.black_fade_effect"></a>
+    <strong>Actor.black_fade_effect (actor, fade_color, fade_speed)</strong>
+    </dt>
+    <dd>
+    Fade the black pixels in the actor&rsquo;s tile to a specified color.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">fade_color</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">fade_speed</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.fade_out"></a>
+    <strong>Actor.fade_out (actor, fade_speed)</strong>
+    </dt>
+    <dd>
+    Pixel fade out the actor&rsquo;s tile to nothing.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">fade_speed</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.show_portrait"></a>
+    <strong>Actor.show_portrait (actor)</strong>
+    </dt>
+    <dd>
+    Display the actor&rsquo;s portrait
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.hide_portrait"></a>
+    <strong>Actor.hide_portrait (actor)</strong>
+    </dt>
+    <dd>
+    Hide the actor&rsquo;s portrait.
+The party view is shown if in original UI mode.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.talk"></a>
+    <strong>Actor.talk (actor)</strong>
+    </dt>
+    <dd>
+    Talk to actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.unlink_surrounding_objs"></a>
+    <strong>Actor.unlink_surrounding_objs (actor, make_temp)</strong>
+    </dt>
+    <dd>
+    For multi-tile actors, disconnect their surrounding objects.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">make_temp</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should the objects be made temporary?
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.use"></a>
+    <strong>Actor.use (actor)</strong>
+    </dt>
+    <dd>
+    Call the C++ actor usecode logic.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.resurrect"></a>
+    <strong>Actor.resurrect (actor, location, body_obj)</strong>
+    </dt>
+    <dd>
+    Resurrect a dead actor.  If the actor&rsquo;s body is not on the map then the actor will
+be placed at a random map location around the player.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         Location to put the resurrected actor on the map
+        </li>
+        <li><span class="parameter">body_obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+         The dead actor&rsquo;s body object.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_add_obj"></a>
+    <strong>Actor.inv_add_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Add an object to the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_remove_obj"></a>
+    <strong>Actor.inv_remove_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Remove an object from the actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_remove_obj_qty"></a>
+    <strong>Actor.inv_remove_obj_qty (actor, obj_n, qty)</strong>
+    </dt>
+    <dd>
+    Remove a number of stackable objects from the actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         Type of object to remove.
+        </li>
+        <li><span class="parameter">qty</span>
+            <span class="types"><span class="type">int</span></span>
+         Number of objects to remove.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        returns the number of objects actually removed. This may be less than were requested.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_get_readied_obj_n"></a>
+    <strong>Actor.inv_get_readied_obj_n (actor, location)</strong>
+    </dt>
+    <dd>
+    Returns the obj_n the object that is readied at a given location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">location</span>
+            <span class="types"><span class="type">int</span></span>
+        <ul>
+<li>0 = HEAD</li>
+<li>1 = NECK</li>
+<li>2 = BODY</li>
+<li>3 = ARM</li>
+<li>4 = ARM_2</li>
+<li>5 = HAND</li>
+<li>6 = HAND_2</li>
+<li>7 = FOOT</li>
+</ul>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        returns obj_n or -1 if nothing is reqdied at the specified location.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_ready_obj"></a>
+    <strong>Actor.inv_ready_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Ready an object from the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_unready_obj"></a>
+    <strong>Actor.inv_unready_obj (actor, obj)</strong>
+    </dt>
+    <dd>
+    Unready an object from the actor.
+First attempt to unready object using usecode. If there is no unready usecode then just unready the object normally.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj</span>
+            <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_has_obj_n"></a>
+    <strong>Actor.inv_has_obj_n (actor, obj_n)</strong>
+    </dt>
+    <dd>
+    Check if the actor has an object of type obj_n in their inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_get_obj_n"></a>
+    <strong>Actor.inv_get_obj_n (actor, obj_n[, frame_n[, quality]])</strong>
+    </dt>
+    <dd>
+    Get the first object of type obj_n from the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+        <li><span class="parameter">frame_n</span>
+            <span class="types"><span class="type">int</span></span>
+         search on frame number
+        </li>
+        <li><span class="parameter">quality</span>
+            <span class="types"><span class="type">int</span></span>
+         search on object quality
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
+        returns an object or nil if no match was found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.inv_get_obj_total_qty"></a>
+    <strong>Actor.inv_get_obj_total_qty (actor, obj_n)</strong>
+    </dt>
+    <dd>
+    Get the total number of objects of type obj_n in the actor&rsquo;s inventory
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">obj_n</span>
+            <span class="types"><span class="type">int</span></span>
+         object number to search for
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_get_actor"></a>
+    <strong>map_get_actor (location[, excluded_actor])</strong>
+    </dt>
+    <dd>
+    Get the actor at map location.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+
+
+        </li>
+        <li><span class="parameter">excluded_actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+         Actor to be excluded from search results
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+        returns the actor or nil if no actor was found
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "update_actor_schedules"></a>
+    <strong>update_actor_schedules ([teleport_actors=false])</strong>
+    </dt>
+    <dd>
+    Update all actor schedules.
+Schedules change on the hour.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">teleport_actors</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should actors teleport to their new scheduled location?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "actor_inventory"></a>
+    <strong>actor_inventory (actor[, is_recursive=false])</strong>
+    </dt>
+    <dd>
+    Iterate through objects in the actor&rsquo;s inventory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">is_recursive</span>
+            <span class="types"><span class="type">bool</span></span>
+         should we search containers inside the inventory?
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+   <span class="keyword">local</span> ac = <span class="number">0</span>
+   <span class="keyword">local</span> obj
+
+   <span class="keyword">for</span> obj <span class="keyword">in</span> actor_inventory(actor) <span class="keyword">do</span>
+      <span class="keyword">if</span> obj.readied <span class="keyword">then</span>
+         <span class="keyword">local</span> armour = armour_tbl[obj.obj_n]
+         <span class="keyword">if</span> armour ~= <span class="keyword">nil</span> <span class="keyword">then</span>
+            ac = ac + armour
+         <span class="keyword">end</span>
+      <span class="keyword">end</span>
+   <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Actor.set_talk_flag"></a>
+    <strong>Actor.set_talk_flag (actor, flag)</strong>
+    </dt>
+    <dd>
+    Set one of the actor&rsquo;s talk flags
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">int</span></span>
+         The flag to set. 0..7
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_talk_flag"></a>
+    <strong>Actor.get_talk_flag (actor, flag)</strong>
+    </dt>
+    <dd>
+    Get the value of one of the actor&rsquo;s talk flags
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">int</span></span>
+         The flag to get. 0..7
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns the flag value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.clear_talk_flag"></a>
+    <strong>Actor.clear_talk_flag (actor, flag)</strong>
+    </dt>
+    <dd>
+    Clear one of the actor&rsquo;s talk flags
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">flag</span>
+            <span class="types"><span class="type">int</span></span>
+         The flag to clear. 0..7
+        </li>
+    </ul>
+
 
 
 

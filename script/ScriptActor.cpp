@@ -1132,6 +1132,12 @@ static int nscript_actor_move(lua_State *L)
    return 1;
 }
 
+/***
+Move the actor one space along their pathfinding path.
+@function Actor.walk_path
+@tparam Actor actor
+@within Actor
+ */
 static int nscript_actor_walk_path(lua_State *L)
 {
 	   Actor *actor = nscript_get_actor_from_args(L);
@@ -1143,6 +1149,13 @@ static int nscript_actor_walk_path(lua_State *L)
 	   return 0;
 }
 
+/***
+Checks to see if the actor is currently at their scheduled worktype location.
+@function Actor.is_at_scheduled_location
+@tparam Actor actor
+@treturn bool
+@within Actor
+ */
 static int nscript_actor_is_at_scheduled_location(lua_State *L)
 {
 	   Actor *actor = nscript_get_actor_from_args(L);
@@ -1153,6 +1166,16 @@ static int nscript_actor_is_at_scheduled_location(lua_State *L)
 	   return 1;
 }
 
+/***
+Checks to see if the actor can carry an object.
+It first checks that the object is get-able then checks that
+the actor can physically carry the object's weight.
+@function Actor.can_carry_obj
+@tparam Actor actor
+@tparam Obj object
+@treturn bool
+@within Actor
+ */
 static int nscript_actor_can_carry_obj(lua_State *L)
 {
 	   Actor *actor = nscript_get_actor_from_args(L);
@@ -1167,6 +1190,14 @@ static int nscript_actor_can_carry_obj(lua_State *L)
 	   return 1;
 }
 
+/***
+Checks to see if the actor can carry an object's weight.
+@function Actor.can_carry_obj_weight
+@tparam Actor actor
+@tparam Obj object
+@treturn bool
+@within Actor
+ */
 static int nscript_actor_can_carry_obj_weight(lua_State *L)
 {
 	   if(Game::get_game()->using_hackmove())
@@ -1183,6 +1214,14 @@ static int nscript_actor_can_carry_obj_weight(lua_State *L)
 	   return 1;
 }
 
+/***
+Fade the black pixels in the actor's tile to a specified color.
+@function Actor.black_fade_effect
+@tparam Actor actor
+@int fade_color
+@int fade_speed
+@within Actor
+ */
 static int nscript_actor_black_fade_effect(lua_State *L)
 {
 	   Actor *actor = nscript_get_actor_from_args(L);
@@ -1198,6 +1237,13 @@ static int nscript_actor_black_fade_effect(lua_State *L)
 	   return 0;
 }
 
+/***
+Pixel fade out the actor's tile to nothing.
+@function Actor.fade_out
+@tparam Actor actor
+@int fade_speed
+@within Actor
+ */
 static int nscript_actor_fade_out_effect(lua_State *L)
 {
 	Actor *actor = nscript_get_actor_from_args(L);
@@ -1212,6 +1258,12 @@ static int nscript_actor_fade_out_effect(lua_State *L)
 	return 0;
 }
 
+/***
+Display the actor's portrait
+@function Actor.show_portrait
+@tparam Actor actor
+@within Actor
+ */
 static int nscript_actor_show_portrait(lua_State *L)
 {
 	Actor *actor = nscript_get_actor_from_args(L);
@@ -1223,6 +1275,13 @@ static int nscript_actor_show_portrait(lua_State *L)
 	return 0;
 }
 
+/***
+Hide the actor's portrait.
+The party view is shown if in original UI mode.
+@function Actor.hide_portrait
+@tparam Actor actor
+@within Actor
+ */
 static int nscript_actor_hide_portrait(lua_State *L)
 {
 	if(Game::get_game()->is_new_style())
@@ -1233,6 +1292,12 @@ static int nscript_actor_hide_portrait(lua_State *L)
 	return 0;
 }
 
+/***
+Talk to actor.
+@function Actor.talk
+@tparam Actor actor
+@within Actor
+ */
 static int nscript_actor_talk(lua_State *L)
 {
 	Actor *actor = nscript_get_actor_from_args(L);
@@ -1243,6 +1308,13 @@ static int nscript_actor_talk(lua_State *L)
 	return 0;
 }
 
+/***
+For multi-tile actors, disconnect their surrounding objects.
+@function Actor.unlink_surrounding_objs
+@tparam Actor actor
+@bool make_temp Should the objects be made temporary?
+@within Actor
+ */
 static int nscript_actor_unlink_surrounding_objs(lua_State *L)
 {
 	Actor *actor = nscript_get_actor_from_args(L);
@@ -1256,6 +1328,12 @@ static int nscript_actor_unlink_surrounding_objs(lua_State *L)
 	return 0;
 }
 
+/***
+Call the C++ actor usecode logic.
+@function Actor.use
+@tparam Actor actor
+@within Actor
+ */
 static int nscript_actor_use(lua_State *L)
 {
 	UseCode *usecode = Game::get_game()->get_usecode();
@@ -1270,6 +1348,15 @@ static int nscript_actor_use(lua_State *L)
     return 0;
 }
 
+/***
+Resurrect a dead actor. If the actor's body is not on the map then the actor will
+be placed at a random map location around the player.
+@function Actor.resurrect
+@tparam Actor actor
+@tparam MapCoord|x,y,z location Location to put the resurrected actor on the map
+@tparam Obj body_obj The dead actor's body object.
+@within Actor
+ */
 static int nscript_actor_resurrect(lua_State *L)
 {
    Actor *actor;
@@ -1296,6 +1383,13 @@ static int nscript_actor_resurrect(lua_State *L)
    return 0;
 }
 
+/***
+Add an object to the actor's inventory.
+@function Actor.inv_add_obj
+@tparam Actor actor
+@tparam Obj obj
+@within Actor
+ */
 static int nscript_actor_inv_add_obj(lua_State *L)
 {
    Actor *actor;
@@ -1315,6 +1409,13 @@ static int nscript_actor_inv_add_obj(lua_State *L)
    return 0;
 }
 
+/***
+Remove an object from the actor's inventory
+@function Actor.inv_remove_obj
+@tparam Actor actor
+@tparam Obj obj
+@within Actor
+ */
 static int nscript_actor_inv_remove_obj(lua_State *L)
 {
    Actor *actor;
@@ -1334,6 +1435,15 @@ static int nscript_actor_inv_remove_obj(lua_State *L)
    return 0;
 }
 
+/***
+Remove a number of stackable objects from the actor's inventory
+@function Actor.inv_remove_obj_qty
+@tparam Actor actor
+@int obj_n Type of object to remove.
+@int qty Number of objects to remove.
+@treturn int returns the number of objects actually removed. This may be less than were requested.
+@within Actor
+ */
 static int nscript_actor_inv_remove_obj_qty(lua_State *L)
 {
    Actor *actor;
@@ -1351,6 +1461,24 @@ static int nscript_actor_inv_remove_obj_qty(lua_State *L)
    return 1;
 }
 
+/***
+Returns the obj_n the object that is readied at a given location.
+@function Actor.inv_get_readied_obj_n
+@tparam Actor actor
+@int location
+
+- 0 = HEAD
+- 1 = NECK
+- 2 = BODY
+- 3 = ARM
+- 4 = ARM_2
+- 5 = HAND
+- 6 = HAND_2
+- 7 = FOOT
+
+@treturn int returns obj_n or -1 if nothing is reqdied at the specified location.
+@within Actor
+ */
 static int nscript_actor_inv_get_readied_obj_n(lua_State *L)
 {
 	Actor *actor = nscript_get_actor_from_args(L);
@@ -1364,6 +1492,13 @@ static int nscript_actor_inv_get_readied_obj_n(lua_State *L)
 	return 1;
 }
 
+/***
+Ready an object from the actor's inventory.
+@function Actor.inv_ready_obj
+@tparam Actor actor
+@tparam Obj obj
+@within Actor
+ */
 static int nscript_actor_inv_ready_obj(lua_State *L)
 {
    Actor *actor;
@@ -1383,6 +1518,14 @@ static int nscript_actor_inv_ready_obj(lua_State *L)
    return 0;
 }
 
+/***
+Unready an object from the actor.
+First attempt to unready object using usecode. If there is no unready usecode then just unready the object normally.
+@function Actor.inv_unready_obj
+@tparam Actor actor
+@tparam Obj obj
+@within Actor
+ */
 static int nscript_actor_inv_unready_obj(lua_State *L)
 {
 	Actor *actor;
@@ -1409,6 +1552,14 @@ static int nscript_actor_inv_unready_obj(lua_State *L)
 	return 0;
 }
 
+/***
+Check if the actor has an object of type obj_n in their inventory.
+@function Actor.inv_has_obj_n
+@tparam Actor actor
+@int obj_n object number to search for
+@treturn bool
+@within Actor
+ */
 static int nscript_actor_inv_has_obj_n(lua_State *L)
 {
    Actor *actor;
@@ -1425,6 +1576,16 @@ static int nscript_actor_inv_has_obj_n(lua_State *L)
    return 1;
 }
 
+/***
+Get the first object of type obj_n from the actor's inventory.
+@function Actor.inv_get_obj_n
+@tparam Actor actor
+@int obj_n object number to search for
+@int[opt] frame_n search on frame number
+@int[opt] quality search on object quality
+@treturn Obj returns an object or nil if no match was found
+@within Actor
+ */
 static int nscript_actor_inv_get_obj_n(lua_State *L)
 {
    Actor *actor;
@@ -1463,6 +1624,14 @@ static int nscript_actor_inv_get_obj_n(lua_State *L)
    return 0;
 }
 
+/***
+Get the total number of objects of type obj_n in the actor's inventory
+@function Actor.inv_get_obj_total_qty
+@tparam Actor actor
+@int obj_n object number to search for
+@treturn int
+@within Actor
+ */
 static int nscript_actor_inv_get_obj_total_qty(lua_State *L)
 {
    Actor *actor;
@@ -1479,6 +1648,14 @@ static int nscript_actor_inv_get_obj_total_qty(lua_State *L)
    return 1;
 }
 
+/***
+Get the actor at map location.
+@function map_get_actor
+@tparam MapCoord|x,y,z location
+@tparam[opt] Actor excluded_actor Actor to be excluded from search results
+@treturn Actor returns the actor or nil if no actor was found
+@within Actor
+ */
 static int nscript_map_get_actor(lua_State *L)
 {
    ActorManager *actor_manager = Game::get_game()->get_actor_manager();
@@ -1505,6 +1682,13 @@ static int nscript_map_get_actor(lua_State *L)
    return 1;
 }
 
+/***
+Update all actor schedules.
+Schedules change on the hour.
+@function update_actor_schedules
+@bool[opt=false] teleport_actors Should actors teleport to their new scheduled location?
+@within Actor
+ */
 static int nscript_update_actor_schedules(lua_State *L)
 {
 	bool teleport;
@@ -1517,7 +1701,25 @@ static int nscript_update_actor_schedules(lua_State *L)
 	return 0;
 }
 
-//lua function actor_inventory(actor, is_recursive)
+/***
+Iterate through objects in the actor's inventory.
+@function actor_inventory
+@tparam Actor actor
+@bool[opt=false] is_recursive should we search containers inside the inventory?
+@usage
+   local ac = 0
+   local obj
+
+   for obj in actor_inventory(actor) do
+      if obj.readied then
+         local armour = armour_tbl[obj.obj_n]
+         if armour ~= nil then
+            ac = ac + armour
+         end
+      end
+   end
+@within Actor
+ */
 static int nscript_actor_inv(lua_State *L)
 {
    Actor *actor;
@@ -1535,6 +1737,13 @@ static int nscript_actor_inv(lua_State *L)
    return nscript_init_u6link_iter(L, inv, is_recursive);
 }
 
+/***
+Set one of the actor's talk flags
+@function Actor.set_talk_flag
+@tparam Actor actor
+@int flag The flag to set. 0..7
+@within Actor
+ */
 static int nscript_actor_set_talk_flag(lua_State *L)
 {
 	Actor *actor;
@@ -1545,6 +1754,14 @@ static int nscript_actor_set_talk_flag(lua_State *L)
 	return 0;
 }
 
+/***
+Get the value of one of the actor's talk flags
+@function Actor.get_talk_flag
+@tparam Actor actor
+@int flag The flag to get. 0..7
+@treturn bool returns the flag value
+@within Actor
+ */
 static int nscript_actor_get_talk_flag(lua_State *L)
 {
   Actor *actor;
@@ -1556,6 +1773,13 @@ static int nscript_actor_get_talk_flag(lua_State *L)
   return 1;
 }
 
+/***
+Clear one of the actor's talk flags
+@function Actor.clear_talk_flag
+@tparam Actor actor
+@int flag The flag to clear. 0..7
+@within Actor
+ */
 static int nscript_actor_clear_talk_flag(lua_State *L)
 {
   Actor *actor;

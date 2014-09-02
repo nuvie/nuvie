@@ -3986,6 +3986,7 @@ static int nscript_mouse_cursor_set_pointer(lua_State *L)
 Pause the script. Tile animation will continue while the script is paused.
 @function script_wait
 @int duration in milliseconds
+@within io
  */
 static int nscript_wait(lua_State *L)
 {
