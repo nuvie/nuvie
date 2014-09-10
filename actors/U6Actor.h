@@ -84,7 +84,6 @@ class U6Actor: public Actor
  void twitch();
  void do_twitch();
  void die(bool create_body=true);
- void set_poisoned(bool poisoned);
  void set_paralyzed(bool paralyzed);
  void set_protected(bool val);
  void set_charmed(bool val);

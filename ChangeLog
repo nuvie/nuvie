@@ -1,3 +1,10 @@
+2014-09-10  Eric Fry <efry at users.sourceforge.net> r1969
+	* Added script functions party_hide_all() party_show_all()
+	* Added script functions objlist_write1() objlist_read1()
+	* More work on MD use tent logic
+	* Moved U6Actor::set_poisoned() into Actor class.
+	* Update ambience and view manager in script_wait() function.
+
 2014-09-02  Eric Fry <efry at users.sourceforge.net> r1968
 	* Finished documenting ScriptActor lua functions.
 

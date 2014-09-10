@@ -362,6 +362,22 @@ void Actor::face_actor(Actor *a)
 }
 
 
+void Actor::set_poisoned(bool poisoned)
+{
+ if(poisoned)
+  {
+   status_flags |= ACTOR_STATUS_POISONED;
+   new HitEffect(this); // no direct hp loss
+  }
+ else
+  {
+   status_flags &= (0xff ^ ACTOR_STATUS_POISONED);
+  }
+
+  if(is_in_party())
+  Game::get_game()->get_view_manager()->update();
+}
+
 /* Returns the proper (NPC) name of this actor if the Player knows it, or their
  * description if the name is unknown.
  */

@@ -801,22 +801,6 @@ void U6Actor::do_twitch()
    }
 }
 
-void U6Actor::set_poisoned(bool poisoned)
-{
- if(poisoned)
-  {
-   status_flags |= ACTOR_STATUS_POISONED;
-   new HitEffect(this); // no direct hp loss
-  }
- else
-  {
-   status_flags &= (0xff ^ ACTOR_STATUS_POISONED);
-  }
-
-  if(is_in_party())
-	Game::get_game()->get_view_manager()->update();
-}
-
 void U6Actor::set_paralyzed(bool paralyzed)
 {
 	if(paralyzed)

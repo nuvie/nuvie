@@ -234,19 +234,236 @@ function use_ruby_slippers(obj, actor)
    end
 end
 
+function foes_are_nearby()
+   local loc = player_get_location()
+   local i
+   for i=1,0xff do
+      local actor = Actor.get(i)
+      if actor.alive and (actor.align == ALIGNMENT_EVIL or actor.align == ALIGNMENT_CHAOTIC) and actor.z == loc.z then
+         if get_wrapped_dist(actor.x, loc.x) < 40 and get_wrapped_dist(actor.y, loc.y) < 40 then
+            return true
+         end
+      end
+   end
+   
+   return false
+end
+
+function is_target_visible_to_actor(actor, target)
+   --FIXME
+   return true
+end
+
+function npcs_are_nearby()
+   local loc = player_get_location()
+   local i
+   local player = Actor.get_player_actor()
+   for i=1,0xff do
+      local actor = Actor.get(i)
+      if actor.alive and actor.asleep == false and actor.in_party == false and actor.z == loc.z then
+         if get_wrapped_dist(actor.x, loc.x) < 6 and get_wrapped_dist(actor.y, loc.y) < 6 and is_target_visible_to_actor(player, actor) then
+            return actor
+         end
+      end
+   end
+
+   return nil
+end
+
+function rest_heal_party(hours_to_rest)
+   local actor
+   for actor in party_members() do
+      local hp = math.random(3,8) + math.random(3,8) * math.floor(hours_to_rest / 2)
+      local max_hp = actor_get_max_hp(actor)
+      if actor.hp + hp > max_hp then
+         actor.hp = max_hp
+      else
+         actor.hp = actor.hp + hp
+      end
+   end
+end
+
 function use_tent(obj, actor)
    if player_is_in_solo_mode() then
       printl("NOT_WHILE_IN_SOLO_MODE")
+      --FIXME play_sfx 5
       return
    end
 
    if g_in_dream_mode then
      printl("YOU_CANT_SLEEP_IN_A_DREAM")
+     --FIXME play_sfx 5
      return
   end
   
+   local tent_loc = {}
   
-  
+   if obj.on_map then
+      tent_loc.x = obj.x
+      tent_loc.y = obj.y
+      tent_loc.z = obj.z
+   else
+      tent_loc = player_get_location()
+   end
+   
+   local x, y
+   
+   for y = tent_loc.y - 2, tent_loc.y do
+      for x = tent_loc.x - 1, tent_loc.x + 1 do
+         local map_obj = map_get_obj(x,y,tent_loc.z)
+         if map_obj ~= nil and map_obj.obj_n ~= 106 then
+            if tile_get_flag(map_obj.tile_num, 3, 4) == false then
+               printfl("TENT_OBJ_IN_THE_WAY", map_obj.name)
+               --FIXME play_sfx 5
+               return
+            end
+         end
+      end
+   end
+
+   for y = tent_loc.y - 2, tent_loc.y do
+      for x = tent_loc.x - 1, tent_loc.x + 1 do
+         if tile_get_flag(map_get_tile_num(x,y,tent_loc.z), 1, 1) == true then --if map tile is impassible
+            printl("THE_GROUND_IS_NOT_FLAT_ENOUGH")
+            --FIXME play_sfx 5
+            return
+         end
+      end
+   end
+   
+   printl("REST")
+   
+   if party_is_in_combat_mode() then
+      print(" - ")
+      printl("NOT_WHILE_IN_COMBAT_MODE")
+      --FIXME play_sfx 5
+      return
+   end
+   
+   if foes_are_nearby() then
+      printl("NOT_WHILE_FOES_ARE_NEAR")
+      --FIXME play_sfx 5
+      return
+   end
+
+   local npc = npcs_are_nearby()
+   if npc ~= nil then
+      printfl("IS_TOO_NEAR_TO_SETUP_CAMP", npc.name)
+      --FIXME play_sfx 5
+      return
+   end   
+   
+   --poison check
+
+   local actor
+   local poisoned = false
+   for actor in party_members() do
+      if actor.poisoned then
+         poisoned = true
+         printfl("IS_POISONED", actor.name)
+      end
+   end
+   
+   if poisoned then
+      printl("DO_YOU_REALLY_WANT_TO_SLEEP")
+      local answer = input_select("yn", false)
+      if answer == "N" or answer == "n" then
+         return
+      end
+   end
+
+   --FIXME party members complain about berry effects.
+   
+   local player = Actor.get_player_actor()
+   player.x = tent_loc.x
+   player.y = tent_loc.y
+   
+   local tent = Obj.new(134, 3)
+   Obj.moveToMap(tent, player.x, player.y-1, player.z)
+   
+   tent = Obj.new(134, 5)
+   Obj.moveToMap(tent, player.x+1, player.y-1, player.z)
+
+   tent = Obj.new(134, 6)
+   Obj.moveToMap(tent, player.x-1, player.y, player.z)
+
+   tent = Obj.new(134, 9)
+   Obj.moveToMap(tent, player.x+1, player.y, player.z)
+
+   tent = Obj.new(134, 8)
+   Obj.moveToMap(tent, player.x, player.y, player.z)
+            
+   party_move(player.x, player.y, player.z)
+   
+   script_wait(500)
+   
+   party_hide_all()
+   
+   tent.frame_n = 7
+   
+   local hour = clock_get_hour()
+   local time
+   if hour < 7 or hour > 16 then
+      time = i18n("SUNRISE")
+      if hour < 7 then
+         hours_to_rest = 7 - hour
+      else
+         hours_to_rest = 24 - hour + 7
+      end
+   elseif hour <= 16 then
+      time = i18n("SUNSET")
+      hours_to_rest = 18 - hour
+   end
+   
+   printfl("REST_UNTIL", time)
+   local answer = input_select("yn", false)
+   
+   if answer == "N" or answer == "n" then
+      printl("HOW_MANY_HOURS")
+      hours_to_rest = input_select_integer("0123456789", true)
+   end
+   
+
+   if g_hours_till_next_healing == 0 and hours_to_rest > 4 then
+      --FIXME heal party here.
+      g_hours_till_next_healing = 6
+   end
+   
+   local can_level_up = false
+   if hours_to_rest * 3 > party_get_size() then
+      can_level_up = true
+   end
+   
+   local i
+   for i=0,hours_to_rest*3-1 do
+      advance_time(20)
+      script_wait(100)
+      if i < party_get_size() then
+         local actor = party_get_member(i)
+         --FIXME level up actor here.
+      end
+   end
+
+   tent.frame_n = 8 --Open the tent flap
+   party_show_all()
+         
+   party_move(player.x, player.y + 1, player.z)
+
+   script_wait(500)
+   
+   --remove tent from map
+   for tent in find_obj(player.z, 134) do
+      if tent ~= nil and 
+      ((tent.x == tent_loc.x and tent.y == tent_loc.y-1) or
+       (tent.x == tent_loc.x+1 and tent.y == tent_loc.y-1) or
+       (tent.x == tent_loc.x-1 and tent.y == tent_loc.y) or
+       (tent.x == tent_loc.x+1 and tent.y == tent_loc.y) or
+       (tent.x == tent_loc.x and tent.y == tent_loc.y))
+      then
+         Obj.removeFromEngine(tent)
+      end
+   end
+
 end
 
 

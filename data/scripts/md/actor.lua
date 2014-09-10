@@ -313,14 +313,17 @@ function out_of_ammo(attacker, weapon, print_message) -- untest function
 end
 
 function advance_time(num_turns)
-	--FIXME
-	local minute = clock_get_minute()
-	
-	clock_inc(num_turns)
-		
-	if minute + num_turns >= 60 then
-		update_actor_schedules()
-	end
+   --FIXME
+   local minute = clock_get_minute()
+   
+   clock_inc(num_turns)
+   	
+   if minute + num_turns >= 60 then
+      update_actor_schedules()
+      if g_hours_till_next_healing > 0 then
+         g_hours_till_next_healing = g_hours_till_next_healing - 1
+      end
+   end
 end
 
 --function can_get_obj_override(obj)
@@ -340,4 +343,17 @@ function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
 --		print("\nYou are carrying too much already.");
 
 	return true
+end
+
+function actor_get_max_hp(actor)
+   if actor.actor_num == 6 then
+      return 0xf0
+   end
+   
+   if actor.in_party then
+      return actor.str * 2 + actor.level * 24
+   end
+   
+   --FIXME return actor max hp from stat table.
+   return 1;
 end

@@ -37,6 +37,7 @@
 #include "Party.h"
 #include "ActorManager.h"
 #include "TileManager.h"
+#include "ViewManager.h"
 #include "Actor.h"
 #include "Weather.h"
 #include "UseCode.h"
@@ -192,6 +193,8 @@ static int nscript_config_get_game_type(lua_State *L);
 static int nscript_config_get_language(lua_State *L);
 
 static int nscript_objlist_seek(lua_State *L);
+static int nscript_objlist_read1(lua_State *L);
+static int nscript_objlist_write1(lua_State *L);
 static int nscript_objlist_read2(lua_State *L);
 static int nscript_objlist_write2(lua_State *L);
 
@@ -215,7 +218,8 @@ static int nscript_party_update_leader(lua_State *L);
 static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_party_exit_vehicle(lua_State *L);
 static int nscript_party_dismount_from_horses(lua_State *L);
-
+static int nscript_party_show_all(lua_State *L);
+static int nscript_party_hide_all(lua_State *L);
 
 static int nscript_timer_set(lua_State *L);
 static int nscript_timer_get(lua_State *L);
@@ -537,6 +541,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_objlist_seek);
    lua_setglobal(L, "objlist_seek");
 
+   lua_pushcfunction(L, nscript_objlist_read1);
+   lua_setglobal(L, "objlist_read1");
+
+   lua_pushcfunction(L, nscript_objlist_write1);
+   lua_setglobal(L, "objlist_write1");
+
    lua_pushcfunction(L, nscript_objlist_read2);
    lua_setglobal(L, "objlist_read2");
 
@@ -704,6 +714,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_party_dismount_from_horses);
    lua_setglobal(L, "party_dismount_from_horses");
+
+   lua_pushcfunction(L, nscript_party_show_all);
+   lua_setglobal(L, "party_show_all");
+
+   lua_pushcfunction(L, nscript_party_hide_all);
+   lua_setglobal(L, "party_hide_all");
 
    lua_pushcfunction(L, nscript_quake_start);
    lua_setglobal(L, "quake_start");
@@ -2191,6 +2207,44 @@ static int nscript_objlist_seek(lua_State *L)
 }
 
 /***
+   Read a 1 byte integer number from the current position in the objlist data.
+   The current position is incremented by 1 after the read.
+   @function objlist_read1
+   @return value
+ */
+static int nscript_objlist_read1(lua_State *L)
+{
+  if(g_objlist_file)
+  {
+    lua_pushinteger(L, g_objlist_file->read1());
+    return 1;
+  }
+
+  return 0;
+}
+
+/***
+   Overwrite objlist data at the current position with a 1 byte unsigned number.
+   The current position is incremented by 1 after the write.
+   @function objlist_write1
+   @param value number to write. This number will be cast to uint8
+   @return true on success false on failure
+
+ */
+static int nscript_objlist_write1(lua_State *L)
+{
+  bool ret = false;
+  uint8 value = (uint8)lua_tointeger(L, 1);
+  if(g_objlist_file)
+  {
+    ret = g_objlist_file->write1(value);
+  }
+
+  lua_pushboolean(L, ret);
+  return 1;
+}
+
+/***
    Read a 2 byte integer number from the current position in the objlist data.
    The current position is incremented by 2 after the read.
    @function objlist_read2
@@ -2547,6 +2601,30 @@ static int nscript_party_dismount_from_horses(lua_State *L)
 	Party *party = Game::get_game()->get_party();
 	party->dismount_from_horses();
 	return 0;
+}
+
+/***
+Show all party members on the map.
+@function party_show_all
+@within party
+ */
+static int nscript_party_show_all(lua_State *L)
+{
+  Party *party = Game::get_game()->get_party();
+  party->show();
+  return 0;
+}
+
+/***
+Hide all party members on the map.
+@function party_hide_all
+@within party
+ */
+static int nscript_party_hide_all(lua_State *L)
+{
+  Party *party = Game::get_game()->get_party();
+  party->hide();
+  return 0;
 }
 
 /***
@@ -3991,6 +4069,9 @@ Pause the script. Tile animation will continue while the script is paused.
 static int nscript_wait(lua_State *L)
 {
   uint32 duration = (uint32)luaL_checkinteger(L, 1);
+
+  Game::get_game()->get_map_window()->updateAmbience();
+  Game::get_game()->get_view_manager()->update();
 
   AsyncEffect *e = new AsyncEffect(new TimedEffect(duration));
   e->run(EFFECT_PROCESS_GUI_INPUT);

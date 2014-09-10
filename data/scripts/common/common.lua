@@ -179,6 +179,22 @@ function play_midgame_sequence(seq_num)
    canvas_hide()
 end
 
+function get_wrapped_dist(pt1, pt2)
+   local diff
+   
+   if pt2 >= pt1 then
+      diff = pt2 - pt1
+   else
+      diff = pt1 - pt2
+   end
+   
+   if diff > 512 then
+      diff = 1024 - diff
+   end
+   
+   return diff
+end
+
 --load other common functions
 
 local lua_file = nil

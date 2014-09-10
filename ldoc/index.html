@@ -94,6 +94,14 @@
 	<td class="summary">Seek to a given position in the objlist data</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#objlist_read1">objlist_read1 ()</a></td>
+	<td class="summary">Read a 1 byte integer number from the current position in the objlist data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#objlist_write1">objlist_write1 (value)</a></td>
+	<td class="summary">Overwrite objlist data at the current position with a 1 byte unsigned number.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#objlist_read2">objlist_read2 ()</a></td>
 	<td class="summary">Read a 2 byte integer number from the current position in the objlist data.</td>
 	</tr>
@@ -276,6 +284,14 @@
 	<tr>
 	<td class="name" nowrap><a href="#party_dismount_from_horses">party_dismount_from_horses ()</a></td>
 	<td class="summary">Dismount all party members from their horses (U6)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_show_all">party_show_all ()</a></td>
+	<td class="summary">Show all party members on the map.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#party_hide_all">party_hide_all ()</a></td>
+	<td class="summary">Hide all party members on the map.</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#party_members">party_members ()</a></td>
@@ -786,6 +802,52 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_read1"></a>
+    <strong>objlist_read1 ()</strong>
+    </dt>
+    <dd>
+    Read a 1 byte integer number from the current position in the objlist data.
+   The current position is incremented by 1 after the read.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "objlist_write1"></a>
+    <strong>objlist_write1 (value)</strong>
+    </dt>
+    <dd>
+    Overwrite objlist data at the current position with a 1 byte unsigned number.
+   The current position is incremented by 1 after the write.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         number to write. This number will be cast to uint8
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true on success false on failure
+    </ol>
 
 
 
@@ -2120,6 +2182,34 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
     </dt>
     <dd>
     Dismount all party members from their horses (U6)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_show_all"></a>
+    <strong>party_show_all ()</strong>
+    </dt>
+    <dd>
+    Show all party members on the map.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_hide_all"></a>
+    <strong>party_hide_all ()</strong>
+    </dt>
+    <dd>
+    Hide all party members on the map.
 
 
 

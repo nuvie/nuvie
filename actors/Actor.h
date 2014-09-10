@@ -359,7 +359,7 @@ class Actor
  void set_moves_left(sint8 val);
  void set_dead_flag(bool value);
  virtual void update_time() { set_moves_left(get_moves_left() + get_dexterity()); }
- virtual void set_poisoned(bool poisoned) { return; }
+ void set_poisoned(bool poisoned);
  virtual void set_paralyzed(bool paralyzed) { return; }
  virtual void set_protected(bool val) { return; }
  virtual void set_charmed(bool val) { return; }
