@@ -46,4 +46,10 @@ REST_UNTIL="\nRest until %s?",
 SUNRISE="sunrise",
 SUNSET="sunset",
 HOW_MANY_HOURS="\nHow many hours? ",
+HAS_A_DREAM="\n%s has a dream...\n\n",
+SEES_THREE_STONE_OBELISKS="%s sees three stone obelisks, one inscribed with a book, one a heart, and one a sword.\n\n*",
+FEELS_DRAWN_TO_ONE_OF_THE_OBELISKS="%s feels drawn to one of the obelisks.\n\n",
+DOES_TOUCH_THE_OBELISK="Does %s touch the obelisk with the @book, the @heart, or the @sword?\n",
+WHICH_BHS="Which (B H S):\n",
+
 }

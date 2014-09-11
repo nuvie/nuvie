@@ -283,6 +283,75 @@ function rest_heal_party(hours_to_rest)
    end
 end
 
+function rest_level_up_actor(actor)
+   if actor.actor_num > 15 then
+      return
+   end
+   
+   local exp_level_tbl = {
+   [0] = 0,
+   [1] = 100,
+   [2] = 200,
+   [3] = 400,
+   [4] = 800,
+   [5] = 1600,
+   [6] = 3200,
+   [7] = 6400,
+   [8] = 32767,
+}
+
+   if actor.exp <= exp_level_tbl[actor.level] then
+      return
+   end
+   
+   actor.level = actor.level + 1
+   
+   local max_hp = actor_get_max_hp(actor)
+   if actor.hp + 30 > max_hp then
+      actor.hp = max_hp
+   else
+      actor.hp = actor.hp + 30
+   end
+   
+   Actor.show_portrait(actor)
+   
+   local obj_n = actor.obj_n
+   local gender = math.random(0,1)
+   if obj_n == 342 or obj_n == 343 or obj_n == 345 or (obj_n >= 347 and obj_n <= 353) then
+      gender = 0
+   elseif obj_n == 344 or obj_n == 346 or (obj_n >= 354 and obj_n <= 357) then
+      gender = 1
+   end
+   
+   local gender_pronoun = "He"
+   if gender == 1 then
+      gender_pronoun = "She"
+   end
+   
+   printfl("HAS_A_DREAM", actor.name)
+   printfl("SEES_THREE_STONE_OBELISKS", gender_pronoun)
+   printfl("FEELS_DRAWN_TO_ONE_OF_THE_OBELISKS", gender_pronoun)
+   printfl("DOES_TOUCH_THE_OBELISK", actor.name)
+   printl("WHICH_BHS")
+
+   local answer = input_select("bhs", false)
+   
+   if answer == "B" then
+      if actor.int < 30 then
+         actor.int = actor.int + 1
+      end
+   elseif answer == "H" then
+      if actor.dex < 30 then
+         actor.dex = actor.dex + 1
+      end   
+   elseif answer == "S" then
+      if actor.str < 30 then
+         actor.str = actor.str + 1
+      end  
+   end
+   
+end
+
 function use_tent(obj, actor)
    if player_is_in_solo_mode() then
       printl("NOT_WHILE_IN_SOLO_MODE")
@@ -425,7 +494,7 @@ function use_tent(obj, actor)
    
 
    if g_hours_till_next_healing == 0 and hours_to_rest > 4 then
-      --FIXME heal party here.
+      rest_heal_party(hours_to_rest)
       g_hours_till_next_healing = 6
    end
    
@@ -440,9 +509,11 @@ function use_tent(obj, actor)
       script_wait(100)
       if i < party_get_size() then
          local actor = party_get_member(i)
-         --FIXME level up actor here.
+         rest_level_up_actor(actor)
       end
    end
+
+   --FIXME update poison
 
    tent.frame_n = 8 --Open the tent flap
    party_show_all()

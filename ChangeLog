@@ -1,3 +1,6 @@
+2014-09-11  Eric Fry <efry at users.sourceforge.net> r1970
+	* Added actor leveling up logic to MD rest code.
+
 2014-09-10  Eric Fry <efry at users.sourceforge.net> r1969
 	* Added script functions party_hide_all() party_show_all()
 	* Added script functions objlist_write1() objlist_read1()
