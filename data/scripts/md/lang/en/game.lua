@@ -51,5 +51,7 @@ SEES_THREE_STONE_OBELISKS="%s sees three stone obelisks, one inscribed with a bo
 FEELS_DRAWN_TO_ONE_OF_THE_OBELISKS="%s feels drawn to one of the obelisks.\n\n",
 DOES_TOUCH_THE_OBELISK="Does %s touch the obelisk with the @book, the @heart, or the @sword?\n",
 WHICH_BHS="Which (B H S):\n",
-
+FEELS_BETTER="%s feels better.\n",
+THE_TONGS_WILL_NOW_PROTECT_YOUR_HANDS="The tongs will now protect your hands.\n",
+THEY_WONT_COME_OFF="They won't come off!\n",
 }

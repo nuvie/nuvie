@@ -1,3 +1,8 @@
+2014-09-16  Eric Fry <efry at users.sourceforge.net> r1971
+	* Added MD ready/unready lua usecode script.
+	* Added the ability to call ready/unready lua script.
+	* Added poison hp update to the MD rest logic.
+
 2014-09-11  Eric Fry <efry at users.sourceforge.net> r1970
 	* Added actor leveling up logic to MD rest code.
 

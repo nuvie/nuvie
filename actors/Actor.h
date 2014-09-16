@@ -463,6 +463,7 @@ class Actor
  virtual uint8 get_object_readiable_location(Obj *obj);
  virtual const CombatType *get_object_combat_type(uint16 obj_n) { return NULL; }
  
+ bool can_ready_obj(Obj *obj);
  bool add_readied_object(Obj *obj);
  void remove_readied_object(Obj *obj, bool run_usecode = true); // run_usecode to stop from running usecode twice or an infinite loop
  void remove_readied_object(uint8 location, bool run_usecode = true);

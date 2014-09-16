@@ -1135,6 +1135,39 @@ void Actor::inventory_parse_readied_objects()
  return;
 }
 
+bool Actor::can_ready_obj(Obj *obj)
+{
+  uint8 location =  get_object_readiable_location(obj);
+
+  switch(location)
+    {
+     case ACTOR_NOT_READIABLE : return false;
+
+     case ACTOR_ARM : if(readied_objects[ACTOR_ARM] != NULL) //if full try other arm
+                      {
+                         if(readied_objects[ACTOR_ARM]->double_handed)
+                            return false;
+
+                          location = ACTOR_ARM_2;
+                      }
+                      break;
+
+     case ACTOR_ARM_2 : if(readied_objects[ACTOR_ARM] != NULL || readied_objects[ACTOR_ARM_2] != NULL)
+                           return false;
+                        location = ACTOR_ARM;
+                        break;
+
+     case ACTOR_HAND : if(readied_objects[ACTOR_HAND] != NULL) // if full try other hand
+                           location = ACTOR_HAND_2;
+                       break;
+    }
+
+  if(readied_objects[location] != NULL)
+    return false;
+
+  return true;
+}
+
 //FIX handle not readiable, no place to put, double handed objects
 bool Actor::add_readied_object(Obj *obj)
 {

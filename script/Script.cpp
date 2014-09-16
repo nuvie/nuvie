@@ -1105,6 +1105,19 @@ ScriptThread *Script::call_use_obj(Obj *obj, Actor *actor)
   return t;
 }
 
+bool Script::call_ready_obj(Obj *obj, Actor *actor)
+{
+  lua_getglobal(L, "ready_obj");
+
+  nscript_obj_new(L, obj);
+  nscript_new_actor_var(L, actor->get_actor_num());
+
+  if(call_function("ready_obj", 2, 1) == false)
+    return false;
+
+  return lua_toboolean(L,-1);
+}
+
 bool Script::call_magic_get_spell_list(Spell **spell_list)
 {
 	lua_getglobal(L, "magic_get_spell_list");

@@ -2590,7 +2590,7 @@ bool Event::ready(Obj *obj, Actor *actor)
        || actor->get_strength()*2 < total_weight) && !game->using_hackmove())
         scroll->display_string("\nToo heavy!\n");
     // perform READY usecode
-    else if(usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
+    else if(actor->can_ready_obj(obj) && usecode->has_readycode(obj) && (usecode->ready_obj(obj, actor) == false))
     {
         scroll->display_string("\n");
         scroll->display_prompt();

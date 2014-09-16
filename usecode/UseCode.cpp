@@ -147,6 +147,11 @@ bool UseCode::use_obj(Obj *obj, Actor *actor)
   return use_obj(obj,src_obj);
  }
 
+bool UseCode::ready_obj(Obj *obj, Actor *actor)
+{
+  return script->call_ready_obj(obj, actor);
+}
+
 void UseCode::toggle_frame(Obj *obj)
 {
  if(obj->frame_n > 0)

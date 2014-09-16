@@ -163,6 +163,7 @@ void GameClock::inc_minute(uint16 amount)
 		 inc_hour();
 	 }
 	 time_counter += minute;
+	 DEBUG(0,LEVEL_INFORMATIONAL,"%s\n",get_time_string());
    }
  else
    {
@@ -188,7 +189,7 @@ void GameClock::inc_hour()
     hour++;
     time_counter += 60;
    }
- DEBUG(0,LEVEL_INFORMATIONAL,"%s\n",get_time_string());
+
 
  if(game_type == NUVIE_GAME_U6)
 	 Game::get_game()->get_weather()->update_moongates();

@@ -1,4 +1,5 @@
 local USE_EVENT_USE = 0x01
+local USE_EVENT_READY = 0x0100
 
 function search_container(obj)
 	local child
@@ -513,7 +514,23 @@ function use_tent(obj, actor)
       end
    end
 
-   --FIXME update poison
+   local actor
+   local poisoned = false
+   for actor in party_members() do
+      if actor.poisoned then
+         if math.random(1, 8) + math.random(1, 8) >= 15 then
+            actor.poisoned = false
+            printfl("FEELS_BETTER", actor.name)
+         else
+            if actor.hp < hours_to_rest * 2 + 5 then
+               actor.hp = 5
+            else
+               actor.hp = actor.hp - (hours_to_rest * 2 + 5)
+            end
+         end
+      end
+   end
+
 
    tent.frame_n = 8 --Open the tent flap
    party_show_all()
@@ -599,13 +616,50 @@ local usecode_table = {
 [444]=use_misc_text,
 }
 
+function ready_winged_shoes(obj, actor)
+   local player_loc = player_get_location()
+   if player_loc.z == 2 then
+      local bridge = Obj.new(146)
+      bridge.temporary = false
+      Obj.moveToMap(bridge, 0xc9, 0x9b, 2)
+   end
+   
+   return true
+end
+
+function ready_tongs(obj, actor)
+   printl("THE_TONGS_WILL_NOW_PROTECT_YOUR_HANDS")
+   return true
+end
+
+function ready_throw_rug(obj, actor)
+   obj.obj_n = 162 --Change to red cape
+   return true
+end
+
+local usecode_ready_obj_table = {
+[15]=ready_winged_shoes,
+[136]=ready_tongs,
+[161]=ready_throw_rug,
+}
+
+function unready_winged_shoes(obj, actor)
+   printl("THEY_WONT_COME_OFF")
+   return false
+end
+
+local usecode_unready_obj_table = {
+[15]=unready_winged_shoes,
+}
 
 function has_usecode(obj, usecode_type)
-	if usecode_type == USE_EVENT_USE and usecode_table[obj.obj_n] ~= nil then
-		return true
-	end
-	
-	return false
+   if usecode_type == USE_EVENT_USE and usecode_table[obj.obj_n] ~= nil then
+      return true
+   elseif usecode_type == USE_EVENT_READY and (usecode_ready_obj_table[obj.obj_n] ~= nil or usecode_unready_obj_table[obj.obj_n] ~= nil)then
+      return true
+   end
+   
+   return false
 end
 
 function use_obj_on_to(obj, target_obj, actor, use_to_tbl)
@@ -679,4 +733,24 @@ function use_obj(obj, actor)
 	else
 		use_obj_on(obj, actor, usecode_table[obj.obj_n])
 	end
+end
+
+function ready_obj(obj, actor)
+   if type(usecode_ready_obj_table[obj.obj_n]) == "function" and obj.readied == false then
+      local func = usecode_ready_obj_table[obj.obj_n]
+      if func ~= nil then
+         print("\n")
+         return func(obj, actor)
+      end
+   end
+
+   if type(usecode_unready_obj_table[obj.obj_n]) == "function" and obj.readied == true then
+      local func = usecode_unready_obj_table[obj.obj_n]
+      if func ~= nil then
+         print("\n")
+         return func(obj, actor)
+      end
+   end
+   
+   return true
 end
