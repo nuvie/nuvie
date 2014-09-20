@@ -52,10 +52,8 @@
 
 #include <math.h>
 
-extern "C"
-{
-#include "lualib.h"
-}
+#include "lua.hpp"
+
 
 ///
 // @module script
@@ -310,7 +308,8 @@ Script *Script::script = NULL;
 
 static int lua_error_handler(lua_State *L)
 {
-	lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+	//lua_getfield(L, LUA_GLOBALSINDEX, "debug");
+	lua_getglobal(L, "debug");
 	if (!lua_istable(L, -1)) {
 		lua_pop(L, 1);
 		return 1;
@@ -423,7 +422,7 @@ uint8 ScriptThread::resume_with_nil()
 uint8 ScriptThread::resume(int narg)
 {
    const char *s;
-   int ret = lua_resume(L, narg);
+   int ret = lua_resume(L, NULL, narg);
 
    state = NUVIE_SCRIPT_ERROR;
 
@@ -507,7 +506,7 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    script_obj_list = iAVLAllocTree(get_iAVLKey);
 
-   L = lua_open();
+   L = luaL_newstate();
    luaL_openlibs(L);
 
    luaL_newmetatable(L, "nuvie.U6Link");
@@ -850,7 +849,8 @@ void Script::seed_random()
    //seed with a random number from NUVIE_RAND()
    //this should be seeded at this point.
 
-   lua_getfield(L, LUA_GLOBALSINDEX, "math");
+   //lua_getfield(L, LUA_GLOBALSINDEX, "math");
+   lua_getglobal(L, "math");
    lua_getfield(L, -1, "randomseed");
    lua_remove(L, -2);
    lua_pushnumber(L, NUVIE_RAND());

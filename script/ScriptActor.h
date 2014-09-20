@@ -24,10 +24,7 @@
  *
  */
 
-extern "C"
-{
-#include "lauxlib.h"
-}
+#include "lua.hpp"
 
 void nscript_init_actor(lua_State *L);
 bool nscript_new_actor_var(lua_State *L, uint16 actor_num);

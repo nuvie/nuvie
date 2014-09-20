@@ -45,6 +45,7 @@
 								<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1658852504" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.980853571" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/32bit/SDL-1.2.15/include/SDL"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/lua}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/menus}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/keybinding}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/sound/adplug}&quot;"/>
@@ -67,7 +68,9 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1868162298" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -arch i386" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1480177527" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="LUA_USE_MACOSX"/>
 									<listOptionValue builtIn="false" value="UNIX"/>
+									<listOptionValue builtIn="false" value="MACOSX"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.warnings.toerrors.1134209447" name="Warnings as errors (-Werror)" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.warnings.pedantic.891421206" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="false" valueType="boolean"/>
@@ -81,6 +84,10 @@
 								<option id="gnu.c.compiler.option.warnings.toerrors.670026099" name="Warnings as errors (-Werror)" superClass="gnu.c.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
 								<option id="gnu.c.compiler.option.warnings.pedantic.error.45975327" name="Pedantic warnings as errors (-pedantic-errors)" superClass="gnu.c.compiler.option.warnings.pedantic.error" value="false" valueType="boolean"/>
 								<option id="gnu.c.compiler.option.warnings.pedantic.1860843809" name="Pedantic (-pedantic)" superClass="gnu.c.compiler.option.warnings.pedantic" value="false" valueType="boolean"/>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.789262115" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="LUA_USE_MACOSX"/>
+									<listOptionValue builtIn="false" value="MACOSX"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1308523913" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 						</toolChain>
@@ -100,8 +107,6 @@
 							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1869266131" name="Resource Custom Build Step Output Type"/>
 						</tool>
 					</fileInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.848961356" name="raw.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/wave/raw.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1736073815" name="pcspeaker_dosbox.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/pcspeaker_dosbox.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.938838863" name="doublebuffersdl-mixer.cpp" rcbsApplicability="disable" resourcePath="sound/mixer/doublebuffersdl-mixer.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1200235901">
 						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1200235901" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547">
 							<option id="gnu.cpp.compiler.option.preprocessor.def.2087179116" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -111,8 +116,9 @@
 							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1074698230" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 						</tool>
 					</fileInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.848961356" name="raw.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/wave/raw.h" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1736073815" name="pcspeaker_dosbox.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/pcspeaker_dosbox.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1990226738" name="Sample.h" rcbsApplicability="disable" resourcePath="sound/Sample.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.542783147" name="actor.lua" rcbsApplicability="disable" resourcePath="data/scripts/u6/actor.lua" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="sound/mixer/decoder/PCSpeakerFreqStream.h|sound/mixer/decoder/PCSpeakerFreqStream.cpp|sound/mixer/decoder/pcspeaker_dosbox.h|sound/mixer/decoder/pcspeaker_dosbox.cpp|sound/mixer/algorithm.h|sound/Sample.h|sound/Sample.cpp|sound/mixer/rate_arm.cpp|sound/mixer/rate_arm_asm.s|sound/mixer/common|tools|msvc|PBBuild|XCodeBuild|visualc7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>

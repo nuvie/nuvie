@@ -330,6 +330,36 @@ function can_get_obj_override(obj)
    return false
 end
 
+function subtract_movement_pts(actor, points)
+   if actor.actor_num < 16 then
+      if party_is_in_combat_mode() == false then
+         points = points - 2
+      end
+   end
+
+   if points < 1 then
+      points = 1
+   end
+   
+   actor.mtps = actor.mpts - points
+end
+
+function actor_radiation_check(actor, obj)
+   if obj.obj_n == 448 or obj.obj_n == 449 then --OBJ_BLOCK_OF_RADIUM, OBJ_CHIP_OF_RADIUM
+      --FIXME berries might protect against radiation.
+      --mov     al, byte_41160[bx]
+      --and     ax, 1111b
+      if actor.actor_num == 6
+         or Actor.inv_get_readied_obj_n(actor, ARM) == 136 --OBJ_TONGS
+         or Actor.inv_get_readied_obj_n(actor, ARM_2) == 136 then
+         return
+      end
+      
+      actor.poisoned = true
+      printl("OUCH_IT_IS_VERY_HOT")
+   end
+end
+
 function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
 
 	if obj.getable == false then
@@ -344,6 +374,11 @@ function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
 
 --		print("\nYou are carrying too much already.");
 
+   subtract_movement_pts(actor, 3)
+
+   actor_radiation_check(actor, obj)
+
+   --FIXME more logic here.
 	return true
 end
 

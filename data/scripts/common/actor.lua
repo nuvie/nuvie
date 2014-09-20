@@ -4,6 +4,15 @@ ALIGNMENT_EVIL    = 2
 ALIGNMENT_GOOD    = 3 
 ALIGNMENT_CHAOTIC = 4
 
+HEAD   = 0
+NECK   = 1
+BODY   = 2
+ARM    = 3
+ARM_2  = 4
+HAND   = 5
+HAND_2 = 6
+FOOT   = 7
+
 g_combat_range_tbl = {
 0, 1, 2, 3, 4, 5, 6, 7,
 1, 1, 2, 3, 4, 5, 6, 7,

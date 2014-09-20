@@ -54,4 +54,5 @@ WHICH_BHS="Which (B H S):\n",
 FEELS_BETTER="%s feels better.\n",
 THE_TONGS_WILL_NOW_PROTECT_YOUR_HANDS="The tongs will now protect your hands.\n",
 THEY_WONT_COME_OFF="They won't come off!\n",
+OUCH_IT_IS_VERY_HOT="OUCH. It is very hot.\n",
 }

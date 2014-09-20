@@ -30,10 +30,7 @@
 
 #include "UseCode.h"
 
-extern "C"
-{
-#include "lauxlib.h"
-}
+#include "lua.hpp"
 
 class Configuration;
 class MapCoord;

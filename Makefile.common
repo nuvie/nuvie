@@ -102,8 +102,12 @@ nuvie_SOURCES = \
 	lua/lauxlib.c \
 	lua/lauxlib.h \
 	lua/lbaselib.c \
+	lua/lbitlib.c \
 	lua/lcode.c \
 	lua/lcode.h \
+	lua/lcorolib.c \
+	lua/lctype.c \
+	lua/lctype.h \
 	lua/ldblib.c \
 	lua/ldebug.c \
 	lua/ldebug.h \
@@ -141,6 +145,7 @@ nuvie_SOURCES = \
 	lua/ltm.c \
 	lua/ltm.h \
 	lua/lua.h \
+	lua/lua.hpp \
 	lua/luaconf.h \
 	lua/lualib.h \
 	lua/lundump.c \

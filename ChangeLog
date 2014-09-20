@@ -1,3 +1,7 @@
+2014-09-20  Eric Fry <efry at users.sourceforge.net> r1972
+	* Updated lua from 5.1 to 5.2.3
+	* Added MD Radiation check.
+
 2014-09-16  Eric Fry <efry at users.sourceforge.net> r1971
 	* Added MD ready/unready lua usecode script.
 	* Added the ability to call ready/unready lua script.

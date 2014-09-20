@@ -35,10 +35,7 @@ class Font;
 class U6LineWalker;
 class Cursor;
 
-extern "C"
-{
-#include "lauxlib.h"
-}
+#include "lua.hpp"
 
 class CSImage {
 public:
