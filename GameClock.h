@@ -40,6 +40,8 @@ using std::vector;
 #define GAMECLOCK_TIMER_U6_TIME_STOP 14
 #define GAMECLOCK_TIMER_U6_ECLIPSE 15
 
+#define GAMECLOCK_TIMER_MD_BLUE_BERRY 16*3
+
 class Configuration;
 class NuvieIO;
 
@@ -121,6 +123,12 @@ class GameClock
 
  void init();
  inline void update_day_of_week();
+
+ private:
+ void load_U6_timers(NuvieIO *objlist);
+ void load_MD_timers(NuvieIO *objlist);
+ void save_U6_timers(NuvieIO *objlist);
+ void save_MD_timers(NuvieIO *objlist);
 };
 
 

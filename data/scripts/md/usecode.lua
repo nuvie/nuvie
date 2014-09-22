@@ -111,6 +111,49 @@ function use_sextant(obj, actor)
 	print(" \nLat:" ..lat.." "..lat_str.."\nLong:"..long.." "..long_str.."\n")
 end
 
+function use_berry(obj, actor)
+   local actor_num = actor.actor_num
+   if actor_num == 6 then
+      printl("A_MECHANICAL_PERSON_CANT_EAT_BERRIES")
+      return
+   end
+   
+   --FIXME play_sfx 0x32
+   local berry_type = obj.obj_n - 73 --OBJ_BERRY
+   local first_berry = true
+   
+   if (berry_type == 0 and actor_is_affected_by_purple_berries(actor_num))
+      or (berry_type == 1 and actor_is_affected_by_green_berries(actor_num))
+      or (berry_type == 2 and actor_is_affected_by_brown_berries(actor_num)) then
+      printl("YOU_EAT_A_MARTIAN_BERRY_YOU_FEEL_AN_INCREASE_IN_THE_STRANGE")
+   else
+      printl("YOU_EAT_A_MARTIAN_BERRY_YOU_FEEL_A_STRANGE")
+   end
+
+   if berry_type == 0 then
+      printl("RELATIONSHIP_WITH_THINGS_AROUND_YOU")
+      actor_increment_purple_berry_count(actor_num)
+   elseif berry_type == 1 then
+      printl("SENSITIVITY_TO_THE_FEELINGS_OF_OBJECTS_AROUND_YOU")
+      actor_increment_green_berry_count(actor_num)
+   elseif berry_type == 2 then
+      printl("SENSE_OF_YOUR_SPATIAL_LOCATION")
+      actor_increment_brown_berry_count(actor_num)
+   elseif berry_type == 3 then
+      printl("SUDDEN_FLUSH_DIZZINESS_AND_NAUSEA")
+      actor.poisoned = false
+      Actor.hit(actor, math.random(5, 0x14) + math.random(5, 0x14))
+      local counter = actor_get_blue_berry_counter()
+      actor_set_blue_berry_counter(counter + math.random(1, 2))
+   end
+   
+   if obj.qty == 1 then
+      Obj.removeFromEngine(obj)
+   else
+      obj.qty = obj.qty - 1
+   end
+end
+
 function use_misc_text(obj)
 
 	local obj_n = obj.obj_n
@@ -442,7 +485,34 @@ function use_tent(obj, actor)
       end
    end
 
-   --FIXME party members complain about berry effects.
+   local party_is_using_berries = false
+   for actor in party_members() do
+      local actor_num = actor.actor_num
+      local green = actor_is_affected_by_green_berries(actor_num)
+      local brown = actor_is_affected_by_brown_berries(actor_num)
+      
+      if brown or green then
+         party_is_using_berries = true
+         if brown and green then
+            printfl("COMPLAINS_OF_TOO_MUCH_LIGHT_AND_INANIMATE", actor.name)
+         elseif brown then
+            printfl("COMPLAINS_OF_TOO_MUCH_LIGHT", actor.name)
+         else --green
+            printfl("COMPLAINS_OF_INANIMATE_THINGS_TALKING", actor.name)            
+         end  
+      end
+      
+   end
+   
+   if party_is_using_berries then
+      if party_get_size() == 1 then
+         printl("YOU_CANT_SLEEP")
+      else
+         printl("NOBODY_CAN_SLEEP")
+      end
+      
+      return
+   end
    
    local player = Actor.get_player_actor()
    player.x = tent_loc.x
@@ -564,6 +634,14 @@ local usecode_table = {
 [66]={[255]=use_misc_text,[257]=use_misc_text,[258]={[257]=use_shovel_on_pile_to_hole},[0]=use_tool_on_ground}, --hole in ice, hole
 --OBJ_HOE 
 [67]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+--OBJ_BERRY
+[73]=use_berry,
+--OBJ_BERRY1
+[74]=use_berry,
+--OBJ_BERRY2
+[75]=use_berry,
+--OBJ_BERRY3
+[76]=use_berry,
 --OBJ_BERRY4
 [77]=use_misc_text,
 --OBJ_CLUMP_OF_ROUGE_BERRIES

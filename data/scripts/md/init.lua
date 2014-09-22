@@ -4,6 +4,7 @@ local lua_file = nil
 lua_file = nuvie_load("common/common.lua"); lua_file();
 
 OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING  = 0x1cf2
+OBJLIST_OFFSET_BERRY_COUNTERS           = 0x1d2f
 
 function dbg(msg_string)
 	io.stderr:write(msg_string)
@@ -12,13 +13,13 @@ end
 g_hours_till_next_healing = 0
 
 function load_game()
-objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
-g_hours_till_next_healing = objlist_read1()
+   objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
+   g_hours_till_next_healing = objlist_read1()
 end
 
 function save_game()
-objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
-objlist_write1(g_hours_till_next_healing)
+   objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
+   objlist_write1(g_hours_till_next_healing)
 end
 
 g_in_dream_mode = false

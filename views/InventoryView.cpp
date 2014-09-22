@@ -61,9 +61,9 @@ InventoryView::~InventoryView()
 {
 }
 
-bool InventoryView::set_party_member(sint8 party_member)
+bool InventoryView::set_party_member(uint8 party_member)
 {
- if(party_member < 0)
+ if(party_member >= party->get_party_size())
  {
    return false;
  }

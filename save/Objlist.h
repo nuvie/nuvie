@@ -50,8 +50,10 @@
 //MD specific offsets
 
 
-#define OBJLIST_OFFSET_MD_COMMAND_BAR  0x1d26
-#define OBJLIST_OFFSET_MD_GENDER       0x1d27
+#define OBJLIST_OFFSET_MD_BLUE_BERRY_COUNTER 0x1d05
+#define OBJLIST_OFFSET_MD_COMMAND_BAR        0x1d26
+#define OBJLIST_OFFSET_MD_GENDER             0x1d27
+#define OBJLIST_OFFSET_MD_BERRY_TIMERS       0x1d2f
 
 //WOU specific offsets (MD and SE)
 

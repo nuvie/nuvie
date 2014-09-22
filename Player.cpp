@@ -405,6 +405,16 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 		   && !actor->check_move(x + 0, y + rel_y, z, move_flags))
 			can_move = false;
     }
+    else if(game_type == NUVIE_GAME_MD)
+    {
+      if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_MD_BLUE_BERRY) != 0 && NUVIE_RAND()%2 != 0)
+      {
+        rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
+        rel_y = NUVIE_RAND()%3 - 1;
+        can_change_rel_dir = false;
+        Game::get_game()->get_scroll()->display_string("you are dizzy!\n"); //FIXME need i18n support here.
+      }
+    }
 
     if(actor->is_immobile() && actor->id_n != 0)
         can_move = false;

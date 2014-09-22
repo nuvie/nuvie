@@ -104,6 +104,87 @@ actor_tbl = {
 }
 
 
+-- Berry logic
+function actor_is_affected_by_purple_berries(actor_num)
+
+   if actor_num < 16 and timer_get(actor_num*3) > 0 then
+      return true
+   end
+   
+   return false
+end
+
+function actor_is_affected_by_green_berries(actor_num)
+ 
+   if actor_num < 16 and timer_get(actor_num*3+1) > 0 then
+      return true
+   end
+   
+   return false
+end
+
+function actor_is_affected_by_brown_berries(actor_num)
+ 
+   if actor_num < 16 and timer_get(actor_num*3+2) > 0 then
+      return true
+   end
+   
+   return false
+end
+
+function actor_get_purple_berry_count(actor_num)
+   if actor_num < 16 then
+      return timer_get(actor_num*3)
+   end
+   
+   return 0
+end
+
+function actor_get_green_berry_count(actor_num)
+   if actor_num < 16 then
+      return timer_get(actor_num*3+1)
+   end
+   
+   return 0
+end
+
+function actor_get_brown_berry_count(actor_num)
+   if actor_num < 16 then
+      return timer_get(actor_num*3+2)
+   end
+   
+   return 0
+end
+
+function actor_increment_purple_berry_count(actor_num)
+   local count = timer_get(actor_num*3)
+   if actor_num < 16 and count < 15 then
+      timer_set(actor_num*3, count + 1)
+   end
+end
+
+function actor_increment_green_berry_count(actor_num)
+   local count = timer_get(actor_num*3+1)
+   if actor_num < 16 and count < 15 then
+      timer_set(actor_num*3+1, count + 1)
+   end
+end
+
+function actor_increment_brown_berry_count(actor_num)
+   local count = timer_get(actor_num*3+2)
+   if actor_num < 16 and count < 15 then
+      timer_set(actor_num*3+2, count + 1)
+   end
+end
+
+function actor_get_blue_berry_counter()
+   return timer_get(16*3)
+end
+
+function actor_set_blue_berry_counter(new_value)
+   timer_set(16*3, new_value)
+end
+
 --
 -- actor_init(actor)
 --
@@ -346,10 +427,10 @@ end
 
 function actor_radiation_check(actor, obj)
    if obj.obj_n == 448 or obj.obj_n == 449 then --OBJ_BLOCK_OF_RADIUM, OBJ_CHIP_OF_RADIUM
-      --FIXME berries might protect against radiation.
-      --mov     al, byte_41160[bx]
-      --and     ax, 1111b
-      if actor.actor_num == 6
+
+      local actor_num = actor.actor_num
+      if actor_num == 6
+         or actor_is_affected_by_purple_berries(actor_num) -- purple berries protect against radiation
          or Actor.inv_get_readied_obj_n(actor, ARM) == 136 --OBJ_TONGS
          or Actor.inv_get_readied_obj_n(actor, ARM_2) == 136 then
          return

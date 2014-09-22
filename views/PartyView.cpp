@@ -317,8 +317,16 @@ void PartyView::Display(bool full_redraw)
       }
       if(MD)
       {
-        x_offset = 16;
+        x_offset = 8;
         y_offset = 6;
+        /* FIXME MD berry tokens
+        Tile *purple = tile_manager->get_tile(0x120);
+        screen->blit(area.x+x_offset+16,area.y + y_offset + (i-row_offset)*rowH,purple->data,8,16,16,16,true);
+        Tile *green = tile_manager->get_tile(0x121);
+        screen->blit(area.x+x_offset+32,area.y + y_offset + (i-row_offset)*rowH,green->data,8,16,16,16,true);
+        Tile *brown = tile_manager->get_tile(0x122);
+        screen->blit(area.x+x_offset+32,area.y + y_offset + (i-row_offset)*rowH,brown->data,8,16,16,16,true);
+        */
       }
       actor = party->get_actor(i);
       actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());

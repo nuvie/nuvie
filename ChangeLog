@@ -1,3 +1,10 @@
+2014-09-22  Eric Fry <efry at users.sourceforge.net> r1973
+	* Added MD berry counters.
+	* Added MD blue berry logic.
+	* Added MD eat berry usecode logic.
+	* Fixed bug with inventory view not updating properly in original mode.
+	* Added MD berry logic to tent usecode.
+
 2014-09-20  Eric Fry <efry at users.sourceforge.net> r1972
 	* Updated lua from 5.1 to 5.2.3
 	* Added MD Radiation check.

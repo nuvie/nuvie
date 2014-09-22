@@ -3302,7 +3302,7 @@ void Event::doAction()
     		else
     		{
     			magic->resume();
-				if(!game->is_new_style())
+				if(!game->is_new_style() && game->get_party()->get_leader() != -1)
 					view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
     		}
     	}
@@ -3313,7 +3313,7 @@ void Event::doAction()
     	else if(input.type == EVENTINPUT_OBJECT)
     	{
     		magic->resume(input.obj);
-			if(!game->is_new_style())
+			if(!game->is_new_style() && game->get_party()->get_leader() != -1)
 			{
 				view_manager->get_inventory_view()->release_focus();
 				view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
@@ -3415,7 +3415,7 @@ void Event::cancelAction()
     {
         if(magic != NULL && magic->is_waiting_for_inventory_obj())
         {
-            if(!game->is_new_style())
+            if(!game->is_new_style() && game->get_party()->get_leader() != -1)
             {
                 view_manager->get_inventory_view()->release_focus();
                 view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());
@@ -3429,7 +3429,7 @@ void Event::cancelAction()
           {
             if(usecode->is_script_running())
             {
-              if(!game->is_new_style()) //FIXME consolidate this logic with magic script logic above
+              if(!game->is_new_style() && game->get_party()->get_leader() != -1) //FIXME consolidate this logic with magic script logic above
               {
                   view_manager->get_inventory_view()->release_focus();
                   view_manager->get_inventory_view()->set_party_member(game->get_party()->get_leader());

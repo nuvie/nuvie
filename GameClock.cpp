@@ -82,22 +82,54 @@ bool GameClock::load(NuvieIO *objlist)
 
  update_day_of_week();
 
- num_timers = GAMECLOCK_NUM_TIMERS;
- timers.reserve(num_timers);
- timers.clear();
- objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
-
- for(uint8 i=0;i < GAMECLOCK_NUM_TIMERS;i++)
+ if(game_type == NUVIE_GAME_U6)
  {
-	timers.push_back( objlist->read1() );
+   load_U6_timers(objlist);
  }
-
- objlist->seek(OBJLIST_OFFSET_U6_REST_COUNTER);
- rest_counter = objlist->read1();
+ else if(game_type == NUVIE_GAME_MD)
+ {
+   load_MD_timers(objlist);
+ }
 
  DEBUG(0,LEVEL_INFORMATIONAL,"Loaded game clock: %s %s\n",get_date_string(),get_time_string());
 
  return true;
+}
+
+void GameClock::load_U6_timers(NuvieIO *objlist)
+{
+  num_timers = GAMECLOCK_NUM_TIMERS;
+  timers.reserve(num_timers);
+  timers.clear();
+  objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
+
+  for(uint8 i=0;i < GAMECLOCK_NUM_TIMERS;i++)
+  {
+   timers.push_back( objlist->read1() );
+  }
+
+  objlist->seek(OBJLIST_OFFSET_U6_REST_COUNTER);
+  rest_counter = objlist->read1();
+}
+
+void GameClock::load_MD_timers(NuvieIO *objlist)
+{
+  num_timers = GAMECLOCK_NUM_TIMERS * 3 + 1; //three berries per party member. 16 slots + 1 for the blue berry counter.
+  timers.reserve(num_timers);
+  timers.clear();
+  objlist->seek(OBJLIST_OFFSET_MD_BERRY_TIMERS);
+
+  for(uint8 i=0;i < GAMECLOCK_NUM_TIMERS;i++)
+  {
+    uint8 byte = objlist->read1();
+
+   timers.push_back( (uint8)(byte & 0xf) ); //purple
+   timers.push_back( (uint8)(byte >> 4) );  //green
+   timers.push_back( (uint8)(objlist->read1() & 0xf) );  //brown
+  }
+
+  objlist->seek(OBJLIST_OFFSET_MD_BLUE_BERRY_COUNTER);
+  timers.push_back(objlist->read1()); //blue berry counter
 }
 
 bool GameClock::save(NuvieIO *objlist)
@@ -110,17 +142,43 @@ bool GameClock::save(NuvieIO *objlist)
  objlist->write1(month);
  objlist->write2(year);
 
- objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
-
- for(uint8 i=0;i < num_timers;i++)
+ if(game_type == NUVIE_GAME_U6)
  {
-	objlist->write1(timers[i]);
+   save_U6_timers(objlist);
+ }
+ else if(game_type == NUVIE_GAME_MD)
+ {
+   save_MD_timers(objlist);
  }
 
- objlist->seek(OBJLIST_OFFSET_U6_REST_COUNTER);
- objlist->write1(rest_counter);
-
  return true;
+}
+
+void GameClock::save_U6_timers(NuvieIO *objlist)
+{
+  objlist->seek(OBJLIST_OFFSET_U6_TIMERS);
+
+  for(uint8 i=0;i < num_timers;i++)
+  {
+   objlist->write1(timers[i]);
+  }
+
+  objlist->seek(OBJLIST_OFFSET_U6_REST_COUNTER);
+  objlist->write1(rest_counter);
+}
+
+void GameClock::save_MD_timers(NuvieIO *objlist)
+{
+  objlist->seek(OBJLIST_OFFSET_MD_BERRY_TIMERS);
+
+  for(uint8 i=0;i < num_timers-1;i+=3)
+  {
+    objlist->write1((uint8)(timers[i+1] << 4) + timers[i]);
+    objlist->write1(timers[i+2]);
+  }
+
+  objlist->seek(OBJLIST_OFFSET_MD_BLUE_BERRY_COUNTER);
+  objlist->write1(timers[num_timers-1]);
 }
 
 void GameClock::inc_move_counter()
