@@ -103,6 +103,7 @@ actor_tbl = {
 [403] = {20,20,10,255,ALIGNMENT_EVIL,99,12,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 }
 
+g_party_is_warm = false
 
 -- Berry logic
 function actor_is_affected_by_purple_berries(actor_num)
@@ -158,21 +159,21 @@ end
 
 function actor_increment_purple_berry_count(actor_num)
    local count = timer_get(actor_num*3)
-   if actor_num < 16 and count < 15 then
+   if actor_num < 16 and count < 10 then
       timer_set(actor_num*3, count + 1)
    end
 end
 
 function actor_increment_green_berry_count(actor_num)
    local count = timer_get(actor_num*3+1)
-   if actor_num < 16 and count < 15 then
+   if actor_num < 16 and count < 10 then
       timer_set(actor_num*3+1, count + 1)
    end
 end
 
 function actor_increment_brown_berry_count(actor_num)
    local count = timer_get(actor_num*3+2)
-   if actor_num < 16 and count < 15 then
+   if actor_num < 16 and count < 10 then
       timer_set(actor_num*3+2, count + 1)
    end
 end
@@ -393,8 +394,148 @@ function out_of_ammo(attacker, weapon, print_message) -- untest function
 	return false
 end
 
+local clothing_warmth_tbl = {
+[1] =    1, -- OBJ_CAP
+[2] =    2, -- OBJ_COWBOY_HAT
+[3] =    3, -- OBJ_PITH_HELMET
+[4] =    3, -- OBJ_MILITARY_HELMET
+[5] =    2, -- OBJ_DERBY
+[6] =    1, -- OBJ_KERCHIEF
+[7] =    1, -- OBJ_SILK_SCARF
+[8] =    2, -- OBJ_MUFFLER
+[9] =    1, -- OBJ_MANS_SHOES
+[10] =   1, -- OBJ_WOMANS_SHOES
+[11] =   2, -- OBJ_RIDING_BOOTS
+[14] =   4, -- OBJ_HIP_BOOTS
+[13] =   3, -- OBJ_THIGH_BOOTS
+[17] =   2, -- OBJ_CLOTH_JACKET
+[18] =   3, -- OBJ_WOOL_SWEATER
+[19] =   3, -- OBJ_CAPE
+[20] =   4, -- OBJ_DUSTER
+[21] =   4, -- OBJ_WOOL_OVERCOAT
+[22] =   3, -- OBJ_SHEEPSKIN_JACKET
+[23] =   5, -- OBJ_ARCTIC_PARKA
+[90] =  12, -- OBJ_ELECTRIC_BELT
+[25] =   2, -- OBJ_COTTON_PANTS
+[26] =   2, -- OBJ_COTTON_DRESS
+[27] =   2, -- OBJ_DENIM_JEANS
+[28] =   3, -- OBJ_WOOL_PANTS
+[29] =   3, -- OBJ_WOOL_DRESS
+[30] =   3, -- OBJ_CHAPS_AND_JEANS
+[33] =   1, -- OBJ_LADYS_SILK_GLOVES
+[34] =   1, -- OBJ_DRIVING_GLOVES
+[35] =   1, -- OBJ_COTTON_WORK_GLOVES
+[36] =   2, -- OBJ_WORK_GLOVES
+[37] =   3, -- OBJ_WOOL_MITTENS
+[38] =   1, -- OBJ_RUBBER_GLOVES
+[39] =   3, -- OBJ_WELDING_GLOVES
+}
+
+function clothing_get_warmth_rating(obj)
+   local rating = clothing_warmth_tbl[obj.obj_n]
+   if rating == nil then
+      rating = 0
+   end
+   
+   return rating
+end
+
+local lit_lightsource_tbl = {
+[110] =  1, -- OBJ_LIT_TORCH
+[112] =  1, -- OBJ_LIT_CANDLE
+[114] =  1, -- OBJ_LIT_CANDELABRA
+[116] =  1, -- OBJ_LIT_OIL_LAMP
+[118] =  1, -- OBJ_LIT_LANTERN
+}
+
+function is_lit_lightsource(obj)
+   if lit_lightsource_tbl[obj.obj_n] ~= nil then
+      return true
+   end
+   
+   return false
+end
+
 function advance_time(num_turns)
    --FIXME
+   local rand = math.random
+   
+   local quake = Actor.get_talk_flag(0x46, 3) --rasputin
+
+   if quake then
+      if rand(0, 4) == 0 then
+         quake_start(1, 200)
+      end
+   end
+   
+   local max_light = 0
+   
+   local actor_num
+   for actor_num=0,0xff do
+      local actor = Actor.get(actor_num)
+      if actor.alive then
+         if g_in_dream_mode == false then
+            if actor.in_party and actor_num ~= 0 then
+               if num_turns > 0 and actor.asleep == false then --FIXME I think we also need to check distance < 0x27 from either mapwindow or player.
+                  if actor_num == 6 or Actor.get_talk_flag(0x10, 5) == false or Actor.inv_has_obj_n(actor, 131) then --OBJ_BLOB_OF_OXIUM
+                     if actor.hypoxia then
+                        actor.hypoxia = false
+                        printfl("BREATHES_EASIER", actor.name)
+                     end
+                  else
+                     if actor.hypoxia == false then
+                        actor.hypoxia = true
+                        printfl("GASPS_FOR_AIR", actor.name)
+                     end
+                  end
+  
+                  local warmth_rating = 0
+                  local obj
+                  for obj in actor_inventory(actor) do
+                     if obj.readied then
+                        warmth_rating = warmth_rating + clothing_get_warmth_rating(obj)
+                        
+                        if is_lit_lightsource(obj) then
+                           if rand(0, 1) == 1 then
+                              if obj.quality <= num_turns then
+                                 if obj.obj_num == 116 --OBJ_LIT_OIL_LAMP
+                                 or obj.obj_num == 118 then --OBJ_LIT_LANTERN
+                                    if obj.obj_num == 116 then --OBJ_LIT_OIL_LAMP
+                                       obj.obj_n = 115 --OBJ_OIL_LAMP
+                                    else --OBJ_LIT_LANTERN
+                                       obj.obj_n = 117--OBJ_LANTERN
+                                    end
+                                    obj.quality = 0
+                                    printfl("THE_IS_OUT_OF_FUEL", obj.name)
+                                 else
+                                    printfl("WENT_OUT", obj.look_string)
+                                    Obj.removeFromEngine(obj)
+                                 end
+                              else
+                                 obj.quality = obj.quality - num_turns
+                              end
+                           end
+                           --FIXME update max_light here. probably not needed as light is updated elsewhere in nuvie.
+                           --if max_light < obj.light then
+                           --max_light = obj.light
+                           --end
+                        end
+                     end
+                  end
+                  
+                  if g_party_is_warm or actor.z ~= 0 then
+                     if actor.cold then
+                        actor.cold = false
+                        printfl("FEELS_WARMER", actor.name)
+                     end
+                  else
+                  end
+               end               
+            end
+         end
+      end
+   end
+   
    local minute = clock_get_minute()
    
    clock_inc(num_turns)

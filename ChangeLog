@@ -1,3 +1,10 @@
+2014-09-25  Eric Fry <efry at users.sourceforge.net> r1974
+	* Added MD cold and hypoxia flags to script Actor object.
+	* Added more logic to MD advance_time() script function.
+	* Added generic Actor getter/setters for status_flags/ obj_flags.
+	* Load/save MD dream_mode flag in script.
+	* Cap max MD berry loading at 10 as per the original game.
+
 2014-09-22  Eric Fry <efry at users.sourceforge.net> r1973
 	* Added MD berry counters.
 	* Added MD blue berry logic.

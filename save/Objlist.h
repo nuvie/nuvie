@@ -30,6 +30,7 @@
 
 //U6 specific offsets
 
+#define OBJLIST_OFFSET_U6_TALK_FLAGS   0x17f1
 #define OBJLIST_OFFSET_U6_QUEST_FLAG   0x1bf1
 #define OBJLIST_OFFSET_U6_REST_COUNTER 0x1bf2
 #define OBJLIST_OFFSET_U6_GAMETIME     0x1bf3
@@ -50,6 +51,7 @@
 //MD specific offsets
 
 
+#define OBJLIST_OFFSET_MD_TALK_FLAGS         0x18f1
 #define OBJLIST_OFFSET_MD_BLUE_BERRY_COUNTER 0x1d05
 #define OBJLIST_OFFSET_MD_COMMAND_BAR        0x1d26
 #define OBJLIST_OFFSET_MD_GENDER             0x1d27

@@ -27,6 +27,7 @@
 #include "U6misc.h"
 #include "Configuration.h"
 #include "NuvieFileList.h"
+#include "Objlist.h"
 
 #include "Actor.h"
 #include "U6Actor.h"
@@ -299,11 +300,11 @@ bool ActorManager::load(NuvieIO *objlist)
 
  if(game_type == NUVIE_GAME_U6)
  {
-   objlist->seek(0x17f1); // Start of Talk flags
+   objlist->seek(OBJLIST_OFFSET_U6_TALK_FLAGS); // Start of Talk flags
  }
  else
  {
-   objlist->seek(0x18f1); //MD talk flags location. FIXME: check SE
+   objlist->seek(OBJLIST_OFFSET_MD_TALK_FLAGS); //MD talk flags location. FIXME: check SE
  }
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++)

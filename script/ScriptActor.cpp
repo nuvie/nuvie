@@ -54,6 +54,7 @@ An Actor object
 @bool asleep
 @int base_obj_n
 @bool charmed
+@bool cold (MD) bit 0 on the status flags. Set when the actor is cold.
 @int combat_mode
 @bool corpser_flag (U6) Has the actor been dragged underground by a corpser
 @bool cursed
@@ -74,6 +75,7 @@ An Actor object
 @int frame_n
 @bool hit_flag Used by U6 to determine if an actor has been hit.
 @int hp hit points
+@bool hypoxia (MD) bit 6 on the obj flags. Tells if the actor is oxygen deprived
 @bool[readonly] in_party Is the actor a mamber of the party?
 @bool[readonly] in_vehicle Is the actor currently in a vehicle?
 @int int intelligence
@@ -199,6 +201,7 @@ static const char *actor_set_vars[] =
    "asleep",
    "base_obj_n",
    "charmed",
+   "cold",
    "combat_mode",
    "corpser_flag",
    "cursed",
@@ -208,6 +211,7 @@ static const char *actor_set_vars[] =
    "frame_n",
    "hit_flag",
    "hp",
+   "hypoxia",
    "int",
    "level",
    "magic",
@@ -234,6 +238,7 @@ static const char *actor_get_vars[] =
    "asleep",
    "base_obj_n",
    "charmed",
+   "cold",
    "combat_mode",
    "corpser_flag",
    "cursed",
@@ -243,6 +248,7 @@ static const char *actor_get_vars[] =
    "frame_n",
    "hit_flag",
    "hp",
+   "hypoxia",
    "in_party",
    "in_vehicle",
    "int",
@@ -275,6 +281,7 @@ static int nscript_actor_set_align(Actor *actor, lua_State *L);
 static int nscript_actor_set_asleep_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_base_obj_n(Actor *actor, lua_State *L);
 static int nscript_actor_set_charmed_flag(Actor *actor, lua_State *L);
+static int nscript_actor_set_cold_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_combat_mode(Actor *actor, lua_State *L);
 static int nscript_actor_set_corpser_flag(Actor *actor, lua_State *L);
 static int nscript_actor_set_cursed_flag(Actor *actor, lua_State *L);
@@ -284,6 +291,7 @@ static int nscript_actor_set_exp(Actor *actor, lua_State *L);
 static int nscript_actor_set_frame_n(Actor *actor, lua_State *L);
 static int nscript_actor_set_hit(Actor *actor, lua_State *L);
 static int nscript_actor_set_hp(Actor *actor, lua_State *L);
+static int nscript_actor_set_hypoxia(Actor *actor, lua_State *L);
 static int nscript_actor_set_intelligence(Actor *actor, lua_State *L);
 static int nscript_actor_set_level(Actor *actor, lua_State *L);
 static int nscript_actor_set_magic(Actor *actor, lua_State *L);
@@ -306,6 +314,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_asleep_flag,
    nscript_actor_set_base_obj_n,
    nscript_actor_set_charmed_flag,
+   nscript_actor_set_cold_flag,
    nscript_actor_set_combat_mode,
    nscript_actor_set_corpser_flag,
    nscript_actor_set_cursed_flag,
@@ -315,6 +324,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_frame_n,
    nscript_actor_set_hit,
    nscript_actor_set_hp,
+   nscript_actor_set_hypoxia,
    nscript_actor_set_intelligence,
    nscript_actor_set_level,
    nscript_actor_set_magic,
@@ -339,6 +349,7 @@ static int nscript_actor_get_alive(Actor *actor, lua_State *L);
 static int nscript_actor_get_asleep_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_base_obj_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_charmed_flag(Actor *actor, lua_State *L);
+static int nscript_actor_get_cold_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_combat_mode(Actor *actor, lua_State *L);
 static int nscript_actor_get_corpser_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_cursed_flag(Actor *actor, lua_State *L);
@@ -348,6 +359,7 @@ static int nscript_actor_get_exp(Actor *actor, lua_State *L);
 static int nscript_actor_get_frame_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_hp(Actor *actor, lua_State *L);
+static int nscript_actor_get_hypoxia(Actor *actor, lua_State *L);
 static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L);
 static int nscript_actor_get_in_vehicle(Actor *actor, lua_State *L);
 static int nscript_actor_get_intelligence(Actor *actor, lua_State *L);
@@ -382,6 +394,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_asleep_flag,
    nscript_actor_get_base_obj_n,
    nscript_actor_get_charmed_flag,
+   nscript_actor_get_cold_flag,
    nscript_actor_get_combat_mode,
    nscript_actor_get_corpser_flag,
    nscript_actor_get_cursed_flag,
@@ -391,6 +404,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_frame_n,
    nscript_actor_get_hit_flag,
    nscript_actor_get_hp,
+   nscript_actor_get_hypoxia,
    nscript_actor_get_in_party_status,
    nscript_actor_get_in_vehicle,
    nscript_actor_get_intelligence,
@@ -587,13 +601,18 @@ static int nscript_get_actor_from_num(lua_State *L)
 
 Actor *nscript_get_actor_from_args(lua_State *L, int lua_stack_offset)
 {
-   uint16 *actor_num;
    Actor *actor = NULL;
 
-   actor_num = (uint16 *)luaL_checkudata(L, lua_stack_offset, "nuvie.Actor");
-
-   if(actor_num != NULL)
-      actor = Game::get_game()->get_actor_manager()->get_actor(*actor_num);
+   if(lua_isuserdata(L, lua_stack_offset))
+   {
+     uint16 *actor_num = (uint16 *)luaL_checkudata(L, lua_stack_offset, "nuvie.Actor");
+     if(actor_num != NULL)
+        actor = Game::get_game()->get_actor_manager()->get_actor(*actor_num);
+   }
+   else
+   {
+     actor = Game::get_game()->get_actor_manager()->get_actor((uint16)lua_tointeger(L, lua_stack_offset));
+   }
 
    return actor;
 }
@@ -650,6 +669,12 @@ static int nscript_actor_set_charmed_flag(Actor *actor, lua_State *L)
 	return 0;
 }
 
+static int nscript_actor_set_cold_flag(Actor *actor, lua_State *L)
+{
+  actor->set_status_flag(0, lua_toboolean(L, 3));
+  return 0;
+}
+
 static int nscript_actor_set_combat_mode(Actor *actor, lua_State *L)
 {
    actor->set_combat_mode((uint8)lua_tointeger(L, 3));
@@ -695,6 +720,12 @@ static int nscript_actor_set_frame_n(Actor *actor, lua_State *L)
 static int nscript_actor_set_hp(Actor *actor, lua_State *L)
 {
    actor->set_hp((uint8)lua_tointeger(L, 3));
+   return 0;
+}
+
+static int nscript_actor_set_hypoxia(Actor *actor, lua_State *L)
+{
+   actor->set_obj_flag(6, lua_toboolean(L, 3)); //MD uses object bit 6 which is cursed in U6.
    return 0;
 }
 
@@ -858,6 +889,11 @@ static int nscript_actor_get_charmed_flag(Actor *actor, lua_State *L)
 	lua_pushboolean(L, (int)actor->is_charmed()); return 1;
 }
 
+static int nscript_actor_get_cold_flag(Actor *actor, lua_State *L)
+{
+  lua_pushboolean(L, (int)actor->get_status_flag(0)); return 1;
+}
+
 static int nscript_actor_get_corpser_flag(Actor *actor, lua_State *L)
 {
 	lua_pushboolean(L, (int)actor->get_corpser_flag()); return 1;
@@ -891,6 +927,11 @@ static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L)
 static int nscript_actor_get_hp(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_hp()); return 1;
+}
+
+static int nscript_actor_get_hypoxia(Actor *actor, lua_State *L)
+{
+  lua_pushboolean(L, (int)actor->is_cursed()); return 1;
 }
 
 static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L)

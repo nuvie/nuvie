@@ -407,7 +407,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     }
     else if(game_type == NUVIE_GAME_MD)
     {
-      if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_MD_BLUE_BERRY) != 0 && NUVIE_RAND()%2 != 0)
+      if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_MD_BLUE_BERRY) != 0 && NUVIE_RAND()%2 == 0)
       {
         rel_x = NUVIE_RAND()%3 - 1; // stumble and change direction
         rel_y = NUVIE_RAND()%3 - 1;

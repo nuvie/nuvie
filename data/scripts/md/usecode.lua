@@ -563,7 +563,8 @@ function use_tent(obj, actor)
       hours_to_rest = input_select_integer("0123456789", true)
    end
    
-
+   g_party_is_warm = true
+   
    if g_hours_till_next_healing == 0 and hours_to_rest > 4 then
       rest_heal_party(hours_to_rest)
       g_hours_till_next_healing = 6
@@ -622,6 +623,7 @@ function use_tent(obj, actor)
       end
    end
 
+   g_party_is_warm = false
 end
 
 

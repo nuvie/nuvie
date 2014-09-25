@@ -1103,7 +1103,7 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
     <h3>Fields:</h3>
     <ul>
         <li><span class="parameter">luatype</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          This returns &ldquo;obj&rdquo;
           <em>readonly</em>
         </li>
@@ -1137,12 +1137,12 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
          quantity
         </li>
         <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          The object name from the &lsquo;look&rsquo; table.
           <em>readonly</em>
         </li>
         <li><span class="parameter">look_string</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
         <p> A printable look description</p>
 
 <pre><code> a book
@@ -1247,7 +1247,7 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
     <h3>Fields:</h3>
     <ul>
         <li><span class="parameter">luatype</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          This returns &ldquo;actor&rdquo;
           <em>readonly</em>
         </li>
@@ -1291,6 +1291,10 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
             <span class="types"><span class="type">bool</span></span>
 
 
+        </li>
+        <li><span class="parameter">cold</span>
+            <span class="types"><span class="type">bool</span></span>
+         (MD) bit 0 on the status flags. Set when the actor is cold.
         </li>
         <li><span class="parameter">combat_mode</span>
             <span class="types"><span class="type">int</span></span>
@@ -1345,6 +1349,10 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
             <span class="types"><span class="type">int</span></span>
          hit points
         </li>
+        <li><span class="parameter">hypoxia</span>
+            <span class="types"><span class="type">bool</span></span>
+         (MD) bit 6 on the obj flags. Tells if the actor is oxygen deprived
+        </li>
         <li><span class="parameter">in_party</span>
             <span class="types"><span class="type">bool</span></span>
          Is the actor a mamber of the party?
@@ -1380,7 +1388,7 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
          movement points
         </li>
         <li><span class="parameter">name</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
 
 
           <em>readonly</em>
@@ -2726,7 +2734,7 @@ to iterate through a list of Actors and Objects that were hit by the explosion.
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a></span>
         A table containing the hit Actor and Obj objects.
     </ol>
 
@@ -2861,7 +2869,7 @@ the tile can leave a trail and rotate whilst moving.
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.5">table</a> or <span class="type">bool</span></span>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.5">table</a> or <span class="type">bool</span></span>
         A table containing the hit Actor and Obj objects. Or false if argument 4 isn&rsquo;t a table
     </ol>
 
@@ -3327,7 +3335,7 @@ These counters are decremented each turn and are used for things like torch dura
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">allowed_characters</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          set to nil if all characters are permitted
         </li>
         <li><span class="parameter">can_escape</span>
@@ -3339,7 +3347,7 @@ These counters are decremented each turn and are used for things like torch dura
     <h3>Returns:</h3>
     <ol>
 
-           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
         characters input by the player
     </ol>
 
@@ -3360,7 +3368,7 @@ C function strtol()
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">allowed_characters</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          set to nil if all characters are permitted
         </li>
         <li><span class="parameter">can_escape</span>

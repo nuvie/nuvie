@@ -4,6 +4,8 @@ local lua_file = nil
 lua_file = nuvie_load("common/common.lua"); lua_file();
 
 OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING  = 0x1cf2
+OBJLIST_OFFSET_DREAM_MODE_FLAG          = 0x1d29
+
 OBJLIST_OFFSET_BERRY_COUNTERS           = 0x1d2f
 
 function dbg(msg_string)
@@ -11,18 +13,33 @@ function dbg(msg_string)
 end
 
 g_hours_till_next_healing = 0
+g_in_dream_mode = false
 
 function load_game()
    objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
    g_hours_till_next_healing = objlist_read1()
+   
+   objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
+   g_in_dream_mode = bit32.btest(objlist_read2(), 0x10)
 end
 
 function save_game()
    objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
    objlist_write1(g_hours_till_next_healing)
+   
+   objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
+   local bytes = objlist_read2()
+   if g_in_dream_mode then
+      bytes = bit32.bor(bytes, 0x10)
+   else
+      bytes = bit32.band(bytes, 0xFFEF)
+   end
+   objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
+   objlist_write2(bytes)
+
 end
 
-g_in_dream_mode = false
+
 
 local g_container_obj_tbl = {
 [80]=1, [81]=1, [82]=1,

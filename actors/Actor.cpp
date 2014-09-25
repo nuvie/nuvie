@@ -1691,6 +1691,30 @@ void Actor::set_hp(uint8 val)
 	}
 }
 
+void Actor::set_obj_flag(uint8 bitFlag, bool value)
+{
+  if(value)
+  {
+    obj_flags |= (1 << bitFlag);
+  }
+  else
+  {
+    obj_flags &= (0xff ^ (1 << bitFlag));
+  }
+}
+
+void Actor::set_status_flag(uint8 bitFlag, bool value)
+{
+  if(value)
+  {
+    status_flags |= (1 << bitFlag);
+  }
+  else
+  {
+    status_flags &= (0xff ^ (1 << bitFlag));
+  }
+}
+
 void Actor::set_hit_flag(bool val)
 {
 	if(val)

@@ -337,6 +337,8 @@ class Actor
  sint8 get_moves_left() { return(moves); }
  virtual uint8 get_maxhp() { return 0; }
  virtual uint8 get_maxmagic() { return 0; }
+ bool get_obj_flag(uint8 bitFlag) { return bitFlag < 8 ? (obj_flags & (1<<bitFlag)) : false; }
+ bool get_status_flag(uint8 bitFlag) { return bitFlag < 8 ? (status_flags & (1<<bitFlag)) : false; }
 
  uint16 get_base_obj_n() { return base_obj_n; }
  virtual void change_base_obj_n(uint16 val) { base_obj_n = obj_n = val; frame_n = 0;}
@@ -366,6 +368,8 @@ class Actor
  virtual void set_corpser_flag(bool val) { return; }
  virtual void set_cursed(bool val) { return; }
  virtual void set_asleep(bool val) { return; }
+ void set_obj_flag(uint8 bitFlag, bool value);
+ void set_status_flag(uint8 bitFlag, bool value);
  void set_hit_flag(bool val);
 
  void set_invisible(bool invisible);
