@@ -1102,6 +1102,9 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
     <h3>Fields:</h3>
     <ul>
+        <li><span class="parameter">parent</span>
+         (Obj|Actor) The parent of this object. Either an object if this object is in a container. Or an Actor if this object is in an inventory.
+        </li>
         <li><span class="parameter">luatype</span>
             <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          This returns &ldquo;obj&rdquo;
@@ -1155,6 +1158,11 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
         <li><span class="parameter">on_map</span>
             <span class="types"><span class="type">bool</span></span>
          Is the object on the map?
+          <em>readonly</em>
+        </li>
+        <li><span class="parameter">in_container</span>
+            <span class="types"><span class="type">bool</span></span>
+         Is the object in a container?
           <em>readonly</em>
         </li>
         <li><span class="parameter">readied</span>

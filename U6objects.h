@@ -432,19 +432,41 @@
 #define OBJ_SE_DEAD_BODY           249
 
 // Martian Dreams
-#define OBJ_MD_BACKPACK             80
-#define OBJ_MD_LARGE_SACK           81
-#define OBJ_MD_SMALL_POUCH          82
-#define OBJ_MD_BRASS_CHEST          83
-#define OBJ_MD_OBSIDIAN_BOX         85
-#define OBJ_MD_WOODEN_CRATE         86
-#define OBJ_MD_STEAMER_TRUNK        87
-#define OBJ_MD_CARPET_BAG           89
-#define OBJ_MD_BARREL              104
-#define OBJ_MD_LEAD_BOX            139
-#define OBJ_MD_CRATE               284
-#define OBJ_MD_BAG                 285
-#define OBJ_MD_BRASS_TRUNK         304
-#define OBJ_MD_DEAD_BODY           341
+#define OBJ_MD_DOLLAR                 24
+#define OBJ_MD_PISTOL_ROUND           57
+#define OBJ_MD_SHOTGUN_SHELL          58
+#define OBJ_MD_RIFLE_ROUND            59
+#define OBJ_MD_ELEPHANT_GUN_ROUND     60
+#define OBJ_MD_SLING_STONE            63
+#define OBJ_MD_ARROW                  64
+#define OBJ_MD_BERRY                  73
+#define OBJ_MD_BERRY1                 74
+#define OBJ_MD_BERRY2                 75
+#define OBJ_MD_BERRY3                 76
+#define OBJ_MD_BERRY4                 77
+#define OBJ_MD_BACKPACK               80
+#define OBJ_MD_LARGE_SACK             81
+#define OBJ_MD_SMALL_POUCH            82
+#define OBJ_MD_BRASS_CHEST            83
+#define OBJ_MD_OBSIDIAN_BOX           85
+#define OBJ_MD_WOODEN_CRATE           86
+#define OBJ_MD_STEAMER_TRUNK          87
+#define OBJ_MD_CARPET_BAG             89
+#define OBJ_MD_BARREL                104
+#define OBJ_MD_MATCH                 107
+#define OBJ_MD_TORCH                 109
+#define OBJ_MD_PAGE                  122
+#define OBJ_MD_CAN_OF_LAMP_OIL       124
+#define OBJ_MD_BLOB_OF_OXIUM         131
+#define OBJ_MD_RUBLE                 132
+#define OBJ_MD_LEAD_BOX              139
+#define OBJ_MD_WORMSBANE_SEED        158
+#define OBJ_MD_CRATE                 284
+#define OBJ_MD_BAG                   285
+#define OBJ_MD_BRASS_TRUNK           304
+#define OBJ_MD_OXYGENATED_AIR_BOTTLE 324
+#define OBJ_MD_DEAD_BODY             341
+#define OBJ_MD_CHIP_OF_RADIUM        449
+
 
 #endif /* __U6objects_h__ */

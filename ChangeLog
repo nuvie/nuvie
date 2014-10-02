@@ -1,3 +1,17 @@
+2014-10-02  Eric Fry <efry at users.sourceforge.net> r1975
+	* Added parent field to the lua Obj type. This returns the object's
+	  parent. Either another object if in a container or an Actor if
+	  held in an inventory.
+	* Added in_container field to the lua Obj type. This returns a bool
+	  indicating whether the object is in a container.
+	* Added MD stackable object check.
+	* Added support for altcode functions to be written in lua script.
+	* Added MD alt-242 (set actor talk flags) and alt-250 (create object)
+	  script functions.
+	* Added more logic to MD's advance_time() script function.
+	  Update lamp light, decrement berry counters.
+	  Deplete oxium blobs, Melt ice, lead box radium logic
+
 2014-09-25  Eric Fry <efry at users.sourceforge.net> r1974
 	* Added MD cold and hypoxia flags to script Actor object.
 	* Added more logic to MD advance_time() script function.

@@ -76,6 +76,8 @@ An in-game object
      an elephant
      5 torches
 @bool[readonly] on_map Is the object on the map?
+@bool[readonly] in_container Is the object in a container?
+@field parent (Obj|Actor) The parent of this object. Either an object if this object is in a container. Or an Actor if this object is in an inventory.
 @bool[readonly] readied Is this object readied in someone's inventory?
 @bool[readonly] stackable Is this object able to be stacked together?
 @number[readonly] weight The object's weight
@@ -1118,6 +1120,17 @@ bool Script::call_ready_obj(Obj *obj, Actor *actor)
   return lua_toboolean(L,-1);
 }
 
+bool Script::call_handle_alt_code(uint16 altcode)
+{
+   lua_getglobal(L, "handle_alt_code");
+   lua_pushnumber(L, (lua_Number)altcode);
+
+   if(call_function("handle_alt_code", 1, 0) == false)
+     return false;
+
+   return true;
+}
+
 bool Script::call_magic_get_spell_list(Spell **spell_list)
 {
 	lua_getglobal(L, "magic_get_spell_list");
@@ -1802,6 +1815,11 @@ static int nscript_obj_get(lua_State *L)
       lua_pushboolean(L, (int)obj->is_on_map()); return 1;
    }
 
+   if(!strcmp(key, "in_container"))
+   {
+      lua_pushboolean(L, (int)obj->is_in_container()); return 1;
+   }
+
    if(!strcmp(key, "readied"))
    {
       lua_pushboolean(L, (int)obj->is_readied()); return 1;
@@ -1838,6 +1856,24 @@ static int nscript_obj_get(lua_State *L)
    if(!strcmp(key, "ok_to_take"))
    {
 	   lua_pushboolean(L, (int)obj->is_ok_to_take()); return 1;
+   }
+
+   if(!strcmp(key, "parent"))
+   {
+     Obj *parent_container = obj->get_container_obj();
+     if(parent_container)
+     {
+       nscript_new_obj_var(L, parent_container);
+       return 1;
+     }
+     else if(obj->is_in_inventory()) {
+       Actor *parent_actor = obj->get_actor_holding_obj();
+       if(parent_actor)
+       {
+         nscript_new_actor_var(L, parent_actor->get_actor_num());
+         return 1;
+       }
+     }
    }
 
    return 0;

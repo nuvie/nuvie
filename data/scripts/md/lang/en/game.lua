@@ -72,4 +72,7 @@ GASPS_FOR_AIR="%s gasps for air!\n",
 THE_IS_OUT_OF_FUEL="The %s is out of fuel.\n",
 WENT_OUT="%s went out.\n",
 FEELS_WARMER="%s feels warmer!\n",
+IS_FREEZING="%s is freezing!\n",
+A_PSYCHIC_POWER_FADES="A psychic power fades...\n",
+SOME_ICE_HAS_MELTED="Some ice has melted.\n",
 }

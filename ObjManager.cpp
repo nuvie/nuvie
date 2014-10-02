@@ -758,6 +758,37 @@ bool ObjManager::is_stackable(Obj *obj)
   }
  }
 
+ if(game_type == NUVIE_GAME_MD)
+ {
+   switch (obj->obj_n)
+   {
+     case OBJ_MD_PISTOL_ROUND:
+     case OBJ_MD_SHOTGUN_SHELL:
+     case OBJ_MD_RIFLE_ROUND:
+     case OBJ_MD_ELEPHANT_GUN_ROUND:
+     case OBJ_MD_SLING_STONE:
+     case OBJ_MD_ARROW:
+     case OBJ_MD_CAN_OF_LAMP_OIL:
+     case OBJ_MD_MATCH:
+     case OBJ_MD_TORCH:
+     case OBJ_MD_BLOB_OF_OXIUM:
+     case OBJ_MD_BERRY:
+     case OBJ_MD_BERRY1:
+     case OBJ_MD_BERRY2:
+     case OBJ_MD_BERRY4:
+     case OBJ_MD_CHIP_OF_RADIUM:
+     case OBJ_MD_DOLLAR:
+     case OBJ_MD_RUBLE:
+     case OBJ_MD_WORMSBANE_SEED:
+     case OBJ_MD_PAGE:
+     case OBJ_MD_BERRY3:
+     case OBJ_MD_OXYGENATED_AIR_BOTTLE:
+       return true;
+     default:
+       return false;
+   }
+ }
+
  return (bool)obj_stackable[obj->obj_n];
 }
 

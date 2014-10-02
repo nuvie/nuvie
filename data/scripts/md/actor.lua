@@ -157,25 +157,42 @@ function actor_get_brown_berry_count(actor_num)
    return 0
 end
 
-function actor_increment_purple_berry_count(actor_num)
-   local count = timer_get(actor_num*3)
+function actor_decrement_berry_counter(actor, berry_type)
+   local actor_num = actor.actor_num
+   local count = timer_get(actor_num*3+berry_type)
+   if count > 0 and math.random(1, actor_int_adj(actor) * 4) == 1 then
+      timer_set(actor_num*3+berry_type, count - 1)
+      if (actor_num == 0 and g_in_dream_mode) or 
+         (actor_num ~= 0 and g_in_dream_mode == false) then
+         --FIXME play sfx 0x32
+         printl("A_PSYCHIC_POWER_FADES")
+      end
+   end   
+end
+
+function actor_decrement_berry_counters(actor)
+   actor_decrement_berry_counter(actor, 0) --purple
+   actor_decrement_berry_counter(actor, 1) --green
+   actor_decrement_berry_counter(actor, 2) --brown
+end
+
+function actor_increment_berry_counter(actor_num, berry_type)
+   local count = timer_get(actor_num*3+berry_type)
    if actor_num < 16 and count < 10 then
-      timer_set(actor_num*3, count + 1)
+      timer_set(actor_num*3+berry_type, count + 1)
    end
+end
+
+function actor_increment_purple_berry_count(actor_num)
+   actor_increment_berry_counter(actor_num, 0)
 end
 
 function actor_increment_green_berry_count(actor_num)
-   local count = timer_get(actor_num*3+1)
-   if actor_num < 16 and count < 10 then
-      timer_set(actor_num*3+1, count + 1)
-   end
+   actor_increment_berry_counter(actor_num, 1)
 end
 
 function actor_increment_brown_berry_count(actor_num)
-   local count = timer_get(actor_num*3+2)
-   if actor_num < 16 and count < 10 then
-      timer_set(actor_num*3+2, count + 1)
-   end
+   actor_increment_berry_counter(actor_num, 2)
 end
 
 function actor_get_blue_berry_counter()
@@ -456,9 +473,63 @@ function is_lit_lightsource(obj)
    return false
 end
 
+function actor_str_adj(actor) --FIXME
+   
+local str = actor.str
+
+if actor.cursed == false then return str end
+
+if str <= 3 then
+return 1
+end
+
+return str - 3
+end
+
+function actor_dex_adj(actor) --FIXME
+
+local dex = actor.dex
+if actor.cursed == true then
+if dex <= 3 then
+dex = 1
+else
+dex = dex - 3
+end
+end
+
+if g_time_stopped == true or actor.asleep == true then
+dex = 1
+end
+
+return dex
+end
+
+function actor_int_adj(actor)
+   local int = actor.int
+   
+   if actor.hypoxia == true then --FIXME or actor.actor_num ~= 1 and obj_flags bit 7 set then
+      int = int - 3
+   end
+   
+   if int < 1 then int = 1 end
+   
+   return int
+end
+
+
+function actor_map_dmg(actor, map_x, map_y, map_z) --FIXME
+   local obj_n = actor.obj_n
+   local actor_type = actor_tbl[obj_n]
+   
+   if actor.alive == false or actor.hit_flag == true then
+      return
+   end
+end
+
 function advance_time(num_turns)
    --FIXME
    local rand = math.random
+   local hour = clock_get_hour()
    
    local quake = Actor.get_talk_flag(0x46, 3) --rasputin
 
@@ -474,65 +545,163 @@ function advance_time(num_turns)
    for actor_num=0,0xff do
       local actor = Actor.get(actor_num)
       if actor.alive then
-         if g_in_dream_mode == false then
-            if actor.in_party and actor_num ~= 0 then
-               if num_turns > 0 and actor.asleep == false then --FIXME I think we also need to check distance < 0x27 from either mapwindow or player.
-                  if actor_num == 6 or Actor.get_talk_flag(0x10, 5) == false or Actor.inv_has_obj_n(actor, 131) then --OBJ_BLOB_OF_OXIUM
-                     if actor.hypoxia then
-                        actor.hypoxia = false
-                        printfl("BREATHES_EASIER", actor.name)
-                     end
-                  else
-                     if actor.hypoxia == false then
-                        actor.hypoxia = true
-                        printfl("GASPS_FOR_AIR", actor.name)
+         if g_in_dream_mode == false and actor.in_party and actor_num ~= 0 then
+            if num_turns > 0 and actor.asleep == false then --FIXME I think we also need to check distance < 0x27 from either mapwindow or player.
+               if actor_num == 6 or Actor.get_talk_flag(0x10, 5) == false or Actor.inv_has_obj_n(actor, 131) then --OBJ_BLOB_OF_OXIUM
+                  if actor.hypoxia then
+                     actor.hypoxia = false
+                     printfl("BREATHES_EASIER", actor.name)
+                  end
+               else
+                  if actor.hypoxia == false then
+                     actor.hypoxia = true
+                     printfl("GASPS_FOR_AIR", actor.name)
+                  end
+               end
+  
+               local warmth_rating = 0
+               local obj
+               for obj in actor_inventory(actor) do
+                  if obj.readied then
+                     warmth_rating = warmth_rating + clothing_get_warmth_rating(obj)
+                     
+                     if is_lit_lightsource(obj) then
+                        if rand(0, 1) == 1 then
+                           if obj.quality <= num_turns then
+                              if obj.obj_num == 116 --OBJ_LIT_OIL_LAMP
+                                 or obj.obj_num == 118 then --OBJ_LIT_LANTERN
+                                 if obj.obj_num == 116 then --OBJ_LIT_OIL_LAMP
+                                    obj.obj_n = 115 --OBJ_OIL_LAMP
+                                 else --OBJ_LIT_LANTERN
+                                    obj.obj_n = 117--OBJ_LANTERN
+                                 end
+                                 obj.quality = 0
+                                 printfl("THE_IS_OUT_OF_FUEL", obj.name)
+                              else
+                                 printfl("WENT_OUT", obj.look_string)
+                                 Obj.removeFromEngine(obj)
+                              end
+                           else
+                              obj.quality = obj.quality - num_turns
+                           end
+                        end
+                     --FIXME update max_light here. probably not needed as light is updated elsewhere in nuvie.
+                     --if max_light < obj.light then
+                     --max_light = obj.light
+                     --end
                      end
                   end
-  
-                  local warmth_rating = 0
-                  local obj
-                  for obj in actor_inventory(actor) do
-                     if obj.readied then
-                        warmth_rating = warmth_rating + clothing_get_warmth_rating(obj)
-                        
-                        if is_lit_lightsource(obj) then
-                           if rand(0, 1) == 1 then
-                              if obj.quality <= num_turns then
-                                 if obj.obj_num == 116 --OBJ_LIT_OIL_LAMP
-                                 or obj.obj_num == 118 then --OBJ_LIT_LANTERN
-                                    if obj.obj_num == 116 then --OBJ_LIT_OIL_LAMP
-                                       obj.obj_n = 115 --OBJ_OIL_LAMP
-                                    else --OBJ_LIT_LANTERN
-                                       obj.obj_n = 117--OBJ_LANTERN
-                                    end
-                                    obj.quality = 0
-                                    printfl("THE_IS_OUT_OF_FUEL", obj.name)
-                                 else
-                                    printfl("WENT_OUT", obj.look_string)
-                                    Obj.removeFromEngine(obj)
-                                 end
-                              else
-                                 obj.quality = obj.quality - num_turns
-                              end
-                           end
-                           --FIXME update max_light here. probably not needed as light is updated elsewhere in nuvie.
-                           --if max_light < obj.light then
-                           --max_light = obj.light
-                           --end
-                        end
+               end
+               
+               if g_party_is_warm or actor.z ~= 0 then
+                  if actor.cold then
+                     actor.cold = false
+                     printfl("FEELS_WARMER", actor.name)
+                  end
+               else
+                  local cold_status = 0
+                  
+                  if hour <= 3 or hour >= 22 then
+                     if warmth_rating >= 10 then
+                        cold_status = 1
+                     else
+                        cold_status = 2
+                     end
+                  elseif hour <= 6 or hour >= 18 then
+                     if warmth_rating < 10 then
+                        cold_status = 1
                      end
                   end
                   
-                  if g_party_is_warm or actor.z ~= 0 then
+                  if actor_num == 6 then
+                     cold_status = 0
+                  end
+                  
+                  if cold_status == 0 then
                      if actor.cold then
                         actor.cold = false
                         printfl("FEELS_WARMER", actor.name)
                      end
                   else
+                     if actor.cold == false then
+                        actor.cold = true
+                        printfl("IS_FREEZING", actor.name)
+                     end
+                     if num_turns ~= 0 then
+                        for i=1,num_turns do
+                           if rand(0, 1) == 0 then
+                              if cold_status == 2 then
+                                 printfl("IS_FREEZING", actor.name)
+                                 Actor.hit(actor, rand(1, 2))                              
+                              end
+                           else
+                              printfl("IS_FREEZING", actor.name)
+                              Actor.hit(actor, rand(1, 2))
+                              if cold_status == 2 then
+                                 Actor.hit(actor, rand(1, 2))
+                              end
+                           end
+                        end
+                     end
                   end
-               end               
+               end
+
+            end               
+         end
+                  
+         if num_turns ~= 0 then
+            for i=1,num_turns do
+               --FIXME what does  word_4E6FA do?
+               --FIXME obj_flags bit 7 check.
+               if actor.poisoned then
+                  if rand(0, 25) == 0 then
+                     actor.poisoned = false
+                  end
+               end
+               
+               --FIXME if obj_flags bit 2 set and rand(0,0x19) == 0 then call sub_17E5C
+               
+               if actor.paralyzed then
+                  if actor_num == 6 or (rand(0, 3) == 0 and actor.str >= rand(1, 0x1e)) then --FIXME used adjusted str
+                     actor.paralyzed = false
+                  end
+               end
+               
+               --FIXME object status flag bit 2
+               
+               if actor.poisoned and actor_num ~= 6 and rand(0, 7) == 0 then
+                  Actor.hit(actor, 1)
+               end
+               
+               if actor_num < 8 then
+                  actor_decrement_berry_counters(actor)
+                  
+                  for obj in actor_inventory(actor, true) do
+                     local obj_n = obj.obj_n
+                     if obj_n == 160 and obj.frame_n > 1 then --OBJ_EMPTY_BUCKET with ice
+                        if rand(0, 100) < 10 then
+                           printl("SOME_ICE_HAS_MELTED")
+                           obj.frame_n = 1
+                        end
+                     elseif obj_n == 256 then --OBJ_CHUNK_OF_ICE
+                        if rand(0, 100) < 10 then
+                           printl("SOME_ICE_HAS_MELTED")
+                           Obj.removeFromEngine(obj)
+                        end
+                     elseif obj_n == 448 or (obj_n == 449 and actor_num ~= 6 and actor.poisoned == false) then --OBJ_BLOCK_OF_RADIUM, OBJ_CHIP_OF_RADIUM
+                        if obj.in_container == false or obj.parent.obj_n ~= 139 then --OBJ_LEAD_BOX
+                           printfl("IS_POISONED", actor.name)
+                           actor.poisoned = true
+                        end
+                     end
+                  end                       
+               end
+               
             end
          end
+
+         actor_map_dmg(actor, actor.x, actor.y, actor.z)
+         actor.hit_flag = false
       end
    end
    
@@ -545,6 +714,49 @@ function advance_time(num_turns)
       if g_hours_till_next_healing > 0 then
          g_hours_till_next_healing = g_hours_till_next_healing - 1
       end
+      
+      update_lamp_posts()
+      
+      local blue_berry_counter = actor_get_blue_berry_counter()
+      if blue_berry_counter > 0 then
+         actor_get_blue_berry_counter(blue_berry_counter - 1)
+      end
+      
+      if not g_party_is_warm and not g_in_dream_mode and Actor.get_talk_flag(0x10, 5) then
+         for actor in party_members() do
+            if actor.actor_num ~= 6 and not actor.asleep then
+               local oxium = Actor.inv_get_obj_n(131) --OBJ_BLOB_OF_OXIUM
+               if oxium ~= nil then
+                  if oxium.qty > 1 then
+                     oxium.qty = oxium.qty - 1
+                     if actor.hypoxia then
+                        actor.hypoxia = false
+                        printfl("BREATHES_EASIER", actor.name)
+                     end
+                  else
+                     Obj.removeFromEngine(oxium)
+                     if Actor.inv_get_obj_n(131) ~= nil then
+                        if actor.hypoxia then
+                           actor.hypoxia = false
+                           printfl("BREATHES_EASIER", actor.name)
+                        end
+                     else
+                        if actor.hypoxia == false then
+                           actor.hypoxia = true
+                           printfl("GASPS_FOR_AIR", actor.name)
+                        end
+                     end
+                  end
+               else
+                  if actor.hypoxia == false then
+                     actor.hypoxia = true
+                     printfl("GASPS_FOR_AIR", actor.name)                     
+                  end
+               end
+            end
+         end
+      end
+      
    end
 end
 

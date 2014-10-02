@@ -1970,6 +1970,11 @@ void Event::alt_code(const char *cs)
         	view_manager->open_mapeditor_view();
         	active_alt_code = 0;
         	break;
+
+        default: // attempt to handle the altcode with lua script.
+          Game::get_game()->get_script()->call_handle_alt_code(c);
+          scroll->display_prompt();
+          break;
     }
 }
 
