@@ -343,13 +343,7 @@ void PartyView::Display(bool full_redraw)
       // FIXME: Martian Dreams text is somewhat center aligned
       font->drawString(screen, actor_name, area.x + x_offset + 24, area.y + y_offset + (i-row_offset) * rowH + 8);
       sprintf(hp_string,"%3d",actor->get_hp());
-      if(actor->is_poisoned()) //actor is poisoned, display their hp in green
-        hp_text_color = 0xa;
-      else
-       {
-        if(actor->get_hp() < 10) //actor is critical, display their hp in red.
-          hp_text_color = 0x0c; 
-       }
+      hp_text_color = actor->get_hp_text_color();
       if(SE)
       {
         x_offset = -7; y_offset = 3;

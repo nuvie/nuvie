@@ -216,38 +216,38 @@ void ActorView::display_actor_stats()
  int y_off = 0;
  uint8 hp_text_color = 0; //standard text color
 
+ if(in_party)
+  actor = party->get_actor(cur_party_member);
+ else
+  actor = Game::get_game()->get_player()->get_actor();
+
  if (MD)
+ {
 	x_off = -1;
+ }
  else if(Game::get_game()->get_game_type()==NUVIE_GAME_SE)
  {
 	x_off = 2; y_off = - 6;
  }
- else //U6
-	hp_text_color = 0x48; //standard text color)
 
- if(in_party)
-	actor = party->get_actor(cur_party_member);
- else
-	actor = Game::get_game()->get_player()->get_actor();
+ hp_text_color = actor->get_hp_text_color();
 
- if(actor->is_poisoned()) //actor is poisoned, display their hp in green
-	hp_text_color = 0xa;
- else if(actor->get_hp() < 10) //actor is critical, display their hp in red.
-	hp_text_color = 0x0c;
+ sprintf(buf,"%d",actor->get_strength());
+ uint8 str_len = font->drawString(screen, "STR:", area.x + 5 * 16 + x_off, area.y + y_off + 16);
+ font->drawString(screen, buf, area.x + 5 * 16 + x_off + str_len, area.y + y_off + 16, actor->get_str_text_color(), 0);
 
- sprintf(buf,"STR:%d",actor->get_strength());
- font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16);
-
- sprintf(buf,"DEX:%d",actor->get_dexterity());
- font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 8);
+ sprintf(buf,"%d",actor->get_dexterity());
+ str_len = font->drawString(screen, "DEX:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 8);
+ font->drawString(screen, buf, area.x + 5 * 16 + x_off + str_len, area.y + y_off + 16 + 8, actor->get_dex_text_color(), 0);
 
  sprintf(buf,"INT:%d",actor->get_intelligence());
  font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 2 * 8);
 
  if (MD || Game::get_game()->get_game_type()==NUVIE_GAME_SE)
  {
-	sprintf(buf,"HP:%3d",actor->get_hp());
-	font->drawString(screen, buf, strlen(buf), area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8, hp_text_color, 0);
+	sprintf(buf,"%3d",actor->get_hp());
+	str_len = font->drawString(screen, "HP:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 3 * 8);
+	font->drawString(screen, buf, strlen(buf), area.x + 5 * 16 + x_off + str_len, area.y + y_off + 16 + 3 * 8, hp_text_color, 0);
 
 	sprintf(buf,"HM:%3d",actor->get_maxhp());
 	font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 4 * 8);

@@ -112,6 +112,8 @@ class U6Actor: public Actor
  void pathfind_to(MapCoord &d);
  void handle_lightsource(uint8 hour);
 
+ uint8 get_hp_text_color();
+
  protected:
  bool init_ship();
  bool init_splitactor(uint8 obj_status); //cows, horses etc.

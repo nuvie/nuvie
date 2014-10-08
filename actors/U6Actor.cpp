@@ -1748,3 +1748,15 @@ void U6Actor::handle_lightsource(uint8 hour)
 		}
 	}
 }
+
+uint8 U6Actor::get_hp_text_color()
+{
+  uint8 hp_text_color = 0x48; //standard text color)
+
+ if(is_poisoned()) //actor is poisoned, display their hp in green
+  hp_text_color = 0xa;
+ else if(get_hp() < 10) //actor is critical, display their hp in red.
+  hp_text_color = 0x0c;
+
+  return hp_text_color;
+}

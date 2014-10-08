@@ -61,3 +61,54 @@ uint16 MDActor::get_downward_facing_tile_num()
 {
  return get_tile_num(obj_n) + MD_DOWNWARD_FACING_FRAME_N;
 }
+
+uint8 MDActor::get_hp_text_color()
+{
+  if(is_poisoned())
+    return 4;
+
+  if(get_status_flag(ACTOR_MD_STATUS_FLAG_COLD))
+    return 0xf;
+
+  if(get_hp() <= 10)
+    return 0xc;
+
+  if(get_obj_flag(ACTOR_MD_OBJ_FLAG_HYPOXIA))
+    return 9;
+
+  if(get_obj_flag(ACTOR_MD_OBJ_FLAG_FRENZY) && id_n != 1)
+    return 1;
+
+  return 0;
+}
+
+uint8 MDActor::get_str_text_color()
+{
+  uint8 color = 0;
+  if(get_obj_flag(ACTOR_MD_OBJ_FLAG_HYPOXIA))
+    color = 9;
+
+  if(id_n <= 0xf && 0)
+  {
+    color = 0xd;
+  }
+  else if(get_obj_flag(ACTOR_MD_OBJ_FLAG_FRENZY)) //battle frenzy
+  {
+    color = 1;
+  }
+
+  return color;
+}
+
+uint8 MDActor::get_dex_text_color()
+{
+  uint8 color = 0;
+  if(get_obj_flag(ACTOR_MD_OBJ_FLAG_HYPOXIA))
+    color = 9;
+  else if (get_obj_flag(ACTOR_MD_OBJ_FLAG_FRENZY))
+  {
+    color = 1;
+  }
+
+  return color;
+}

@@ -75,4 +75,9 @@ FEELS_WARMER="%s feels warmer!\n",
 IS_FREEZING="%s is freezing!\n",
 A_PSYCHIC_POWER_FADES="A psychic power fades...\n",
 SOME_ICE_HAS_MELTED="Some ice has melted.\n",
+THAT_WOULD_BE_A_WASTE_OUTSIDE_OF_COMBAT="That would be a waste outside of combat.\n",
+ENTERS_A_BATTLE_FRENZY="%s enters a battle frenzy!\n",
+YOU_SPIT_INTO_THE_SPITTOON="You spit into the spittoon.\n",
+YOUR_MOUTH_IS_TOO_DRY="Your mouth is too dry.\n",
+
 }

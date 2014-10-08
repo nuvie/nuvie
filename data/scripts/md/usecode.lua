@@ -626,6 +626,35 @@ function use_tent(obj, actor)
    g_party_is_warm = false
 end
 
+function use_red_berry(obj, actor)
+   if not party_is_in_combat_mode() then
+      printl("THAT_WOULD_BE_A_WASTE_OUTSIDE_OF_COMBAT")
+      return
+   end
+   
+   if actor.frenzy == false then
+      printfl("ENTERS_A_BATTLE_FRENZY", actor.name)
+      --FIXME play sfx 0x32
+   end
+   
+   actor.frenzy = true
+   
+   local qty = obj.qty
+   
+   if qty > 1 then
+      obj.qty = qty - 1
+   else
+      Obj.removeFromEngine(obj)
+   end
+end
+
+function use_spittoon(obj, actor)
+   if not actor.hypoxia then
+      printl("YOU_SPIT_INTO_THE_SPITTOON")
+   else
+      printl("YOUR_MOUTH_IS_TOO_DRY")
+   end
+end
 
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
@@ -645,7 +674,7 @@ local usecode_table = {
 --OBJ_BERRY3
 [76]=use_berry,
 --OBJ_BERRY4
-[77]=use_misc_text,
+[77]=use_red_berry,
 --OBJ_CLUMP_OF_ROUGE_BERRIES
 [78]=use_misc_text, 
 [86]=use_container,
@@ -677,6 +706,8 @@ local usecode_table = {
    [0]=use_tool_on_ground}, --hole in ice, hole
 [273]={[86]=use_crate}, --Hammer needs more codes
 [284]=use_container,
+--OBJ_SPITTOON
+[286]=use_spittoon,
 --OBJ_DREAM_MACHINE1
 [288]=use_misc_text,
 --OBJ_MARTIAN_CLOCK

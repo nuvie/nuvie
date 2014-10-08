@@ -73,6 +73,7 @@ An Actor object
 
 @int exp experience
 @int frame_n
+@bool frenzy (MD) battle frenzy
 @bool hit_flag Used by U6 to determine if an actor has been hit.
 @int hp hit points
 @bool hypoxia (MD) bit 6 on the obj flags. Tells if the actor is oxygen deprived
@@ -209,6 +210,7 @@ static const char *actor_set_vars[] =
    "direction",
    "exp",
    "frame_n",
+   "frenzy",
    "hit_flag",
    "hp",
    "hypoxia",
@@ -246,6 +248,7 @@ static const char *actor_get_vars[] =
    "direction",
    "exp",
    "frame_n",
+   "frenzy",
    "hit_flag",
    "hp",
    "hypoxia",
@@ -289,6 +292,7 @@ static int nscript_actor_set_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_set_direction(Actor *actor, lua_State *L);
 static int nscript_actor_set_exp(Actor *actor, lua_State *L);
 static int nscript_actor_set_frame_n(Actor *actor, lua_State *L);
+static int nscript_actor_set_frenzy(Actor *actor, lua_State *L);
 static int nscript_actor_set_hit(Actor *actor, lua_State *L);
 static int nscript_actor_set_hp(Actor *actor, lua_State *L);
 static int nscript_actor_set_hypoxia(Actor *actor, lua_State *L);
@@ -322,6 +326,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_direction,
    nscript_actor_set_exp,
    nscript_actor_set_frame_n,
+   nscript_actor_set_frenzy,
    nscript_actor_set_hit,
    nscript_actor_set_hp,
    nscript_actor_set_hypoxia,
@@ -357,6 +362,7 @@ static int nscript_actor_get_dexterity(Actor *actor, lua_State *L);
 static int nscript_actor_get_direction(Actor *actor, lua_State *L);
 static int nscript_actor_get_exp(Actor *actor, lua_State *L);
 static int nscript_actor_get_frame_n(Actor *actor, lua_State *L);
+static int nscript_actor_get_frenzy(Actor *actor, lua_State *L);
 static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_hp(Actor *actor, lua_State *L);
 static int nscript_actor_get_hypoxia(Actor *actor, lua_State *L);
@@ -402,6 +408,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_direction,
    nscript_actor_get_exp,
    nscript_actor_get_frame_n,
+   nscript_actor_get_frenzy,
    nscript_actor_get_hit_flag,
    nscript_actor_get_hp,
    nscript_actor_get_hypoxia,
@@ -671,7 +678,7 @@ static int nscript_actor_set_charmed_flag(Actor *actor, lua_State *L)
 
 static int nscript_actor_set_cold_flag(Actor *actor, lua_State *L)
 {
-  actor->set_status_flag(0, lua_toboolean(L, 3));
+  actor->set_status_flag(ACTOR_MD_STATUS_FLAG_COLD, lua_toboolean(L, 3));
   return 0;
 }
 
@@ -717,6 +724,12 @@ static int nscript_actor_set_frame_n(Actor *actor, lua_State *L)
    return 0;
 }
 
+static int nscript_actor_set_frenzy(Actor *actor, lua_State *L)
+{
+   actor->set_obj_flag(ACTOR_MD_OBJ_FLAG_FRENZY, lua_toboolean(L, 3));
+   return 0;
+}
+
 static int nscript_actor_set_hp(Actor *actor, lua_State *L)
 {
    actor->set_hp((uint8)lua_tointeger(L, 3));
@@ -725,7 +738,7 @@ static int nscript_actor_set_hp(Actor *actor, lua_State *L)
 
 static int nscript_actor_set_hypoxia(Actor *actor, lua_State *L)
 {
-   actor->set_obj_flag(6, lua_toboolean(L, 3)); //MD uses object bit 6 which is cursed in U6.
+   actor->set_obj_flag(ACTOR_MD_OBJ_FLAG_HYPOXIA, lua_toboolean(L, 3)); //MD uses object bit 6 which is cursed in U6.
    return 0;
 }
 
@@ -891,7 +904,7 @@ static int nscript_actor_get_charmed_flag(Actor *actor, lua_State *L)
 
 static int nscript_actor_get_cold_flag(Actor *actor, lua_State *L)
 {
-  lua_pushboolean(L, (int)actor->get_status_flag(0)); return 1;
+  lua_pushboolean(L, (int)actor->get_status_flag(ACTOR_MD_STATUS_FLAG_COLD)); return 1;
 }
 
 static int nscript_actor_get_corpser_flag(Actor *actor, lua_State *L)
@@ -919,6 +932,11 @@ static int nscript_actor_get_frame_n(Actor *actor, lua_State *L)
    lua_pushinteger(L, actor->get_frame_n()); return 1;
 }
 
+static int nscript_actor_get_frenzy(Actor *actor, lua_State *L)
+{
+   lua_pushboolean(L, actor->get_obj_flag(ACTOR_MD_OBJ_FLAG_FRENZY)); return 1;
+}
+
 static int nscript_actor_get_hit_flag(Actor *actor, lua_State *L)
 {
    lua_pushboolean(L, (int)actor->is_hit()); return 1;
@@ -931,7 +949,7 @@ static int nscript_actor_get_hp(Actor *actor, lua_State *L)
 
 static int nscript_actor_get_hypoxia(Actor *actor, lua_State *L)
 {
-  lua_pushboolean(L, (int)actor->is_cursed()); return 1;
+  lua_pushboolean(L, (int)actor->get_obj_flag(ACTOR_MD_OBJ_FLAG_HYPOXIA)); return 1;
 }
 
 static int nscript_actor_get_in_party_status(Actor *actor, lua_State *L)

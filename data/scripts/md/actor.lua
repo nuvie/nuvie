@@ -1,5 +1,14 @@
 io.stderr:write("actor.lua get here\n")
 
+--Worktypes      
+WT_NOTHING                = 0x0  --do nothing
+
+WT_FOLLOW                 = 0x1  --follow avatar (in party)
+
+WT_PLAYER                 = 0x2  --player mode
+
+WT_SLEEP                  = 0x91
+
 --Actor stats table
 --[obj_num] = {str,dex,int,hp,alignment,,damage??,,,,,,,,,,,,,,,,}
 actor_tbl = {
@@ -473,41 +482,61 @@ function is_lit_lightsource(obj)
    return false
 end
 
-function actor_str_adj(actor) --FIXME
+function actor_str_adj(actor)
+   local actor_num = actor.actor_num
+   local str = actor.str
    
-local str = actor.str
+   if actor.hypoxia then
+      str = str - 3
+   end
+   
+   if actor_is_affected_by_purple_berries(actor_num) then
+      str = str - 3
+   end
+   
+   if actor.frenzy then
+      str = str + 3
+      if str > 30 then
+         str = 30
+      end
+   end
+   
+   if str <= 3 then
+      return 1
+   end
 
-if actor.cursed == false then return str end
-
-if str <= 3 then
-return 1
+   return str
 end
 
-return str - 3
-end
+function actor_dex_adj(actor)
 
-function actor_dex_adj(actor) --FIXME
+   local dex = actor.dex
+   if actor.hypoxia then
+      if dex <= 3 then
+         dex = 1
+      else
+         dex = dex - 3
+      end
+   end
 
-local dex = actor.dex
-if actor.cursed == true then
-if dex <= 3 then
-dex = 1
-else
-dex = dex - 3
-end
-end
-
-if g_time_stopped == true or actor.asleep == true then
-dex = 1
-end
-
-return dex
+   if actor.frenzy then
+      dex = dex + 3
+      if dex >= 30 then
+         dex = 30
+      end
+   end
+   
+   if actor.asleep then
+      dex = 1
+   end
+   
+   return dex
 end
 
 function actor_int_adj(actor)
    local int = actor.int
    
-   if actor.hypoxia == true then --FIXME or actor.actor_num ~= 1 and obj_flags bit 7 set then
+   if actor.hypoxia == true or (actor.frenzy and actor.actor_num ~= 1) then
       int = int - 3
    end
    
@@ -524,6 +553,29 @@ function actor_map_dmg(actor, map_x, map_y, map_z) --FIXME
    if actor.alive == false or actor.hit_flag == true then
       return
    end
+end
+
+function actor_remove_charm(actor)
+
+   actor.charmed = false;
+   actor.align = actor.old_align
+   
+   if actor.in_party then
+      actor.align = ALIGNMENT_GOOD
+   end
+   
+   if party_is_in_combat_mode() then
+      actor.wt = actor.combat_mode
+   else
+      if player_is_in_solo_mode() then
+         actor.wt = WT_NOTHING
+      else
+         actor.wt = WT_FOLLOW
+      end
+   end
+
+   party_update_leader()
+
 end
 
 function advance_time(num_turns)
@@ -652,22 +704,35 @@ function advance_time(num_turns)
          if num_turns ~= 0 then
             for i=1,num_turns do
                --FIXME what does  word_4E6FA do?
-               --FIXME obj_flags bit 7 check.
+
+               --remove battle frenzy from actor when the party exits combat mode
+               if actor.frenzy and not party_is_in_combat_mode() then
+                  actor.frenzy = false
+               end
+               
                if actor.poisoned then
                   if rand(0, 25) == 0 then
                      actor.poisoned = false
                   end
                end
-               
-               --FIXME if obj_flags bit 2 set and rand(0,0x19) == 0 then call sub_17E5C
+
+               if actor.charmed and rand(0, 0x19) == 0 then
+                  actor_remove_charm(actor)
+               end
                
                if actor.paralyzed then
                   if actor_num == 6 or (rand(0, 3) == 0 and actor.str >= rand(1, 0x1e)) then --FIXME used adjusted str
                      actor.paralyzed = false
                   end
                end
-               
-               --FIXME object status flag bit 2
+ 
+               if actor.asleep and actor.wt ~= WT_SLEEP and (not g_party_is_warm or not actor.in_party) then
+                  --FIXME check sub_2B0EC(actor.x,actor.y,actor.z)
+                  if rand(0,0x14) == 0 then
+                     actor.asleep = false
+                     --FIXME bit 3 set on 1af1 flags
+                  end
+               end
                
                if actor.poisoned and actor_num ~= 6 and rand(0, 7) == 0 then
                   Actor.hit(actor, 1)
@@ -725,7 +790,7 @@ function advance_time(num_turns)
       if not g_party_is_warm and not g_in_dream_mode and Actor.get_talk_flag(0x10, 5) then
          for actor in party_members() do
             if actor.actor_num ~= 6 and not actor.asleep then
-               local oxium = Actor.inv_get_obj_n(131) --OBJ_BLOB_OF_OXIUM
+               local oxium = Actor.inv_get_obj_n(actor, 131) --OBJ_BLOB_OF_OXIUM
                if oxium ~= nil then
                   if oxium.qty > 1 then
                      oxium.qty = oxium.qty - 1

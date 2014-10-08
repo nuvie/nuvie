@@ -1,3 +1,16 @@
+2014-10-08  Eric Fry <efry at users.sourceforge.net> r1976
+	* Added methods to Actor class to return stat colours.
+	  get_hp_text_color(), get_str_text_color()
+	  and get_dex_text_color()
+	* Added different colours to the stats on the ActorView
+	* MD Added alternate red berry usecode. (battle frenzy)
+	* MD Added use spittoon logic
+	* MD added adjusted stats logic for str, dex and int
+	* MD added remove charm logic
+	* MD fixed bug with oxium use in advance_time()
+	* Added frenzy field to Actor script object. This is used
+	  by the MD red berry logic. object flag bit 7
+
 2014-10-02  Eric Fry <efry at users.sourceforge.net> r1975
 	* Added parent field to the lua Obj type. This returns the object's
 	  parent. Either another object if in a container or an Actor if

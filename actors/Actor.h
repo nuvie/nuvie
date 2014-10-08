@@ -107,6 +107,11 @@ using std::vector;
 #define INV_EXCLUDE_READIED_OBJECTS false
 #define INV_INCLUDE_READIED_OBJECTS true
 
+#define ACTOR_MD_OBJ_FLAG_HYPOXIA 6
+#define ACTOR_MD_OBJ_FLAG_FRENZY  7
+
+#define ACTOR_MD_STATUS_FLAG_COLD 0
+
 class Map;
 class MapCoord;
 class UseCode;
@@ -329,6 +334,10 @@ class Actor
  uint8 get_dexterity() { return(dex); }
  uint8 get_intelligence() { return(intelligence); }
  uint8 get_hp() { return(hp); }
+ virtual uint8 get_hp_text_color() { return 0; }
+ virtual uint8 get_str_text_color() { return 0; }
+ virtual uint8 get_dex_text_color() { return 0; }
+
  uint8 get_level() { return(level); }
  uint16 get_exp() { return(exp); }
  uint8 get_magic() { return(magic); }
