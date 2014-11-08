@@ -181,12 +181,13 @@ function obj_new(obj_n, frame_n, status, qty, quality, x, y, z)
   return obj
 end
 
+--FIXME need a better way of doing this. Remove need for deprecated setfenv() function.
 function run_script(script)
   local t = {};
   setmetatable(t, {__index = _G});
-  setfenv(0, t);
-  t.body = nuvie_load(script);
-  t.body();
+  local body = nuvie_load(script);
+  setfenv(body, t);
+  body();
 end
 
 function look_obj(obj)

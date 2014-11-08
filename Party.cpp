@@ -478,14 +478,16 @@ MapCoord Party::get_formation_coords(uint8 m)
         return(a);
     uint8 ldir = member[leader].actor->get_direction(); // leader direction
     // intended location
-    return(MapCoord((ldir == NUVIE_DIR_N) ? l.x + member[m].form_x : // X
-                    (ldir == NUVIE_DIR_E) ? l.x - member[m].form_y :
-                    (ldir == NUVIE_DIR_S) ? l.x - member[m].form_x :
-                    (ldir == NUVIE_DIR_W) ? l.x + member[m].form_y : a.x,
-                    (ldir == NUVIE_DIR_N) ? l.y + member[m].form_y : // Y
-                    (ldir == NUVIE_DIR_E) ? l.y + member[m].form_x :
-                    (ldir == NUVIE_DIR_S) ? l.y - member[m].form_y :
-                    (ldir == NUVIE_DIR_W) ? l.y - member[m].form_x : a.y,
+    uint16 x = (ldir == NUVIE_DIR_N) ? l.x + member[m].form_x : // X
+        (ldir == NUVIE_DIR_E) ? l.x - member[m].form_y :
+        (ldir == NUVIE_DIR_S) ? l.x - member[m].form_x :
+        (ldir == NUVIE_DIR_W) ? l.x + member[m].form_y : a.x;
+    uint16 y = (ldir == NUVIE_DIR_N) ? l.y + member[m].form_y : // Y
+        (ldir == NUVIE_DIR_E) ? l.y + member[m].form_x :
+        (ldir == NUVIE_DIR_S) ? l.y - member[m].form_y :
+        (ldir == NUVIE_DIR_W) ? l.y - member[m].form_x : a.y;
+    return(MapCoord(WRAPPED_COORD(x, a.z),
+                    WRAPPED_COORD(y, a.z),
                     a.z // Z
                    ));
 }
@@ -514,7 +516,7 @@ void Party::follow(sint8 rel_x, sint8 rel_y)
     defer_removing_dead_members = true;
 
     // set previous leader location first, just in case the leader changed
-    prev_leader_x = member[leader].actor->x - rel_x;
+    prev_leader_x = WRAPPED_COORD(member[leader].actor->x - rel_x, member[leader].actor->z);
     prev_leader_y = member[leader].actor->y - rel_y;
     // PASS 1: Keep actors chained together.
     for(uint32 p = (leader+1); p < num_in_party; p++)

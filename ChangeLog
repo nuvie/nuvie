@@ -1,3 +1,18 @@
+2014-11-08  Eric Fry <efry at users.sourceforge.net> r1977
+	* Added MD berry markers to party view.
+	* Show adjusted stats on Actor view.
+	* Added C script calls for getting adjusted stats from lua script.
+	* Lots of work on map x coordinate wrapping for MD
+	* Load MD movement points correctly from the objlist
+	* Added MD musical instrument usecode. (sfx aren't done yet.)
+	* Added MD use hammer on oxium geode.
+	* Added new play_md_sfx() stub function.
+	* Added MD use gong.
+	* Added MD update_all_actors() script function.
+	* Added MD perform_worktype() stub function.
+	* Added back support for setfenv() lua function. This has been deprecated
+	  in lua 5.2
+
 2014-10-08  Eric Fry <efry at users.sourceforge.net> r1976
 	* Added methods to Actor class to return stat colours.
 	  get_hp_text_color(), get_str_text_color()

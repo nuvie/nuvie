@@ -645,11 +645,11 @@ MapCoord MapCoord::abs_coords(sint16 dx, sint16 dy)
     uint16 pitch = (z == 0) ? 1024 : 256;
     dx += x;
     dy += y;
-    // keep in map boundary
+    // wrap on map boundary for MD
     if(dx < 0)
-        dx = 0;
+        dx = pitch + dx;
     else if(dx >= pitch)
-        dx = pitch - 1;
+        dx = pitch - dx;
     if(dy < 0)
         dy = 0;
     else if(dy >= pitch)

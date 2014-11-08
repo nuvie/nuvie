@@ -275,7 +275,7 @@ void PartyView::drag_perform_drop(int x, int y, int message, void *data)
 void PartyView::Display(bool full_redraw)
 {
 
- if(full_redraw || update_display || Game::get_game()->is_original_plus_full_map())
+ if(full_redraw || update_display || MD || Game::get_game()->is_original_plus_full_map())
   {
    uint8 i;
    uint8 hp_text_color;
@@ -305,6 +305,9 @@ void PartyView::Display(bool full_redraw)
 
    for(i=row_offset;i<end_offset;i++)
      {
+      actor = party->get_actor(i);
+      actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
+
       int x_offset = 8;
       int y_offset = 18;
       hp_text_color = 0; //standard text color
@@ -319,17 +322,21 @@ void PartyView::Display(bool full_redraw)
       {
         x_offset = 8;
         y_offset = 6;
-        /* FIXME MD berry tokens
-        Tile *purple = tile_manager->get_tile(0x120);
-        screen->blit(area.x+x_offset+16,area.y + y_offset + (i-row_offset)*rowH,purple->data,8,16,16,16,true);
-        Tile *green = tile_manager->get_tile(0x121);
-        screen->blit(area.x+x_offset+32,area.y + y_offset + (i-row_offset)*rowH,green->data,8,16,16,16,true);
-        Tile *brown = tile_manager->get_tile(0x122);
-        screen->blit(area.x+x_offset+32,area.y + y_offset + (i-row_offset)*rowH,brown->data,8,16,16,16,true);
-        */
+        GameClock *clock = Game::get_game()->get_clock();
+        if(clock->get_purple_berry_counter(actor->get_actor_num()) > 0)
+        {
+          screen->blit(area.x+x_offset+16,area.y + y_offset + (i-row_offset)*rowH,tile_manager->get_tile(TILE_MD_PURPLE_BERRY_MARKER)->data,8,16,16,16,true);
+        }
+        if(clock->get_green_berry_counter(actor->get_actor_num()) > 0)
+        {
+          screen->blit(area.x+x_offset+32,area.y + y_offset + (i-row_offset)*rowH,tile_manager->get_tile(TILE_MD_GREEN_BERRY_MARKER)->data,8,16,16,16,true);
+        }
+        if(clock->get_brown_berry_counter(actor->get_actor_num()) > 0)
+        {
+          screen->blit(area.x+x_offset+32,area.y + y_offset + (i-row_offset)*rowH,tile_manager->get_tile(TILE_MD_BROWN_BERRY_MARKER)->data,8,16,16,16,true);
+        }
+
       }
-      actor = party->get_actor(i);
-      actor_tile = tile_manager->get_tile(actor->get_downward_facing_tile_num());
 
       screen->blit(area.x+x_offset,area.y + y_offset + (i-row_offset)*rowH,actor_tile->data,8,16,16,16,true);
       actor_name = party->get_actor_name(i);

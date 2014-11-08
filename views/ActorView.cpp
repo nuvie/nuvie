@@ -25,6 +25,7 @@
 
 #include "GUI_button.h"
 
+#include "Script.h"
 #include "View.h"
 #include "Actor.h"
 #include "Party.h"
@@ -232,15 +233,15 @@ void ActorView::display_actor_stats()
 
  hp_text_color = actor->get_hp_text_color();
 
- sprintf(buf,"%d",actor->get_strength());
+ sprintf(buf,"%d", Game::get_game()->get_script()->call_actor_str_adj(actor));//actor->get_strength());
  uint8 str_len = font->drawString(screen, "STR:", area.x + 5 * 16 + x_off, area.y + y_off + 16);
  font->drawString(screen, buf, area.x + 5 * 16 + x_off + str_len, area.y + y_off + 16, actor->get_str_text_color(), 0);
 
- sprintf(buf,"%d",actor->get_dexterity());
+ sprintf(buf,"%d",Game::get_game()->get_script()->call_actor_dex_adj(actor));
  str_len = font->drawString(screen, "DEX:", area.x + 5 * 16 + x_off, area.y + y_off + 16 + 8);
  font->drawString(screen, buf, area.x + 5 * 16 + x_off + str_len, area.y + y_off + 16 + 8, actor->get_dex_text_color(), 0);
 
- sprintf(buf,"INT:%d",actor->get_intelligence());
+ sprintf(buf,"INT:%d",Game::get_game()->get_script()->call_actor_int_adj(actor));
  font->drawString(screen, buf, area.x + 5 * 16 + x_off, area.y + y_off + 16 + 2 * 8);
 
  if (MD || Game::get_game()->get_game_type()==NUVIE_GAME_SE)

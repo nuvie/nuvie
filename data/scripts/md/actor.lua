@@ -173,7 +173,7 @@ function actor_decrement_berry_counter(actor, berry_type)
       timer_set(actor_num*3+berry_type, count - 1)
       if (actor_num == 0 and g_in_dream_mode) or 
          (actor_num ~= 0 and g_in_dream_mode == false) then
-         --FIXME play sfx 0x32
+         play_md_sfx(0x32)
          printl("A_PSYCHIC_POWER_FADES")
       end
    end   
@@ -251,9 +251,106 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 	--FIXME
 end
 
+function perform_worktype(actor)
+   print("wt="..actor.wt.."\n")
+   subtract_movement_pts(actor, 10)
+end
+
 function actor_update_all()
-	--FIXME
-	advance_time(1)
+   --update leader here.
+   --pathfinding here.
+   
+   local actor
+   local selected_actor
+   repeat
+      selected_actor = nil
+      local di = 0
+      local dex_6 = 1
+      repeat
+         local player_loc = player_get_location()
+         local var_C = (player_loc.x - 16) - (player_loc.x - 16) % 8
+         local var_A = (player_loc.y - 16) - (player_loc.y - 16) % 8
+         
+         for actor in party_members() do
+            if actor.wt == WT_FOLLOW and actor.mpts < 0 then
+               actor.mpts = 0
+            end
+         end
+         
+         local player_z = player_loc.z
+         for i=0,0xff do
+            local actor = Actor.get(i)
+            --FIXME need to check 11000b not zero on obj_flags
+            if actor.obj_n ~= 0 and actor.z == player_z and actor.mpts > 0 and actor.paralyzed == false and (actor.asleep == false or actor.wt == 0x80) and actor.wt ~= WT_NOTHING and actor.alive == true then
+                  --FIXME need to check map wrapping here.
+                  if abs(actor.x - var_C) > 0x27 or abs(actor.y - var_A) > 0x27 then
+                     if actor.wt >= 0x83 and actor.wt <= 0x86 then
+                        --move actor to schedule location if it isn't on screen
+                        local sched_loc = actor.sched_loc
+                        if map_is_on_screen(sched_loc.x, sched_loc.y, sched_loc.z) == false then
+                           Actor.move(actor, sched_loc.x, sched_loc.y, sched_loc.z)
+                           actor_wt_walk_to_location(actor) --this will cancel the pathfinder and set the new worktype
+                           subtract_movement_pts(actor, 10)
+                           ----dgb("\nActor SCHEDULE TELEPORT "..actor.actor_num.." to ("..sched_loc.x..","..sched_loc.y..","..sched_loc.z..")\n")
+                        end
+                     end
+                  else
+                     if actor.wt ~= WT_FOLLOW then
+                        if actor.wt == 0x80 then
+                           -- actor_set_worktype_from_schedule(actor)
+                           actor.wt = actor.sched_wt
+                        end
+
+                        local dex_adjusted = actor_dex_adj(actor) 
+                        local dx = (actor.mpts * dex_6) - dex_adjusted * di
+                        if actor.mpts >= dex_adjusted or dx > 0 or dx == 0 and dex_adjusted > dex_6 then
+                           selected_actor = actor
+                           di = actor.mpts
+                           dex_6 = dex_adjusted
+                        end
+                        
+                        if dex_adjusted <= actor.mpts then
+                           break
+                        end
+                     end
+                  end
+            end
+         end
+         
+         if di <= 0 then
+            for i=0,0xff do
+               local actor = Actor.get(i)
+               local dex_adjusted = actor_dex_adj(actor)
+               if actor.mpts >= 0 then
+                  actor.mpts = dex_adjusted
+               else
+                  actor.mpts = actor.mpts + dex_adjusted
+               end
+            end
+            advance_time(1)
+         end
+         
+      until di > 0
+
+      if selected_actor.wt ~= WT_PLAYER and selected_actor.wt ~= WT_FOLLOW then
+         --print("perform_worktype("..selected_actor.name.."("..selected_actor.actor_num..") dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
+         perform_worktype(selected_actor)
+         --FIXME update party leader
+         if selected_actor.wt > 1 and selected_actor.wt < 0x1b then
+            --FIXME targetting?? do *(&bjlist_unk_19f1_ptr + actor_num) = actor_num
+         end
+      end
+
+   until selected_actor.obj_n ~= 0 and selected_actor.wt == WT_PLAYER    
+
+   if selected_actor ~= nil then --swap player to next party member with 'command' combat worktype.
+    local old_player = Actor.get_player_actor()
+    player_set_actor(selected_actor)
+    old_player.wt = WT_PLAYER --reset worktype to player as it gets changed to follow in Player::set_actor() :-(
+   end
+ 
+   
+   display_prompt(true)
 end
 
 -- [objectnum] = range
@@ -840,7 +937,7 @@ function subtract_movement_pts(actor, points)
       points = 1
    end
    
-   actor.mtps = actor.mpts - points
+   actor.mpts = actor.mpts - points
 end
 
 function actor_radiation_check(actor, obj)

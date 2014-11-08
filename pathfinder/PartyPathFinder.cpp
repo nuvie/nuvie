@@ -19,6 +19,20 @@ PartyPathFinder::~PartyPathFinder()
 
 }
 
+sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level)
+{
+  uint16 stride = MAP_SIDE_LENGTH(level);
+
+  sint16 ret = clamp(p1-p2, -1, 1);
+
+  if(abs(p1-p2) > stride/2)
+  {
+    return -ret;
+  }
+
+  return ret;
+}
+
 /* True if a member's target and leader are in roughly the same direction. */
 bool PartyPathFinder::is_behind_target(uint32 member_num)
 {
@@ -72,8 +86,9 @@ void PartyPathFinder::get_target_dir(uint32 p, sint8 &rel_x, sint8 &rel_y)
     MapCoord leader_loc = party->get_leader_location();
     MapCoord target_loc = party->get_formation_coords(p);
     MapCoord member_loc = party->get_location(p);
-    rel_x = clamp(target_loc.x-member_loc.x, -1, 1);
-    rel_y = clamp(target_loc.y-member_loc.y, -1, 1);
+
+    rel_x = get_wrapped_rel_dir(target_loc.x,member_loc.x, target_loc.z);
+    rel_y = get_wrapped_rel_dir(target_loc.y,member_loc.y, target_loc.z);
 }
 
 /* Returns in vec_x and vec_y the last direction the leader moved in. It's
@@ -93,8 +108,9 @@ void PartyPathFinder::get_forward_dir(sint8 &vec_x, sint8 &vec_y)
 void PartyPathFinder::get_last_move(sint8 &vec_x, sint8 &vec_y)
 {
     MapCoord leader_loc = party->get_leader_location();
-    vec_x = clamp(leader_loc.x-party->prev_leader_x, -1, 1);
-    vec_y = clamp(leader_loc.y-party->prev_leader_y, -1, 1);
+
+    vec_x = get_wrapped_rel_dir(leader_loc.x,party->prev_leader_x, leader_loc.z);
+    vec_y = get_wrapped_rel_dir(leader_loc.y,party->prev_leader_y, leader_loc.z);
 }
 
 /* Returns true if the leader moved before the last call to follow(). */
@@ -291,8 +307,8 @@ bool PartyPathFinder::try_all_directions(uint32 p, MapCoord target_loc)
 {
     MapCoord leader_loc = party->get_leader_location();
     MapCoord member_loc = party->get_location(p);
-    sint8 to_leader_x = clamp(leader_loc.x-member_loc.x, -1, 1);
-    sint8 to_leader_y = clamp(leader_loc.y-member_loc.y, -1, 1);
+    sint8 to_leader_x = get_wrapped_rel_dir(leader_loc.x,member_loc.x, leader_loc.z);
+    sint8 to_leader_y = get_wrapped_rel_dir(leader_loc.y,member_loc.y, leader_loc.z);
     // rotate direction, towards target
     sint8 rot = DirFinder::get_turn_towards_dir(to_leader_x,to_leader_y,
                                               sint8(target_loc.x-member_loc.x),
@@ -337,8 +353,8 @@ bool PartyPathFinder::try_all_directions(uint32 p, MapCoord target_loc)
 vector<MapCoord>
 PartyPathFinder::get_neighbor_tiles(MapCoord &center, MapCoord &target)
 {
-    sint8 rel_x = clamp(target.x-center.x,-1,1);
-    sint8 rel_y = clamp(target.y-center.y,-1,1);
+    sint8 rel_x = get_wrapped_rel_dir(target.x,center.x,target.z);
+    sint8 rel_y = get_wrapped_rel_dir(target.y,center.y,target.z);
     vector<MapCoord> neighbors;
     for(uint32 dir=0; dir<8; dir++)
     {
@@ -381,8 +397,8 @@ bool PartyPathFinder::bump_member(uint32 bumped_member_num, uint32 member_num)
     MapCoord bump_from = party->get_location(bumped_member_num);
     MapCoord bump_target = party->get_formation_coords(bumped_member_num); // initial direction
     MapCoord member_loc = party->get_location(member_num);
-    sint8 to_member_x = clamp(member_loc.x-bump_from.x,-1,1); // to push_actor
-    sint8 to_member_y = clamp(member_loc.y-bump_from.y,-1,1);
+    sint8 to_member_x = get_wrapped_rel_dir(member_loc.x,bump_from.x,member_loc.z); // to push_actor
+    sint8 to_member_y = get_wrapped_rel_dir(member_loc.y,bump_from.y,member_loc.z);
 
     // sort neighboring squares by distance to target (closest first)
     vector<MapCoord> neighbors;
@@ -396,8 +412,8 @@ bool PartyPathFinder::bump_member(uint32 bumped_member_num, uint32 member_num)
 
     for(uint32 dir=0; dir<8; dir++)
     {
-        sint8 rel_x = clamp(neighbors[dir].x-bump_from.x, -1, 1);
-        sint8 rel_y = clamp(neighbors[dir].y-bump_from.y, -1, 1);
+        sint8 rel_x = get_wrapped_rel_dir(neighbors[dir].x,bump_from.x, bump_from.z);
+        sint8 rel_y = get_wrapped_rel_dir(neighbors[dir].y,bump_from.y, bump_from.z);
         // Since this direction is blocked, it will only be at the end of the
         // sorted list.
         if(rel_x == to_member_x && rel_y == to_member_y)

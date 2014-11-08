@@ -79,5 +79,10 @@ THAT_WOULD_BE_A_WASTE_OUTSIDE_OF_COMBAT="That would be a waste outside of combat
 ENTERS_A_BATTLE_FRENZY="%s enters a battle frenzy!\n",
 YOU_SPIT_INTO_THE_SPITTOON="You spit into the spittoon.\n",
 YOUR_MOUTH_IS_TOO_DRY="Your mouth is too dry.\n",
-
+CHING="Ching!\n",
+SHING="Shing!\n",
+WHEEEEZE="Wheeeeze\n",
+THUMP_THUMP="Thump! Thump!\n",
+GONG="GONG!!!!\n",
+YOU_PLAY_THE="You play the %s.\n",
 }

@@ -21,11 +21,11 @@
 						<toolChain id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1334097620" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug.1070361861" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
 							<builder arguments="-j 10" buildPath="${workspace_loc:/nuvie/Debug}" command="make" enableAutoBuild="true" id="cdt.managedbuild.target.gnu.builder.macosx.exe.debug.234677608" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.macosx.exe.debug"/>
-							<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.377622550" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug"/>
-							<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.2026484050" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug">
-								<option id="macosx.cpp.link.option.flags.72504413" name="Linker flags" superClass="macosx.cpp.link.option.flags" value="-arch i386 -Wl,-framework,Cocoa" valueType="string"/>
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.377622550" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug"/>
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.2026484050" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug">
+								<option id="macosx.cpp.link.option.flags.72504413" name="Linker flags" superClass="macosx.cpp.link.option.flags" value="-Wl,-framework,Cocoa" valueType="string"/>
 								<option id="macosx.cpp.link.option.paths.259479148" name="Library search path (-L)" superClass="macosx.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="/usr/local/32bit/SDL-1.2.15/lib"/>
+									<listOptionValue builtIn="false" value="/opt/local/lib"/>
 								</option>
 								<option id="macosx.cpp.link.option.libs.585230980" name="Libraries (-l)" superClass="macosx.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="SDLmain"/>
@@ -36,15 +36,16 @@
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1699128159" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug">
+							<tool command="/opt/local/bin/as-mp-4.3" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1699128159" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1171460585" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1439407488" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug">
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1439407488" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug">
 								<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1543906196" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1658852504" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.980853571" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/local/32bit/SDL-1.2.15/include/SDL"/>
+									<listOptionValue builtIn="false" value="/opt/local/include/SDL"/>
+									<listOptionValue builtIn="false" value="/opt/local/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/lua}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/menus}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/keybinding}&quot;"/>
@@ -66,21 +67,22 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/actors}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/sound/mixer}&quot;"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.other.other.1868162298" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -arch i386" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.1868162298" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1480177527" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="LUA_USE_MACOSX"/>
 									<listOptionValue builtIn="false" value="UNIX"/>
 									<listOptionValue builtIn="false" value="MACOSX"/>
 								</option>
-								<option id="gnu.cpp.compiler.option.warnings.toerrors.1134209447" name="Warnings as errors (-Werror)" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.toerrors.1134209447" name="Warnings as errors (-Werror)" superClass="gnu.cpp.compiler.option.warnings.toerrors" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.warnings.pedantic.891421206" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.warnings.pedantic.error.466715151" name="Pedantic warnings as errors (-pedantic-errors)" superClass="gnu.cpp.compiler.option.warnings.pedantic.error" value="false" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.debugging.other.367382158" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" value="" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.745362250" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.1142234573" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug">
+							<tool command="/opt/local/bin/gcc-mp-4.3" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.1142234573" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug">
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.506169498" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.920103119" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.misc.other.1010873434" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -arch i386" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.other.1010873434" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c" valueType="string"/>
 								<option id="gnu.c.compiler.option.warnings.toerrors.670026099" name="Warnings as errors (-Werror)" superClass="gnu.c.compiler.option.warnings.toerrors" value="true" valueType="boolean"/>
 								<option id="gnu.c.compiler.option.warnings.pedantic.error.45975327" name="Pedantic warnings as errors (-pedantic-errors)" superClass="gnu.c.compiler.option.warnings.pedantic.error" value="false" valueType="boolean"/>
 								<option id="gnu.c.compiler.option.warnings.pedantic.1860843809" name="Pedantic (-pedantic)" superClass="gnu.c.compiler.option.warnings.pedantic" value="false" valueType="boolean"/>
@@ -88,6 +90,7 @@
 									<listOptionValue builtIn="false" value="LUA_USE_MACOSX"/>
 									<listOptionValue builtIn="false" value="MACOSX"/>
 								</option>
+								<option id="gnu.c.compiler.option.debugging.other.1674987963" name="Other debugging flags" superClass="gnu.c.compiler.option.debugging.other" value="" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1308523913" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 						</toolChain>
@@ -107,6 +110,8 @@
 							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1869266131" name="Resource Custom Build Step Output Type"/>
 						</tool>
 					</fileInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.848961356" name="raw.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/wave/raw.h" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1736073815" name="pcspeaker_dosbox.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/pcspeaker_dosbox.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.938838863" name="doublebuffersdl-mixer.cpp" rcbsApplicability="disable" resourcePath="sound/mixer/doublebuffersdl-mixer.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1200235901">
 						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1200235901" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547">
 							<option id="gnu.cpp.compiler.option.preprocessor.def.2087179116" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -116,8 +121,6 @@
 							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1074698230" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 						</tool>
 					</fileInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.848961356" name="raw.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/wave/raw.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1736073815" name="pcspeaker_dosbox.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/pcspeaker_dosbox.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1990226738" name="Sample.h" rcbsApplicability="disable" resourcePath="sound/Sample.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="sound/mixer/decoder/PCSpeakerFreqStream.h|sound/mixer/decoder/PCSpeakerFreqStream.cpp|sound/mixer/decoder/pcspeaker_dosbox.h|sound/mixer/decoder/pcspeaker_dosbox.cpp|sound/mixer/algorithm.h|sound/Sample.h|sound/Sample.cpp|sound/mixer/rate_arm.cpp|sound/mixer/rate_arm_asm.s|sound/mixer/common|tools|msvc|PBBuild|XCodeBuild|visualc7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
@@ -147,25 +150,54 @@
 						<toolChain id="cdt.managedbuild.toolchain.gnu.macosx.exe.release.1429246959" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.release">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.release.1817640412" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.release"/>
 							<builder buildPath="${workspace_loc:/nuvie/Release}" id="cdt.managedbuild.target.gnu.builder.macosx.exe.release.936003087" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.macosx.exe.release"/>
-							<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.release.769552453" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.release"/>
-							<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.release.926704469" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.release">
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.release.769552453" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.release"/>
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.release.926704469" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.release">
+								<option id="macosx.cpp.link.option.flags.997141966" name="Linker flags" superClass="macosx.cpp.link.option.flags" value="-Wl,-framework,Cocoa" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.macosx.cpp.linker.input.1443250512" superClass="cdt.managedbuild.tool.macosx.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.release.1652149707" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.release">
+							<tool command="/opt/local/bin/as-mp-4.3" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.release.1652149707" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.release">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1135766380" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.267158673" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.release.586053259" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.release">
-								<option id="gnu.cpp.compiler.macosx.exe.release.option.optimization.level.1447143025" name="Optimization Level" superClass="gnu.cpp.compiler.macosx.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.gnu.archiver.macosx.base.267158673" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base"/>
+							<tool command="/opt/local/bin/g++-mp-4.3" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.release.586053259" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.release">
+								<option id="gnu.cpp.compiler.macosx.exe.release.option.optimization.level.1447143025" name="Optimization Level" superClass="gnu.cpp.compiler.macosx.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.macosx.exe.release.option.debugging.level.548488103" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.other.other.60908208" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.include.paths.776183677" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="/opt/local/include/SDL"/>
+									<listOptionValue builtIn="false" value="/opt/local/include"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/lua}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/menus}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/keybinding}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/sound/adplug}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/pathfinder}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/portraits}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/script}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/fonts}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/save}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/usecode}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/views}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/sound}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/conf}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/files}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/GUI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/screen}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/misc}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/actors}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/sound/mixer}&quot;"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.debugging.other.1152428332" superClass="gnu.cpp.compiler.option.debugging.other" value="" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1286231089" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
-							<tool id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.release.149757692" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.release">
+							<tool command="/opt/local/bin/gcc-mp-4.3" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.release.149757692" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.release">
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.macosx.exe.release.option.optimization.level.760241083" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.release.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.macosx.exe.release.option.debugging.level.532608659" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.c.compiler.option.misc.other.107972289" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c" valueType="string"/>
+								<option id="gnu.c.compiler.option.debugging.other.410649314" superClass="gnu.c.compiler.option.debugging.other" value="" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.364089914" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 						</toolChain>

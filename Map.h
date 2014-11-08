@@ -92,7 +92,14 @@ public:
     MapCoord(Obj *obj) {x = obj->x; y = obj->y; z = obj->z; }
     MapCoord() : x(0), y(0), z(0) { }
 
-    uint32 xdistance(MapCoord &c2) { return(abs(c2.x - x)); }
+    uint32 xdistance(MapCoord &c2)
+    {
+      uint32 dist = abs(c2.x - x);
+      if(dist > 512)
+        dist = 1024 - dist;
+
+      return dist;
+    }
     uint32 ydistance(MapCoord &c2) { return(abs(c2.y - y)); }
     // greatest 2D distance X or Y (estimate of shortest)
     uint32 distance(MapCoord &c2)

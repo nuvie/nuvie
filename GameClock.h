@@ -119,6 +119,12 @@ class GameClock
  void set_timer(uint8 timer_num, uint8 val);
  uint8 get_timer(uint8 timer_num);
  void update_timers(uint8 amount);
+
+ //MD berry counters
+ uint8 get_purple_berry_counter(uint8 actor_num) { return get_timer(actor_num*3); }
+ uint8 get_green_berry_counter(uint8 actor_num) { return get_timer(actor_num*3+1); }
+ uint8 get_brown_berry_counter(uint8 actor_num) { return get_timer(actor_num*3+2); }
+
  protected:
 
  void init();

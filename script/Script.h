@@ -113,6 +113,9 @@ class Script
    bool call_actor_map_dmg(Actor *actor, MapCoord location);
    bool call_actor_tile_dmg(Actor *actor, uint16 tile_num);
    bool call_actor_hit(Actor *actor, uint8 dmg, bool display_hit_msg=false);
+   uint8 call_actor_str_adj(Actor *actor);
+   uint8 call_actor_dex_adj(Actor *actor);
+   uint8 call_actor_int_adj(Actor *actor);
    bool call_look_obj(Obj *obj);
    int call_obj_get_readiable_location(Obj *obj);
    uint8 actor_get_max_magic_points(Actor *actor);

@@ -51,8 +51,12 @@ typedef uint8 nuvie_game_t; // Game type (1=u6,2=md,4=se)
 #define clamp_max(v, c)  (((v) > (c)) ? (c) : (v))
 #define clamp(v, c1, c2) ( ((v) < (c1)) ? (c1) : (((v) > (c2)) ? (c2) : (v)) )
 
+//FIXME fix for future maps which will probably be 1024 wide starting at level 6..
 #define WRAPPED_COORD(c,level) ((c)&((level)?255:1023))
 #define WRAP_COORD(c,level) ((c)&=((level)?255:1023))
+
+#define MAP_SIDE_LENGTH(map_level) ((map_level > 0 && map_level < 6) ? 256 : 1024)
+
 /* 
  * on all levels, except level 0 (conveniently 'false') the map pitch is 256.
  * to properly wrap, mask the coordinate with the relevant bit-mask. 

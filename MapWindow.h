@@ -111,6 +111,7 @@ class MapWindow: public GUI_Widget
 
  uint16 win_width, win_height, border_width;
  uint8 cur_level;
+ uint16 map_width;
 
  uint8 cur_x_add, cur_y_add; // pixel offset from cur_x,cur_y (set by shiftMapRelative)
  sint32 vel_x, vel_y; // velocity of automatic map movement (pixels per second)
@@ -145,10 +146,10 @@ class MapWindow: public GUI_Widget
 
  public:
 
- MapWindow(Configuration *cfg);
+ MapWindow(Configuration *cfg, Map *m);
  ~MapWindow();
 
- bool init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am);
+ bool init(TileManager *tm, ObjManager *om, ActorManager *am);
 
  sint16 get_cur_x() { return cur_x; }
  sint16 get_cur_y() { return cur_y; }

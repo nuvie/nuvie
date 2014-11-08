@@ -54,7 +54,7 @@ ContainerWidget::ContainerWidget(Configuration *cfg, GUI_CallBack *callback): GU
 
  container_obj = NULL; tile_manager = NULL; obj_manager = NULL;
  selected_obj = NULL; target_cont = NULL; actor = NULL;
- target_obj = NULL; fill_bg = NULL; empty_tile = NULL;
+ target_obj = NULL; fill_bg = false; empty_tile = NULL;
  ready_obj = NULL; // FIXME: this is unused but I might need it again -- SB-X
  row_offset = 0;
  

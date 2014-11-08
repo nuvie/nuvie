@@ -63,6 +63,8 @@
 
 #define TMP_MAP_BORDER 2
 
+#define WRAP_VIEWP(p,p1,s) ((p1-p) < 0 ? (p1-p) + s : p1-p)
+
 // This should make the mouse-cursor hovering identical to that in U6.
 static const uint8 movement_array[9 * 9] =
 {
@@ -116,7 +118,7 @@ static const Tile grid_tile = {
 		}
 };
 
-MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
+MapWindow::MapWindow(Configuration *cfg, Map *m): GUI_Widget(NULL, 0, 0, 0, 0)
 {
 
  config = cfg;
@@ -126,6 +128,8 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  uint16 y_off = Game::get_game()->get_game_y_offset();
 
  GUI_Widget::Init(NULL, x_off, y_off, 0, 0);
+
+ map = m;
 
  screen = NULL;
  //surface = NULL;
@@ -152,6 +156,7 @@ MapWindow::MapWindow(Configuration *cfg): GUI_Widget(NULL, 0, 0, 0, 0)
  overlay_level = MAP_OVERLAY_DEFAULT;
 
  cur_level = 0;
+ map_width = map->get_width(cur_level);
 
  tmp_map_buf = NULL;
 
@@ -194,12 +199,12 @@ MapWindow::~MapWindow()
  }
 }
 
-bool MapWindow::init(Map *m, TileManager *tm, ObjManager *om, ActorManager *am)
+bool MapWindow::init(TileManager *tm, ObjManager *om, ActorManager *am)
 {
 // int game_type; Why is this local, and retrieved again here? --SB-X
 
  game = Game::get_game();
- map = m;
+
  tile_manager = tm;
  obj_manager = om;
  actor_manager = am;
@@ -425,27 +430,26 @@ void MapWindow::moveLevel(uint8 new_level)
 
 void MapWindow::moveMap(sint16 new_x, sint16 new_y, sint8 new_level, uint8 new_x_add, uint8 new_y_add)
 {
-/*
- uint16 map_side_length;
 
- if(new_level == 0)
-   map_side_length = 1024;
+  map_width = map->get_width(new_level);
+
+ if(new_x < 0)
+ {
+   new_x = map_width + new_x;
+ }
  else
-   map_side_length = 256;
+ {
+   new_x %= map_width;
+ }
 
- if(new_x >= 0 && new_x <= map_side_length - win_width)
-    {
-     if(new_y >= 0 && new_y <= map_side_length - win_height)
-        {
- */
-         cur_x = new_x;
-         cur_y = new_y;
-         cur_level = new_level;
-         cur_x_add = new_x_add;
-         cur_y_add = new_y_add;
-         updateBlacking();
- //       }
- //    }
+ //printf("cur_x = %d\n",new_x);
+ cur_x = new_x;
+ cur_y = new_y;
+ cur_level = new_level;
+ cur_x_add = new_x_add;
+ cur_y_add = new_y_add;
+ updateBlacking();
+
 }
 
 void MapWindow::moveMapRelative(sint16 rel_x, sint16 rel_y)
@@ -516,7 +520,7 @@ void MapWindow::moveCursorRelative(sint16 rel_x, sint16 rel_y)
 
 bool MapWindow::is_on_screen(uint16 x, uint16 y, uint8 z)
 {
-	if(z == cur_level && x >= cur_x && x < cur_x + win_width && y >= cur_y && y < cur_y + win_height) {
+	if(z == cur_level && WRAP_VIEWP(cur_x,x,map_width) < win_width && y >= cur_y && y < cur_y + win_height) {
 		if(tile_is_black(x, y) == false)
 		{
 			return true;
@@ -532,13 +536,14 @@ bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
     return false;
  if(!MapCoord(x,y,cur_level).is_visible()) // tmpBufTileIsBlack will crash if called (doesn't happen in gdb)
     return true;
- if(tmpBufTileIsBlack(x - cur_x + TMP_MAP_BORDER,y - cur_y + TMP_MAP_BORDER))
+ uint16 wrapped_x = WRAP_VIEWP(cur_x,x,map_width);
+ if(tmpBufTileIsBlack(wrapped_x + TMP_MAP_BORDER,y - cur_y + TMP_MAP_BORDER))
     return true;
  else if(obj)
  {
     Tile *tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-    if(!tile || (tmpBufTileIsBlack(x - cur_x + TMP_MAP_BORDER + 1, y - cur_y + TMP_MAP_BORDER)  && !(tile->flags1 & TILEFLAG_WALL))
-       || (tmpBufTileIsBlack(x - cur_x + TMP_MAP_BORDER, y - cur_y + TMP_MAP_BORDER + 1) && !(tile->flags1 & TILEFLAG_WALL)))
+    if(!tile || (tmpBufTileIsBlack(wrapped_x + TMP_MAP_BORDER + 1, y - cur_y + TMP_MAP_BORDER)  && !(tile->flags1 & TILEFLAG_WALL))
+       || (tmpBufTileIsBlack(wrapped_x + TMP_MAP_BORDER, y - cur_y + TMP_MAP_BORDER + 1) && !(tile->flags1 & TILEFLAG_WALL)))
         return true;
  }
 
@@ -552,11 +557,12 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
  if(tmp_map_buf[(y+TMP_MAP_BORDER) * tmp_map_width + (x+TMP_MAP_BORDER)] == 0) //black area
    return "darkness."; // nothing to see here. ;)
 
- actor = actor_manager->get_actor(cur_x + x, cur_y + y, cur_level);
+ uint16 wrapped_x = WRAPPED_COORD(cur_x + x,cur_level);
+ actor = actor_manager->get_actor(wrapped_x, cur_y + y, cur_level);
  if(actor != NULL && actor->is_visible())
    return actor_manager->look_actor(actor, show_prefix);
 
- return map->look(cur_x + x, cur_y + y, cur_level);
+ return map->look(wrapped_x, cur_y + y, cur_level);
 }
 
 
@@ -566,7 +572,7 @@ Obj *MapWindow::get_objAtCursor()
  if(tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)] == 0) //black area
    return NULL; // nothing to see here. ;)
 
- return obj_manager->get_obj(cur_x + cursor_x, cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+ return obj_manager->get_obj(WRAPPED_COORD(cur_x + cursor_x, cur_level), cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
 }
 
 Actor *MapWindow::get_actorAtCursor()
@@ -576,12 +582,12 @@ Actor *MapWindow::get_actorAtCursor()
  if(tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)] == 0) //black area
    return NULL; // nothing to see here. ;)
 
- return actor_manager->get_actor(cur_x + cursor_x, cur_y + cursor_y, cur_level);
+ return actor_manager->get_actor(WRAPPED_COORD(cur_x + cursor_x,cur_level), cur_y + cursor_y, cur_level);
 }
 
 MapCoord MapWindow::get_cursorCoord()
 {
- return( MapCoord( cur_x+cursor_x, cur_y+cursor_y, cur_level) );
+ return( MapCoord( WRAPPED_COORD(cur_x+cursor_x,cur_level), cur_y+cursor_y, cur_level) );
 }
 
 void MapWindow::get_level(uint8 *level)
@@ -609,7 +615,7 @@ void MapWindow::get_windowSize(uint16 *width, uint16 *height)
  */
 bool MapWindow::in_window(uint16 x, uint16 y, uint8 z)
 {
-    return( (z == cur_level && x >= cur_x && x <= (cur_x + win_width)
+    return( (z == cur_level && WRAP_VIEWP(cur_x, x, map_width) < win_width
              && y >= cur_y && y <= (cur_y + win_height)) );
 }
 
@@ -1019,11 +1025,12 @@ void MapWindow::drawActors()
 
     if(actor->z == cur_level)
       {
-       if(actor->x >= cur_x && actor->x < cur_x + win_width)
+       uint8 x = WRAP_VIEWP(cur_x,actor->x,map_width);
+       if(x < win_width)//actor->x >= cur_x && actor->x < cur_x + win_width)
          {
           if(actor->y >= cur_y && actor->y < cur_y + win_height)
             {
-             if(tmp_map_buf[(actor->y - cur_y + TMP_MAP_BORDER) * tmp_map_width + (actor->x - cur_x + TMP_MAP_BORDER)] != 0)
+             if(tmp_map_buf[(actor->y - cur_y + TMP_MAP_BORDER) * tmp_map_width + (x + TMP_MAP_BORDER)] != 0)
                {
                 drawActor(actor);
                }
@@ -1066,16 +1073,17 @@ inline void MapWindow::drawActor(Actor *actor)
                 if(rtile->data[x] == 0x00)
                     rtile->data[x] = 0x9;
         }
+        uint16 wrapped_x = WRAP_VIEWP(cur_x,actor->x,map_width);
         if(rtile != 0)
         {
-            drawNewTile(rtile, actor->x-cur_x,actor->y-cur_y, false);
-            drawNewTile(rtile, actor->x-cur_x,actor->y-cur_y, true);
+            drawNewTile(rtile, wrapped_x,actor->y-cur_y, false);
+            drawNewTile(rtile, wrapped_x,actor->y-cur_y, true);
             delete rtile;
         }
         else
         {
-            drawTile(tile, actor->x-cur_x,actor->y-cur_y, false);
-            drawTile(tile, actor->x-cur_x,actor->y-cur_y, true);
+            drawTile(tile, wrapped_x,actor->y-cur_y, false);
+            drawTile(tile, wrapped_x,actor->y-cur_y, true);
             if(game->get_clock()->get_timer(GAMECLOCK_TIMER_U6_INFRAVISION) != 0)
             {
                 std::list<Obj *> *surrounding_objs = actor->get_surrounding_obj_list();
@@ -1087,8 +1095,9 @@ inline void MapWindow::drawActor(Actor *actor)
                     {
                         Obj *obj = *obj_iter;
                         Tile *t = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-                        drawTile(t,obj->x - cur_x, obj->y - cur_y, false);
-                        drawTile(t,obj->x - cur_x, obj->y - cur_y, true); // doesn't seem needed but will do it anyway (for now)
+                        uint16 wrapped_obj_x = WRAP_VIEWP(cur_x,obj->x,map_width);
+                        drawTile(t,wrapped_obj_x, obj->y - cur_y, false);
+                        drawTile(t,wrapped_obj_x, obj->y - cur_y, true); // doesn't seem needed but will do it anyway (for now)
                     }
                 }
             }
@@ -1174,7 +1183,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
  Tile *tile;
 
  y = obj->y - cur_y;
- x = obj->x - cur_x;
+ x = WRAP_VIEWP(cur_x, obj->x, map_width);
 
  if(x < 0 || y < 0)
    return;
@@ -1220,7 +1229,7 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
      }
     }
 
-  drawTile(tile,obj->x - cur_x, obj->y - cur_y, toptile);
+  drawTile(tile, x, obj->y - cur_y, toptile);
 
 }
 
@@ -1349,11 +1358,12 @@ void MapWindow::drawBorder()
    }
 }
 
+//FIXME this won't work for wrapped maps like MD.
 void MapWindow::drawRoofs()
 {
 	if(cur_y < 1 || cur_y > 760) // FIXME We need to handle this properly
 		return;
-	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(cur_x + (win_width - 1 - map_center_xoff) / 2, cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
+	if(roof_display == ROOF_DISPLAY_NORMAL && map->has_roof(WRAPPED_COORD(cur_x + (win_width - 1 - map_center_xoff) / 2,cur_level), cur_y + (win_height - 1) / 2, cur_level)) //Don't draw roof tiles if player is underneath.
 		return;
 	if(x_ray_view >= X_RAY_ON)
 		return;
@@ -2352,7 +2362,7 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 				original_obj_loc = MapCoord(wx,wy ,cur_level);
 				look_actor = actor_manager->get_actor(wx , wy, cur_level);
 				look_obj = obj_manager->get_obj(wx , wy, cur_level);
-				moveCursor(wx - cur_x, wy - cur_y);
+				moveCursor(WRAP_VIEWP(cur_x,wx,map_width), wy - cur_y);
 			}
 				wait_for_mousedown(button);
 		}
@@ -2545,7 +2555,7 @@ void MapWindow::select_target(int x, int y)
 {
 	int wx, wy;
 	mouseToWorldCoords(x, y, wx, wy);
-	moveCursor(wx - cur_x, wy - cur_y);
+	moveCursor(WRAP_VIEWP(cur_x,wx,map_width), wy - cur_y);
 	game->get_event()->select_target(uint16(wx), uint16(wy), cur_level);
 }
 
@@ -2616,7 +2626,7 @@ void MapWindow::update_mouse_cursor(uint32 mx, uint32 my)
     if(event->get_mode() == INPUT_MODE && mousecenter_x == (win_width/2) && mousecenter_y == (win_height/2)
        && !event->dont_show_target_cursor())
         game->set_mouse_pointer(1); // crosshairs
-    else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == (cur_x+win_width-1) || wy == (cur_y+win_height-1)))
+    else if(dragging || (game->is_orig_style() && (wx == cur_x || wy == cur_y || wx == WRAP_VIEWP(cur_x,win_width-1,map_width) || wy == (cur_y+win_height-1)))
             || (game->is_original_plus() && (my <= (uint32)Game::get_game()->get_game_y_offset() + 200 || game->is_original_plus_cutoff_map())
                 && mx >= (uint32)Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width))
         game->set_mouse_pointer(0); // arrow

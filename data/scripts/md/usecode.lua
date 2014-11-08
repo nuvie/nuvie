@@ -50,6 +50,33 @@ function use_container(obj, actor)
 	end
 end
 
+function use_hammer_on_oxium_geode(obj, target_obj, actor)
+   if target_obj.frame_n ~= 0 then
+      printl("IT_HAS_NO_EFFECT")
+      return
+   end
+
+   play_md_sfx(0x20)
+   target_obj.frame_n = 1 --break the geode open
+
+   if target_obj.on_map then
+      local oxium = Obj.new(131) --OBJ_BLOB_OF_OXIUM
+      oxium.qty = math.random(1, 50) + math.random(1, 50)
+      Obj.moveToMap(oxium, target_obj.x, target_obj.y, target_obj.z)
+   else
+      --FIXME add to actor's inventory
+      local oxium = Actor.inv_get_obj_n(actor, 131) --OBJ_BLOB_OF_OXIUM
+      local qty = math.random(1, 50) + math.random(1, 50)
+      if oxium ~= nil then
+         oxium.qty = oxium.qty + qty
+      else
+         oxium = Obj.new(131, 0, 0, qty) --OBJ_BLOB_OF_OXIUM
+         Actor.inv_add_obj(actor, oxium)
+      end
+   end
+   
+end
+
 function use_prybar_on_hatch(obj, target_obj, actor)
 
 	if actor.actor_num ~= 1 then
@@ -118,7 +145,7 @@ function use_berry(obj, actor)
       return
    end
    
-   --FIXME play_sfx 0x32
+   play_md_sfx(0x32)
    local berry_type = obj.obj_n - 73 --OBJ_BERRY
    local first_berry = true
    
@@ -252,7 +279,9 @@ end
 function use_shovel_on_pile_to_hole(obj, target_obj, to_obj, actor)
 	Obj.removeFromEngine(target_obj)
 	Obj.removeFromEngine(to_obj)
-	--FIXME play sfx here. 1B (twice)
+
+	play_md_sfx(0x1b)
+   play_md_sfx(0x1b)
 	printl("YOU_FILLED_IN_THE_HOLE")
 end
 
@@ -399,13 +428,13 @@ end
 function use_tent(obj, actor)
    if player_is_in_solo_mode() then
       printl("NOT_WHILE_IN_SOLO_MODE")
-      --FIXME play_sfx 5
+      play_md_sfx(5)
       return
    end
 
    if g_in_dream_mode then
      printl("YOU_CANT_SLEEP_IN_A_DREAM")
-     --FIXME play_sfx 5
+     play_md_sfx(5)
      return
   end
   
@@ -427,7 +456,7 @@ function use_tent(obj, actor)
          if map_obj ~= nil and map_obj.obj_n ~= 106 then
             if tile_get_flag(map_obj.tile_num, 3, 4) == false then
                printfl("TENT_OBJ_IN_THE_WAY", map_obj.name)
-               --FIXME play_sfx 5
+               play_md_sfx(5)
                return
             end
          end
@@ -438,7 +467,7 @@ function use_tent(obj, actor)
       for x = tent_loc.x - 1, tent_loc.x + 1 do
          if tile_get_flag(map_get_tile_num(x,y,tent_loc.z), 1, 1) == true then --if map tile is impassible
             printl("THE_GROUND_IS_NOT_FLAT_ENOUGH")
-            --FIXME play_sfx 5
+            play_md_sfx(5)
             return
          end
       end
@@ -449,20 +478,20 @@ function use_tent(obj, actor)
    if party_is_in_combat_mode() then
       print(" - ")
       printl("NOT_WHILE_IN_COMBAT_MODE")
-      --FIXME play_sfx 5
+      play_md_sfx(5)
       return
    end
    
    if foes_are_nearby() then
       printl("NOT_WHILE_FOES_ARE_NEAR")
-      --FIXME play_sfx 5
+      play_md_sfx(5)
       return
    end
 
    local npc = npcs_are_nearby()
    if npc ~= nil then
       printfl("IS_TOO_NEAR_TO_SETUP_CAMP", npc.name)
-      --FIXME play_sfx 5
+      play_md_sfx(5)
       return
    end   
    
@@ -634,7 +663,7 @@ function use_red_berry(obj, actor)
    
    if actor.frenzy == false then
       printfl("ENTERS_A_BATTLE_FRENZY", actor.name)
-      --FIXME play sfx 0x32
+      play_md_sfx(0x32)
    end
    
    actor.frenzy = true
@@ -653,6 +682,34 @@ function use_spittoon(obj, actor)
       printl("YOU_SPIT_INTO_THE_SPITTOON")
    else
       printl("YOUR_MOUTH_IS_TOO_DRY")
+   end
+end
+
+function use_gong(obj, target_obj, actor)
+   printl("GONG")
+   play_md_sfx(0xf) 
+end
+
+function use_musical_instrument(obj, actor)
+
+   local obj_n = obj.obj_n
+   
+   if obj_n == 280 then --OBJ_CYMBALS
+      printl("CHING")
+      play_md_sfx(0x36)
+   elseif obj_n == 281 then --OBJ_TAMBORINE
+      printl("SHING")
+      play_md_sfx(0x35)
+   elseif obj_n == 282 then --OBJ_DRUM
+      printl("THUMP_THUMP")
+      play_md_sfx(0x34)
+      script_wait(100)
+      play_md_sfx(0x34)
+   elseif obj_n == 283 then --OBJ_ACCORDION
+      printl("WHEEEEZE")
+      play_md_sfx(0x37)
+   else
+      printfl("YOU_PLAY_THE", obj.name)
    end
 end
 
@@ -693,6 +750,13 @@ local usecode_table = {
 --OBJ_CABLE_SPOOL
 [199]=use_misc_text,
 [222]=use_door,
+--OBJ_GONG_HAMMER
+[231]={
+--on
+   [130]=use_hammer_on_oxium_geode, --OBJ_OXIUM_GEODE
+   [298]=use_gong, --OBJ_GONG
+   --FIXME OBJ_BRASS_CHEST, OBJ_OBSIDIAN_BOX, OBJ_STEAMER_TRUNK, OBJ_OPEN_BRASS_TRUNK use_crate
+   },    
 --OBJ_MARTIAN_HOE
 [263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL
@@ -705,6 +769,14 @@ local usecode_table = {
       [257]=use_shovel_on_pile_to_hole},
    [0]=use_tool_on_ground}, --hole in ice, hole
 [273]={[86]=use_crate}, --Hammer needs more codes
+--OBJ_CYMBALS
+[280]=use_musical_instrument,
+--OBJ_TAMBORINE
+[281]=use_musical_instrument,
+--OBJ_DRUM
+[282]=use_musical_instrument,
+--OBJ_ACCORDION
+[283]=use_musical_instrument,
 [284]=use_container,
 --OBJ_SPITTOON
 [286]=use_spittoon,
@@ -807,7 +879,7 @@ function use_obj_on(obj, actor, use_on_tbl)
 	local target_obj = map_get_obj(target_x, target_y, actor.z)
 	
 	if target_obj ~= nil then
-		print(target_obj.name.."\n")
+		print(target_obj.name.."\n\n")
 		local on = use_on_tbl[target_obj.obj_n]
 		if on ~= nil then
 			if type(on) == "function" then

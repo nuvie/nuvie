@@ -22,6 +22,8 @@
  */
 
 #include "MDActor.h"
+#include "Game.h"
+#include "GameClock.h"
 
 #define MD_DOWNWARD_FACING_FRAME_N 9
 
@@ -88,7 +90,7 @@ uint8 MDActor::get_str_text_color()
   if(get_obj_flag(ACTOR_MD_OBJ_FLAG_HYPOXIA))
     color = 9;
 
-  if(id_n <= 0xf && 0)
+  if(id_n <= 0xf && Game::get_game()->get_clock()->get_purple_berry_counter(id_n) > 0)
   {
     color = 0xd;
   }

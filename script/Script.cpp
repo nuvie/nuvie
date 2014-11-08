@@ -1061,6 +1061,36 @@ bool Script::call_actor_resurrect(Actor *actor)
    return true;
 }
 
+uint8 Script::call_actor_str_adj(Actor *actor)
+{
+  lua_getglobal(L, "actor_str_adj");
+  nscript_new_actor_var(L, actor->get_actor_num());
+
+  if(call_function("actor_str_adj", 1, 1) == false)
+    return 0;
+  return (uint8)lua_tointeger(L,-1);
+}
+
+uint8 Script::call_actor_dex_adj(Actor *actor)
+{
+  lua_getglobal(L, "actor_dex_adj");
+  nscript_new_actor_var(L, actor->get_actor_num());
+
+  if(call_function("actor_dex_adj", 1, 1) == false)
+    return 0;
+  return (uint8)lua_tointeger(L,-1);
+}
+
+uint8 Script::call_actor_int_adj(Actor *actor)
+{
+  lua_getglobal(L, "actor_int_adj");
+  nscript_new_actor_var(L, actor->get_actor_num());
+
+  if(call_function("actor_int_adj", 1, 1) == false)
+    return 0;
+  return (uint8)lua_tointeger(L,-1);
+}
+
 bool Script::call_use_keg(Obj *obj)
 {
    lua_getglobal(L, "use_keg");
@@ -2114,7 +2144,7 @@ static int nscript_u6link_recursive_gc(lua_State *L)
 
    delete s;
 
-   printf("U6LinkResursive garbage collector!!\n");
+   //printf("U6LinkResursive garbage collector!!\n");
    return 0;
 }
 

@@ -277,8 +277,8 @@ bool Game::loadGame(Script *s)
    game_map->set_actor_manager(actor_manager);
    egg_manager->set_actor_manager(actor_manager);
 
-   map_window = new MapWindow(config);
-   map_window->init(game_map, tile_manager, obj_manager, actor_manager);
+   map_window = new MapWindow(config, game_map);
+   map_window->init(tile_manager, obj_manager, actor_manager);
    map_window->Hide();
    gui->AddWidget(map_window);
    if(is_original_plus_full_map()) // need to render after map window
