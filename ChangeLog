@@ -1,3 +1,9 @@
+2014-11-09  Eric Fry <efry at users.sourceforge.net> r1978
+	* Added 'startup game' button to the config menu. You can now change
+	  the startup game ('config/loadgame') from within Nuvie. Added a future
+	  config option to select the game from a menu at startup. At the moment
+	  this just reverts to U6 if selected.
+
 2014-11-08  Eric Fry <efry at users.sourceforge.net> r1977
 	* Added MD berry markers to party view.
 	* Show adjusted stats on Actor view.

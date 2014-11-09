@@ -36,7 +36,8 @@ class GameplayDialog : public GUI_Dialog {
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *formation_button, *stealing_button, *text_gump_button,
 		                     *converse_gump_button, *converse_solid_bg_button, 
-		                     *skip_intro_button, *show_console_button, *cursor_button;
+		                     *startup_game_button, *skip_intro_button, *show_console_button,
+		                     *cursor_button;
 		GUI_Button *button_index[10]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
