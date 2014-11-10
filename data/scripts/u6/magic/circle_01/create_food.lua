@@ -5,7 +5,7 @@ local qty = math.random(1,10)
 
 local obj = Obj.new(129,0,0,qty)
 
-Obj.moveToInv(obj, 1)
+Obj.moveToInv(obj, magic_get_caster())
 
 print("\nCreate " .. obj.qty .. " food.\n")
 

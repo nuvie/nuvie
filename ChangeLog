@@ -1,3 +1,7 @@
+2014-11-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1979
+	* Increase GameplayDialog height and increase the button_index.
+	* Have created food go in the caster's inventory instead of the Avatar's.
+
 2014-11-09  Eric Fry <efry at users.sourceforge.net> r1978
 	* Added 'startup game' button to the config menu. You can now change
 	  the startup game ('config/loadgame') from within Nuvie. Added a future

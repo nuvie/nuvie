@@ -41,7 +41,7 @@
 #include "Keys.h"
 
 #define GD_WIDTH 274
-#define GD_HEIGHT 166
+#define GD_HEIGHT 179
 
 GameplayDialog::GameplayDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - GD_WIDTH)/2,

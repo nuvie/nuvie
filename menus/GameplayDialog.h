@@ -38,7 +38,7 @@ class GameplayDialog : public GUI_Dialog {
 		                     *converse_gump_button, *converse_solid_bg_button, 
 		                     *startup_game_button, *skip_intro_button, *show_console_button,
 		                     *cursor_button;
-		GUI_Button *button_index[10]; // add to here when you add a button. Keep buttons in order by height
+		GUI_Button *button_index[11]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
 		GameplayDialog(GUI_CallBack *callback);
