@@ -114,7 +114,8 @@
   <free_balloon_movement>no</free_balloon_movement>
   <game_specific_keys>(default)</game_specific_keys>
   <music>native</music>
-  <sfx>pcspeaker</sfx>
+  <sfx>native</sfx>
+  <enable_speech>yes</enable_speech>
   <newscroll>
    <width>30</width>
    <height>19</height>

@@ -36,10 +36,11 @@
 #include "Keys.h"
 #include "Party.h"
 #include "Converse.h"
+#include "U6misc.h"
 #include <math.h>
 
 #define AD_WIDTH 292
-#define AD_HEIGHT 153
+#define AD_HEIGHT 166
 
 AudioDialog::AudioDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - AD_WIDTH)/2,
@@ -81,7 +82,11 @@ bool AudioDialog::init() {
 	AddWidget(widget);
 	widget = (GUI_Widget *) new GUI_Text(textX[2], textY += row_h, 0, 0, 0, "Sfx volume:", font);
 	AddWidget(widget);
- 
+ 	bool use_speech_b = (Game::get_game()->get_game_type() == NUVIE_GAME_U6 && has_fmtowns_support(Game::get_game()->get_config()));
+	if(use_speech_b) {
+		widget = (GUI_Widget *) new GUI_Text(textX[1], textY += row_h, 0, 0, 0, "Enable speech:", font);
+		AddWidget(widget);
+	}
 	char musicBuff[5], sfxBuff[5];
 	int sfxVol_selection, musicVol_selection, num_of_sfxVol, num_of_musicVol;
 	SoundManager *sm = Game::get_game()->get_sound_manager();
@@ -150,6 +155,12 @@ bool AudioDialog::init() {
 	AddWidget(sfxVol_button); 
 	button_index[last_index += 1] = sfxVol_button;
 
+	if(use_speech_b) {
+		speech_b = new GUI_TextToggleButton(this, colX[1], buttonY += row_h, 40, height, yes_no_text, 2, sm->is_speech_enabled(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(speech_b); 
+		button_index[last_index += 1] = speech_b;
+	} else
+		speech_b = NULL;
 	cancel_button = new GUI_Button(this, 80, AD_HEIGHT - 20, 54, height, "Cancel", font, BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cancel_button);
 	button_index[last_index += 1] = cancel_button;
@@ -251,6 +262,12 @@ GUI_status AudioDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 			sm->set_audio_enabled(audio_button->GetSelection());
 		config->set("config/audio/enabled", audio_button->GetSelection() ? "yes" : "no");
 
+		if(speech_b) {
+			bool speech_enabled = speech_b->GetSelection() ? true : false;
+			config->set("config/ultima6/enable_speech", speech_b->GetSelection() ? "yes" : "no");
+			if(speech_enabled != sm->is_speech_enabled())
+				sm->set_speech_enabled(speech_enabled);
+		}
 		config->write();
 		return close_dialog();
 	}

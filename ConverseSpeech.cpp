@@ -34,7 +34,6 @@
 ConverseSpeech::ConverseSpeech()
 {
     config = NULL;
-    audio_enabled = true;
 }
 
 
@@ -43,8 +42,6 @@ ConverseSpeech::ConverseSpeech()
 void ConverseSpeech::init(Configuration *cfg)
 {
     config = cfg;
-    config->value ("config/audio/enabled", audio_enabled, true);
-
 }
 
 
@@ -55,19 +52,20 @@ ConverseSpeech::~ConverseSpeech()
 void ConverseSpeech::update()
 {
  TownsSound sound;
- 
- if(!audio_enabled)
+ SoundManager *sm = Game::get_game()->get_sound_manager();
+
+ if(!sm->is_audio_enabled() || !sm->is_speech_enabled())
    return;
 
  if(!list.empty())
    {
-    if(Game::get_game()->get_sound_manager()->isSoundPLaying(handle) == false)
+    if(sm->isSoundPLaying(handle) == false)
      {
     	list.pop_front();
     	if(!list.empty())
     	{
     	    sound = list.front();
-        	handle = Game::get_game()->get_sound_manager()->playTownsSound(sound.filename, sound.sample_num);
+        	handle = sm->playTownsSound(sound.filename, sound.sample_num);
     	}
      }
    }
@@ -78,8 +76,9 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  std::string sample_file;
  char filename[20]; // "/speech/charxxx.sam"
  TownsSound sound;
+ SoundManager *sm = Game::get_game()->get_sound_manager();
  
- if(!audio_enabled)
+ if(!sm->is_audio_enabled()  || !sm->is_speech_enabled())
    return;
 
  //translate the converse sample number into the CHAR number in the SPEECH directory if required.
@@ -102,7 +101,7 @@ void ConverseSpeech::play_speech(uint16 actor_num, uint16 sample_num)
  sound.sample_num = sample_num;
 
  if(list.empty())
-	 handle = Game::get_game()->get_sound_manager()->playTownsSound(sample_file, sample_num);
+	 handle = sm->playTownsSound(sample_file, sample_num);
 
  list.push_back(sound);
 

@@ -1,3 +1,8 @@
+2014-11-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1980
+	* Add speech_enabled U6 specific cfg key. This allows FM-Towns speech to
+	  be enabled or disabled instead of always being on. This can be changed
+	  in the menu, but speech will finish playing if turned off.
+
 2014-11-10  Malignant Manor <malignantmanor@users.sourceforge.net> r1979
 	* Increase GameplayDialog height and increase the button_index.
 	* Have created food go in the caster's inventory instead of the Avatar's.

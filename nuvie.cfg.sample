@@ -115,7 +115,8 @@
   <displayed_wind_dir>from</displayed_wind_dir>
   <free_balloon_movement>no</free_balloon_movement>
   <music>native</music>
-  <sfx>pcspeaker</sfx>
+  <sfx>native</sfx>
+  <enable_speech>yes</enable_speech>
   <game_specific_keys>(default)</game_specific_keys>
   <patch_keys>./patchkeys.txt</patch_keys>
   <newscroll>

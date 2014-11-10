@@ -172,6 +172,12 @@ bool SoundManager::nuvieStartup (Configuration * config)
   config_key = config_get_game_key(config);
   config_key.append("/sounddir");
   config->value (config_key, sound_dir, "");
+  if(game_type == NUVIE_GAME_U6) { // FM-Towns speech
+	  config_key = config_get_game_key(config);
+	  config_key.append("/enable_speech");
+	  config->value (config_key, speech_enabled, true);
+  } else
+	  speech_enabled = false;
 
   if(!initAudio ())
     {
@@ -892,4 +898,10 @@ void SoundManager::set_music_enabled(bool val)
 		musicPlay();
 	else
 		musicStop();
+}
+
+void SoundManager::set_speech_enabled(bool val)
+{
+	speech_enabled = val;
+	// FIXME - stop speech
 }

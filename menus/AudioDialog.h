@@ -35,8 +35,8 @@ class AudioDialog : public GUI_Dialog {
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *audio_button, *music_button, *musicType_button, *musicVol_button,
 		                     *sfx_button, *sfxVol_button, *sfxType_button, *combat_b, *group_b,
-		                     *vehicle_b, *converse_b;
-		GUI_Button *button_index[13]; // add to here when you add a button. Keep buttons in order by height
+		                     *vehicle_b, *converse_b, *speech_b;
+		GUI_Button *button_index[14]; // add to here when you add a button. Keep buttons in order by height
 
 	public:
 		AudioDialog(GUI_CallBack *callback);

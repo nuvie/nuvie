@@ -354,6 +354,8 @@ void Nuvie::SharedDefaultConfigValues()
 	for(int i=0; i < 3; i++) {
 		config->set(game_str[i] + "music", "native");
 		config->set(game_str[i] + "sfx", "native");
+		if(i == 0) // U6
+			config->set(game_str[i] + "enable_speech", "yes");
 		config->set(game_str[i] + "skip_intro", false);
 		config->set(game_str[i] + "show_eggs", false);
 		if(i == 0) { // U6
