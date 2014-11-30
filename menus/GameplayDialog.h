@@ -31,7 +31,7 @@ class GameplayDialog : public GUI_Dialog {
 	protected:
 		uint8 last_index;
 		sint8 b_index_num;
-		bool old_using_converse_gump;
+		uint8 old_converse_gump_type;
 		GUI_CallBack *callback_object;
 		GUI_Button *save_button, *cancel_button;
 		GUI_TextToggleButton *formation_button, *stealing_button, *text_gump_button,

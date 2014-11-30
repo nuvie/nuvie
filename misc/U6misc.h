@@ -85,4 +85,6 @@ bool has_file_extension(const char *filename, const char *extension);
 
 bool has_fmtowns_support(Configuration *config);
 
+uint16 wrap_signed_coord(sint16 coord, uint8 level);
+
 #endif /* __U6misc_h__ */

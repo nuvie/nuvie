@@ -640,12 +640,13 @@ function use_tent(obj, actor)
    script_wait(500)
    
    --remove tent from map
-   for tent in find_obj(player.z, 134) do
+   local z = player.z
+   for tent in find_obj(z, 134) do
       if tent ~= nil and 
       ((tent.x == tent_loc.x and tent.y == tent_loc.y-1) or
-       (tent.x == tent_loc.x+1 and tent.y == tent_loc.y-1) or
-       (tent.x == tent_loc.x-1 and tent.y == tent_loc.y) or
-       (tent.x == tent_loc.x+1 and tent.y == tent_loc.y) or
+       (tent.x == wrap_coord(tent_loc.x+1,z) and tent.y == tent_loc.y-1) or
+       (tent.x == wrap_coord(tent_loc.x-1,z) and tent.y == tent_loc.y) or
+       (tent.x == wrap_coord(tent_loc.x+1,z) and tent.y == tent_loc.y) or
        (tent.x == tent_loc.x and tent.y == tent_loc.y))
       then
          Obj.removeFromEngine(tent)

@@ -46,6 +46,12 @@ class ConvScript;
 using std::string;
 
 
+#define CONVERSE_GUMP_DEFAULT   0
+#define CONVERSE_GUMP_U7_STYLE  1
+#define CONVERSE_GUMP_WOU_STYLE 2
+
+uint8 get_converse_gump_type_from_config(Configuration *config);
+
 typedef uint32 converse_value; // any single value read from a script
 typedef unsigned char* convscript_buffer;
 
@@ -170,6 +176,8 @@ public:
     ConverseSpeech *get_speech() { return speech; };
 
     bool conversations_stop_music;
+private:
+    void print_prompt();
 };
 
 

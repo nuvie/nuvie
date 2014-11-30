@@ -57,6 +57,7 @@ class MsgText
 
  Font *font;
  std::string s;
+ uint8 color;
 
  MsgText();
  MsgText(std::string new_string, Font *f);
@@ -93,8 +94,11 @@ protected:
  Configuration *config;
  int game_type;
  Font *font;
+ uint8 font_color;
+ uint8 font_highlight_color;
  uint16 scroll_height;
  uint16 scroll_width;
+ uint8 left_margin; // margin width in pixels
 
  // set by request_input()
  CallBack *callback_target;
@@ -107,7 +111,7 @@ protected:
  bool page_break;
  bool just_finished_page_break;
  bool just_displayed_prompt;
- void process_page_break();
+ virtual void process_page_break();
  std::list<MsgLine *> msg_buf;
 
  std::string input_buf;
@@ -119,16 +123,19 @@ protected:
  bool discard_whitespace;
  bool using_target_cursor;
 
+ uint8 bg_color;
+ bool talking;
+
 private:
  uint16 screen_x; //x offset to top left corner of MsgScroll
  uint16 screen_y; //y offset to top left corner of MsgScroll
 
 
- uint8 bg_color;
+
  bool keyword_highlight;
 
 
- bool talking;
+
 
  MsgText prompt;
  std::list<MsgText *> holding_buffer;
@@ -172,7 +179,7 @@ private:
   autobreak = false; scroll_updated = false; cursor_char = 0; cursor_x = 0;
   cursor_y = 0; line_count = 0; display_pos = 0; capitalise_next_letter = false;
   just_displayed_prompt = false; scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
-  discard_whitespace = false;
+  discard_whitespace = false; left_margin = 0;
  }
  ~MsgScroll();
 
@@ -201,13 +208,16 @@ private:
  int printf(const std::string format,...);
 
  virtual void display_string(std::string s, Font *f, bool include_on_map_window);
+ void display_string(std::string s, Font *f, uint8 color, bool include_on_map_window);
  void display_string(std::string s, uint16 length, uint8 lang_num);
  void display_string(std::string s, bool include_on_map_window=true);
+ void display_string(std::string s, uint8 color, bool include_on_map_window);
  void display_fmt_string(const char *format, ...);
  void message(const char *string) { display_string(string); display_prompt(); }
 
  bool set_prompt(const char *new_prompt, Font *f=NULL);
  virtual void display_prompt();
+ virtual void display_converse_prompt();
 
  void set_keyword_highlight(bool state);
 
@@ -249,6 +259,7 @@ private:
 
  protected:
 
+ void set_scroll_dimensions(uint16 w, uint16 h);
  void delete_front_line();
  virtual MsgLine *add_new_line();
  void drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y);
@@ -260,6 +271,7 @@ private:
  void increase_input_char();
  void decrease_input_char();
  uint8 get_char_from_input_char();
+ virtual uint8 get_input_font_color() { return font_color; }
 };
 
 

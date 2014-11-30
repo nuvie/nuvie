@@ -71,6 +71,7 @@ enum CanDropOrMoveMsg { MSG_NOT_POSSIBLE, MSG_SUCCESS, MSG_BLOCKED, MSG_OUT_OF_R
 class MapWindow: public GUI_Widget
 {
  friend class AnimManager;
+ friend class ConverseGumpWOU;
  Game *game;
  Configuration *config;
  int game_type;

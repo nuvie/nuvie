@@ -42,12 +42,18 @@
 MsgText::MsgText()
 {
  font = NULL;
+ color = 0;
 }
 
 MsgText::MsgText(std::string new_string, Font *f)
 {
  s.assign(new_string);
  font = f;
+ color = 0;
+ if(font)
+ {
+   color = font->getDefaultColor();
+ }
 }
 
 MsgText::~MsgText()
@@ -63,6 +69,7 @@ void MsgText::copy(MsgText *msg_text)
 {
  s.assign(msg_text->s);
  font = msg_text->font;
+ color = msg_text->color;
 }
 
 uint32 MsgText::length()
@@ -92,7 +99,7 @@ void MsgLine::append(MsgText *new_text)
  if(text.size() > 0)
     msg_text = text.back();
 
- if(msg_text && msg_text->font == new_text->font && new_text->s.length() == 1 && new_text->s[0] != ' ')
+ if(msg_text && msg_text->font == new_text->font && msg_text->color == new_text->color && new_text->s.length() == 1 && new_text->s[0] != ' ')
    msg_text->s.append(new_text->s);
  else
   {
@@ -190,6 +197,17 @@ void MsgScroll::init(Configuration *cfg, Font *f)
 
 	callback_target = NULL;
 	callback_user_data = NULL;
+
+	scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
+  capitalise_next_letter = false;
+
+  font_color = FONT_COLOR_U6_NORMAL;
+  font_highlight_color = FONT_COLOR_U6_HIGHLIGHT;
+  if(game_type!=NUVIE_GAME_U6)
+  {
+     font_color = FONT_COLOR_WOU_NORMAL;
+     font_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
+  }
 }
 
 MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
@@ -240,7 +258,8 @@ MsgScroll::MsgScroll(Configuration *cfg, Font *f) : GUI_Widget(NULL, 0, 0, 0, 0)
  bg_color = Game::get_game()->get_palette()->get_bg_color();
 
  capitalise_next_letter = false;
- scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
+
+ left_margin = 0;
 
  add_new_line();
 }
@@ -278,6 +297,21 @@ bool MsgScroll::init(char *player_name)
  set_input_mode(false);
 
  return true;
+}
+
+void MsgScroll::set_scroll_dimensions(uint16 w, uint16 h)
+{
+  scroll_width = w;
+  scroll_height = h;
+
+  cursor_char = 0;
+  cursor_x = 0;
+  cursor_y = scroll_height-1;
+  line_count = 0;
+
+  cursor_wait = 0;
+
+  display_pos = 0;
 }
 
 int MsgScroll::printf(std::string format, ...)
@@ -354,9 +388,19 @@ void MsgScroll::display_string(std::string s, bool include_on_map_window)
  display_string(s,font, include_on_map_window);
 }
 
+void MsgScroll::display_string(std::string s, uint8 color, bool include_on_map_window)
+{
+  display_string(s,font, color, include_on_map_window);
+}
+
 void MsgScroll::display_string(std::string s, Font *f, bool include_on_map_window)
 {
- MsgText *msg_text;
+  display_string(s,f,font_color,include_on_map_window);
+}
+
+void MsgScroll::display_string(std::string s, Font *f, uint8 color, bool include_on_map_window)
+{
+  MsgText *msg_text;
 
  if(s.empty())
    return;
@@ -365,6 +409,7 @@ void MsgScroll::display_string(std::string s, Font *f, bool include_on_map_windo
    f = font;
 
  msg_text = new MsgText(s, f);
+ msg_text->color = color;
  fprintf(stdout,"%s",msg_text->s.c_str());
  fflush(stdout);
 
@@ -423,6 +468,7 @@ void MsgScroll::display_string(std::string s, Font *f, bool include_on_map_windo
   if(i > 0)
    {
     token = new MsgText(input->s.substr(0,i), font); // FIX maybe a format flag. // input->font);
+    token->color = input->color;
 	input->s.erase(0,i);
 	if(input->s.length() == 0)
 	  {
@@ -613,6 +659,11 @@ void MsgScroll::display_prompt()
    clear_page_break();
    just_displayed_prompt = true;
   }
+}
+
+void MsgScroll::display_converse_prompt()
+{
+  display_string("\nyou say:", MSGSCROLL_NO_MAP_DISPLAY);
 }
 
 void MsgScroll::set_keyword_highlight(bool state)
@@ -973,11 +1024,11 @@ void MsgScroll::Display(bool full_redraw)
  std::list<MsgLine *>::iterator iter;
  MsgLine *msg_line = NULL;
 
- clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
+
 
  if(scroll_updated || full_redraw || Game::get_game()->is_original_plus_full_map())
   {
-   screen->fill(bg_color,area.x, area.y, scroll_width * 8, (scroll_height)*8); //clear whole scroll
+   screen->fill(bg_color,area.x, area.y, area.w, area.h); //clear whole scroll
 
    iter=msg_buf.begin();
    for(i=0;i < display_pos; i++)
@@ -990,7 +1041,7 @@ void MsgScroll::Display(bool full_redraw)
      }
    scroll_updated = false;
 
-   screen->update(area.x,area.y, scroll_width * 8, (scroll_height)*8);
+   screen->update(area.x,area.y, area.w, area.h);
 
    cursor_y = i-1;
    if(msg_line)
@@ -1005,15 +1056,16 @@ void MsgScroll::Display(bool full_redraw)
     }
    else
      cursor_x = area.x;
-   if(Game::get_game()->is_original_plus_full_map() && show_cursor
-      && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height))
-     drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
   }
-else
+ else
+  {
+   clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
+  }
+
+ if((Game::get_game()->is_original_plus_full_map() || Game::get_game()->is_orig_style())
+     && show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height))
  {
-  if(show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height)
-     /*&& widget_has_focus()*/ ) // hide cursor when scroll loses input
-    drawCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
+   drawCursor(area.x + left_margin + 8 * cursor_x, area.y + cursor_y * 8);
  }
 
 }
@@ -1023,17 +1075,11 @@ inline void MsgScroll::drawLine(Screen *screen, MsgLine *msg_line, uint16 line_y
  MsgText *token;
  std::list<MsgText *>::iterator iter;
  uint16 total_length = 0;
- uint8 font_color = FONT_COLOR_U6_NORMAL;
- uint8 font_highlight_color = FONT_COLOR_U6_HIGHLIGHT;
- if(game_type!=NUVIE_GAME_U6)
- {
-    font_color = FONT_COLOR_WOU_NORMAL;
-    font_highlight_color = FONT_COLOR_WOU_HIGHLIGHT;
- }
+
  for(iter=msg_line->text.begin();iter != msg_line->text.end() ; iter++)
    {
     token = *iter;
-	token->font->drawString(screen, token->s.c_str(), area.x + total_length * 8, area.y+line_y*8, font_color, font_highlight_color); //FIX for hardcoded font height
+	token->font->drawString(screen, token->s.c_str(), area.x + left_margin + total_length * 8, area.y+line_y*8, token->color, font_highlight_color); //FIX for hardcoded font height
 	total_length += token->s.length();
    }
 }
@@ -1045,21 +1091,20 @@ void MsgScroll::clearCursor(uint16 x, uint16 y)
 
 void MsgScroll::drawCursor(uint16 x, uint16 y)
 {
- uint8 font_color = 0x48;
- if(game_type!=NUVIE_GAME_U6)
-    font_color = 0;
+ uint8 cursor_color = input_mode ? get_input_font_color() : font_color;
+
  if(input_char != 0) { // show letter selected by arrow keys
-    font->drawChar(screen, get_char_from_input_char(), x, y, font_color);
+    font->drawChar(screen, get_char_from_input_char(), x, y, cursor_color);
     screen->update(x, y, 8, 8);
     return;
  }
  if(page_break)
     {
      if(cursor_wait <= 2) // flash arrow
-	   font->drawChar(screen, 1, x, y, font_color); // down arrow
+	   font->drawChar(screen, 1, x, y, cursor_color); // down arrow
 	}
  else
-    font->drawChar(screen, cursor_char + 5, x, y, font_color); //spinning ankh
+    font->drawChar(screen, cursor_char + 5, x, y, cursor_color); //spinning ankh
 
   screen->update(x, y, 8, 8);
   if(cursor_wait == MSGSCROLL_CURSOR_DELAY)
@@ -1098,6 +1143,7 @@ bool MsgScroll::input_buf_add_char(char c)
 
  token.s.assign(&c, 1);
  token.font = font;
+ token.color = get_input_font_color();
 
  parse_token(&token);
 

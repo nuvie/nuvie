@@ -389,6 +389,8 @@ nuvie_SOURCES = \
 	Converse.h \
 	ConverseGump.cpp \
 	ConverseGump.h \
+	ConverseGumpWOU.cpp \
+	ConverseGumpWOU.h \
 	ConverseInterpret.cpp \
 	ConverseInterpret.h \
 	ConverseSpeech.cpp \

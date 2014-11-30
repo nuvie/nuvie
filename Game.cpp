@@ -43,6 +43,7 @@
 #include "Party.h"
 #include "Converse.h"
 #include "ConverseGump.h"
+#include "ConverseGumpWOU.h"
 #include "FontManager.h"
 #include "ViewManager.h"
 #include "EffectManager.h"
@@ -115,6 +116,7 @@ Game::Game(Configuration *cfg, Screen *scr, GUI *g, nuvie_game_t type, SoundMana
  book = NULL;
  keybinder = NULL;
 
+ converse_gump_type = CONVERSE_GUMP_DEFAULT;
  pause_flags = PAUSE_UNPAUSED;
  pause_user_count = 0;
  ignore_event_delay = 0;
@@ -389,10 +391,11 @@ bool Game::loadGame(Script *s)
 void Game::init_converse_gump_settings()
 {
 	if(is_new_style())
-		enabled_converse_gump = true;
+		converse_gump_type = CONVERSE_GUMP_DEFAULT;
 	else
-		config->value("config/general/converse_gump", enabled_converse_gump, false);
-
+	{
+	  converse_gump_type = get_converse_gump_type_from_config(config);
+	}
 	std::string width_str;
 	int gump_w = get_game_width();
 
@@ -437,22 +440,34 @@ void Game::init_converse_gump_settings()
 void Game::init_converse()
 {
 	converse = new Converse();
-	if(enabled_converse_gump) {
+	if(using_new_converse_gump()) {
 		conv_gump = new ConverseGump(config, font_manager->get_font(0), screen);
 		conv_gump->Hide();
 		gui->AddWidget(conv_gump);
 
 		converse->init(config, game_type, conv_gump, actor_manager, clock, player, view_manager, obj_manager);
-	} else
-		converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
+	} else if(game_type == NUVIE_GAME_U6 && converse_gump_type == CONVERSE_GUMP_DEFAULT) {
+	  converse->init(config, game_type, scroll, actor_manager, clock, player, view_manager, obj_manager);
+	} else {
+    ConverseGumpWOU *gump = new ConverseGumpWOU(config, font_manager->get_font(0), screen);
+    gump->Hide();
+    gui->AddWidget(gump);
+    converse->init(config, game_type, gump, actor_manager, clock, player, view_manager, obj_manager);
+	}
+
 }
 
-void Game::set_using_new_converse_gump(bool use_converse_gump)
+void Game::set_converse_gump_type(uint8 new_type)
 {
 	if(converse)
 		delete converse;
-	enabled_converse_gump = use_converse_gump;
+	converse_gump_type = new_type;
 	init_converse();
+}
+
+bool Game::using_new_converse_gump()
+{
+  return (is_new_style() || converse_gump_type == CONVERSE_GUMP_U7_STYLE);
 }
 
 void Game::delete_new_command_bar()

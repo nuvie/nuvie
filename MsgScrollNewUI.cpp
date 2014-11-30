@@ -50,8 +50,6 @@ MsgScrollNewUI::MsgScrollNewUI(Configuration *cfg, Screen *s)
 
  init(cfg, font_normal);
 
- scrollback_height = MSGSCROLL_SCROLLBACK_HEIGHT;
-
  std::string new_scroll_cfg = config_get_game_key(config) + "/newscroll";
 
  cfg->value(new_scroll_cfg + "/solid_bg", solid_bg, false);

@@ -327,6 +327,32 @@ static int lua_error_handler(lua_State *L)
 	return 1;
 }
 
+static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field)
+{
+   lua_pushstring(L, index);
+   lua_gettable(L, -2);
+
+   if(!lua_isnumber(L, -1))
+      return false;
+
+   *field = (sint16)lua_tonumber(L, -1);
+   lua_pop(L, 1);
+   return true;
+}
+
+static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint16 *field, uint8 map_level)
+{
+  sint16 coord;
+  if(get_tbl_field_sint16(L,index,&coord) == false)
+  {
+    return false;
+  }
+
+  *field = wrap_signed_coord(coord, map_level);
+
+  return true;
+}
+
 static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
 {
    lua_pushstring(L, index);
@@ -1413,18 +1439,16 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
 {
    if(lua_istable(L, lua_stack_offset))
    {
-      if(!get_tbl_field_uint16(L, "x", x)) return false;
-
-      if(!get_tbl_field_uint16(L, "y", y)) return false;
-
       if(!get_tbl_field_uint8(L, "z", z)) return false;
+      if(!get_tbl_field_as_wrapped_coord(L, "x", x, *z)) return false;
+      if(!get_tbl_field_as_wrapped_coord(L, "y", y, *z)) return false;
    }
    else
    {
 	  if(lua_isnil(L, lua_stack_offset)) return false;
-      *x = (uint16)luaL_checkinteger(L, lua_stack_offset);
-      *y = (uint16)luaL_checkinteger(L, lua_stack_offset + 1);
       *z = (uint8)luaL_checkinteger(L,  lua_stack_offset + 2);
+      *x = wrap_signed_coord((sint16)luaL_checkinteger(L, lua_stack_offset), *z);
+      *y = wrap_signed_coord((sint16)luaL_checkinteger(L, lua_stack_offset + 1), *z);
    }
 
    return true;
@@ -2827,9 +2851,10 @@ static int nscript_map_is_water(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
 
-	uint16 x = (uint16) luaL_checkinteger(L, 1);
-	uint16 y = (uint16) luaL_checkinteger(L, 2);
-	uint8 z = (uint8) luaL_checkinteger(L, 3);
+  uint16 x, y;
+  uint8 z;
+  if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
+   return 0;
 
 	lua_pushboolean(L, map->is_water(x, y, z));
 
@@ -2849,9 +2874,10 @@ static int nscript_map_is_on_screen(lua_State *L)
 {
 	MapWindow *map_window = Game::get_game()->get_map_window();
 
-	uint16 x = (uint16) luaL_checkinteger(L, 1);
-	uint16 y = (uint16) luaL_checkinteger(L, 2);
-	uint8 z = (uint8) luaL_checkinteger(L, 3);
+  uint16 x, y;
+  uint8 z;
+  if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
+   return 0;
 
 	lua_pushboolean(L, map_window->is_on_screen(x, y, z));
 
@@ -2873,9 +2899,10 @@ static int nscript_map_get_impedence(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
 
-	uint16 x = (uint16) luaL_checkinteger(L, 1);
-	uint16 y = (uint16) luaL_checkinteger(L, 2);
-	uint8 z = (uint8) luaL_checkinteger(L, 3);
+  uint16 x, y;
+  uint8 z;
+  if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
+   return 0;
 
 	bool ignore_objects = true;
 
@@ -2900,9 +2927,10 @@ static int nscript_map_get_tile_num(lua_State *L)
 {
   Map *map = Game::get_game()->get_game_map();
 
-  uint16 x = (uint16) luaL_checkinteger(L, 1);
-  uint16 y = (uint16) luaL_checkinteger(L, 2);
-  uint8 z = (uint8) luaL_checkinteger(L, 3);
+  uint16 x, y;
+  uint8 z;
+  if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
+   return 0;
 
   Tile *t = map->get_tile(x, y, z);
   if(t != NULL)
@@ -2930,9 +2958,10 @@ static int nscript_map_get_dmg_tile_num(lua_State *L)
 {
 	Map *map = Game::get_game()->get_game_map();
 
-	uint16 x = (uint16) luaL_checkinteger(L, 1);
-	uint16 y = (uint16) luaL_checkinteger(L, 2);
-	uint8 z = (uint8) luaL_checkinteger(L, 3);
+  uint16 x, y;
+  uint8 z;
+  if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
+   return 0;
 
 	Tile *t = map->get_dmg_tile(x, y, z);
 	if(t != NULL)
@@ -2968,6 +2997,7 @@ static int nscript_map_line_test(lua_State *L)
 	uint16 y1 = (uint16) luaL_checkinteger(L, 4);
 	uint8 level = (uint8) luaL_checkinteger(L, 5);
 
+	//FIXME world wrapping for MD
 	if(map->lineTest(x, y, x1, y1, level, LT_HitMissileBoundary, result) == false)
 		ret = true;
 
@@ -2999,6 +3029,7 @@ static int nscript_map_line_hit_check(lua_State *L)
 	uint16 y1 = (uint16) luaL_checkinteger(L, 4);
 	uint8 level = (uint8) luaL_checkinteger(L, 5);
 
+  //FIXME world wrapping for MD
 	if(map->lineTest(x, y, x1, y1, level, LT_HitMissileBoundary, result))
 	{
 		lua_pushinteger(L, result.hit_x);

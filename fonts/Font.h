@@ -27,6 +27,8 @@
 #define FONT_COLOR_U6_NORMAL    0x48
 #define FONT_COLOR_U6_HIGHLIGHT 0x0c
 #define FONT_COLOR_WOU_NORMAL    0
+#define FONT_COLOR_WOU_CONVERSE_INPUT 1
+
 #define FONT_COLOR_WOU_HIGHLIGHT 4
 
 #define FONT_UP_ARROW_CHAR   19
@@ -50,7 +52,7 @@ private:
 
    Font();
    virtual ~Font();
-
+   uint8 getDefaultColor() { return default_color; }
    void setDefaultColor(uint8 color) { default_color = color; }
    void setDefaultHighlightColor(uint8 color) { default_highlight_color = color; }
 

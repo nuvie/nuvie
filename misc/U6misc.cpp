@@ -727,3 +727,13 @@ bool has_file_extension(const char *filename, const char *extension)
 	return false;
 }
 
+uint16 wrap_signed_coord(sint16 coord, uint8 level)
+{
+  uint16 width = MAP_SIDE_LENGTH(level);
+  if(coord < 0)
+  {
+    return (uint16)(width + coord);
+  }
+
+  return (uint16)coord % width;
+}

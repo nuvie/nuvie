@@ -134,7 +134,7 @@ class Game
  bool game_play;
  bool using_text_gumps;
  bool open_containers; //doubleclick
- bool enabled_converse_gump;
+ uint8 converse_gump_type;
  bool roof_mode;
  bool free_balloon_movement;
  bool force_solid_converse_bg;
@@ -205,8 +205,9 @@ class Game
  void set_armageddon(bool val) { armageddon = val; }
  bool is_ethereal() { return ethereal; }
  void set_ethereal(bool val) { ethereal = val; }
- void set_using_new_converse_gump(bool val);
- bool using_new_converse_gump() { return enabled_converse_gump; }
+ uint8 get_converse_gump_type() { return converse_gump_type; }
+ void set_converse_gump_type(uint8 new_type);
+ bool using_new_converse_gump();
  void set_free_balloon_movement(bool val) { free_balloon_movement = val; }
  bool has_free_balloon_movement() { return free_balloon_movement; }
  bool is_forcing_solid_converse_bg() { return force_solid_converse_bg; }

@@ -93,6 +93,7 @@ bool GameplayDialog::init() {
 	const char* const yesno_text[] = { "no", "yes" };
 	const char* const formation_text[] = { "standard", "column", "row", "delta" };
 	const char* const selected_game_text[] = {"Menu Select", "Ultima VI", "Savage Empire", "Martian Dreams"};
+	const char* const converse_style_text[] = {"Default", "U7 Style", "WOU Style"};
 
   std::string selected_game;
   config->value("config/loadgame", selected_game, "");
@@ -128,11 +129,11 @@ bool GameplayDialog::init() {
 		AddWidget(text_gump_button);
 		button_index[last_index+=1] = text_gump_button;
 // use converse gump
-		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Use converse gump:", font);
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Converse gump:", font);
 		AddWidget(widget);
-		converse_gump_button = new GUI_TextToggleButton(this, colX[2], buttonY += row_h, yesno_width, height, yesno_text, 2, game->using_new_converse_gump(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		converse_gump_button = new GUI_TextToggleButton(this, 187, buttonY += row_h, 78, height, converse_style_text, 3, get_converse_gump_type_from_config(config), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(converse_gump_button);
-		old_using_converse_gump = game->using_new_converse_gump();
+		old_converse_gump_type = game->get_converse_gump_type();
 		button_index[last_index+=1] = converse_gump_button;
 	} else {
 		text_gump_button = NULL;
@@ -242,6 +243,19 @@ const char *get_selected_game_config_string(int selected_index)
   return config_strings[selected_index];
 }
 
+
+const char *get_converse_gump_config_string(int selected_index)
+{
+  const char *config_strings[] = {"default", "u7style", "wou" };
+
+  if(selected_index < 0 || selected_index >= 3)
+  {
+    return config_strings[0];
+  }
+
+  return config_strings[selected_index];
+}
+
 GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 	if(caller == (GUI_CallBack *)cancel_button) {
 		return close_dialog();
@@ -259,10 +273,10 @@ GUI_status GameplayDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 		if(!Game::get_game()->is_new_style()) {
 			game->set_using_text_gumps(text_gump_button->GetSelection());
 			config->set("config/general/use_text_gumps", text_gump_button->GetSelection() ? "yes" : "no");
-			bool using_converse_gump = (converse_gump_button->GetSelection() ? 1 : 0);
-			if(using_converse_gump != old_using_converse_gump) {
-				config->set("config/general/converse_gump", using_converse_gump ? "yes" : "no");
-				game->set_using_new_converse_gump(using_converse_gump);
+			uint8 converse_gump_type = converse_gump_button->GetSelection();
+			if(converse_gump_type != old_converse_gump_type) {
+				config->set("config/general/converse_gump", get_converse_gump_config_string(converse_gump_type));
+				game->set_converse_gump_type(converse_gump_type);
 			}
 		}
 		if(converse_solid_bg_button) {

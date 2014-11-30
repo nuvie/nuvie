@@ -224,6 +224,17 @@ local g_readiable_objs_tbl = {
 [550] = 5 --welding gloves
 }
 
+function wrap_coord(coord, level)
+   if level > 0 and level < 6 then
+      return coord
+   end
+
+   if coord < 0 then
+      return 1024 + coord
+   end
+   
+   return coord % 1024   
+end
 
 function obj_get_readiable_location(obj)
 	if g_readiable_objs_tbl[obj.tile_num] ~= nil then

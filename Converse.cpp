@@ -414,8 +414,9 @@ bool Converse::start(uint8 n)
 void Converse::stop()
 {
 	scroll->set_talking(false);
+    MsgScroll *system_scroll = Game::get_game()->get_scroll();
 
-    if(Game::get_game()->using_new_converse_gump() && !scroll->is_converse_finished())
+    if((Game::get_game()->using_new_converse_gump() || scroll != system_scroll) && !scroll->is_converse_finished())
     {
     	return;
     }
@@ -433,9 +434,16 @@ void Converse::stop()
     }
     else
     {
-    	scroll->set_autobreak(false);
-    	scroll->display_string("\n");
-    	scroll->display_prompt();
+
+
+      system_scroll->set_autobreak(false);
+      system_scroll->display_string("\n");
+      system_scroll->display_prompt();
+
+      if(scroll != system_scroll) //if using an alternate scroll eg wou fullmap scroll.
+      {
+        scroll->Hide();
+      }
     }
     if(!Game::get_game()->is_new_style())
     {
@@ -488,6 +496,10 @@ void Converse::print(const char *s)
         scroll->display_string(get_output(), MSGSCROLL_NO_MAP_DISPLAY);
 }
 
+void Converse::print_prompt()
+{
+  scroll->display_converse_prompt();
+}
 
 /* Get string value of variable `varnum'.
  */
@@ -648,8 +660,10 @@ bool Converse::override_input()
 void Converse::collect_input()
 {
 	if(!Game::get_game()->using_new_converse_gump())
-		print("\nyou say:");
-    poll_input();
+	{
+	  print_prompt();
+	}
+  poll_input();
 }
 
 /* If not waiting, continue the active script. If waiting for input, check i/o
@@ -830,4 +844,26 @@ void ConvScript::write2(converse_value val)
     *(buf_pt++) = val & 0xff;
     *(buf_pt++) = (val >> 8) & 0xff;
     return;
+}
+
+
+uint8 get_converse_gump_type_from_config(Configuration *config)
+{
+  std::string configvalue;
+  config->value("config/general/converse_gump", configvalue, "default");
+
+  if(string_i_compare(configvalue, "default"))
+  {
+    return CONVERSE_GUMP_DEFAULT;
+  }
+  else if(string_i_compare(configvalue, "u7style"))
+  {
+    return CONVERSE_GUMP_U7_STYLE;
+  }
+  else if(string_i_compare(configvalue, "wou"))
+  {
+    return CONVERSE_GUMP_WOU_STYLE;
+  }
+
+  return CONVERSE_GUMP_DEFAULT;
 }
