@@ -872,6 +872,9 @@ function advance_time(num_turns)
    clock_inc(num_turns)
    	
    if minute + num_turns >= 60 then
+      
+      update_watch_tile()
+      
       update_actor_schedules()
       if g_hours_till_next_healing > 0 then
          g_hours_till_next_healing = g_hours_till_next_healing - 1

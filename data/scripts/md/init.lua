@@ -15,12 +15,22 @@ end
 g_hours_till_next_healing = 0
 g_in_dream_mode = false
 
+function update_watch_tile()
+   local anim_index = get_anim_index_for_tile(616) --616 = watch tile
+   if anim_index ~= nil then
+      local new_watch_tile = 416 + clock_get_hour() % 12
+      anim_set_first_frame(anim_index, new_watch_tile)
+   end
+end
+
 function load_game()
    objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
    g_hours_till_next_healing = objlist_read1()
    
    objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
    g_in_dream_mode = bit32.btest(objlist_read2(), 0x10)
+   
+   update_watch_tile()
 end
 
 function save_game()

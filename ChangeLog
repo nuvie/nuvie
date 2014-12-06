@@ -1,3 +1,11 @@
+2014-12-06  Eric Fry <efry at users.sourceforge.net> r1982
+	* Update MD pocket watch tile based on time.
+	* Added new lua script functions for accessing tile animations.
+	  anim_get_number_of_entries()
+	  anim_get_tile(anim_index)
+	  anim_get_first_frame(anim_index)
+	  anim_set_first_frame(anim_index, anim_start_tile)
+
 2014-11-30  Eric Fry <efry at users.sourceforge.net> r1981
 	* Added mapwindow converse gump for MD / SE. This replaces the mapwindow
 	  for conversations when playing in original UI mode.

@@ -656,34 +656,40 @@ bool TileManager::loadAnimMask()
  */
 void TileManager::update_timed_tiles(uint8 hour)
 {
-    uint16 new_tile;
-//    switch(Game::get_game()->get_game_type())
-//    {
-//        case NUVIE_GAME_U6:
-            // sundials
-            if(hour >= 5 && hour <= 6)
-                new_tile = 328;
-            else if(hour >= 7 && hour <= 8)
-                new_tile = 329;
-            else if(hour >= 9 && hour <= 10)
-                new_tile = 330;
-            else if(hour >= 11 && hour <= 12)
-                new_tile = 331;
-            else if(hour >= 13 && hour <= 14)
-                new_tile = 332;
-            else if(hour >= 15 && hour <= 16)
-                new_tile = 333;
-            else if(hour >= 17 && hour <= 18)
-                new_tile = 334;
-            else if(hour >= 19 && hour <= 20)
-                new_tile = 335;
-            else // 9pm to 5am
-                new_tile = 861;
-            set_tile_index(861, new_tile);
-//            break;
-//    }
+  uint16 new_tile;
+  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+  {
+    // sundials
+    if(hour >= 5 && hour <= 6)
+      new_tile = 328;
+    else if(hour >= 7 && hour <= 8)
+      new_tile = 329;
+    else if(hour >= 9 && hour <= 10)
+      new_tile = 330;
+    else if(hour >= 11 && hour <= 12)
+      new_tile = 331;
+    else if(hour >= 13 && hour <= 14)
+      new_tile = 332;
+    else if(hour >= 15 && hour <= 16)
+      new_tile = 333;
+    else if(hour >= 17 && hour <= 18)
+      new_tile = 334;
+    else if(hour >= 19 && hour <= 20)
+      new_tile = 335;
+    else // 9pm to 5am
+    new_tile = 861;
+    set_tile_index(861, new_tile);
+  }
+
 }
 
+void TileManager::set_anim_first_frame(uint16 anim_number, uint16 new_start_tile_num)
+{
+  if(anim_number < animdata.number_of_tiles_to_animate)
+  {
+      animdata.first_anim_frame[anim_number] = new_start_tile_num;
+  }
+}
 
 /* Returns tile rotated about the center by `rotate' degrees. (8-bit; clipped to
  * standard 16x16 size) It must be deleted after use.

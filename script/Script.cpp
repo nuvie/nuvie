@@ -256,6 +256,11 @@ static int nscript_map_can_put_obj(lua_State *L);
 
 static int nscript_tile_get_flag(lua_State *L);
 
+static int nscript_anim_get_number_of_entries(lua_State *L);
+static int nscript_anim_get_tile(lua_State *L);
+static int nscript_anim_get_first_frame(lua_State *L);
+static int nscript_anim_set_first_frame(lua_State *L);
+
 //Misc
 static int nscript_new_hit_entities_tbl_var(lua_State *L, ProjectileEffect *effect);
 static int nscript_quake_start(lua_State *L);
@@ -645,6 +650,18 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_tile_get_flag);
    lua_setglobal(L, "tile_get_flag");
+
+   lua_pushcfunction(L, nscript_anim_get_number_of_entries);
+   lua_setglobal(L, "anim_get_number_of_entries");
+
+   lua_pushcfunction(L, nscript_anim_get_tile);
+   lua_setglobal(L, "anim_get_tile");
+
+   lua_pushcfunction(L, nscript_anim_set_first_frame);
+   lua_setglobal(L, "anim_set_first_frame");
+
+   lua_pushcfunction(L, nscript_anim_get_first_frame);
+   lua_setglobal(L, "anim_get_first_frame");
 
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
@@ -3080,6 +3097,60 @@ static int nscript_tile_get_flag(lua_State *L)
 
 	lua_pushboolean(L, (bool)(bit_flags & (1 << bit)));
 	return 1;
+}
+
+/***
+get the number of tile animations
+@function anim_get_number_of_entries
+@treturn int number of animations
+*/
+static int nscript_anim_get_number_of_entries(lua_State *L)
+{
+  lua_pushinteger(L, Game::get_game()->get_tile_manager()->get_number_of_animations());
+  return 1;
+}
+
+/***
+get the tile number for a given animation number
+@function anim_get_tile
+@int anim_index index of animation
+@treturn int tile number
+*/
+static int nscript_anim_get_tile(lua_State *L)
+{
+  uint16 anim_index = (uint16) luaL_checkinteger(L, 1);
+
+  lua_pushinteger(L, Game::get_game()->get_tile_manager()->get_anim_tile(anim_index));
+  return 1;
+}
+
+/***
+set the starting animation frame for a given animation number
+@function anim_set_first_frame
+@int anim_index index of animation loop to change
+@int anim_start_tile the tile number of the start animation
+*/
+static int nscript_anim_set_first_frame(lua_State *L)
+{
+  uint16 anim_index = (uint16) luaL_checkinteger(L, 1);
+  uint16 anim_start_tile = (uint16) luaL_checkinteger(L, 2);
+
+  Game::get_game()->get_tile_manager()->set_anim_first_frame(anim_index, anim_start_tile);
+  return 0;
+}
+
+/***
+get the starting animation frame for a given animation number
+@function anim_get_first_frame
+@int anim_index index of animation
+@treturn int tile number of first animation frame
+*/
+static int nscript_anim_get_first_frame(lua_State *L)
+{
+  uint16 anim_index = (uint16) luaL_checkinteger(L, 1);
+
+  lua_pushinteger(L, Game::get_game()->get_tile_manager()->get_anim_first_frame(anim_index));
+  return 1;
 }
 
 /***

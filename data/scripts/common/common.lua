@@ -215,6 +215,17 @@ function get_wrapped_dist(pt1, pt2)
    return diff
 end
 
+function get_anim_index_for_tile(tile_number)
+   local total_anims = anim_get_number_of_entries()
+   for i=0,total_anims-1 do
+      if anim_get_tile(i) == tile_number then
+         return i
+      end
+   end
+   
+   return nil
+end
+
 --load other common functions
 
 local lua_file = nil

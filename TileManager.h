@@ -175,6 +175,11 @@ class TileManager
    void update();
    void update_timed_tiles(uint8 hour);
 
+   uint8 get_number_of_animations() { return animdata.number_of_tiles_to_animate; }
+   uint16 get_anim_tile(uint8 anim_index) { return anim_index < animdata.number_of_tiles_to_animate ? animdata.tile_to_animate[anim_index] : 0; }
+   uint16 get_anim_first_frame(uint8 anim_index) { return anim_index < animdata.number_of_tiles_to_animate ? animdata.first_anim_frame[anim_index] : 0; }
+   void set_anim_first_frame(uint16 anim_index, uint16 new_start_tile_num);
+
    Tile *get_rotated_tile(Tile *tile, float rotate, uint8 src_y_offset=0);
    void get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate, uint8 src_y_offset=0);
 

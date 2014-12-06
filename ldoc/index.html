@@ -118,6 +118,22 @@
 	<td class="summary">get a tile flag for a given tile number</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#anim_get_number_of_entries">anim_get_number_of_entries ()</a></td>
+	<td class="summary">get the number of tile animations</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_get_tile">anim_get_tile (anim_index)</a></td>
+	<td class="summary">get the tile number for a given animation number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_set_first_frame">anim_set_first_frame (anim_index, anim_start_tile)</a></td>
+	<td class="summary">set the starting animation frame for a given animation number</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#anim_get_first_frame">anim_get_first_frame (anim_index)</a></td>
+	<td class="summary">get the starting animation frame for a given animation number</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#play_end_sequence">play_end_sequence ()</a></td>
 	<td class="summary">play the game end sequence then quit.</td>
 	</tr>
@@ -957,6 +973,105 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 
            <span class="types"><span class="type">bool</span> or <span class="type">nil</span></span>
         return flag or nil on error
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_get_number_of_entries"></a>
+    <strong>anim_get_number_of_entries ()</strong>
+    </dt>
+    <dd>
+    get the number of tile animations
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        number of animations
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_get_tile"></a>
+    <strong>anim_get_tile (anim_index)</strong>
+    </dt>
+    <dd>
+    get the tile number for a given animation number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        tile number
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_set_first_frame"></a>
+    <strong>anim_set_first_frame (anim_index, anim_start_tile)</strong>
+    </dt>
+    <dd>
+    set the starting animation frame for a given animation number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation loop to change
+        </li>
+        <li><span class="parameter">anim_start_tile</span>
+            <span class="types"><span class="type">int</span></span>
+         the tile number of the start animation
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "anim_get_first_frame"></a>
+    <strong>anim_get_first_frame (anim_index)</strong>
+    </dt>
+    <dd>
+    get the starting animation frame for a given animation number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">anim_index</span>
+            <span class="types"><span class="type">int</span></span>
+         index of animation
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+        tile number of first animation frame
     </ol>
 
 
