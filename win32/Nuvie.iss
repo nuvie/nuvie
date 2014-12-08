@@ -306,6 +306,7 @@ Source: data\scripts\md\actor.lua; DestDir: {app}\data\scripts\md; Flags: ignore
 Source: data\scripts\md\ending.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\init.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\intro.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
+Source: data\scripts\md\look.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\usecode.lua; DestDir: {app}\data\scripts\md; Flags: ignoreversion
 Source: data\scripts\md\lang\en\game.lua; DestDir: {app}\data\scripts\md\lang\en; Flags: ignoreversion
 Source: data\scripts\md\lang\it\game.lua; DestDir: {app}\data\scripts\md\lang\it; Flags: ignoreversion

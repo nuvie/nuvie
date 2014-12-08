@@ -106,24 +106,6 @@ function search(obj)
    
 end
 
-function look_obj(obj)
-	printfl("YOU_SEE", obj.look_string);
-
-	--FIXME usecode look description should be lua code.
-	if usecode_look(obj) then
-		print("\n")
-		return false
-	end
-
-	print(".\n");
-	
-	if is_container_obj(obj.obj_n) then
-	  search(obj)
-	end
-
-	return false
-end
-
 --tile_num, readied location
 local g_readiable_objs_tbl = {
 -- 0 = head
@@ -344,6 +326,8 @@ else
 		io.stderr:write(actor_load);
 	end
 end
+
+look_init = nuvie_load("md/look.lua"); look_init();
 
 -- init usecode
 usecode_init = nuvie_load("md/usecode.lua"); usecode_init();

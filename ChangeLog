@@ -1,3 +1,8 @@
+2014-12-08  Eric Fry <efry at users.sourceforge.net> r1983
+	* Moved MD look lua script into its own file. look.lua
+	* Added script for the following look actions.
+	  Pocketwatch, marker flag, martian wheel barrow, rail cart and cannon.
+
 2014-12-06  Eric Fry <efry at users.sourceforge.net> r1982
 	* Update MD pocket watch tile based on time.
 	* Added new lua script functions for accessing tile animations.
