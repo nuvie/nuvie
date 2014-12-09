@@ -105,13 +105,41 @@ function look_marker_flag(obj)
    end
 end
 
+function look_broken_strap(obj)
+   local spector = Actor.get(2)
+   Actor.set_talk_flag(spector, 6)
+   Actor.talk(spector)
+end
+
+function look_metal_woman(obj)
+   if obj.quality ~= 0 then
+      printl("IT_HAS_A_HEARTSTONE")
+   end
+end
+
+function look_covered_martian_seed(obj)
+   if obj.frame_n < 4 then
+      local quality = obj.quality
+      if quality == 15 then
+         printl("IT_IS_GROWING")
+      elseif quality == 16 then
+         printl("IT_IS_RIPE")
+      else
+         printl("IT_IS_NOT_GROWING")
+      end
+   end
+end
+
 local look_usecode = {
 [91]=look_pocketwatch,
 [98]=look_pocketwatch,
 [172]=look_marker_flag,
+[251]=look_covered_martian_seed,
 [268]=look_barrow, --OBJ_MARTIAN_WHEEL_BARROW
+[287]=look_metal_woman,
 [333]=look_cannon,
 [410]=look_barrow, --OBJ_RAIL_CAR
+[460]=look_broken_strap,
 }
 
 function look_obj(obj)

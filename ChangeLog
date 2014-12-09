@@ -1,3 +1,7 @@
+2014-12-09  Eric Fry <efry at users.sourceforge.net> r1984
+	* Added more MD look usecode. martian seed, metal woman and broken strap.
+	* Close gumps upon entering conversation mode.
+
 2014-12-08  Eric Fry <efry at users.sourceforge.net> r1983
 	* Moved MD look lua script into its own file. look.lua
 	* Added script for the following look actions.

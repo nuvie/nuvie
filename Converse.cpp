@@ -376,6 +376,7 @@ bool Converse::start(uint8 n)
             DEBUG(0,LEVEL_CRITICAL,"Can't talk: Unimplemented or unknown game type\n");
             return(false);
         }
+        views->close_all_gumps();
         // set current NPC and start conversation
         npc_num = n;
         init_variables();

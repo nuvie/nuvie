@@ -97,4 +97,8 @@ IRON_ORE="iron ore",
 COAL="coal",
 IT_HAS_1_LOAD_OF="It has 1 load of %s.\n",
 IT_HAS_N_LOADS_OF="It has %d loads of %s.\n",
+IT_HAS_A_HEARTSTONE="It has a heartstone.\n",
+IT_IS_GROWING="It is growing.\n",
+IT_IS_RIPE="It is ripe.\n",
+IT_IS_NOT_GROWING="It is not growing.\n",
 }
