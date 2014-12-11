@@ -255,6 +255,7 @@ static int nscript_map_can_put_actor(lua_State *L);
 static int nscript_map_can_put_obj(lua_State *L);
 
 static int nscript_tile_get_flag(lua_State *L);
+static int nscript_tile_get_description(lua_State *L);
 
 static int nscript_anim_get_number_of_entries(lua_State *L);
 static int nscript_anim_get_tile(lua_State *L);
@@ -650,6 +651,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_tile_get_flag);
    lua_setglobal(L, "tile_get_flag");
+
+   lua_pushcfunction(L, nscript_tile_get_description);
+   lua_setglobal(L, "tile_get_description");
 
    lua_pushcfunction(L, nscript_anim_get_number_of_entries);
    lua_setglobal(L, "anim_get_number_of_entries");
@@ -3097,6 +3101,19 @@ static int nscript_tile_get_flag(lua_State *L)
 
 	lua_pushboolean(L, (bool)(bit_flags & (1 << bit)));
 	return 1;
+}
+
+/***
+get the description for a given tile number
+@function tile_get_description
+@int tile_number
+@treturn string the descriptive string for the given tile number.
+ */
+static int nscript_tile_get_description(lua_State *L)
+{
+  uint16 tile_num = (uint16) luaL_checkinteger(L, 1);
+  lua_pushstring(L, Game::get_game()->get_tile_manager()->lookAtTile(tile_num, 1, false));
+  return 1;
 }
 
 /***

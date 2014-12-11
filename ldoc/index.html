@@ -118,6 +118,10 @@
 	<td class="summary">get a tile flag for a given tile number</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#tile_get_description">tile_get_description (tile_number)</a></td>
+	<td class="summary">get the description for a given tile number</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#anim_get_number_of_entries">anim_get_number_of_entries ()</a></td>
 	<td class="summary">get the number of tile animations</td>
 	</tr>
@@ -973,6 +977,34 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 
            <span class="types"><span class="type">bool</span> or <span class="type">nil</span></span>
         return flag or nil on error
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tile_get_description"></a>
+    <strong>tile_get_description (tile_number)</strong>
+    </dt>
+    <dd>
+    get the description for a given tile number
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">tile_number</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        the descriptive string for the given tile number.
     </ol>
 
 

@@ -1,3 +1,9 @@
+2014-12-11  Eric Fry <efry at users.sourceforge.net> r1985
+	* Added more MD look usecode. Belgian Combine, Sprayer, Weed sprayer,
+	  heat ray gun, freeze ray gun, robot sprayer system, tracking motor,
+	  switch bar, cabinet and panel.
+	* Added tile_get_description() script function.
+
 2014-12-09  Eric Fry <efry at users.sourceforge.net> r1984
 	* Added more MD look usecode. martian seed, metal woman and broken strap.
 	* Close gumps upon entering conversation mode.
