@@ -260,12 +260,65 @@ function look_switch_bar(obj)
    end
 end
 
+function look_light_source(obj)
+   local obj_n = obj.obj_n
+   local qty = obj.qty
+   local quality = obj.quality
+   
+   if (obj_n == 109 or obj_n == 110) and qty > 1 then
+      return
+   end
+   
+   if quality > 30 then
+      printl("PLENTY_OF")
+   elseif quality > 6 and quality <= 30 then
+      printfl("IT_HAS_N_MORE_MINUTES_OF", quality)
+   elseif quality > 0 and quality <= 6 then
+      printl("ITS_ALMOST_OUT_OF")
+   elseif obj_n == 115 or obj_n == 117 or obj_n == 116 or obj_n == 118 then
+      printl("NO")
+   else
+      printl("PLENTY_OF")
+   end
+   
+   if obj_n == 115 or obj_n == 117 or obj_n == 116 or obj_n == 118 then
+      printl("FUEL")
+   else
+      printl("WICK")
+   end
+   
+end
+
+function look_door(obj)
+   local quality = obj.quality
+   if quality >= 128 then
+      quality = quality - 128
+      if quality >= 64 then
+         printl("IT_IS_APPARENTLY_RUSTED_SHUT")
+      else
+         printl("IT_IS_APPARENTLY_LOCKED")
+      end
+   end
+end
+
 local look_usecode = {
 [45]=look_belgian_combine,
 [91]=look_pocketwatch,
 [98]=look_pocketwatch,
+[109]=look_light_source, -- OBJ_TORCH
+[110]=look_light_source, -- OBJ_LIT_TORCH
+[111]=look_light_source, -- OBJ_CANDLESTICK
+[112]=look_light_source, -- OBJ_LIT_CANDLE
+[113]=look_light_source, -- OBJ_CANDELABRA
+[114]=look_light_source, -- OBJ_LIT_CANDELABRA
+[115]=look_light_source, -- OBJ_OIL_LAMP
+[116]=look_light_source, -- OBJ_LIT_OIL_LAMP
+[117]=look_light_source, -- OBJ_LANTERN
+[118]=look_light_source, -- OBJ_LIT_LANTERN
 [129]=look_portable_sprayer, --OBJ_WEED_SPRAYER
 [172]=look_marker_flag,
+[179]=look_door, --OBJ_CLOSED_DOOR
+[227]=look_door, --OBJ_DOOR3
 [240]=look_ray_gun, --OBJ_HEAT_RAY_GUN
 [241]=look_ray_gun, --OBJ_FREEZE_RAY_GUN
 [251]=look_covered_martian_seed,

@@ -1,3 +1,6 @@
+2014-12-12  Eric Fry <efry at users.sourceforge.net> r1986
+	* Added MD look usecode for light sources and doors.
+
 2014-12-11  Eric Fry <efry at users.sourceforge.net> r1985
 	* Added more MD look usecode. Belgian Combine, Sprayer, Weed sprayer,
 	  heat ray gun, freeze ray gun, robot sprayer system, tracking motor,
