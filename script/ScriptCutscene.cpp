@@ -1781,6 +1781,12 @@ void ScriptCutscene::Display(bool full_redraw)
 		screen->update(x_off,y_off,320, 200);
 }
 
+void ScriptCutscene::Hide()
+{
+  GUI_Widget::Hide();
+  gui->force_full_redraw();
+}
+
 void ScriptCutscene::display_wrapped_text(CSSprite *s)
 {
   uint8 text_color = (uint8) s->text_color;

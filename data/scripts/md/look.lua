@@ -301,6 +301,51 @@ function look_door(obj)
    end
 end
 
+function look_obelisk(obj)
+   if obj.quality == 0 then
+      return
+   end
+   
+   local ui_style = game_get_ui_style()
+   
+   canvas_show()
+   canvas_hide_all_sprites()
+   canvas_set_opacity(0xff);
+   canvas_set_update_interval(25)
+   canvas_rotate_game_palette(true)
+   
+   local obelisk = sprite_new(nil, 184, 0, true)
+   
+   local text_sprite
+   --local text_sprite_bg
+   
+   if ui_style == UI_STYLE_ORIG then
+      canvas_set_solid_bg(false)
+   else
+      text_sprite = sprite_new(nil, 8, 164, true)
+      text_sprite.text_align_centre = true
+      text_sprite.text_color = 15
+      text_sprite.text = "Obelisk."
+      obelisk.x = 96
+      obelisk.y = 41
+   end
+   
+   obelisk.image = image_load("mdream.lzc", obj.quality-1)
+   
+   local input = nil
+   while input == nil do
+      canvas_update()
+      input = input_poll()
+      if input ~= nil then
+         break
+      end
+   end
+
+   canvas_set_solid_bg(true)
+   canvas_rotate_game_palette(false)
+   canvas_hide()
+end
+
 local look_usecode = {
 [45]=look_belgian_combine,
 [91]=look_pocketwatch,
@@ -326,6 +371,7 @@ local look_usecode = {
 [268]=look_barrow, --OBJ_MARTIAN_WHEEL_BARROW
 [276]=look_sprayer_system,
 [287]=look_metal_woman,
+[292]=look_obelisk,
 [314]=look_tracking_motor,
 [333]=look_cannon,
 [410]=look_barrow, --OBJ_RAIL_CAR

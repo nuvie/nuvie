@@ -155,6 +155,7 @@ public:
 
 	void wait();
 	void Display(bool full_redraw);
+	virtual void Hide();
 
 	void print_text(CSImage *image, const char *string, uint16 *x, uint16 *y, uint16 startx, uint16 width, uint8 color);
 
