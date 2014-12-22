@@ -41,6 +41,7 @@ extern GUI_status partyViewButtonCallback(void *data);
 
 #define MD Game::get_game()->get_game_type()==NUVIE_GAME_MD
 
+
 ActorView::ActorView(Configuration *cfg) : View(cfg)
 {
  portrait = NULL;

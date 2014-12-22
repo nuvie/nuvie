@@ -212,6 +212,7 @@ static int nscript_party_is_in_combat_mode(lua_State *L);
 static int nscript_party_set_combat_mode(lua_State *L);
 static int nscript_party_set_party_mode(lua_State *L);
 static int nscript_party_move(lua_State *L);
+static int nscript_party_use_entrance(lua_State *L);
 static int nscript_party_get_size(lua_State *L);
 static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
@@ -751,6 +752,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_party_move);
    lua_setglobal(L, "party_move");
 
+   lua_pushcfunction(L, nscript_party_use_entrance);
+   lua_setglobal(L, "party_use_entrance");
+
    lua_pushcfunction(L, nscript_party_update_leader);
    lua_setglobal(L, "party_update_leader");
 
@@ -929,6 +933,14 @@ bool Script::play_cutscene(const char *script_file)
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
 
 	return run_lua_file(script_file_path.c_str());
+}
+
+bool Script::call_player_post_move_action(bool didMove)
+{
+  lua_getglobal(L, "player_post_move_action");
+  lua_pushboolean(L, didMove);
+
+  return call_function("player_post_move_action", 1, 0);
 }
 
 bool Script::call_actor_update_all()
@@ -2573,6 +2585,35 @@ static int nscript_party_move(lua_State *L)
 	party->move(x, y, z);
 
 	return 0;
+}
+
+/***
+Walk party members to an entrance and teleport them to the exit on the other side.
+
+__Warning:__ This function uses an old timer based class. So it will execute synchronously on subsequent calls to the main update loop.
+
+__FIXME:__ This logic should probably be done in pure script with pathfinder helper functions. ;-)
+
+@function party_use_entrance
+@tparam x,y,z entrance entrance location
+@tparam MapCoord|x,y,z exit exit location
+@within party
+ */
+static int nscript_party_use_entrance(lua_State *L)
+{
+  Party *party = Game::get_game()->get_party();
+
+  MapCoord entrance;
+  MapCoord exit;
+
+  if(nscript_get_location_from_args(L, &entrance.x, &entrance.y, &entrance.z) == false)
+    return 0;
+  if(nscript_get_location_from_args(L, &exit.x, &exit.y, &exit.z, 4) == false)
+    return 0;
+
+  party->walk(&entrance, &exit);
+
+  return 0;
 }
 
 /***

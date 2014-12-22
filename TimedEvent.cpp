@@ -398,6 +398,7 @@ void TimedPartyMove::hide_actor(Actor *person)
             delay = 1; set_time(); // effect will be longer than original delay
         }
         person->hide();
+        person->move(target->x,target->y,target->z);
     }
 }
 

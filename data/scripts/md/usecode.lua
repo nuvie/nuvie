@@ -714,6 +714,88 @@ function use_musical_instrument(obj, actor)
    end
 end
 
+function use_wrench_on_switchbar(obj, target_obj, actor)
+   if target_obj.quality == 1 then
+      if target_obj.on_map then
+         local turntable = map_get_obj(target_obj.x-1, target_obj.y-1, target_obj.z, 413)
+         if turntable ~= nil then
+            target_obj.frame_n = turntable.frame_n
+            target_obj.quality = 0
+            printl("THE_SWITCH_IS_FASTENED")
+            play_md_sfx(0x1f)
+            return
+         end   
+      end
+      printl("THIS_SWITCH_CANNOT_BE_FIXED")
+      play_md_sfx(0x5)
+   else
+      printl("THE_SWITCH_IS_LOOSE")
+      play_md_sfx(0x1f)
+      target_obj.quality = 1
+   end
+end
+
+function use_wrench_on_drill(obj, target_obj, actor)
+   local drill_cart
+   if target_obj.on_map then
+      drill_cart = map_get_obj(target_obj.x, target_obj.y, target_obj.z, 439)
+   end
+   
+   if drill_cart ~= nil then
+      local drill = Obj.new(441,1) --assembled drill
+      Obj.moveToMap(drill, target_obj.x, target_obj.y, target_obj.z)
+      Obj.removeFromEngine(target_obj)
+      Obj.removeFromEngine(drill_cart)
+      printl("THE_DRILLS_POWER_IS_CONNECTED")
+      play_md_sfx(0x1f)
+   else
+      printl("THE_DRILL_MUST_BE_INSTALLED_ONTO_A_DRILL_CART")
+   end
+end
+
+function use_wrench_on_panel(obj, target_obj, actor)
+   if target_obj.on_map == false then
+      printl("IT_HAS_NO_EFFECT")
+      return
+   end
+   
+   local quality = target_obj.quality
+   local panel_qty = target_obj.qty
+   if quality == 0 then
+      target_obj.quality = 1
+      printl("THE_PANEL_IS_LOOSE")
+      play_md_sfx(0x1f)
+   elseif bit32.btest(quality, 2) then
+      printl("IT_MUST_BE_REPAIRED_FIRST")
+      play_md_sfx(0x5)
+   else
+      local cabinet = map_get_obj(target_obj.x, target_obj.y, target_obj.z, 457)
+      if cabinet == nil then
+         printl("PANELS_ARE_ONLY_INSTALLED_ONTO_CABINETS")
+         play_md_sfx(0x5)
+      else
+         quality = cabinet.quality
+         if (quality == 0 and panel_qty ~= 0) or
+            (quality ~= 0 and quality <= 3 and panel_qty == 0 and target_obj.frame_n ~= (quality - 1) ) or
+            (quality ~= 0 and (quality > 3 or panel_qty ~= 0) and quality ~= panel_qty) then
+            printl("THIS_CABINET_REQUIRES_A_DIFFERENT_TYPE_OF_PANEL")
+            play_md_sfx(0x5)
+         else
+            target_obj.quality = target_obj.quality - 1
+            printl("THE_PANEL_IS_FASTENED")
+            play_md_sfx(0x1f)
+            if target_obj.quality == 3 then
+               Actor.set_talk_flag(0x74, 3)
+               if Actor.get_talk_flag(0x74, 0) then
+                  Actor.set_talk_flag(0x60, 2)
+               end
+            end
+         end
+      end
+   end
+   
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -744,6 +826,13 @@ local usecode_table = {
 [106]=use_tent,
 --OBJ_BLOB_OF_OXIUM
 [131]=use_misc_text,
+--OBJ_WRENCH
+[135]={
+--on
+   [411]=use_wrench_on_switchbar,
+   [440]=use_wrench_on_drill,
+   [458]=use_wrench_on_panel
+},
 --OBJ_DOOR 
 [152]=use_door,
 --OBJ_CAMERA

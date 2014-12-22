@@ -282,6 +282,10 @@
 	<td class="summary">Move party to a given map location</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#party_use_entrance">party_use_entrance (entrance, exit)</a></td>
+	<td class="summary">Walk party members to an entrance and teleport them to the exit on the other side.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#party_get_size">party_get_size ()</a></td>
 	<td class="summary">Returns the number of members in the party</td>
 	</tr>
@@ -2239,6 +2243,35 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
         <li><span class="parameter">location</span>
             <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
          map location to move party to.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "party_use_entrance"></a>
+    <strong>party_use_entrance (entrance, exit)</strong>
+    </dt>
+    <dd>
+    Walk party members to an entrance and teleport them to the exit on the other side. </p>
+
+<p><strong>Warning:</strong> This function uses an old timer based class. So it will execute synchronously on subsequent calls to the main update loop.</p>
+
+<p><strong>FIXME:</strong> This logic should probably be done in pure script with pathfinder helper functions. ;&ndash;)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">entrance</span>
+            <span class="types"><span class="type">x,y,z</span></span>
+         entrance location
+        </li>
+        <li><span class="parameter">exit</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         exit location
         </li>
     </ul>
 

@@ -493,6 +493,11 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 		}
     }
 
+    if(game_type != NUVIE_GAME_U6)
+    {
+      Game::get_game()->get_script()->call_player_post_move_action(can_move);
+    }
+
     // update world around player
     actor_manager->updateActors(x, y, z);
     obj_manager->update(x, y, z); // remove temporary objs, hatch eggs

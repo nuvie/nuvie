@@ -281,3 +281,7 @@ function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
 
 	return true
 end
+
+function player_post_move_action(did_move)
+end
+
