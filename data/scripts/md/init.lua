@@ -309,11 +309,42 @@ function altcode_250_create_object()
    print("\n")
 end
 
+function altcode_999_find_objs_on_map()
+   print("Find Object\nObj_n: ")
+   local input = input_select(nil, true)
+   local obj_n = tonumber(input, 10)
+   print("\nFrame: ")
+   input = input_select(nil, true)
+   local frame_n = tonumber(input, 10)
+   print("\nQuality: ")
+   input = input_select(nil, true)
+   local quality = tonumber(input, 10)
+   print("\nz: ")
+   input = input_select(nil, true)
+   local z = tonumber(input, 10)
+   if z == nil then
+      z = 0
+   end
+   print("\n")
+   for obj in find_obj(z, obj_n, frame_n, quality) do
+      print(string.format("OBJ: (%x,%x,%x)\n", obj.x, obj.y, obj.z))
+      party_move(obj.x, obj.y, obj.z)
+      print("continue? ")
+      input = input_select("yn", false)
+      print("\n")
+      if input == "N" or input == "n" then
+         return
+      end
+   end
+end
+
 function handle_alt_code(altcode)
    if altcode == 242 then
       altcode_242_set_actor_talk_flag()
    elseif altcode == 250 then
       altcode_250_create_object()
+   elseif altcode == 999 then
+      altcode_999_find_objs_on_map()
    end
 end
 

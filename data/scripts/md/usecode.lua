@@ -343,6 +343,18 @@ function npcs_are_nearby()
    return nil
 end
 
+function is_actor_able_to_talk_to_player(actor)
+   local player = Actor.get_player_actor()
+   local loc = player_get_location()
+   if actor.alive and actor.asleep == false and actor.z == loc.z then
+      if get_wrapped_dist(actor.x, loc.x) < 6 and get_wrapped_dist(actor.y, loc.y) < 6 and is_target_visible_to_actor(player, actor) then
+         return true
+      end
+   end
+   
+   return false
+end
+
 function rest_heal_party(hours_to_rest)
    local actor
    for actor in party_members() do
@@ -796,9 +808,80 @@ function use_wrench_on_panel(obj, target_obj, actor)
    
 end
 
+function use_oxium_bin(obj, actor)
+   if map_can_reach_point (actor.x, actor.y, obj.x, obj.y, obj.z) == false then
+      printl("BLOCKED")
+      return
+   end
+   
+   local oxium = Obj.new(131) --OBJ_BLOB_OF_OXIUM
+   oxium.qty = 20
+   
+   if Actor.can_carry_obj(actor, oxium) then
+      Actor.inv_add_obj(actor, oxium, STACK_OBJECT_QTY)
+      printl("YOU_GET_TWO_HANDFULS_OF_OXIUM_FROM_THE_BIN")
+      Actor.set_talk_flag(0x12, 4)
+   else
+      printl("YOU_ARE_CARRYING_TOO_MUCH_ALREADY")
+   end
+end
+
+function use_sledge_hammer_on_replacement_track_to_broken_track(obj, target_obj, to_obj, actor)
+   play_md_sfx(0x20)
+   printl("WHICH_SECTION_OF_RAIL_NEEDS_FIXING")
+   Obj.removeFromEngine(target_obj)
+   to_obj.obj_n = 414 --OBJ_TRACK
+end
+
+function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
+   --FIXME error when using telekinesis
+--[[
+   if telekinetic flag then
+      printl("THE_WORK_IS_TO_PRECISE_TO_PERFORM_TELEKINETICALLY")
+      return
+   end
+--]]
+   if Actor.get_talk_flag(0x73, 2) == false or Actor.get_talk_flag(0x71, 3) == true then
+      printl("THE_CABLE_DOES_NOT_NEED_REPLACEMENT")
+      return
+   end
+   
+   if actor_is_holding_obj(actor, 38) == false then --OBJ_RUBBER_GLOVES
+      Actor.hit(actor, math.random(0, math.floor(actor.max_hp/2)))
+      local spector = Actor.get(2)
+      if is_actor_able_to_talk_to_player(spector) then
+         Actor.set_talk_flag(spector, 2)
+         Actor.talk(spector)
+      end
+   else
+      Obj.removeFromEngine(target_obj)
+      Actor.set_talk_flag(0x73, 4)
+      --FIXME add logic from midgame_cutscene_2() here.
+      play_midgame_sequence(3)
+   end
+   
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
+--OBJ_SLEDGE_HAMMER
+[52]={
+--on
+   [404]={ --OBJ_REPLACEMENT_TRACK
+   --to
+      [405]=use_sledge_hammer_on_replacement_track_to_broken_track
+   }
+},
+--OBJ_PLIERS
+[53]={
+--on
+   [199]={--OBJ_CABLE_SPOOL
+   --to
+      [201]=use_pliers_on_spool_to_tower, --OBJ_TOWER_TOP
+      [215]=use_pliers_on_spool_to_tower, --OBJ_POWER_CABLE1
+   }
+},
 --OBJ_PICK
 [65]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_SHOVEL
@@ -839,6 +922,7 @@ local usecode_table = {
 [184]=use_misc_text,
 --OBJ_CABLE_SPOOL
 [199]=use_misc_text,
+[212]=use_oxium_bin,
 [222]=use_door,
 --OBJ_GONG_HAMMER
 [231]={

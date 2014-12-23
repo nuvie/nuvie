@@ -13,6 +13,7 @@ HAND   = 5
 HAND_2 = 6
 FOOT   = 7
 
+
 g_combat_range_tbl = {
 0, 1, 2, 3, 4, 5, 6, 7,
 1, 1, 2, 3, 4, 5, 6, 7,
@@ -51,3 +52,17 @@ function actor_randomise_stat(base_stat)
    return math.random(0, tmp) + math.random(0, tmp)  + base_stat - tmp
 end
 
+function actor_is_holding_obj(actor, obj_n)
+   local hand
+   
+   hand = Actor.inv_get_readied_obj_n(actor, HAND)
+   if hand == obj_n then
+      return true
+   end
+   hand = Actor.inv_get_readied_obj_n(actor, HAND_2)
+   if hand == obj_n then
+      return true
+   end
+   
+   return false   
+end

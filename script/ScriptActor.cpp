@@ -1447,11 +1447,13 @@ Add an object to the actor's inventory.
 @function Actor.inv_add_obj
 @tparam Actor actor
 @tparam Obj obj
+@bool[opt=false] stack_objs Should we stack obj.qty into existing objects?
 @within Actor
  */
 static int nscript_actor_inv_add_obj(lua_State *L)
 {
    Actor *actor;
+   bool stack_objs = false;
 
    actor = nscript_get_actor_from_args(L);
    if(actor == NULL)
@@ -1462,8 +1464,12 @@ static int nscript_actor_inv_add_obj(lua_State *L)
 
    obj = *s_obj;
 
+   if(lua_gettop(L) >= 3)
+   {
+     stack_objs = lua_toboolean(L, 3);
+   }
 
-   actor->inventory_add_object(obj, NULL, false);
+   actor->inventory_add_object(obj, NULL, stack_objs);
 
    return 0;
 }
@@ -1535,7 +1541,7 @@ Returns the obj_n the object that is readied at a given location.
 - 6 = HAND_2
 - 7 = FOOT
 
-@treturn int returns obj_n or -1 if nothing is reqdied at the specified location.
+@treturn int returns obj_n or -1 if nothing is readied at the specified location.
 @within Actor
  */
 static int nscript_actor_inv_get_readied_obj_n(lua_State *L)

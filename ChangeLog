@@ -1,3 +1,18 @@
+2014-12-23  Eric Fry <efry at users.sourceforge.net> r1989
+	* Added optional flag to Actor.inv_add_obj() to allow qty combining
+	  for stackable objects.
+	* Added MD use oxium bin, use sledge hammer on broken track and
+	  use pliers on spool to tower.
+	* Added new alt-code 999. This allows you to search the map for
+	  a given object type,frame,quality combo. The party is then teleported
+	  to each subsequent location until the player chooses to break out.
+
+2014-12-22  Eric Fry <efry at users.sourceforge.net> r1988
+	* Added MD wrench object usecode
+	* player_post_move_action() script function hook.
+	* Added party_use_entrance() script function.
+	* Started work on MD entrance logic.
+
 2014-12-14  Eric Fry <efry at users.sourceforge.net> r1987
 	* Added MD look obelisk.
 	* Changed canvas_hide() script function to force a full redraw.

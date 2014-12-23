@@ -19,6 +19,8 @@ UI_STYLE_NEW  = 1
 UI_STYLE_ORIG_PLUS_CUTOFF_MAP = 2
 UI_STYLE_ORIG_PLUS_FULL_MAP   = 3
 
+STACK_OBJECT_QTY = true
+
 if not setfenv then -- Lua 5.2
    -- based on http://lua-users.org/lists/lua-l/2010-06/msg00314.html
    -- this assumes f is a function

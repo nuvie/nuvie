@@ -1025,8 +1025,7 @@ function player_post_move_action(did_move)
 
    for obj in objs_at_loc(player_loc) do
       if (obj.obj_n == 175 or obj.obj_n == 163) then
---         party_use_entrance(player_loc.x, player_loc.y, player_loc.z, map_entrance_tbl[obj.quality])
-         party_use_entrance(player_loc, map_entrance_tbl[obj.quality])
+         party_use_entrance(player_loc.x, player_loc.y, player_loc.z, map_entrance_tbl[obj.quality])
       end
    end
    

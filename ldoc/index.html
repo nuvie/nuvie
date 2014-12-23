@@ -597,7 +597,7 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<td class="summary">Resurrect a dead actor.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#Actor.inv_add_obj">Actor.inv_add_obj (actor, obj)</a></td>
+	<td class="name" nowrap><a href="#Actor.inv_add_obj">Actor.inv_add_obj (actor, obj[, stack_objs=false])</a></td>
 	<td class="summary">Add an object to the actor&rsquo;s inventory.</td>
 	</tr>
 	<tr>
@@ -4347,7 +4347,7 @@ be placed at a random map location around the player.
 </dd>
     <dt>
     <a name = "Actor.inv_add_obj"></a>
-    <strong>Actor.inv_add_obj (actor, obj)</strong>
+    <strong>Actor.inv_add_obj (actor, obj[, stack_objs=false])</strong>
     </dt>
     <dd>
     Add an object to the actor&rsquo;s inventory.
@@ -4364,6 +4364,11 @@ be placed at a random map location around the player.
             <span class="types"><a class="type" href="index.html#Obj">Obj</a></span>
 
 
+        </li>
+        <li><span class="parameter">stack_objs</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should we stack obj.qty into existing objects?
+         (<em>default</em> false)
         </li>
     </ul>
 
@@ -4471,7 +4476,7 @@ be placed at a random map location around the player.
     <ol>
 
            <span class="types"><span class="type">int</span></span>
-        returns obj_n or -1 if nothing is reqdied at the specified location.
+        returns obj_n or -1 if nothing is readied at the specified location.
     </ol>
 
 
