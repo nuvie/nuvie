@@ -104,6 +104,8 @@ using std::vector;
 
 #define U6OP_ENDDATA   0xb8
 
+#define MDOP_MISC_ACTION  0xd1
+
 /* Script is executed as it is stepped through byte-by-byte, and can have
  * text, data, and control codes. Flow is controlled by run-level stack.
  */

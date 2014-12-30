@@ -1439,6 +1439,15 @@ uint8 Script::call_play_midgame_sequence(uint16 seq_num)
   return (uint8)lua_tointeger(L,-1);
 }
 
+bool Script::call_talk_script(uint8 script_number)
+{
+  lua_getglobal(L, "talk_script");
+  lua_pushnumber(L, (lua_Number)script_number);
+  if(call_function("talk_script", 1, 0) == false)
+    return false;
+  return true;
+}
+
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
    ScriptThread *t = NULL;
@@ -1719,6 +1728,21 @@ static int nscript_obj_gc(lua_State *L)
    return NULL;
    }
  */
+
+static void nscript_update_obj_location_variables(Obj *obj, uint16 x, uint16 y, uint8 z)
+{
+  if(obj->is_on_map())
+  {
+    Game::get_game()->get_obj_manager()->move(obj, x, y, z);
+  }
+  else
+  {
+    obj->x = x;
+    obj->y = y;
+    obj->z = z;
+  }
+}
+
 static int nscript_obj_set(lua_State *L)
 {
    Obj **s_obj;
@@ -1740,19 +1764,19 @@ static int nscript_obj_set(lua_State *L)
 
    if(!strcmp(key, "x"))
    {
-      obj->x = (uint16)lua_tointeger(L, 3);
+      nscript_update_obj_location_variables(obj, (uint16)lua_tointeger(L, 3), obj->y, obj->z);
       return 0;
    }
 
    if(!strcmp(key, "y"))
    {
-      obj->y = (uint16)lua_tointeger(L, 3);
+      nscript_update_obj_location_variables(obj, obj->x, (uint16)lua_tointeger(L, 3), obj->z);
       return 0;
    }
 
    if(!strcmp(key, "z"))
    {
-      obj->z = (uint8)lua_tointeger(L, 3);
+      nscript_update_obj_location_variables(obj, obj->x, obj->y, (uint8)lua_tointeger(L, 3));
       return 0;
    }
 
@@ -1970,7 +1994,7 @@ static int nscript_obj_get(lua_State *L)
 Move an object to the map.
 @function Obj.moveToMap
 @tparam Obj obj Object to move
-@tparam[opt] MapCoord|x,y,z location Map location
+@tparam[opt] MapCoord|x,y,z location Map location. If not supplied the location will be taken from the object's x,y and z variables
 @within Object
  */
 static int nscript_obj_movetomap(lua_State *L)

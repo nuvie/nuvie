@@ -1,3 +1,16 @@
+2014-12-30  Eric Fry <efry at users.sourceforge.net> r1990
+	* Added support for MD 0xD1 conversation opcode. This allows conversation
+	  scripts to execute specific game logic. Like opening the city gates at
+	  Olympus Mons.
+	  This calls the talk_script() lua function which will implement all the
+	  MD specific talk scripts. At the moment only script #6 has been implemented.
+	* Added MD use gate
+	* Fixed MD use door
+	* Changed Obj x,y,z script variables to update the objects location on the map
+	  if changed and the object is currently on the map.
+	* Fixed assert crash when walking near an egg with no container objects in MD.
+	  (12e, 277, 0)
+
 2014-12-23  Eric Fry <efry at users.sourceforge.net> r1989
 	* Added optional flag to Actor.inv_add_obj() to allow qty combining
 	  for stackable objects.

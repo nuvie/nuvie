@@ -195,8 +195,12 @@ bool EggManager::spawn_egg(Obj *egg, uint8 hatch_probability)
         || (period==EGG_HATCH_DAY && hour>=EGG_DAY_HOUR && hour<EGG_NIGHT_HOUR)
         || (period==EGG_HATCH_NIGHT && !(hour>=EGG_DAY_HOUR && hour<EGG_NIGHT_HOUR)) )
     {
+      if(egg->container == NULL)
+      {
+        DEBUG(1,LEVEL_WARNING," egg at (%x,%x,%x) does not contain any embryos!", egg->x, egg->y, egg->z);
+      }
           // check random probability that the egg will hatch
-          if(egg->qty == 100 || hatch_probability <= egg->qty)  // Hatch the egg.
+          if((egg->qty == 100 || hatch_probability <= egg->qty) && egg->container)  // Hatch the egg.
             {
              assert(egg->container);
              for(link = egg->container->start(); link != NULL; link = link->next)

@@ -9,13 +9,18 @@ function search_container(obj)
 end
 
 function use_door(obj, actor)
-	--FIXME check for blocked doorways.
-	--FIXME check for locked doors.
-	if obj.frame_n < 3 then
-		obj.frame_n = 3
-	else
-		obj.frame_n = 1
+	if bit32.btest(obj.quality, 0x80) then
+	  printl("IT_IS_LOCKED")
+	  return
 	end
+
+   if map_get_actor(obj.x, obj.y, obj.z) ~= nil then
+      printl("BLOCKED")
+      return
+   end
+	
+   obj.frame_n = bit32.bxor(obj.frame_n, 2)
+
 end
 
 function use_crate(obj, target_obj, actor)
@@ -862,6 +867,28 @@ function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
    
 end
 
+function use_gate(obj, actor)
+   if bit32.btest(obj.quality, 128) == true then
+      printl("IT_IS_APPARENTLY_LOCKED")
+      return
+   end
+
+   local frame_n = obj.frame_n
+   if frame_n == 0 or frame_n == 1 then
+      obj.frame_n = 3
+      obj.x = obj.x - 1
+   elseif frame_n == 2 or frame_n == 3 then
+      obj.frame_n = 1
+      obj.x = obj.x + 1
+   elseif frame_n == 4 or frame_n == 5 then
+      obj.frame_n = 7
+   elseif frame_n == 6 or frame_n == 7 then
+      obj.frame_n = 5
+   end
+   
+   
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -918,6 +945,7 @@ local usecode_table = {
 },
 --OBJ_DOOR 
 [152]=use_door,
+[181]=use_gate,
 --OBJ_CAMERA
 [184]=use_misc_text,
 --OBJ_CABLE_SPOOL

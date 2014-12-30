@@ -30,6 +30,7 @@
 #include "Map.h"
 #include "MapWindow.h"
 #include "Effect.h"
+#include "Script.h"
 #include "ConverseInterpret.h"
 #include "ConverseSpeech.h"
 
@@ -766,6 +767,10 @@ bool ConverseInterpret::op(stack<converse_typed_value> &i)
             break;
         case U6OP_SUBKARMA: // 0xc5
             player->subtract_karma(pop_arg(i));
+            break;
+        case MDOP_MISC_ACTION: // 0xd1
+            v[0] = pop_arg(i); // action number
+            Game::get_game()->get_script()->call_talk_script(v[0]);
             break;
         case U6OP_RESURRECT: // 0xd6
         {
