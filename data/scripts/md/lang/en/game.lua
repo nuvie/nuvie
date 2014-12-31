@@ -157,4 +157,6 @@ YOU_GET_TWO_HANDFULS_OF_OXIUM_FROM_THE_BIN="You get two handfuls of oxium from t
 WHICH_SECTION_OF_RAIL_NEEDS_FIXING="Which section of rail needs fixing -\n",
 THE_WORK_IS_TO_PRECISE_TO_PERFORM_TELEKINETICALLY="The work is too precise to perform telekinetically.\n",
 THE_CABLE_DOES_NOT_NEED_REPLACEMENT="The cable does not need replacement.\n",
+OUT_OF_AMMUNITION="Out of ammunition!\n",
+OUT_OF_ARROWS="Out of arrows!\n",
 }

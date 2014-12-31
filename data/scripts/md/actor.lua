@@ -390,33 +390,33 @@ local projectile_weapon_tbl = --FIXME weed sprayer and spray gun
 
 }
 
-weapon_dmg_tbl = { --FIXME: all damage is made up
-[16] = 2, --bloody saber
-[40] = 2, --Cupid's bow and arrows (charms)
-[41] = 2, --derringer
-[42] = 2, --revolver
-[43] = 2, --shotgun
-[44] = 2, --rifle
-[45] = 2, --Belgian combine
-[46] = 2, --elephant gun
-[47] = 2, --sling
-[48] = 2, --bow
-[49] = 2, --hatchet
-[50] = 2, --axe
-[51] = 2, --ball-peen hammer
-[52] = 2, --sledge hammer
-[54] = 2, --knife
-[55] = 2, --machete
-[56] = 2, --saber
-[65] = 2, --pick
-[66] = 2, --shovel
-[67] = 2, --hoe
-[68] = 2, --rake
-[69] = 2, --pitchfork
-[70] = 2, --cultivator
-[71] = 2, --scythe
-[72] = 2, --saw
-[102] = 2, --pry bar
+weapon_dmg_tbl = {
+[16] = 30, --bloody saber
+[40] = 1, --Cupid's bow and arrows (charms)
+[41] = 15, --derringer
+[42] = 18, --revolver
+[43] = 20, --shotgun
+[44] = 30, --rifle
+[45] = 30, --Belgian combine
+[46] = 45, --elephant gun
+[47] = 8, --sling
+[48] = 12, --bow
+[49] = 15, --hatchet
+[50] = 20, --axe
+[51] = 10, --ball-peen hammer
+[52] = 25, --sledge hammer
+[54] = 10, --knife
+[55] = 20, --machete
+[56] = 25, --saber
+[65] = 15, --pick
+[66] = 8, --shovel
+[67] = 10, --hoe
+[68] = 10, --rake
+[69] = 15, --pitchfork
+[70] = 12, --cultivator
+[71] = 20, --scythe
+[72] = 10, --saw
+[102] = 12, --pry bar
 --[109] = 1, --torch
 --[110] = 1, --lit torch
 --[111] = 1, --candlestick
@@ -427,66 +427,65 @@ weapon_dmg_tbl = { --FIXME: all damage is made up
 --[116] = 1, --lit oil lamp
 --[117] = 1, --lantern
 --[118] = 1, --lit lantern
-[129] = 1, --weed sprayer -- FIXME no damage normally not sure what it does
+[129] = 60, --weed sprayer -- FIXME: no damage normally. Only effects plants?
 --[136] = 1, --tongs
-[241] = 2, --heat ray gun
-[242] = 2, --freeze ray gun
+[241] = 20, --heat ray gun
+[242] = 10, --freeze ray gun
 --[243] = 1, --martian ritual pod knife
-[261] = 1, --spray gun -- FIXME no damage normally not sure what it does
-[263] = 2, --martian hoe (couldn't be equipped in original)
-[264] = 2, --martian scythe (couldn't be equipped in original)
-[265] = 2, --martian pitchfork (couldn't be equipped in original)
-[266] = 2, --martian rake (couldn't be equipped in original)
-[267] = 2, --martian shovel (couldn't be equipped in original)
-[313] = 2, --M60 machine gun (scripted to only attack and kill the big bad)
-[327] = 8, --martian pick (couldn't be equipped in original)
-[333] = 2, --cannon
-[401] = 2, --pool cue
+[261] = 60, --spray gun -- FIXME: no damage normally. Only effects plants?
+[263] = 10, --martian hoe (couldn't be equipped in original)
+[264] = 20, --martian scythe (couldn't be equipped in original)
+[265] = 15, --martian pitchfork (couldn't be equipped in original)
+[266] = 10, --martian rake (couldn't be equipped in original)
+[267] = 8, --martian shovel (couldn't be equipped in original)
+[313] = 254, --M60 machine gun (scripted to only attack and kill the big bad)
+[327] = 15, --martian pick (couldn't be equipped in original)
+[401] = 12, --pool cue
 }
 
-armour_tbl = --FIXME: all armor value is made up
+armour_tbl =
 {
-[1] = 1, --cap
-[2] = 1, --cowboy hat
+--[1] = 0, --cap
+--[2] = 0, --cowboy hat
 [3] = 1, --pith helmet
-[4] = 1, --military helmet
-[5] = 1, --derby
-[6] = 1, --kerchief
-[7] = 1, --silk scarf
-[8] = 1, --muffler
-[9] = 1, --man's shoes
-[10] = 1, --woman's shoes
+[4] = 2, --military helmet
+--[5] = 0, --derby
+--[6] = 0, --kerchief
+--[7] = 0, --silk scarf
+--[8] = 0, --muffler
+--[9] = 0, --man's shoes
+--[10] = 0, --woman's shoes
 [11] = 1, --riding boots
-[12] = 1, --ruby slippers
-[13] = 1, --thigh boots
-[14] = 1, --hip boots
-[15] = 1, --winged shoes
-[17] = 1, --cloth jacket
-[18] = 1, --wool sweater
-[19] = 1, --cape
-[20] = 1, --duster
+--[12] = 0, --ruby slippers
+[13] = 2, --thigh boots
+[14] = 3, --hip boots
+--[15] = 0, --winged shoes
+--[17] = 0, --cloth jacket
+--[18] = 0, --wool sweater
+--[19] = 0, --cape
+--[20] = 0, --duster
 [21] = 1, --wool overcoat
-[22] = 1, --sheepskin jacket
-[23] = 1, --arctic parka
-[25] = 1, --cotton pants
-[26] = 1, --cotton dress
+[22] = 2, --sheepskin jacket
+[23] = 2, --arctic parka
+--[25] = 0, --cotton pants
+--[26] = 0, --cotton dress
 [27] = 1, --denim jeans
-[28] = 1, --wool pants
-[29] = 1, --wool dress
-[30] = 1, --chaps and jeans
-[31] = 1, --man's shoes
-[33] = 1, --lady's silk gloves
+--[28] = 0, --wool pants
+--[29] = 0, --wool dress
+[30] = 3, --chaps and jeans
+--[31] = 0, --man's shoes
+--[33] = 0, --lady's silk gloves
 [34] = 1, --driving gloves
-[35] = 1, --cotton work gloves
-[36] = 1, --work gloves
-[37] = 1, --wool mittens
+--[35] = 0, --cotton work gloves
+[36] = 2, --work gloves
+--[37] = 0, --wool mittens
 [38] = 1, --rubber gloves
-[39] = 1, --welding gloves
-[90] = 1, --electric belt?
-[234] = 1, --martian jewelry
+[39] = 3, --welding gloves
+--[90] = 0, --electric belt?
+--[234] = 0, --martian jewelry
 }
 
-function out_of_ammo(attacker, weapon, print_message) -- untest function
+function out_of_ammo(attacker, weapon, print_message) -- untested function
 
 	local weapon_obj_n = weapon.obj_n
 
@@ -500,7 +499,7 @@ function out_of_ammo(attacker, weapon, print_message) -- untest function
 	    or (weapon_obj_n == 47 and Actor.inv_has_obj_n(attacker, 63) == false) --sling, sling stone
 	    or ((weapon_obj_n == 240 or weapon_obj_n == 241 or weapon_obj_n == 129 or weapon_obj_n == 261) and obj.qty == 0) then --heat ray gun, freeze ray gun, weed sprayer, spray gun
 		if(print_message) then
-			print("Out of ammunition!\n")
+			printl("OUT_OF_AMMUNITION")
 			--FIXME add sfx here
 		end
 		return true
@@ -508,7 +507,7 @@ function out_of_ammo(attacker, weapon, print_message) -- untest function
 
 	if weapon_obj_n == 48 and Actor.inv_has_obj_n(attacker, 64) == false then --bow, arrows
 		if(print_message) then
-			print("Out of arrows!\n")
+			printl("OUT_OF_ARROWS")
 			--FIXME add sfx here
 		end
 		return true
