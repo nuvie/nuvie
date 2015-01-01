@@ -707,7 +707,21 @@ void Game::play()
   return;
 }
 
+void Game::update_until_converse_finished()
+{
+  while(converse->running())
+  {
+    update_once(true, true);
+    update_once_display();
+  }
+}
+
 void Game::update_once(bool process_gui_input)
+{
+  update_once(process_gui_input, false);
+}
+
+void Game::update_once(bool process_gui_input, bool run_converse)
 {
     if(cursor) cursor->clear(); // restore cursor area before GUI events
 
@@ -727,6 +741,10 @@ void Game::update_once(bool process_gui_input)
       actor_manager->twitchActors();
     }
     map_window->update();
+    if(run_converse)
+    {
+      converse->continue_script();
+    }
     effect_manager->update_effects();
 }
 

@@ -1352,7 +1352,7 @@ static int nscript_actor_hide_portrait(lua_State *L)
 }
 
 /***
-Talk to actor.
+Talk to actor. The script will pause until the conversation has ended.
 @function Actor.talk
 @tparam Actor actor
 @within Actor
@@ -1364,6 +1364,7 @@ static int nscript_actor_talk(lua_State *L)
 		return 0;
 
 	Game::get_game()->get_converse()->start(actor);
+	Game::get_game()->update_until_converse_finished();
 	return 0;
 }
 

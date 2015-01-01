@@ -149,7 +149,9 @@ class Game
  void init_game_style();
  void play();
  void update_once(bool process_gui_input);
+
  void update_once_display();
+ void update_until_converse_finished();
 
  GamePauseState get_pause_flags()            { return(pause_flags); }
  void set_pause_flags(GamePauseState state);
@@ -260,6 +262,9 @@ class Game
  protected:
 	void init_converse();
 	void init_converse_gump_settings();
+
+ private:
+	 void update_once(bool process_gui_input, bool run_converse);
 };
 
 #endif /* __Game_h__ */

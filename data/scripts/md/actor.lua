@@ -256,8 +256,77 @@ function perform_worktype(actor)
    subtract_movement_pts(actor, 10)
 end
 
+function revive_avatar()
+   if g_in_dream_mode == true then
+      --FIXME died in dream world. old_player_x == 0
+      --FIXME respawn into dreamworld
+   else
+      -- normal avatar death
+      avatar_falls_unconscious()
+   end
+end
+
+function avatar_falls_unconscious()
+   printl("OVERCOME_BY_YOUR_WOUNDS_YOU_FALL_UNCONSCIOUS")
+   
+   fade_out()
+   
+   local location
+   local target
+   if Actor.get_talk_flag(0x46, 3) then
+      location = i18n("THE_OLYMPUS_MINE")
+      target={x=0xa4,y=0xc3,z=4}
+   else
+      location = i18n("THE_SPACE_CAPSULE")
+      target={x=0x19d,y=0x278,z=0}
+   end
+   
+   printfl("YOU_AWAKEN_BACK_AT_FEELING_RESTORED", location)
+   
+   party_resurrect_dead_members()
+   
+   for actor in party_members() do
+      actor.hp = actor.max_hp
+      actor.mpts = actor_dex_adj(actor)
+   end
+   
+   party_move(target)
+   local hour = clock_get_hour()
+   local minutes = clock_get_minute()
+   minutes = 60 - minutes
+   if hour < 7 then
+      hour = 6 - hour
+   else
+      hour = 24 - (hour + 1) + 7
+   end
+   
+   clock_inc(hour * 60 + minutes + math.random(0,59)) --advance time to between 7am and 8am on the next day
+   update_watch_tile()
+   advance_time(0)
+   
+   party_update_leader()
+   party_set_combat_mode(false)
+   party_set_party_mode()
+   
+   local blood = Actor.get(0x12)
+   if blood.alive then
+      Actor.set_talk_flag(blood, 5)
+      Actor.talk(blood)
+   end
+
+   fade_in()
+end
+
+function party_update()
+   local avatar = Actor.get(1)
+   if avatar.hp == 0 or (g_in_dream_mode == true and Actor.get(0).alive == false) then
+      revive_avatar()
+   end
+   
+end
+
 function actor_update_all()
-   --update leader here.
+   party_update()
    --pathfinding here.
    
    local actor
@@ -335,7 +404,7 @@ function actor_update_all()
       if selected_actor.wt ~= WT_PLAYER and selected_actor.wt ~= WT_FOLLOW then
          --print("perform_worktype("..selected_actor.name.."("..selected_actor.actor_num..") dex = "..selected_actor.dex.." mpts = "..selected_actor.mpts..").\n")
          perform_worktype(selected_actor)
-         --FIXME update party leader
+         party_update()
          if selected_actor.wt > 1 and selected_actor.wt < 0x1b then
             --FIXME targetting?? do *(&bjlist_unk_19f1_ptr + actor_num) = actor_num
          end
@@ -780,13 +849,13 @@ function advance_time(num_turns)
                            if rand(0, 1) == 0 then
                               if cold_status == 2 then
                                  printfl("IS_FREEZING", actor.name)
-                                 Actor.hit(actor, rand(1, 2))                              
+                                 actor_hit(actor, rand(1, 2))                              
                               end
                            else
                               printfl("IS_FREEZING", actor.name)
-                              Actor.hit(actor, rand(1, 2))
+                              actor_hit(actor, rand(1, 2))
                               if cold_status == 2 then
-                                 Actor.hit(actor, rand(1, 2))
+                                 actor_hit(actor, rand(1, 2))
                               end
                            end
                         end
@@ -831,7 +900,7 @@ function advance_time(num_turns)
                end
                
                if actor.poisoned and actor_num ~= 6 and rand(0, 7) == 0 then
-                  Actor.hit(actor, 1)
+                  actor_hit(actor, 1)
                end
                
                if actor_num < 8 then
@@ -1028,4 +1097,14 @@ function player_post_move_action(did_move)
       end
    end
    
+end
+
+function actor_hit(actor, damage)
+   local hp = actor.hp
+   if damage >= hp and actor.actor_num == 1 then
+      hit_anim(actor.x, actor.y)
+      actor.hp = 0
+   else
+      Actor.hit(actor, damage)
+   end
 end

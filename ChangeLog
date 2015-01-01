@@ -1,3 +1,9 @@
+2015-01-01  Eric Fry <efry at users.sourceforge.net> r1992
+	* Pause script until conversation has finished when using Actor.talk() function
+	* Started work on MD avatar death sequence. The party is teleported back to
+	  Dr Blood when the avatar's hp goes to zero. Dead party members are also
+	  revived. 
+
 2014-12-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1991
 	* Add Add MD weapon damage and armor values.
 	* Add a couple strings to the language file.

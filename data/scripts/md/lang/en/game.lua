@@ -159,4 +159,9 @@ THE_WORK_IS_TO_PRECISE_TO_PERFORM_TELEKINETICALLY="The work is too precise to pe
 THE_CABLE_DOES_NOT_NEED_REPLACEMENT="The cable does not need replacement.\n",
 OUT_OF_AMMUNITION="Out of ammunition!\n",
 OUT_OF_ARROWS="Out of arrows!\n",
+OVERCOME_BY_YOUR_WOUNDS_YOU_FALL_UNCONSCIOUS="\nOvercome by your wounds, you fall unconscious..... \n",
+YOU_AWAKEN_BACK_AT_FEELING_RESTORED="\n....You awaken back at %s, feeling restored.\n",
+THE_SPACE_CAPSULE="the space capsule",
+THE_OLYMPUS_MINE="the Olympus mine",
+
 }
