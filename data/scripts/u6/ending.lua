@@ -58,7 +58,7 @@ local function play()
 	canvas_set_opacity(0xff);
 	mouse_cursor_visible(false)
 	g_img_tbl = image_load_all("end.shp")
-	music_play("end.m")
+	music_play("brit.m")
 --[ [
 	canvas_set_palette("endpal.lbm", 0)
 	canvas_set_update_interval(25)
@@ -218,6 +218,7 @@ local function play()
 	
 	update_star_field_and_wait()
 	
+	music_play("gargoyle.m")
 	scroll_img = image_load("end.shp", 0xb)
 	image_print(scroll_img, "And waves of heat shimmer in the air, heralding the birth of another red gate!", 8, 303, 7, 9, 0x3e)
 	scroll.image = scroll_img
@@ -302,6 +303,7 @@ local function play()
 
 	update_star_field_and_wait()
 	
+	music_play("end.m")
 	scroll_img = image_load("end.shp", 0xa)
 	image_print(scroll_img, "The ancient book opens. Both kings gaze upon its pages in spellbound silence, as the eloquence of Ultimate Wisdom is revealed in the tongues of each lord's domain. You, too, can read the answers the Codex gives...", 8, 303, 7, 13, 0x3e)
 	scroll.image = scroll_img
