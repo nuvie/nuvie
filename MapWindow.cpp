@@ -1326,35 +1326,39 @@ void MapWindow::drawBorder()
 
  if(game_type != NUVIE_GAME_U6)
    return;
+ uint16 orig_win_w = 11;
+ uint16 orig_win_h = 11;
+ uint16 x_off = Game::get_game()->get_game_x_offset();
+ uint16 y_off = Game::get_game()->get_game_y_offset();
 
  tile = tile_manager->get_tile(432);
- screen->blit(area.x,area.y,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(x_off,y_off,tile->data,8,16,16,16,true,&clip_rect); // upper left corner
 
  tile = tile_manager->get_tile(434);
- screen->blit(area.x+(win_width-1)*16,area.y,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(x_off+(orig_win_w-1)*16,y_off,tile->data,8,16,16,16,true); // upper right corner (got rid of &clip_rect for original+)
 
  tile = tile_manager->get_tile(435);
- screen->blit(area.x,area.y+(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(x_off,y_off+(orig_win_h-1)*16,tile->data,8,16,16,16,true,&clip_rect); // lower left corner
 
  tile = tile_manager->get_tile(437);
- screen->blit(area.x+(win_width-1)*16,area.y+(win_height-1)*16,tile->data,8,16,16,16,true,&clip_rect);
+ screen->blit(x_off+(orig_win_w-1)*16,y_off+(orig_win_h-1)*16,tile->data,8,16,16,16,true); // lower right corner (got rid of &clip_rect for original+)
 
  tile = tile_manager->get_tile(433);
  tile1 = tile_manager->get_tile(436);
 
- for(i=1;i < win_width-1;i++)
+ for(i=1;i < orig_win_w-1;i++)
    {
-    screen->blit(area.x+i*16,area.y,tile->data,8,16,16,16,true,&clip_rect);
-    screen->blit(area.x+i*16,area.y+(win_height-1)*16,tile1->data,8,16,16,16,true,&clip_rect);
+    screen->blit(x_off+i*16,y_off,tile->data,8,16,16,16,true,&clip_rect); // top row
+    screen->blit(x_off+i*16,y_off+(orig_win_h-1)*16,tile1->data,8,16,16,16,true,&clip_rect); // bottom row
    }
 
  tile = tile_manager->get_tile(438);
  tile1 = tile_manager->get_tile(439);
 
-  for(i=1;i < win_height-1;i++)
+  for(i=1;i < orig_win_h-1;i++)
    {
-    screen->blit(area.x,area.y+i*16,tile->data,8,16,16,16,true,&clip_rect);
-    screen->blit(area.x+(win_width-1)*16,area.y+i*16,tile1->data,8,16,16,16,true,&clip_rect);
+    screen->blit(x_off,y_off+i*16,tile->data,8,16,16,16,true,&clip_rect); // left column
+    screen->blit(x_off+(orig_win_w-1)*16,y_off+i*16,tile1->data,8,16,16,16,true); // right column (got rid of &clip_rect for original+)
    }
 }
 

@@ -78,8 +78,11 @@ class ConverseGumpWOU: public MsgScroll
  void input_add_string(std::string token_str);
  virtual void process_page_break();
  virtual uint8 get_input_font_color() { return FONT_COLOR_WOU_CONVERSE_INPUT; }
+ void display_bg();
 
  private:
+
+ SDL_Surface *bg_image;
 };
 
 

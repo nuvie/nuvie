@@ -1,3 +1,6 @@
+2015-01-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1994
+	* Add background to wou conversation gump in original+ style.
+
 2015-01-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1993
 	* Move 242, 250, and 999 alt-codes to common.lua.
 	* Update nuvie.cpp, cfg files, and docs with recent cfg and alt-code changes

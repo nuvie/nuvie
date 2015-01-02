@@ -51,6 +51,7 @@ Source: data\ScrollBarDown_1.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarDown_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_1.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\ScrollBarUp_2.bmp; DestDir: {app}\data\; Flags: ignoreversion
+Source: data\U6_WOU_Scroll_bg.bmp; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\defaultkeys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\u6keys.txt; DestDir: {app}\data\; Flags: ignoreversion
 Source: data\sekeys.txt; DestDir: {app}\data\; Flags: ignoreversion

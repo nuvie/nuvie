@@ -116,11 +116,13 @@ bool ViewManager::init(GUI *g, Font *f, Party *p, Player *player, TileManager *t
 	 }
 	 if(game_type == NUVIE_GAME_MD)
 	 {
-		 if(Game::get_game()->is_orig_style())
+		 if(Game::get_game()->is_new_style() == false)
 		 {
 		   mdSkyWidget = new MDSkyStripWidget(config, Game::get_game()->get_clock(), player);
 		   mdSkyWidget->init(32 + x_off, 2 + y_off);
 		   gui->AddWidget(mdSkyWidget);
+		   if(Game::get_game()->is_original_plus())
+		     mdSkyWidget->Hide();
 		 }
 	 }
  }

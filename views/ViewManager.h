@@ -110,6 +110,7 @@ class ViewManager
  PortraitView *get_portrait_view() { return(portrait_view); }
  PartyView *get_party_view() { return(party_view); }
  SpellView *get_spell_view() { return(spell_view); }
+ MDSkyStripWidget *get_mdSkyWidget() { return mdSkyWidget; }
 
  void close_current_view();
 
