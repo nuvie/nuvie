@@ -1,3 +1,7 @@
+2015-01-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1993
+	* Move 242, 250, and 999 alt-codes to common.lua.
+	* Update nuvie.cpp, cfg files, and docs with recent cfg and alt-code changes
+
 2015-01-01  Eric Fry <efry at users.sourceforge.net> r1992
 	* Pause script until conversation has finished when using Actor.talk() function
 	* Started work on MD avatar death sequence. The party is teleported back to
@@ -5,7 +9,7 @@
 	  revived. 
 
 2014-12-31  Malignant Manor <malignantmanor@users.sourceforge.net> r1991
-	* Add Add MD weapon damage and armor values.
+	* Add MD weapon damage and armor values.
 	* Add a couple strings to the language file.
 
 2014-12-30  Eric Fry <efry at users.sourceforge.net> r1990

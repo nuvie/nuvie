@@ -339,7 +339,7 @@ void Nuvie::SharedDefaultConfigValues()
 	config->set("config/general/dither_mode", "none");
 	config->set("config/general/enable_cursors", true);
 	config->set("config/general/show_console", true);
-	config->set("config/general/converse_gump", false);
+	config->set("config/general/converse_gump", "default");
 	config->set("config/general/use_text_gumps", false);
 	config->set("config/general/party_formation", "standard");
 
@@ -352,6 +352,7 @@ void Nuvie::SharedDefaultConfigValues()
 	uint8 border_color[] = { 220, 133, 219 }; // U6, MD, SE
 	std::string game_str[] = { "config/ultima6/", "config/martian/", "config/savage/" };
 	for(int i=0; i < 3; i++) {
+		config->set(game_str[i] + "language", "en");
 		config->set(game_str[i] + "music", "native");
 		config->set(game_str[i] + "sfx", "native");
 		if(i == 0) // U6

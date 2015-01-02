@@ -56,7 +56,7 @@
   <lighting>original</lighting>
   <dither_mode>none</dither_mode>
   <enable_cursors>yes</enable_cursors>
-  <converse_gump>no</converse_gump>
+  <converse_gump>default</converse_gump>
   <use_text_gumps>no</use_text_gumps>
   <party_formation>standard</party_formation>
   <show_console>yes</show_console>
@@ -94,6 +94,7 @@
  </audio>
 
  <ultima6>
+  <language>en</language>
   <gamedir>@datadir@/nuvie/ultima6</gamedir>
   <sounddir>@datadir@/nuvie/u6_sounds</sounddir>
   <skip_intro> no </skip_intro>
@@ -126,6 +127,7 @@
  </ultima6>
 
  <martian>
+  <language>en</language>
   <gamedir>@datadir@/nuvie/martian</gamedir>
   <skip_intro> no </skip_intro>
   <show_eggs>no</show_eggs>
@@ -149,6 +151,7 @@
  </martian>
 
  <savage>
+  <language>en</language>
   <gamedir>@datadir@/nuvie/savage</gamedir>
   <skip_intro> no </skip_intro>
   <show_eggs>no</show_eggs>

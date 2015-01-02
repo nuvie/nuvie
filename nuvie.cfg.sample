@@ -56,7 +56,7 @@
   <lighting>original</lighting>
   <dither_mode>none</dither_mode>
   <enable_cursors>yes</enable_cursors>
-  <converse_gump>no</converse_gump>
+  <converse_gump>default</converse_gump>
   <use_text_gumps>no</use_text_gumps>
   <party_formation>standard</party_formation>
   <show_console>yes</show_console>
@@ -94,6 +94,7 @@
  </audio>
 
  <ultima6>
+  <language>en</language>
   <gamedir>./ultima6</gamedir>
   <townsdir>./fmtowns_u6</townsdir>
   <sounddir>./u6_sounds</sounddir>
@@ -129,6 +130,7 @@
  </ultima6>
 
  <martian>
+  <language>en</language>
   <gamedir>./martian</gamedir>
   <savedir>./martian_save</savedir>
   <skip_intro> no </skip_intro>
@@ -154,6 +156,7 @@
  </martian>
 
  <savage>
+  <language>en</language>
   <gamedir>./savage</gamedir>
   <savedir>./savage_save</savedir>
   <skip_intro> no </skip_intro>
