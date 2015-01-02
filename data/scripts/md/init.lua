@@ -338,6 +338,15 @@ function altcode_999_find_objs_on_map()
    end
 end
 
+function create_object_needs_quan(obj_n)
+-- obj.stackable is already checked
+	if obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1
+		return true
+	else
+		return false
+	end
+end
+
 function handle_alt_code(altcode)
    if altcode == 242 then
       altcode_242_set_actor_talk_flag()

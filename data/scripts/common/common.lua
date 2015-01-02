@@ -273,7 +273,7 @@ function altcode_250_create_object()
    input = input_select(nil, true)
    obj.quality = tonumber(input, 16)
    
-   if obj.stackable or obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1
+   if obj.stackable or create_object_needs_quan(obj_n) then
       print("\nQuan:0x")
       input = input_select(nil, true)
       obj.qty = tonumber(input, 16)

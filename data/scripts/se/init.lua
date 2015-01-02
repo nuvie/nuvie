@@ -97,6 +97,11 @@ function obj_get_readiable_location(obj)
 	return -1	
 end
 
+function create_object_needs_quan(obj_n)
+-- obj.stackable is already checked
+	return false
+end
+
 --load actor functions
 local actor_load = nuvie_load("se/actor.lua");
 if type(actor_load) == "function" then

@@ -560,6 +560,10 @@ function set_g_armageddon(val)
 	set_armageddon(val)
 end
 
+function create_object_needs_quan(obj_n)
+-- obj.stackable is already checked
+	return false
+end
 
 --load actor functions
 actor_load = nuvie_load("u6/actor.lua");
