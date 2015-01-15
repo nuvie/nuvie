@@ -1,4 +1,5 @@
 #include "nuvieDefs.h"
+#include "U6misc.h"
 #include "Map.h"
 #include "DirFinder.h"
 
@@ -47,6 +48,11 @@ uint8 DirFinder::get_nuvie_dir(sint16 xrel, sint16 yrel)
     else if(xrel > 0 && yrel > 0)
         direction = NUVIE_DIR_SE;
     return(direction);
+}
+
+uint8 DirFinder::get_nuvie_dir(uint16 sx, uint16 sy, uint16 tx, uint16 ty, uint8 z)
+{
+  return DirFinder::get_nuvie_dir(get_wrapped_rel_dir(tx, sx, z), get_wrapped_rel_dir(ty, sy, z));
 }
 
 // oxdir = original xdir, txdir = to xdir

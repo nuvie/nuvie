@@ -38,6 +38,7 @@ NuvieBmpFile::NuvieBmpFile()
  prev_width = 0;
  prev_height = 0;
  prev_bits = 0;
+ bmp_line_width = 0;
  memset(&header, 0, sizeof(header));
  memset(&infoHeader, 0, sizeof(infoHeader));
 }
@@ -48,6 +49,44 @@ NuvieBmpFile::~NuvieBmpFile()
    free(data);
 }
 
+bool NuvieBmpFile::initNewBlankImage(sint32 width, sint32 height, const unsigned char *pal)
+{
+  infoHeader.size = 40;
+  infoHeader.width = width;
+  infoHeader.height = height;
+  infoHeader.planes = 1;
+  infoHeader.bits = 8;
+  infoHeader.compression = 0;
+  infoHeader.imagesize = 0;
+  infoHeader.xresolution = 0; //FIXME
+  infoHeader.yresolution = 0; //FIXME
+  infoHeader.ncolours = 256;
+  infoHeader.importantcolours = 0;
+
+  bmp_line_width = infoHeader.width;
+  if(bmp_line_width % 4 != 0)
+  {
+    bmp_line_width += (4-(bmp_line_width % 4));
+  }
+
+  header.type = NUVIEBMPFILE_MAGIC;
+  header.reserved1 = 0;
+  header.reserved2 = 0;
+  header.offset = sizeof(header) + sizeof(infoHeader) + 256*4;
+  header.size = header.offset + bmp_line_width * infoHeader.height;
+
+  memcpy(&palette, pal, sizeof(palette));
+
+  data = (unsigned char *)malloc(infoHeader.width * infoHeader.height);
+  if(!data)
+  {
+    return handleError("Allocating pixel data");
+  }
+
+  memset(data, 0, infoHeader.width * infoHeader.height);
+
+  return true;
+}
 
 bool NuvieBmpFile::load(std::string filename)
 {
@@ -118,7 +157,7 @@ bool NuvieBmpFile::load(std::string filename)
  file.seek(header.offset);
 
  uint16 bytes_per_pixel = infoHeader.bits / 8;
- uint32 bmp_line_width = infoHeader.width * bytes_per_pixel;
+ bmp_line_width = infoHeader.width * bytes_per_pixel;
  if(bmp_line_width % 4 != 0)
  {
    bmp_line_width += (4-(bmp_line_width % 4));
@@ -151,6 +190,70 @@ bool NuvieBmpFile::load(std::string filename)
  }
 
  return true;
+}
+
+bool NuvieBmpFile::save(std::string filename)
+{
+  NuvieIOFileWrite file;
+
+  if(!file.open(filename))
+  {
+    return handleError("Opening " + filename + ".");
+  }
+
+  file.write2(header.type);
+  file.write4(header.size);
+  file.write2(header.reserved1);
+  file.write2(header.reserved2);
+  file.write4(header.offset);
+
+  file.write4(infoHeader.size);
+  file.write4(infoHeader.width);
+  file.write4(infoHeader.height);
+  file.write2(infoHeader.planes);
+  file.write2(infoHeader.bits);
+  file.write4(infoHeader.compression);
+  file.write4(infoHeader.imagesize);
+  file.write4(infoHeader.xresolution);
+  file.write4(infoHeader.yresolution);
+  file.write4(infoHeader.ncolours);
+  file.write4(infoHeader.importantcolours);
+
+  if(infoHeader.bits == 8)
+  {
+    for(uint32 i=0;i<infoHeader.ncolours;i++)
+    {
+      file.write1((palette[i] >> 16) & 0xff); //B
+      file.write1((palette[i] >> 8) & 0xff);  //G
+      file.write1(palette[i] & 0xff);         //R
+      file.write1((palette[i] >> 24) & 0xff); //A
+    }
+    write8BitData(&file);
+  }
+  else
+  {
+    //FIXME write out 24bit data here.
+  }
+
+  file.close();
+  return true;
+}
+
+void NuvieBmpFile::write8BitData(NuvieIOFileWrite *file)
+{
+  uint32 i;
+  for(i=infoHeader.height;i>0;i--)
+  {
+    file->writeBuf(&data[(i-1)*infoHeader.width], infoHeader.width);
+    if((sint32)bmp_line_width > infoHeader.width)
+    {
+      //write out padding bytes.
+      for(uint8 j=0;j<bmp_line_width-infoHeader.width;j++)
+      {
+        file->write1(0);
+      }
+    }
+  }
 }
 
 bool NuvieBmpFile::handleError(std::string error)

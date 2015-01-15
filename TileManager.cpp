@@ -273,11 +273,11 @@ bool TileManager::loadTiles()
   {
    bool plural;
    DEBUG(1,LEVEL_DEBUGGING,"%04d : ",i);
-   print_b(tile[i].flags1);
+   print_b(LEVEL_DEBUGGING, tile[i].flags1);
    DEBUG(1,LEVEL_DEBUGGING," ");
-   print_b(tile[i].flags2);
+   print_b(LEVEL_DEBUGGING, tile[i].flags2);
    DEBUG(1,LEVEL_DEBUGGING," ");
-   print_b(tile[i].flags3);
+   print_b(LEVEL_DEBUGGING, tile[i].flags3);
    DEBUG(1,LEVEL_DEBUGGING," %s\n",look->get_description(i,&plural));
   }
 #endif

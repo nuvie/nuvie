@@ -354,29 +354,29 @@ bool subtract_rect(SDL_Rect *rect1, SDL_Rect *rect2, SDL_Rect *sub_rect)
     return(true);
 }
 
+const char *get_direction_name(uint8 dir)
+{
+  switch(dir)
+  {
+  case NUVIE_DIR_N:  return("north");
+  case NUVIE_DIR_NE: return("Northeast");
+  case NUVIE_DIR_E:  return("East");
+  case NUVIE_DIR_SE: return("Southeast");
+  case NUVIE_DIR_S:  return("South");
+  case NUVIE_DIR_SW: return("Southwest");
+  case NUVIE_DIR_W:  return("West");
+  case NUVIE_DIR_NW: return("Northwest");
+  default: break;
+  }
+
+  return("nowhere");
+}
 
 /* Returns name of relative direction. 0,0 prints "nowhere".
  */
 const char *get_direction_name(sint16 rel_x, sint16 rel_y)
 {
-    if(rel_x == 0 && rel_y < 0)
-        return("North");
-    else if(rel_x > 0 && rel_y < 0)
-        return("Northeast");
-    else if(rel_x > 0 && rel_y == 0)
-        return("East");
-    else if(rel_x > 0 && rel_y > 0)
-        return("Southeast");
-    else if(rel_x == 0 && rel_y > 0)
-        return("South");
-    else if(rel_x < 0 && rel_y > 0)
-        return("Southwest");
-    else if(rel_x < 0 && rel_y == 0)
-        return("West");
-    else if(rel_x < 0 && rel_y < 0)
-        return("Northwest");
-    else
-        return("nowhere");
+    return get_direction_name(get_direction_code(rel_x, rel_y));
 }
 
 /* Gets the nuvie direction code from the original u6 direction code. */
@@ -736,4 +736,18 @@ uint16 wrap_signed_coord(sint16 coord, uint8 level)
   }
 
   return (uint16)coord % width;
+}
+
+sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level)
+{
+  uint16 stride = MAP_SIDE_LENGTH(level);
+
+  sint16 ret = clamp(p1-p2, -1, 1);
+
+  if(abs(p1-p2) > stride/2)
+  {
+    return -ret;
+  }
+
+  return ret;
 }

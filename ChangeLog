@@ -1,3 +1,11 @@
+2015-01-15  Eric Fry <efry at users.sourceforge.net> r1997
+	* Fixed directional basemap blocking for MD. You can walk around in the dream
+	  world correctly now.
+	* Added get_direction_name() function.
+	* Added DirFinder::get_nuvie_dir() This finds the direction from a src to a target.
+	* Added new is_passable methods to map to handle MD directional blocking.
+	* Started adding new image/save support to NuvieBmpFile class.
+ 
 2015-01-02  Malignant Manor <malignantmanor@users.sourceforge.net> r1996
 	* Play the correct ending music for U6 instead of just end.m.
 

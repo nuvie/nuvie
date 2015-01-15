@@ -1,5 +1,6 @@
 #include <cassert>
 #include <vector>
+#include "U6misc.h"
 #include "Actor.h"
 #include "Party.h"
 #include "SeekPath.h"
@@ -17,20 +18,6 @@ PartyPathFinder::PartyPathFinder(Party *p)
 PartyPathFinder::~PartyPathFinder()
 {
 
-}
-
-sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level)
-{
-  uint16 stride = MAP_SIDE_LENGTH(level);
-
-  sint16 ret = clamp(p1-p2, -1, 1);
-
-  if(abs(p1-p2) > stride/2)
-  {
-    return -ret;
-  }
-
-  return ret;
 }
 
 /* True if a member's target and leader are in roughly the same direction. */

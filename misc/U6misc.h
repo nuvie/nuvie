@@ -32,6 +32,7 @@ sint8 get_original_dir_code(uint8 nuvie_dir_code);
 uint8 get_direction_code(sint16 rel_x, sint16 rel_y);
 uint8 get_reverse_direction(uint8 dir);
 void get_relative_dir(uint8 dir, sint16 *rel_x, sint16 *rel_y);
+const char *get_direction_name(uint8 dir);
 const char *get_direction_name(sint16 rel_x, sint16 rel_y);
 int str_bsearch( const char *str[], int max, const char *value );
 void stringToLower(std::string &str);
@@ -86,5 +87,6 @@ bool has_file_extension(const char *filename, const char *extension);
 bool has_fmtowns_support(Configuration *config);
 
 uint16 wrap_signed_coord(sint16 coord, uint8 level);
+sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level);
 
 #endif /* __U6misc_h__ */

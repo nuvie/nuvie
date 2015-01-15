@@ -24,6 +24,8 @@
 #include "MDActor.h"
 #include "Game.h"
 #include "GameClock.h"
+#include "U6misc.h"
+#include "DirFinder.h"
 
 #define MD_DOWNWARD_FACING_FRAME_N 9
 
@@ -55,6 +57,13 @@ bool MDActor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
 
  if(Actor::check_move(new_x, new_y, new_z, flags) == false)
     return false;
+
+ if(z == new_z) //FIXME check if new pos is adjacent to current position
+ {
+   uint8 movement_dir = DirFinder::get_nuvie_dir(x, y, new_x, new_y, z);
+//   printf("%d (%d,%d) -> (%d,%d) move = %d %s\n", id_n, x, y, new_x, new_y, movement_dir, get_direction_name(movement_dir));
+   return map->is_passable(new_x,new_y,new_z, movement_dir);
+ }
 
  return map->is_passable(new_x,new_y,new_z);
 }

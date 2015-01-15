@@ -138,6 +138,71 @@ bool Map::is_passable(uint16 x, uint16 y, uint8 level)
  return map_tile->passable;
 }
 
+/***
+ * Can we enter this map location by traveling in a given direction?
+ * Used by MD
+ */
+bool Map::is_passable(uint16 x, uint16 y, uint8 level, uint8 dir)
+{
+  if(is_passable_from_dir(x, y, level, get_reverse_direction(dir)))
+  {
+    sint16 rel_x, rel_y;
+    uint16 tx, ty;
+    get_relative_dir(get_reverse_direction(dir), &rel_x, &rel_y);
+    tx = wrap_signed_coord((sint16)x + rel_x, level);
+    ty = wrap_signed_coord((sint16)y + rel_y, level);
+    return is_passable_from_dir(tx, ty, level, dir);
+  }
+  return false;
+}
+
+bool Map::is_passable_from_dir(uint16 x, uint16 y, uint8 level, uint8 dir)
+{
+ uint8 *ptr;
+ Tile *map_tile;
+
+ WRAP_COORD(x,level);
+ WRAP_COORD(y,level);
+
+ uint8 obj_status = obj_manager->is_passable(x, y, level);
+ if(obj_status == OBJ_NOT_PASSABLE)
+  {
+   return false;
+  }
+
+//special case for bridges, hacked doors and dungeon entrances etc.
+ if(obj_status != OBJ_NO_OBJ && obj_manager->is_forced_passable(x, y, level))
+   return true;
+
+ ptr = get_map_data(level);
+ map_tile = tile_manager->get_original_tile(ptr[y * get_width(level) + x]);
+
+ if(!map_tile->passable && !(map_tile->flags1 & TILEFLAG_WALL))
+ {
+   switch(dir)
+   {
+   case NUVIE_DIR_W :
+     return (map_tile->flags1 & TILEFLAG_WALL_WEST);
+   case NUVIE_DIR_S :
+     return (map_tile->flags1 & TILEFLAG_WALL_SOUTH);
+   case NUVIE_DIR_E :
+     return (map_tile->flags1 & TILEFLAG_WALL_EAST);
+   case NUVIE_DIR_N :
+     return (map_tile->flags1 & TILEFLAG_WALL_NORTH);
+   case NUVIE_DIR_NE :
+     return !(!(map_tile->flags1 & TILEFLAG_WALL_NORTH) || !(map_tile->flags1 & TILEFLAG_WALL_EAST));
+   case NUVIE_DIR_NW :
+     return !(!(map_tile->flags1 & TILEFLAG_WALL_NORTH) || !(map_tile->flags1 & TILEFLAG_WALL_WEST));
+   case NUVIE_DIR_SE :
+     return !(!(map_tile->flags1 & TILEFLAG_WALL_SOUTH) || !(map_tile->flags1 & TILEFLAG_WALL_EAST));
+   case NUVIE_DIR_SW :
+     return !(!(map_tile->flags1 & TILEFLAG_WALL_SOUTH) || !(map_tile->flags1 & TILEFLAG_WALL_WEST));
+   }
+ }
+
+ return map_tile->passable;
+}
+
 /* Returns true if an entire area is_passable(). */
 bool Map::is_passable(uint16 x1, uint16 y1, uint16 x2, uint16 y2, uint8 level)
 {
@@ -430,7 +495,19 @@ if(surface == NULL)
 	 for(mx=1000;mx<1024;mx++)
 		 surface[my * 1024 + mx] = 111;
 */
- 
+ /*
+ printf("\n\n\n\n\n\n\n");
+
+ uint16 mx,my;
+ for(my=0;my<1024;my++)
+ {
+   for(mx=0;mx<1024;mx++)
+   {
+     printf("%3d,", surface[my * 1024 + mx]+1);
+   }
+   printf("\n");
+ }
+ */
  return true;
 }
 

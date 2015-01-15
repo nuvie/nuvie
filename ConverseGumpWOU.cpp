@@ -68,7 +68,7 @@ ConverseGumpWOU::ConverseGumpWOU(Configuration *cfg, Font *f, Screen *s)
  if(game_type == NUVIE_GAME_U6)
  {
    GUI_Widget::Init(NULL, x_off + 8, y_off + 8, 160, 160);
-   bg_color =converse_bg_color = 17;
+   bg_color =converse_bg_color = 0x31; //17;
    if(game->get_game_width() >= 335)
    {
      std::string imagefile;

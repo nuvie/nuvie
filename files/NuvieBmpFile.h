@@ -39,6 +39,7 @@ class NuvieBmpFile
  sint32 prev_width;
  sint32 prev_height;
  uint16 prev_bits;
+ uint32 bmp_line_width;
 
  struct {
     uint16 type;                    /* Magic identifier            */
@@ -64,7 +65,10 @@ class NuvieBmpFile
    NuvieBmpFile();
    ~NuvieBmpFile();
 
+   bool initNewBlankImage(sint32 width, sint32 height, const unsigned char *palette);
+
    bool load(std::string filename);
+   bool save(std::string filename);
 
    uint16 getWidth() { return (uint16)infoHeader.width; }
    uint16 getHeight() { return (uint16)infoHeader.height; }
@@ -79,6 +83,7 @@ class NuvieBmpFile
 
  private:
    bool handleError(std::string error);
+   void write8BitData(NuvieIOFileWrite *file);
 };
 
 #endif /* __NuvieBmpFile_h__ */
