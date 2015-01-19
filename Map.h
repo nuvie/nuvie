@@ -170,16 +170,17 @@ class Map
  bool testIntersection(int x, int y, uint8 level, uint8 flags, LineTestResult &Result, Obj *excluded_obj = NULL); // excluded_obj only works for LT_HitUnpassable
 
  void saveRoofData();
+ std::string getRoofTilesetFilename();
 
  protected:
-
+ std::string getRoofDataFilename();
  void insertSurfaceSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 schunk_num);
  void insertSurfaceChunk(unsigned char *chunk, uint16 x, uint16 y);
 
  void insertDungeonSuperChunk(unsigned char *schunk_ptr, unsigned char *chunk_data, uint8 level);
  void insertDungeonChunk(unsigned char *chunk, uint16 x, uint16 y, uint8 level);
 
- std::string getRoofDataFilename();
+
  void loadRoofData();
 
 };

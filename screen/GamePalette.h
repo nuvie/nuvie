@@ -46,6 +46,8 @@ class GamePalette
    uint8 get_bg_color() { return bg_color; }
    void set_palette();
 
+   bool loadPaletteIntoBuffer(unsigned char *pal);
+
  protected:
 
    bool loadPalette();

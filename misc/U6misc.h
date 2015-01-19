@@ -89,4 +89,6 @@ bool has_fmtowns_support(Configuration *config);
 uint16 wrap_signed_coord(sint16 coord, uint8 level);
 sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level);
 
+std::string encode_xml_entity(const std::string &s);
+
 #endif /* __U6misc_h__ */

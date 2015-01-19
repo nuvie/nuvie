@@ -282,10 +282,30 @@ function altcode_250_create_object()
    print("\n")
 end
 
+function altcode_913_export_tmx_map_files()
+   print("\nExport maps to savedir? ")
+   input = input_select("yn", true)
+   print("\n")
+   if input == nil or input == "N" or input == "n" then
+      return
+   end
+   print("saving.\n")
+   script_wait(1)
+   if map_export_tmx_files() == true then
+      print("done.\n\n")
+   else
+      print("error!!\n\n")
+   end
+end
+
 function altcode_999_find_objs_on_map()
    print("Find Object\nObj_n: ")
    local input = input_select(nil, true)
    local obj_n = tonumber(input, 10)
+   if obj_n == nil then
+      print("Nothing.\n")
+      return
+   end
    print("\nFrame: ")
    input = input_select(nil, true)
    local frame_n = tonumber(input, 10)
@@ -311,13 +331,17 @@ function altcode_999_find_objs_on_map()
    end
 end
 
+local altcode_tbl = {
+   [242]=altcode_242_set_actor_talk_flag,
+   [250]=altcode_250_create_object,
+   [913]=altcode_913_export_tmx_map_files,
+   [999]=altcode_999_find_objs_on_map,
+}
+
 function handle_alt_code(altcode)
-   if altcode == 242 then
-      altcode_242_set_actor_talk_flag()
-   elseif altcode == 250 then
-      altcode_250_create_object()
-   elseif altcode == 999 then
-      altcode_999_find_objs_on_map()
+   local func = altcode_tbl[altcode]
+   if func ~= nil then
+      func()
    end
 end
 

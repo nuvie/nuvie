@@ -124,6 +124,48 @@ bool GamePalette::loadPalette()
  return true;
 }
 
+bool GamePalette::loadPaletteIntoBuffer(unsigned char *pal)
+{
+ uint16 i,j;
+ std::string filename;
+ NuvieIOFileRead file;
+ unsigned char *buf;
+ uint8 *pal_ptr;
+ std::string game_name, game_id, pal_name;
+ uint8 dither_mode;
+
+ config->value("config/GameName",game_name);
+ config->value("config/GameID",game_id);
+
+ pal_name.assign(game_id);
+ pal_name.append("pal");
+
+ config_get_path(config,pal_name,filename);
+
+ if(file.open(filename) == false)
+  {
+   DEBUG(0,LEVEL_ERROR,"loading palette.\n");
+   return false;
+  }
+
+ buf = file.readAll();
+
+ pal_ptr = pal;
+
+ for(i=0,j=0;i<256;i++,j+=3)
+  {
+   pal_ptr[0] = buf[j]<<2;
+   pal_ptr[1] = buf[j+1]<<2;
+   pal_ptr[2] = buf[j+2]<<2;
+   pal_ptr[3] = 0;
+   pal_ptr += 4;
+  }
+
+ free(buf);
+
+ return true;
+}
+
 void GamePalette::rotatePalette()
 {
  if(Game::get_game()->anims_paused())

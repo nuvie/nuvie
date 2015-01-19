@@ -751,3 +751,33 @@ sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level)
 
   return ret;
 }
+
+std::string encode_xml_entity(const std::string &s)
+{
+  string  ret;
+
+  for(string::const_iterator it = s.begin(); it != s.end(); ++it)
+  {
+    switch(*it)
+    {
+      case '<':
+        ret+="&lt;";
+        break;
+      case '>':
+        ret+="&gt;";
+        break;
+      case '"':
+        ret+="&quot;";
+        break;
+      case '\'':
+        ret+="&apos;";
+        break;
+      case '&':
+        ret+="&amp;";
+        break;
+      default:
+        ret += *it;
+    }
+  }
+  return ret;
+}

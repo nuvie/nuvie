@@ -38,6 +38,7 @@
 #include "ActorManager.h"
 #include "TileManager.h"
 #include "ViewManager.h"
+#include "SaveManager.h"
 #include "Actor.h"
 #include "Weather.h"
 #include "UseCode.h"
@@ -49,6 +50,7 @@
 #include "ScriptActor.h"
 #include "ScriptCutscene.h"
 #include "Magic.h"
+#include "TMXMap.h"
 
 #include <math.h>
 
@@ -254,6 +256,8 @@ static int nscript_map_line_hit_check(lua_State *L);
 
 static int nscript_map_can_put_actor(lua_State *L);
 static int nscript_map_can_put_obj(lua_State *L);
+
+static int nscript_map_export_tmx_files(lua_State *L);
 
 static int nscript_tile_get_flag(lua_State *L);
 static int nscript_tile_get_description(lua_State *L);
@@ -706,6 +710,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_map_line_hit_check);
    lua_setglobal(L, "map_line_hit_check");
+
+   lua_pushcfunction(L, nscript_map_export_tmx_files);
+   lua_setglobal(L, "map_export_tmx_files");
 
    lua_pushcfunction(L, nscript_game_get_ui_style);
    lua_setglobal(L, "game_get_ui_style");
@@ -3128,6 +3135,21 @@ static int nscript_map_line_hit_check(lua_State *L)
 	}
 
 	return 2;
+}
+
+/***
+export map to Tiled TMX files. This creates 1 TMX file per map level. They are saved into the currently active save game directory.
+@function map_export_tmx_files
+@treturn bool returns true if the tmx files were created successfully. false on error
+ */
+static int nscript_map_export_tmx_files(lua_State *L)
+{
+  Game *game = Game::get_game();
+  TMXMap *tmxMap = new TMXMap(game->get_tile_manager(), game->get_game_map(), game->get_obj_manager());
+  lua_pushboolean(L, tmxMap->exportTmxMapFiles(game->get_save_manager()->get_savegame_directory(), game->get_game_type()));
+
+  delete tmxMap;
+  return 1;
 }
 
 /***

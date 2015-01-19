@@ -2897,13 +2897,7 @@ void MapWindow::set_roof_mode(bool roofs)
 
 void MapWindow::loadRoofTiles()
 {
-	std::string datadir = GUI::get_gui()->get_data_dir();
-	std::string imagefile;
-	std::string path;
-
-	build_path(datadir, "images", path);
-	datadir = path;
-	build_path(datadir, "roof_tiles.bmp", imagefile);
+  std::string imagefile = map->getRoofTilesetFilename();
 	roof_tiles = SDL_LoadBMP(imagefile.c_str());
 	if(roof_tiles && game->is_orig_style())
 	{

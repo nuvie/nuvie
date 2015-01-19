@@ -32,10 +32,12 @@
 #include "U6Lib_n.h"
 #include "U6Lzw.h"
 #include "Game.h"
+#include "GamePalette.h"
 #include "Dither.h"
 #include "U6misc.h"
 #include "Look.h"
 #include "GameClock.h"
+#include "SaveManager.h"
 #include "TileManager.h"
 #include "GUI.h"
 
@@ -965,5 +967,44 @@ void TileManager::freeCustomTiles()
     free(extendedTiles);
     extendedTiles = NULL;
     numTiles = NUM_ORIGINAL_TILES;
+  }
+}
+
+void TileManager::exportTilesetToBmpFile(std::string filename)
+{
+  NuvieBmpFile bmp;
+
+  unsigned char pal[256*4];
+
+  Game::get_game()->get_palette()->loadPaletteIntoBuffer(pal);
+
+  //Magic background colour
+  pal[255*4]=0;
+  pal[255*4+1]=0xdf;
+  pal[255*4+2]=0xfc;
+
+  bmp.initNewBlankImage(32*16,64*16, pal);
+
+  unsigned char *data = bmp.getRawIndexedData();
+
+  for(uint8 i=0;i<64;i++)
+  {
+    for(uint8 j=0;j<32;j++)
+    {
+      writeBmpTileData(&data[i*16*512 + j*16], &tile[tileindex[i*32+j]]);
+    }
+  }
+  bmp.save(filename);
+}
+
+void TileManager::writeBmpTileData(unsigned char *data, Tile *t)
+{
+  for(uint8 y=0;y<16;y++)
+  {
+    for(uint8 x=0;x<16;x++)
+    {
+      data[x] = t->data[y*16 + x];
+    }
+    data += 512;
   }
 }

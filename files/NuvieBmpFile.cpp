@@ -61,7 +61,7 @@ bool NuvieBmpFile::initNewBlankImage(sint32 width, sint32 height, const unsigned
   infoHeader.xresolution = 0; //FIXME
   infoHeader.yresolution = 0; //FIXME
   infoHeader.ncolours = 256;
-  infoHeader.importantcolours = 0;
+  infoHeader.importantcolours = 256;
 
   bmp_line_width = infoHeader.width;
   if(bmp_line_width % 4 != 0)
@@ -72,7 +72,7 @@ bool NuvieBmpFile::initNewBlankImage(sint32 width, sint32 height, const unsigned
   header.type = NUVIEBMPFILE_MAGIC;
   header.reserved1 = 0;
   header.reserved2 = 0;
-  header.offset = sizeof(header) + sizeof(infoHeader) + 256*4;
+  header.offset = NUVIEBMP_HEADER_SIZE + NUVIEBMP_INFOHEADER_SIZE + 256*4;
   header.size = header.offset + bmp_line_width * infoHeader.height;
 
   memcpy(&palette, pal, sizeof(palette));

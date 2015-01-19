@@ -1,3 +1,16 @@
+2015-01-20  Eric Fry <efry at users.sourceforge.net> r1998
+	* Added function to export game maps in 'Tiled' tmx format.
+	  Use Alt-913 to save the map. Each game map level is saved to a separate tmx
+	  file. The files are saved into your current savegame directory.
+	* Added TileManager::exportTilesetToBmpFile() to dump the game tilemap to a bmp
+	  file.
+	* Added new map_export_tmx_files() lua script function.
+	* Removed old altcode logic from MD init.lua
+	* Changed altcode lua to use a table based lookup.
+	* Added GamePalette::loadPaletteIntoBuffer() this dumps the game palette
+	  in 32bit format. RGB + unused alpha
+	* Fixed bugs with BMP save logic.
+
 2015-01-15  Eric Fry <efry at users.sourceforge.net> r1997
 	* Fixed directional basemap blocking for MD. You can walk around in the dream
 	  world correctly now.

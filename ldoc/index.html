@@ -114,6 +114,10 @@
 	<td class="summary">Get the currently selected UI style</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#map_export_tmx_files">map_export_tmx_files ()</a></td>
+	<td class="summary">export map to Tiled TMX files.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#tile_get_flag">tile_get_flag (tile_number, flag_set, bit_number)</a></td>
 	<td class="summary">get a tile flag for a given tile number</td>
 	</tr>
@@ -945,6 +949,26 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 </ul>
 
 
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "map_export_tmx_files"></a>
+    <strong>map_export_tmx_files ()</strong>
+    </dt>
+    <dd>
+    export map to Tiled TMX files.  This creates 1 TMX file per map level. They are saved into the currently active save game directory.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns true if the tmx files were created successfully. false on error
     </ol>
 
 

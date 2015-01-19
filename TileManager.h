@@ -189,6 +189,7 @@ class TileManager
 
    Tile *loadCustomTiles(const std::string filename, bool overwrite_tiles, bool copy_tileflags, uint16 tile_num_start_offset);
    void freeCustomTiles();
+   void exportTilesetToBmpFile(std::string filename);
  protected:
 
    bool loadAnimData();
@@ -202,6 +203,8 @@ class TileManager
    Tile *get_extended_tile(uint16 tile_num);
    void copyTileMetaData(Tile *dest, Tile *src);
    Tile *addNewTiles(uint16 num_tiles);
+
+   void writeBmpTileData(unsigned char *data, Tile *t);
 };
 
 #endif /* __TileManager_h__ */

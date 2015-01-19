@@ -31,6 +31,8 @@ nuvie_SOURCES = \
 	files/NuvieFileList.h \
 	files/NuvieBmpFile.cpp \
 	files/NuvieBmpFile.h \
+	files/TMXMap.cpp \
+	files/TMXMap.h \
 	files/U6Bmp.cpp \
 	files/U6Bmp.h \
 	files/U6Lib_n.cpp \

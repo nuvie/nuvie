@@ -538,6 +538,19 @@ std::string Map::getRoofDataFilename()
 	return mapfile;
 }
 
+std::string Map::getRoofTilesetFilename()
+{
+  std::string datadir;
+  std::string imagefile;
+  std::string path;
+
+  config->value("config/datadir", datadir, "");
+  build_path(datadir, "images", path);
+  datadir = path;
+  build_path(datadir, "roof_tiles.bmp", imagefile);
+  return imagefile;
+}
+
 void Map::set_roof_mode(bool roofs)
 {
 	roof_mode = roofs;

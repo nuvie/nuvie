@@ -48,6 +48,8 @@ class NuvieBmpFile
     uint32 offset;                  /* Offset to image data, bytes */
  } header;
 
+ #define NUVIEBMP_HEADER_SIZE 14
+
  struct {
     uint32 size;                    /* Header size in bytes      */
     sint32 width,height;            /* Width and height of image */
@@ -59,6 +61,8 @@ class NuvieBmpFile
     uint32 ncolours;                /* Number of colours         */
     uint32 importantcolours;        /* Important colours         */
  } infoHeader;
+
+ #define NUVIEBMP_INFOHEADER_SIZE 40
 
  public:
 

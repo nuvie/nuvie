@@ -73,6 +73,7 @@ class SaveManager : public GUI_CallBack
  bool quick_save(int save_num, bool load);
 
  std::string get_new_savefilename();
+ std::string get_savegame_directory() { return savedir; }
 
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 
