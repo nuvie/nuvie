@@ -1,3 +1,8 @@
+2015-01-20  Eric Fry <efry at users.sourceforge.net> r1999
+	* Fixed shorelines when creating U6 tilemap.
+	* Added better support for toptile rendering when creating tmx map files.
+	  Still need to fix fountains.
+
 2015-01-20  Eric Fry <efry at users.sourceforge.net> r1998
 	* Added function to export game maps in 'Tiled' tmx format.
 	  Use Alt-913 to save the map. Each game map level is saved to a separate tmx

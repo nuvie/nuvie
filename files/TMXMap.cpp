@@ -125,9 +125,31 @@ void TMXMap::writeLayer(NuvieIOFileWrite *tmx, uint16 sideLength, std::string la
 
 void TMXMap::writeObjectLayer(NuvieIOFileWrite *tmx, uint8 level)
 {
-  uint16 width = map->get_width(level);
   std::string xml = "<objectgroup name=\"Object Layer\">\n";
   tmx->writeBuf((unsigned char *)xml.c_str(), xml.length());
+
+  writeObjects(tmx, level, false);
+  writeObjects(tmx, level, true);
+
+  xml = "</objectgroup>\n";
+  tmx->writeBuf((unsigned char *)xml.c_str(), xml.length());
+}
+
+std::string TMXMap::writeObjectTile(Obj *obj, std::string nameSuffix, uint16 tile_num, uint16 x, uint16 y, bool toptile)
+{
+  Tile *t = tile_manager->get_tile(tile_num);
+
+  if((!toptile && !t->toptile) || (toptile && t->toptile))
+  {
+    return "  <object name=\""+encode_xml_entity(std::string(obj_manager->get_obj_name(obj)))+nameSuffix+"\" gid=\""+sint32ToString(tile_num+1)+"\" x=\""+sint32ToString(x*16)+"\" y=\""+sint32ToString((y+1)*16)+"\" width=\"16\" height=\"16\"/>\n";
+  }
+
+  return std::string();
+}
+
+void TMXMap::writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool toptiles)
+{
+  uint16 width = map->get_width(level);
 
   for(uint16 y=0;y<width;y++)
   {
@@ -140,18 +162,22 @@ void TMXMap::writeObjectLayer(NuvieIOFileWrite *tmx, uint8 level)
         {
           Obj *obj = (Obj *)link->data;
           Tile *t = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
-          std::string s = "  <object name=\""+encode_xml_entity(std::string(obj_manager->get_obj_name(obj)))+"\" gid=\""+sint32ToString(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n+1)+"\" x=\""+sint32ToString((x)*16)+"\" y=\""+sint32ToString((y+1)*16)+"\" width=\"16\" height=\"16\">\n";
-          s += "    <properties>\n";
-          s += "       <property name=\"obj_n\" value=\""+sint32ToString(obj->obj_n)+"\"/>\n";
-          s += "       <property name=\"frame_n\" value=\""+sint32ToString(obj->frame_n)+"\"/>\n";
-          s += "       <property name=\"qty\" value=\""+sint32ToString(obj->qty)+"\"/>\n";
-          s += "       <property name=\"quality\" value=\""+sint32ToString(obj->quality)+"\"/>\n";
-          s += "       <property name=\"status\" value=\""+sint32ToString(obj->status)+"\"/>\n";
-          s += "    </properties>\n";
-          s += "  </object>\n";
+          std::string s;
+          if((!toptiles && !t->toptile) || (toptiles && t->toptile))
+          {
+            s = "  <object name=\""+encode_xml_entity(std::string(obj_manager->get_obj_name(obj)))+"\" gid=\""+sint32ToString(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n+1)+"\" x=\""+sint32ToString((x)*16)+"\" y=\""+sint32ToString((y+1)*16)+"\" width=\"16\" height=\"16\">\n";
+            s += "    <properties>\n";
+            s += "       <property name=\"obj_n\" value=\""+sint32ToString(obj->obj_n)+"\"/>\n";
+            s += "       <property name=\"frame_n\" value=\""+sint32ToString(obj->frame_n)+"\"/>\n";
+            s += "       <property name=\"qty\" value=\""+sint32ToString(obj->qty)+"\"/>\n";
+            s += "       <property name=\"quality\" value=\""+sint32ToString(obj->quality)+"\"/>\n";
+            s += "       <property name=\"status\" value=\""+sint32ToString(obj->status)+"\"/>\n";
+            s += "    </properties>\n";
+            s += "  </object>\n";
+          }
           if(t->dbl_width)
           {
-            s += "  <object name=\""+std::string(obj_manager->get_obj_name(obj))+" -x\" gid=\""+sint32ToString(t->tile_num-1+1)+"\" x=\""+sint32ToString((x-1)*16)+"\" y=\""+sint32ToString((y+1)*16)+"\" width=\"16\" height=\"16\"/>\n";
+            s += writeObjectTile(obj, " -x", t->tile_num-1, x-1, y, toptiles);
           }
           if(t->dbl_height)
           {
@@ -160,22 +186,17 @@ void TMXMap::writeObjectLayer(NuvieIOFileWrite *tmx, uint8 level)
             {
               tile_num--;
             }
-            s += "  <object name=\""+std::string(obj_manager->get_obj_name(obj))+" -y\" gid=\""+sint32ToString(tile_num+1)+"\" x=\""+sint32ToString((x)*16)+"\" y=\""+sint32ToString((y+1-1)*16)+"\" width=\"16\" height=\"16\"/>\n";
+            s += writeObjectTile(obj, " -y", tile_num, x, y-1, toptiles);
           }
           if(t->dbl_width && t->dbl_height)
           {
-            uint16 tile_num = t->tile_num - 3;
-
-            s += "  <object name=\""+std::string(obj_manager->get_obj_name(obj))+" -x,-y\" gid=\""+sint32ToString(tile_num+1)+"\" x=\""+sint32ToString((x-1)*16)+"\" y=\""+sint32ToString((y+1-1)*16)+"\" width=\"16\" height=\"16\"/>\n";
+            s += writeObjectTile(obj, " -x,-y", t->tile_num - 3, x-1, y-1, toptiles);
           }
           tmx->writeBuf((unsigned char *)s.c_str(), s.length());
         }
       }
     }
   }
-
-  xml = "</objectgroup>\n";
-  tmx->writeBuf((unsigned char *)xml.c_str(), xml.length());
 }
 
 bool TMXMap::exportMapLevel(uint8 level)

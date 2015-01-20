@@ -991,19 +991,30 @@ void TileManager::exportTilesetToBmpFile(std::string filename)
   {
     for(uint8 j=0;j<32;j++)
     {
-      writeBmpTileData(&data[i*16*512 + j*16], &tile[tileindex[i*32+j]]);
+      if(game_type == NUVIE_GAME_U6 && (i*32+j) >= 16 && (i*32+j) < 48) //lay down the base tile for shoreline tiles
+        {
+          writeBmpTileData(&data[i*16*512 + j*16], get_anim_base_tile(i*32+j), false);
+          writeBmpTileData(&data[i*16*512 + j*16], &tile[tileindex[i*32+j]], true);
+        }
+      else
+        {
+          writeBmpTileData(&data[i*16*512 + j*16], &tile[tileindex[i*32+j]], false);
+        }
     }
   }
   bmp.save(filename);
 }
 
-void TileManager::writeBmpTileData(unsigned char *data, Tile *t)
+void TileManager::writeBmpTileData(unsigned char *data, Tile *t, bool transparent)
 {
   for(uint8 y=0;y<16;y++)
   {
     for(uint8 x=0;x<16;x++)
     {
-      data[x] = t->data[y*16 + x];
+      if(!transparent || t->data[y*16 + x] != 255)
+      {
+        data[x] = t->data[y*16 + x];
+      }
     }
     data += 512;
   }

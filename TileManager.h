@@ -204,7 +204,7 @@ class TileManager
    void copyTileMetaData(Tile *dest, Tile *src);
    Tile *addNewTiles(uint16 num_tiles);
 
-   void writeBmpTileData(unsigned char *data, Tile *t);
+   void writeBmpTileData(unsigned char *data, Tile *t, bool transparent);
 };
 
 #endif /* __TileManager_h__ */
