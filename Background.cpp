@@ -94,7 +94,7 @@ bool Background::init()
 
 	 background->get_size(&bg_w,&bg_h);
 
-	 Game::get_game()->get_dither()->dither_bitmap(background->get_data(),area.w, area.h, DITHER_NO_TRANSPARENCY);
+	 Game::get_game()->get_dither()->dither_bitmap(background->get_data(), bg_w, bg_h, DITHER_NO_TRANSPARENCY);
  }
  return true;
 }

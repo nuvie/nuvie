@@ -1,3 +1,8 @@
+2015-01-25 Malignant Manor <malignantmanor@users.sourceforge.net> r2000
+	* Fix crash when using dithering in original+ styles larger than 320x200
+	* Use any hat on a joystick/gamepad instead of only hat 0.
+	* Fix joystick axis naming in auto-generated cfg.
+
 2015-01-20  Eric Fry <efry at users.sourceforge.net> r1999
 	* Fixed shorelines when creating U6 tilemap.
 	* Added better support for toptile rendering when creating tmx map files.

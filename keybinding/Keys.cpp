@@ -990,10 +990,10 @@ SDLKey KeyBinder::get_key_from_joy_button(uint8 button)
 
 SDLKey KeyBinder::get_key_from_joy_hat(SDL_JoyHatEvent jhat)
 {
-	if(jhat.which == 0)
+//	if(jhat.which == 0) // only handling one jhat for now and some devices don't start at 0
 		return get_key_from_joy_hat_button(jhat.value);
-	else
-		return SDLK_LAST; // unhandled hat
+//	else
+//		return SDLK_LAST; // unhandled hat
 }
 
 SDLKey KeyBinder::get_key_from_joy_hat_button(uint8 hat_button)

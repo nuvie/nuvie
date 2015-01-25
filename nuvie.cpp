@@ -317,8 +317,8 @@ void Nuvie::SharedDefaultConfigValues()
 	std::string axes_str = "config/joystick/axes_pair";
 	std::string pair_str[] = { axes_str + "1", axes_str + "2", axes_str + "3", axes_str + "4" };
 	for(int i=0; i < 4; i++) {
-	config->set(pair_str[i] + "/axis_x", axisx[i]);
-	config->set(pair_str[i] + "/axis_y", axisy[i]);
+	config->set(pair_str[i] + "/x_axis", axisx[i]);
+	config->set(pair_str[i] + "/y_axis", axisy[i]);
 	config->set(pair_str[i] + "/delay", 110);
 	config->set(pair_str[i] + "/x_deadzone", 8000);
 	config->set(pair_str[i] + "/y_deadzone", 8000);
