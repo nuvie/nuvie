@@ -52,9 +52,11 @@ private:
   void writeRoofTileset(uint8 level);
   void writeLayer(NuvieIOFileWrite *tmx, uint16 width, std::string layerName, uint16 gidOffset, uint16 bitsPerTile, unsigned char *data);
   void writeObjectLayer(NuvieIOFileWrite *tmx, uint8 level);
-  void writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool toptiles);
-  std::string writeObjectTile(Obj *obj, std::string nameSuffix, uint16 tile_num, uint16 x, uint16 y, bool toptile);
+  void writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool forceLower, bool toptiles);
+  std::string writeObjectTile(Obj *obj, std::string nameSuffix, uint16 tile_num, uint16 x, uint16 y, bool forceLower, bool toptile);
   std::string sint32ToString(sint32 value);
+  std::string boolToString(bool value);
+  bool canDrawTile(Tile *t, bool forceLower, bool toptile);
 };
 
 #endif /* TMXMAP_H_ */

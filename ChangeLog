@@ -1,3 +1,7 @@
+2015-02-02  Eric Fry <efry at users.sourceforge.net> r2001
+	* Fixed some object rendering issues with the TMX map export.
+	  Fountains should display over the pools in U6 now.
+
 2015-01-25 Malignant Manor <malignantmanor@users.sourceforge.net> r2000
 	* Fix crash when using dithering in original+ styles larger than 320x200
 	* Use any hat on a joystick/gamepad instead of only hat 0.

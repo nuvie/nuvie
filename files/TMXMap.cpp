@@ -128,18 +128,33 @@ void TMXMap::writeObjectLayer(NuvieIOFileWrite *tmx, uint8 level)
   std::string xml = "<objectgroup name=\"Object Layer\">\n";
   tmx->writeBuf((unsigned char *)xml.c_str(), xml.length());
 
-  writeObjects(tmx, level, false);
-  writeObjects(tmx, level, true);
+  writeObjects(tmx, level, true, false);
+  writeObjects(tmx, level, false, false);
+  writeObjects(tmx, level, false, true);
 
   xml = "</objectgroup>\n";
   tmx->writeBuf((unsigned char *)xml.c_str(), xml.length());
 }
 
-std::string TMXMap::writeObjectTile(Obj *obj, std::string nameSuffix, uint16 tile_num, uint16 x, uint16 y, bool toptile)
+bool TMXMap::canDrawTile(Tile *t, bool forceLower, bool toptile)
+{
+  if (forceLower == false && (t->flags3 & 0x4) && toptile == false) //don't display force lower tiles.
+    return false;
+
+  if (forceLower == true && !(t->flags3 & 0x4))
+    return false;
+
+  if((toptile && !t->toptile) || (!toptile && t->toptile))
+    return false;
+
+  return true;
+}
+
+std::string TMXMap::writeObjectTile(Obj *obj, std::string nameSuffix, uint16 tile_num, uint16 x, uint16 y, bool forceLower, bool toptile)
 {
   Tile *t = tile_manager->get_tile(tile_num);
 
-  if((!toptile && !t->toptile) || (toptile && t->toptile))
+  if(canDrawTile(t, forceLower, toptile))
   {
     return "  <object name=\""+encode_xml_entity(std::string(obj_manager->get_obj_name(obj)))+nameSuffix+"\" gid=\""+sint32ToString(tile_num+1)+"\" x=\""+sint32ToString(x*16)+"\" y=\""+sint32ToString((y+1)*16)+"\" width=\"16\" height=\"16\"/>\n";
   }
@@ -147,7 +162,7 @@ std::string TMXMap::writeObjectTile(Obj *obj, std::string nameSuffix, uint16 til
   return std::string();
 }
 
-void TMXMap::writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool toptiles)
+void TMXMap::writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool forceLower, bool toptiles)
 {
   uint16 width = map->get_width(level);
 
@@ -161,9 +176,9 @@ void TMXMap::writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool toptiles)
         for(U6Link *link=list->start(); link != NULL; link=link->next)
         {
           Obj *obj = (Obj *)link->data;
-          Tile *t = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+          Tile *t = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
           std::string s;
-          if((!toptiles && !t->toptile) || (toptiles && t->toptile))
+          if(canDrawTile(t, forceLower, toptiles))
           {
             s = "  <object name=\""+encode_xml_entity(std::string(obj_manager->get_obj_name(obj)))+"\" gid=\""+sint32ToString(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n+1)+"\" x=\""+sint32ToString((x)*16)+"\" y=\""+sint32ToString((y+1)*16)+"\" width=\"16\" height=\"16\">\n";
             s += "    <properties>\n";
@@ -172,12 +187,13 @@ void TMXMap::writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool toptiles)
             s += "       <property name=\"qty\" value=\""+sint32ToString(obj->qty)+"\"/>\n";
             s += "       <property name=\"quality\" value=\""+sint32ToString(obj->quality)+"\"/>\n";
             s += "       <property name=\"status\" value=\""+sint32ToString(obj->status)+"\"/>\n";
+            s += "       <property name=\"toptile\" value=\""+boolToString(t->toptile)+"\"/>\n";
             s += "    </properties>\n";
             s += "  </object>\n";
           }
           if(t->dbl_width)
           {
-            s += writeObjectTile(obj, " -x", t->tile_num-1, x-1, y, toptiles);
+            s += writeObjectTile(obj, " -x", t->tile_num-1, x-1, y, forceLower, toptiles);
           }
           if(t->dbl_height)
           {
@@ -186,11 +202,11 @@ void TMXMap::writeObjects(NuvieIOFileWrite *tmx, uint8 level, bool toptiles)
             {
               tile_num--;
             }
-            s += writeObjectTile(obj, " -y", tile_num, x, y-1, toptiles);
+            s += writeObjectTile(obj, " -y", tile_num, x, y-1, forceLower, toptiles);
           }
           if(t->dbl_width && t->dbl_height)
           {
-            s += writeObjectTile(obj, " -x,-y", t->tile_num - 3, x-1, y-1, toptiles);
+            s += writeObjectTile(obj, " -x,-y", t->tile_num - 3, x-1, y-1, forceLower, toptiles);
           }
           tmx->writeBuf((unsigned char *)s.c_str(), s.length());
         }
@@ -258,4 +274,9 @@ std::string TMXMap::sint32ToString(sint32 value)
   char buf[12];
   snprintf(buf, sizeof(buf), "%d", value);
   return std::string(buf);
+}
+
+std::string TMXMap::boolToString(bool value)
+{
+  return value ? std::string("true") : std::string("false");
 }
