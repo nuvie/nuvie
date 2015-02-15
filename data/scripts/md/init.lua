@@ -59,6 +59,14 @@ local g_container_obj_tbl = {
 [104]=1,[284]=1,[285]=1
 }
 
+function is_blood(obj_num)
+   if obj_num == 334 or obj_num == 335 or obj_num == 336 then --OBJ_BLOOD, OBJ_ICHOR, OBJ_SAP
+      return true
+   end
+
+   return false
+end
+
 function is_container_obj(obj_num)
    if g_container_obj_tbl[obj_num] ~= nil then
       return true
@@ -226,6 +234,11 @@ function wrap_coord(coord, level)
    end
    
    return coord % 1024   
+end
+
+function can_move_obj(obj, rel_x, rel_y)
+   local z = obj.z
+   return map_can_put_obj(wrap_coord(obj.x+rel_x,z), wrap_coord(obj.y+rel_y,z), z)
 end
 
 function obj_get_readiable_location(obj)

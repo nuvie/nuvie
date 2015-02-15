@@ -181,7 +181,7 @@ private:
  virtual bool look_obj(Obj *obj, Actor *actor)   { return(false); }
  virtual bool pass_obj(Obj *obj, Actor *actor, uint16 x, uint16 y) { return(false); }
  virtual bool search_obj(Obj *obj, Actor *actor) { return(false); }
- virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y) { return(false); }
+ virtual bool move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
  virtual bool load_obj(Obj *obj)                 { return(false); }
  virtual bool message_obj(Obj *obj, CallbackMessage msg, void *msg_data) { return(false); }
  virtual bool ready_obj(Obj *obj, Actor *actor);

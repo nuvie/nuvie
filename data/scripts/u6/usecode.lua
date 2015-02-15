@@ -84,3 +84,7 @@ function use_obj(obj, actor)
 		use_obj_on(obj, actor, usecode_table[obj.obj_n])
 	end
 end
+
+function move_obj(obj, rel_x, rel_y)
+  return false
+end

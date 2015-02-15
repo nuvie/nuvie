@@ -1,3 +1,16 @@
+2015-02-15  Eric Fry <efry at users.sourceforge.net> r2002
+	* Added support for automatic pushing of railcar and drill objects in MD
+	* Added the ability to move MD rail car and drill objects in and out of mines.
+	* Added optional boolean flag to lua map_get_obj() function. This allows you
+	  to include multi-tile objects in the search results if they are on an adjacent
+	  overlapping tile.
+	* Added the ability to exclude an object from ObjManager::get_obj()
+	* Added player_before_move_action() script call. This can be used to execute lua script
+	  before the player is moved. This is used by the MD push object logic.
+	* Added MD use switch bar logic.
+	* Added support for lua script based move-code logic.
+	* Added movecode for MD drill and rail car objects.
+
 2015-02-02  Eric Fry <efry at users.sourceforge.net> r2001
 	* Fixed some object rendering issues with the TMX map export.
 	  Fountains should display over the pools in U6 now.

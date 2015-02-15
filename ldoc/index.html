@@ -329,7 +329,7 @@
 <h2><a href="#map">map</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#map_get_obj">map_get_obj (location[, obj_n])</a></td>
+	<td class="name" nowrap><a href="#map_get_obj">map_get_obj (location[, obj_n[, inc_multi_tile_objs=false]])</a></td>
 	<td class="summary">Get an object from the map</td>
 	</tr>
 	<tr>
@@ -2469,7 +2469,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
     <dl class="function">
     <dt>
     <a name = "map_get_obj"></a>
-    <strong>map_get_obj (location[, obj_n])</strong>
+    <strong>map_get_obj (location[, obj_n[, inc_multi_tile_objs=false]])</strong>
     </dt>
     <dd>
     Get an object from the map
@@ -2484,6 +2484,11 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
         </li>
         <li><span class="parameter">obj_n</span>
          object number
+        </li>
+        <li><span class="parameter">inc_multi_tile_objs</span>
+            <span class="types"><span class="type">bool</span></span>
+         Should this search also include surrounding multi-tile objects that cover this location?
+         (<em>default</em> false)
         </li>
     </ul>
 

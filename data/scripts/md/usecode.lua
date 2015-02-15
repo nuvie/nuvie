@@ -1,4 +1,5 @@
 local USE_EVENT_USE = 0x01
+local USE_EVENT_MOVE = 0x40
 local USE_EVENT_READY = 0x0100
 
 function search_container(obj)
@@ -35,7 +36,6 @@ function use_crate(obj, target_obj, actor)
 			printl("IT_HAS_NO_EFFECT")
 		end
 	end
-	
 end
 
 function use_container(obj, actor)
@@ -589,6 +589,8 @@ function use_tent(obj, actor)
    
    local hour = clock_get_hour()
    local time
+   local hours_to_rest
+   
    if hour < 7 or hour > 16 then
       time = i18n("SUNRISE")
       if hour < 7 then
@@ -889,6 +891,33 @@ function use_gate(obj, actor)
    
 end
 
+function use_switch_bar(obj, actor)
+   if obj.frame_n == 0 then
+      obj.frame_n = 1
+   else
+      obj.frame_n = 0
+   end
+   
+   if obj.on_map == false or map_get_obj(obj.x-1,obj.y-1,obj.z, 413) == nil then
+      printl("IT_HAS_NO_EFFECT")
+      return
+   end
+   
+   if obj.quality == 1 then
+      printl("IT_TURNS_LOOSELY")
+      return
+   end
+   
+   local turntable = map_get_obj(obj.x-1,obj.y-1,obj.z, 413)
+   turntable.frame_n = obj.frame_n
+   
+   local railcar = map_get_obj(obj.x-1,obj.y-1,obj.z, 410)
+   if railcar ~= nil then
+      railcar.frame_n = railcar.frame_n - (railcar.frame_n % 2)
+      railcar.frame_n = railcar.frame_n + turntable.frame_n
+   end
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -990,6 +1019,7 @@ local usecode_table = {
 [323]=use_misc_text,
 --OBJ_MARTIAN_PICK
 [327]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+[411]=use_switch_bar,
 --OBJ_CLOSED_HATCH
 [421]=use_door,
 [427]=use_misc_text,
@@ -1037,10 +1067,107 @@ local usecode_unready_obj_table = {
 [15]=unready_winged_shoes,
 }
 
+function move_drill(obj, rel_x, rel_y)
+  if rel_x ~= 0 and rel_y ~= 0 then
+    return false
+  end
+
+  if rel_x < 0 then
+    obj.frame_n = 1
+  elseif rel_x > 0 then
+      obj.frame_n = 4
+  elseif rel_y < 0 then
+      obj.frame_n = 3
+  elseif rel_y > 0 then
+      obj.frame_n = 5
+  end
+    
+  return true
+end
+
+function move_rail_cart(obj, rel_x, rel_y)
+   local frame_n = obj.frame_n
+   if rel_x ~= 0 and rel_y ~= 0 then
+      printl("IT_WONT_GO_IN_THAT_DIRECTION")
+      return false
+   end
+   if (rel_x < 0 or rel_x > 0) and (frame_n == 1 or frame_n == 3 or frame_n == 5) then
+      printl("IT_WONT_GO_IN_THAT_DIRECTION")
+      return false
+   end
+   if (rel_y < 0 or rel_y > 0) and (frame_n == 0 or frame_n == 2 or frame_n == 4) then
+      printl("IT_WONT_GO_IN_THAT_DIRECTION")
+      return false
+   end
+   if check_for_track(obj, rel_x, rel_y) == false then
+      printl("IT_WONT_GO_IN_THAT_DIRECTION")
+      return false
+   end
+
+   move_car_obj(obj, rel_x, rel_y)
+   return false     
+end
+
+function check_for_track(car, rel_x, rel_y)
+   local x = car.x + rel_x
+   local y = car.y + rel_y
+   
+   for obj in objs_at_loc(x, y, car.z) do
+      print("obj="..obj.obj_n.."\n")
+   	if (obj.obj_n >= 412 and obj.obj_n <= 414) or obj.obj_n == 419 or obj.obj_n == 175 or obj.obj_n == 163 then --track object
+   	  --fixme check track orientation here.
+   	  local track_frame_n = obj.frame_n
+   	  if (car.frame_n % 2) == track_frame_n or track_frame_n == 2 or obj.obj_n == 412 or obj.obj_n == 175 or obj.obj_n == 163 then
+   	     return true
+   	  else
+   	     return false
+   	  end
+   	elseif is_blood(obj.obj_n) == false and obj.obj_n ~= 417 then --MARTIAN_BARGE
+   	  return false
+   	end
+   end
+
+   if map_get_obj(x, y, car.z, 175, true) then
+      return true
+   end
+
+   if map_get_obj(x, y, car.z, 412, true) then
+      return true
+   end
+      
+   local tile_num = map_get_tile_num(x,y, car.z)
+   if is_track_tile(tile_num) then
+      return true --fixme need to check if right track orientation.
+   end
+   
+   return false
+end
+
+function move_car_obj(obj, rel_x, rel_y)
+   obj.x = obj.x + rel_x
+   obj.y = obj.y + rel_y
+   return true
+end
+
+function is_track_tile(tile_num)
+   if tile_num == 108 or tile_num == 109 or tile_num == 110 or tile_num == 77 or tile_num == 79 then
+      return true
+   end
+   return false
+end
+
+local usecode_move_obj_table = {
+[410]=move_rail_cart,
+[441]=move_drill,
+}
+
 function has_usecode(obj, usecode_type)
+      --print("has_usecode("..obj.obj_n..", "..usecode_type..")\n")
    if usecode_type == USE_EVENT_USE and usecode_table[obj.obj_n] ~= nil then
       return true
    elseif usecode_type == USE_EVENT_READY and (usecode_ready_obj_table[obj.obj_n] ~= nil or usecode_unready_obj_table[obj.obj_n] ~= nil)then
+      return true
+   elseif usecode_type == USE_EVENT_MOVE and usecode_move_obj_table[obj.obj_n] ~= nil then
       return true
    end
    
@@ -1138,4 +1265,11 @@ function ready_obj(obj, actor)
    end
    
    return true
+end
+
+function move_obj(obj, rel_x, rel_y)
+  if usecode_move_obj_table[obj.obj_n] ~= nil then
+    return usecode_move_obj_table[obj.obj_n](obj, rel_x, rel_y)
+  end
+	return true
 end

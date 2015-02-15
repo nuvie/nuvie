@@ -1523,7 +1523,7 @@ bool Event::pushTo(sint16 rel_x, sint16 rel_y, bool push_from)
                 can_move = obj_manager->move(push_obj,to.x,to.y,to.z);
         }
         else if(map_window->get_interface() != INTERFACE_IGNORE_BLOCK &&
-                map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt))
+                map->lineTest(to.x, to.y, to.x, to.y, to.z, LT_HitActors | LT_HitUnpassable, lt, 0, game->get_game_type() == NUVIE_GAME_U6 ? NULL : push_obj)) //FIXME should we exclude push_obj for U6 too?
             {
              if(lt.hitObj)
               {

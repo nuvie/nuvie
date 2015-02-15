@@ -224,7 +224,7 @@ function show_lowell()
 
    canvas_hide_all_sprites()
    
-   g_img_tbl = image_load_all("lowell.lzc")
+   local g_img_tbl = image_load_all("lowell.lzc")
    local bg = sprite_new(g_img_tbl[0][0], 0, 24, true)
    local lowell = sprite_new(g_img_tbl[0][1], 0, 24, true)
 
@@ -244,8 +244,8 @@ function show_fuse()
    
    canvas_hide_all_sprites()
    
-   g_img_tbl = image_load_all("fuse.lzc")
-   bg = sprite_new(g_img_tbl[0][0], 0, 24, true)
+   local g_img_tbl = image_load_all("fuse.lzc")
+   local bg = sprite_new(g_img_tbl[0][0], 0, 24, true)
    local fuse = sprite_new(g_img_tbl[0][1], 0, 24, true)
    
    music_play("mdd_mus.lzc", 2)
@@ -1910,7 +1910,7 @@ function main_menu()
 
    while true do
       canvas_update()
-      input = input_poll(true)
+      local input = input_poll(true)
       if input ~= nil then
          if input == SDLK_q then -- q
             return "Q"

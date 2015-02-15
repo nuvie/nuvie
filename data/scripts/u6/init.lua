@@ -487,7 +487,7 @@ function explode_keg()
 	--try to explode lit kegs in the party's inventory
 	local party_actor
 	for party_actor in party_members() do
-		obj = Actor.inv_get_obj_n(party_actor, 223, 1) --keg with frame_n = 1
+		local obj = Actor.inv_get_obj_n(party_actor, 223, 1) --keg with frame_n = 1
 		if obj ~= nil then
 			explode_obj(obj, party_actor)
 		end

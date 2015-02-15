@@ -419,8 +419,14 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     if(actor->is_immobile() && actor->id_n != 0)
         can_move = false;
 
+    if(can_move && game_type != NUVIE_GAME_U6)
+    {
+      can_move = Game::get_game()->get_script()->call_player_before_move_action(rel_x, rel_y);
+    }
+
     if(can_move)
     {
+
 		if(!check_moveRelative(rel_x, rel_y)) {
 				can_move = false;
 				if(mouse_movement && rel_x != 0 && rel_y != 0 && can_change_rel_dir) {

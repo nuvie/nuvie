@@ -1139,16 +1139,16 @@ bool ObjManager::obj_is_damaging(Obj *obj, Actor *actor)
 		return false;
 }
 
-Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects)
+Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects, Obj *excluded_obj)
 {
  Obj *obj;
  Tile *tile;
 
- obj = get_objBasedAt(x,y,level,top_obj,include_ignored_objects);
+ obj = get_objBasedAt(x,y,level,top_obj,include_ignored_objects, excluded_obj);
  if(obj != NULL)
    return obj;
 
- obj = get_objBasedAt(x+1,y+1,level,top_obj,include_ignored_objects);
+ obj = get_objBasedAt(x+1,y+1,level,top_obj,include_ignored_objects, excluded_obj);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
@@ -1156,7 +1156,7 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool inc
      return obj;
   }
 
- obj = get_objBasedAt(x,y+1,level,top_obj,include_ignored_objects);
+ obj = get_objBasedAt(x,y+1,level,top_obj,include_ignored_objects, excluded_obj);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
@@ -1164,7 +1164,7 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool inc
      return obj;
   }
 
- obj = get_objBasedAt(x+1,y,level,top_obj,include_ignored_objects);
+ obj = get_objBasedAt(x+1,y,level,top_obj,include_ignored_objects, excluded_obj);
  if(obj != NULL)
   {
    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
@@ -1175,6 +1175,48 @@ Obj *ObjManager::get_obj(uint16 x, uint16 y, uint8 level, bool top_obj, bool inc
 
  return NULL;
 }
+
+Obj *ObjManager::get_obj_of_type_from_location_inc_multi_tile(uint16 obj_n, uint16 x, uint16 y, uint8 z)
+{
+  return get_obj_of_type_from_location_inc_multi_tile(obj_n, -1, -1, x, y, z);
+}
+
+Obj *ObjManager::get_obj_of_type_from_location_inc_multi_tile(uint16 obj_n, sint16 quality, sint32 qty, uint16 x, uint16 y, uint8 z)
+{
+  Obj *obj;
+  Tile *tile;
+
+  obj = get_obj_of_type_from_location(obj_n, quality, qty, x, y, z);
+  if(obj != NULL)
+    return obj;
+
+  obj = get_obj_of_type_from_location(obj_n, quality, qty, x+1, y+1, z);
+  if(obj != NULL)
+  {
+    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+    if(tile->dbl_width && tile->dbl_height)
+      return obj;
+  }
+
+  obj = get_obj_of_type_from_location(obj_n, quality, qty, x, y+1, z);
+  if(obj != NULL)
+  {
+    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+    if(tile->dbl_height)
+      return obj;
+  }
+
+  obj = get_obj_of_type_from_location(obj_n, quality, qty, x+1, y, z);
+  if(obj != NULL)
+  {
+    tile = tile_manager->get_tile(get_obj_tile_num(obj->obj_n)+obj->frame_n);
+    if(tile->dbl_width)
+      return obj;
+  }
+
+  return NULL;
+}
+
 
 Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z)
 {
@@ -1211,7 +1253,7 @@ Obj *ObjManager::get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sin
 }
 
 // x, y in world coords
-Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects)
+Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects, Obj *excluded_obj)
 {
  U6Link *link;
  U6LList *obj_list;
@@ -1229,12 +1271,16 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, b
     while(link != NULL)
     {
     	obj = (Obj *)link->data;
-    	if(include_ignored_objects)
-    		return obj;
 
-    	Tile *tile = get_obj_tile(obj->obj_n, obj->frame_n);
-    	if((tile->flags3 & TILEFLAG_IGNORE) != TILEFLAG_IGNORE)
-    		return obj;
+    	if(obj != excluded_obj)
+    	{
+        if(include_ignored_objects)
+          return obj;
+
+        Tile *tile = get_obj_tile(obj->obj_n, obj->frame_n);
+        if ((tile->flags3 & TILEFLAG_IGNORE) != TILEFLAG_IGNORE)
+          return obj;
+    	}
 
     	if(top_obj)
     		link = link->prev;

@@ -1883,7 +1883,16 @@ CanDropOrMoveMsg MapWindow::can_drop_or_move_obj(uint16 x, uint16 y, Actor *acto
     if(actor_manager->get_actor(x, y, actor_loc.z))
         return MSG_NOT_POSSIBLE;
 
-    Obj *dest_obj = obj_manager->get_obj(x, y, actor_loc.z);
+    Obj *dest_obj = NULL;
+    if(game_type == NUVIE_GAME_U6)
+    {
+      dest_obj = obj_manager->get_obj(x, y, actor_loc.z); //FIXME this might not be right. We might want to exclude obj.
+    }
+    else
+    {
+      dest_obj = obj_manager->get_obj(x, y, actor_loc.z, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED, obj);
+    }
+
     bool can_go_in_water = (game_type == NUVIE_GAME_U6
                             && (obj->obj_n == OBJ_U6_SKIFF || obj->obj_n == OBJ_U6_RAFT));
     if(can_go_in_water && dest_obj) // it is drawn underneath so only allow on hackmove
@@ -1921,7 +1930,7 @@ CanDropOrMoveMsg MapWindow::can_drop_or_move_obj(uint16 x, uint16 y, Actor *acto
 
     if(map->lineTest(actor_loc.x + rel_x, actor_loc.y + rel_y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
 #else
-	lt_flags = LT_HitMissileBoundary;
+	lt_flags = (game_type == NUVIE_GAME_U6) ? LT_HitMissileBoundary : 0; //FIXME this probably isn't quite right for MD/SE
 	if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
 #endif
     {

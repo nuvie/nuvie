@@ -942,6 +942,21 @@ bool Script::play_cutscene(const char *script_file)
 	return run_lua_file(script_file_path.c_str());
 }
 
+bool Script::call_player_before_move_action(sint16 rel_x, sint16 rel_y)
+{
+  lua_getglobal(L, "player_before_move_action");
+  lua_pushinteger(L, rel_x);
+  lua_pushinteger(L, rel_y);
+
+  if(call_function("player_before_move_action", 2, 1) == false)
+  {
+    return false;
+  }
+
+  return lua_toboolean(L,-1);
+}
+
+
 bool Script::call_player_post_move_action(bool didMove)
 {
   lua_getglobal(L, "player_post_move_action");
@@ -1211,6 +1226,20 @@ bool Script::call_ready_obj(Obj *obj, Actor *actor)
   nscript_new_actor_var(L, actor->get_actor_num());
 
   if(call_function("ready_obj", 2, 1) == false)
+    return false;
+
+  return lua_toboolean(L,-1);
+}
+
+bool Script::call_move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
+{
+  lua_getglobal(L, "move_obj");
+
+  nscript_obj_new(L, obj);
+  lua_pushnumber(L, (lua_Number)rel_x);
+  lua_pushnumber(L, (lua_Number)rel_y);
+
+  if(call_function("move_obj", 3, 1) == false)
     return false;
 
   return lua_toboolean(L,-1);
@@ -2828,6 +2857,7 @@ Get an object from the map
 @function map_get_obj
 @tparam MapCoord|x,y,z location
 @param[opt] obj_n object number
+@bool[opt=false] inc_multi_tile_objs Should this search also include surrounding multi-tile objects that cover this location?
 @treturn Obj|nil
 @within map
  */
@@ -2846,7 +2876,19 @@ static int nscript_map_get_obj(lua_State *L)
    if(lua_gettop(L) > 3)
    {
 	   uint16 obj_n = lua_tointeger(L, 4);
-	   obj = obj_manager->get_obj_of_type_from_location(obj_n, x, y, z);
+	   bool include_multi_tile_objs = false;
+	   if(lua_gettop(L) > 4)
+	   {
+	     include_multi_tile_objs = lua_toboolean(L, 5);
+	   }
+	   if(include_multi_tile_objs)
+	   {
+	     obj = obj_manager->get_obj_of_type_from_location_inc_multi_tile(obj_n, x, y, z);
+	   }
+	   else
+	   {
+	     obj = obj_manager->get_obj_of_type_from_location(obj_n, x, y, z);
+	   }
    }
    else
    {

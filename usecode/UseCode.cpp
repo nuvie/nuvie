@@ -152,6 +152,11 @@ bool UseCode::ready_obj(Obj *obj, Actor *actor)
   return script->call_ready_obj(obj, actor);
 }
 
+bool UseCode::move_obj(Obj *obj, sint16 rel_x, sint16 rel_y)
+{
+  return script->call_move_obj(obj, rel_x, rel_y);
+}
+
 void UseCode::toggle_frame(Obj *obj)
 {
  if(obj->frame_n > 0)

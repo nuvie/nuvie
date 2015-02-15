@@ -163,5 +163,6 @@ OVERCOME_BY_YOUR_WOUNDS_YOU_FALL_UNCONSCIOUS="\nOvercome by your wounds, you fal
 YOU_AWAKEN_BACK_AT_FEELING_RESTORED="\n....You awaken back at %s, feeling restored.\n",
 THE_SPACE_CAPSULE="the space capsule",
 THE_OLYMPUS_MINE="the Olympus mine",
-
+IT_WONT_GO_IN_THAT_DIRECTION="It won't go in that direction!\n",
+IT_TURNS_LOOSELY="It turns loosely.\n",
 }

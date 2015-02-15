@@ -1088,15 +1088,75 @@ local map_entrance_tbl = {
    {x=0x5E,  y=0x29,  z=0x4}
 }
 
+--returns true if the player can move to rel_x, rel_y
+function player_before_move_action(rel_x, rel_y)
+   if rel_x ~= 0 and rel_y ~= 0 then
+      return true
+   end
+   
+   local player_loc = player_get_location()
+   local z = player_loc.z
+   local x = wrap_coord(player_loc.x+rel_x,z)
+   local y = wrap_coord(player_loc.y+rel_y,z)
+   
+   for obj in objs_at_loc(x, y, z) do
+      local obj_n = obj.obj_n
+      if obj_n == 410 and can_move_obj(obj, rel_x, rel_y) then --railcar
+         move_rail_cart(obj, rel_x, rel_y)
+      elseif obj_n == 441 and can_move_drill(obj, rel_x, rel_y) then --assembled drill
+         move_drill(obj, rel_x, rel_y)
+         obj.x = obj.x + rel_x
+         obj.y = obj.y + rel_y
+      end
+   end
+   
+	return true
+end
+
+function can_move_drill(drill, rel_x, rel_y)
+   if can_move_obj(drill, rel_x, rel_y) then
+      return true
+   end
+   
+   local z = drill.z
+   local x = wrap_coord(drill.x+rel_x,z)
+   local y = wrap_coord(drill.y+rel_y,z)
+   
+   if map_get_obj(x, y, z, 175, true) == nil then --mine entrance
+      return false
+   end
+   
+   for obj in objs_at_loc(x, y, z) do
+      if is_blood(obj.obj_n) == false then
+         return false
+      end
+   end
+   
+   return true
+end
+
 function player_post_move_action(did_move)
    local player_loc = player_get_location()
 
    for obj in objs_at_loc(player_loc) do
       if (obj.obj_n == 175 or obj.obj_n == 163) then
+         if obj.obj_n == 175 then --Mine entry
+            for transfer_obj in objs_at_loc(player_loc.x, player_loc.y-1, player_loc.z) do
+               transfer_obj.x = map_entrance_tbl[obj.quality].x
+               transfer_obj.y = map_entrance_tbl[obj.quality].y-1
+               transfer_obj.z = map_entrance_tbl[obj.quality].z
+            end
+         else --Mine exit
+            for transfer_obj in objs_at_loc(player_loc.x, player_loc.y+1, player_loc.z) do
+               transfer_obj.x = map_entrance_tbl[obj.quality].x
+               transfer_obj.y = map_entrance_tbl[obj.quality].y+2
+               transfer_obj.z = map_entrance_tbl[obj.quality].z
+            end
+         end
          party_use_entrance(player_loc.x, player_loc.y, player_loc.z, map_entrance_tbl[obj.quality])
       end
    end
-   
+
 end
 
 function actor_hit(actor, damage)

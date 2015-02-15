@@ -46,3 +46,7 @@ function use_obj(obj, actor)
 		end
 	end
 end
+
+function move_obj(obj, rel_x, rel_y)
+  return false
+end

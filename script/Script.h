@@ -107,6 +107,7 @@ class Script
    bool call_save_game(NuvieIO *objlist);
 
    bool play_cutscene(const char *script_file);
+   bool call_player_before_move_action(sint16 rel_x, sint16 rel_y);
    bool call_player_post_move_action(bool didMove);
    bool call_actor_update_all();
    bool call_actor_init(Actor *actor, uint8 alignment);
@@ -127,6 +128,7 @@ class Script
    bool call_has_usecode(Obj *obj, UseCodeEvent usecode_type);
    ScriptThread *call_use_obj(Obj *obj, Actor *actor);
    bool call_ready_obj(Obj *obj, Actor *actor);
+   bool call_move_obj(Obj *obj, sint16 rel_x, sint16 rel_y);
    bool call_handle_alt_code(uint16 altcode);
 
    bool call_magic_get_spell_list(Spell **spell_list);
