@@ -168,5 +168,7 @@ IT_TURNS_LOOSELY="It turns loosely.\n",
 THERE_IS_NOTHING_TO_DRILL_INTO="There is nothing to drill into.\n",
 THERE_IS_NO_ROOM_LEFT_FOR_THE_ORE="There is no room left for the ore.\n",
 YOU_PUT_THE_ORE_INTO_THE_WHEELBARROW="You put the %s into the wheelbarrow.\n",
+YOU_PUT_THE_ORE_INTO_THE_RAIL_CAR="You put the %s into the rail car.\n",
 THERE_IS_NO_MORE_ROOM="There is no more room.\n",
+YOU_CANT_MIX_DIFFERENT_THINGS_IN_THE_SAME_LOAD="You can't mix different things in the same load!\n",
 }

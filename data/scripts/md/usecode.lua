@@ -292,19 +292,37 @@ end
 
 function use_shovel_on_ore_to_container(obj, target_obj, to_obj, actor)
    print("\n")
+   local ore_quality = get_ore_container_quality(target_obj.obj_n)
    if to_obj.obj_n == 268 then --OBJ_MARTIAN_WHEEL_BARROW
       if to_obj.qty ~= 1 then
          play_md_sfx(0x1b)
          to_obj.qty = 1
-         to_obj.quality = get_ore_container_quality(target_obj.obj_n)
+         to_obj.quality = ore_quality
          printfl("YOU_PUT_THE_ORE_INTO_THE_WHEELBARROW", target_obj.name)
          Obj.removeFromEngine(target_obj)
       else
          printl("THERE_IS_NO_MORE_ROOM")
          play_md_sfx(5)
       end
-   elseif target_obj.obj_n == 410 then --OBJ_RAIL_CAR
-      --FIXME add spoil to railcar here.
+   elseif to_obj.obj_n == 410 then --OBJ_RAIL_CAR
+      local qty = to_obj.qty
+      if to_obj.qty < 7 then
+         if to_obj.qty > 0 and to_obj.quality ~= ore_quality then
+            printl("YOU_CANT_MIX_DIFFERENT_THINGS_IN_THE_SAME_LOAD")
+            play_md_sfx(5)
+         else
+            to_obj.quality = ore_quality
+            to_obj.qty = to_obj.qty + 1
+            if to_obj.qty == 1 or to_obj.qty == 7 then
+               to_obj.frame_n = to_obj.frame_n + 2
+            end
+            printfl("YOU_PUT_THE_ORE_INTO_THE_RAIL_CAR", target_obj.name)
+            Obj.removeFromEngine(target_obj)
+         end
+      else
+         printl("THERE_IS_NO_MORE_ROOM")
+         play_md_sfx(5)
+      end
    end
 end
 
@@ -1265,9 +1283,8 @@ function check_for_track(car, rel_x, rel_y)
    local y = car.y + rel_y
    
    for obj in objs_at_loc(x, y, car.z) do
-      print("obj="..obj.obj_n.."\n")
    	if (obj.obj_n >= 412 and obj.obj_n <= 414) or obj.obj_n == 419 or obj.obj_n == 175 or obj.obj_n == 163 then --track object
-   	  --fixme check track orientation here.
+
    	  local track_frame_n = obj.frame_n
    	  if (car.frame_n % 2) == track_frame_n or track_frame_n == 2 or obj.obj_n == 412 or obj.obj_n == 175 or obj.obj_n == 163 then
    	     return true
@@ -1289,7 +1306,7 @@ function check_for_track(car, rel_x, rel_y)
       
    local tile_num = map_get_tile_num(x,y, car.z)
    if is_track_tile(tile_num) then
-      return true --fixme need to check if right track orientation.
+      return true
    end
    
    return false

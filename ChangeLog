@@ -1,3 +1,6 @@
+2015-02-18  Eric Fry <efry at users.sourceforge.net> r2004
+	* More work on MD use shovel on ore to container logic.
+
 2015-02-17  Eric Fry <efry at users.sourceforge.net> r2003
 	* Added MD use assembled drill.
 	* Started on MD use shovel on ore to container logic.
