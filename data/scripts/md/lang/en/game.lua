@@ -165,4 +165,8 @@ THE_SPACE_CAPSULE="the space capsule",
 THE_OLYMPUS_MINE="the Olympus mine",
 IT_WONT_GO_IN_THAT_DIRECTION="It won't go in that direction!\n",
 IT_TURNS_LOOSELY="It turns loosely.\n",
+THERE_IS_NOTHING_TO_DRILL_INTO="There is nothing to drill into.\n",
+THERE_IS_NO_ROOM_LEFT_FOR_THE_ORE="There is no room left for the ore.\n",
+YOU_PUT_THE_ORE_INTO_THE_WHEELBARROW="You put the %s into the wheelbarrow.\n",
+THERE_IS_NO_MORE_ROOM="There is no more room.\n",
 }

@@ -1,3 +1,7 @@
+2015-02-17  Eric Fry <efry at users.sourceforge.net> r2003
+	* Added MD use assembled drill.
+	* Started on MD use shovel on ore to container logic.
+
 2015-02-15  Eric Fry <efry at users.sourceforge.net> r2002
 	* Added support for automatic pushing of railcar and drill objects in MD
 	* Added the ability to move MD rail car and drill objects in and out of mines.

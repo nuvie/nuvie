@@ -290,6 +290,24 @@ function use_shovel_on_pile_to_hole(obj, target_obj, to_obj, actor)
 	printl("YOU_FILLED_IN_THE_HOLE")
 end
 
+function use_shovel_on_ore_to_container(obj, target_obj, to_obj, actor)
+   print("\n")
+   if to_obj.obj_n == 268 then --OBJ_MARTIAN_WHEEL_BARROW
+      if to_obj.qty ~= 1 then
+         play_md_sfx(0x1b)
+         to_obj.qty = 1
+         to_obj.quality = get_ore_container_quality(target_obj.obj_n)
+         printfl("YOU_PUT_THE_ORE_INTO_THE_WHEELBARROW", target_obj.name)
+         Obj.removeFromEngine(target_obj)
+      else
+         printl("THERE_IS_NO_MORE_ROOM")
+         play_md_sfx(5)
+      end
+   elseif target_obj.obj_n == 410 then --OBJ_RAIL_CAR
+      --FIXME add spoil to railcar here.
+   end
+end
+
 function use_ruby_slippers(obj, actor)
    if obj.readied == false then
       --FIXME check that we can ready this object.
@@ -918,6 +936,124 @@ function use_switch_bar(obj, actor)
    end
 end
 
+function use_assembled_drill(obj, actor)
+
+   play_md_sfx(0x10)
+   
+   local x = obj.x
+   local y = obj.y
+   local z = obj.z
+   
+   if obj.frame_n == 1 then
+      x = x - 1
+   elseif obj.frame_n == 3 then
+      y = y - 1
+   elseif obj.frame_n == 4 then
+      y = y + 1
+   else
+      x = x + 1
+   end
+   
+   local target_obj
+   for obj in objs_at_loc(x, y, z) do
+      if obj.obj_n == 445 --OBJ_IRON_ORE
+         or obj.obj_n == 446 -- OBJ_VEIN_OF_COAL
+         or obj.obj_n == 213 then --OBJ_CAVE_IN
+         target_obj = obj
+         break
+      end
+   end
+   
+   if target_obj == nil then
+      target_obj = map_get_obj(x, y, z, 213, true)
+   end
+   
+   local drilled_matterial
+   
+   if target_obj == nil then
+      if can_drill_at_loc(x, y, z) == true then
+         drilled_matterial = 442 --OBJ_PILE_OF_ROCKS
+      else
+         local target_actor = map_get_actor(x, y, z)
+         if target_actor ~= nil then
+            --FIXME attack actor here. 40 points of damage
+         else
+            printl("THERE_IS_NOTHING_TO_DRILL_INTO")
+         end
+         return
+      end
+   elseif target_obj.obj_n == 445 then --OBJ_IRON_ORE
+      drilled_matterial = 443 --OBJ_PILE_OF_IRON_ORE
+   elseif target_obj.obj_n == 446 then --OBJ_VEIN_OF_COAL
+      drilled_matterial = 444 --OBJ_PILE_OF_COAL
+   end
+   
+   if drilled_matterial ~= nil then
+      local spoil_location = get_free_location_around_drill(obj)
+      if spoil_location ~= nil then
+         local spoil_obj = Obj.new(drilled_matterial)
+         Obj.moveToMap(spoil_obj, spoil_location)
+      else
+         printl("THERE_IS_NO_ROOM_LEFT_FOR_THE_ORE")
+      end
+   end
+   
+   if target_obj then
+      if target_obj.quality > 1 then
+         target_obj.quality = target_obj.quality - 1
+      else
+         Obj.removeFromEngine(target_obj)
+      end  
+   end
+   
+   if drilled_matterial == nil then
+      Obj.removeFromEngine(target_obj)
+   end
+   
+end
+
+function get_free_location_around_drill(drill)
+   local x_tbl = {-1,0,1,1,1,0,-1,-1}
+   local y_tbl = {-1,-1,-1,0,1,1,1,0}
+   local pos = {}
+   local i
+
+   pos.z = drill.z
+   
+   for i=1,8 do
+      pos.x = drill.x + x_tbl[i]
+      pos.y = drill.y + y_tbl[i]
+      local obj = map_get_obj(pos.x, pos.y, pos.z)
+      if obj == nil or is_blood(obj.obj_num) then
+         if tile_get_flag(map_get_tile_num(pos), 1, 1) == false then --not blocked.
+            return pos
+         end
+      end
+   end
+   
+   return nil
+end
+
+function get_ore_container_quality(ore_obj_num)
+   local tbl = {[258]=1,[442]=2,[443]=3,[444]=4} --OBJ_DIRT_PILE, OBJ_PILE_OF_ROCKS, OBJ_PILE_OF_IRON_ORE, OBJ_PILE_OF_COAL
+   local quality = tbl[ore_obj_num]
+   if quality == nil then
+      qaulity = 1
+   end
+   
+   return quality   
+end
+
+function can_drill_at_loc(x,y,z)
+   local tile_num = map_get_tile_num(x, y, z)
+   
+   if tile_num >= 0xf0 and tile_num <= 0xfb then
+      return true
+   end
+   
+   return false
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -941,7 +1077,21 @@ local usecode_table = {
 --OBJ_PICK
 [65]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_SHOVEL
-[66]={[255]=use_misc_text,[257]=use_misc_text,[258]={[257]=use_shovel_on_pile_to_hole},[0]=use_tool_on_ground}, --hole in ice, hole
+[66]={
+--on
+   [255]=use_misc_text,
+   [257]=use_misc_text,
+   [258]={[257]=use_shovel_on_pile_to_hole},
+   [442]={
+      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_ROCKS to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_ROCKS to OBJ_RAIL_CAR
+   [443]={
+      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_IRON_ORE to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_IRON_ORE to OBJ_RAIL_CAR
+   [444]={
+      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_COAL to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_COAL to OBJ_RAIL_CAR
+   [0]=use_tool_on_ground}, --hole in ice, hole
 --OBJ_HOE 
 [67]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_BERRY
@@ -1023,6 +1173,8 @@ local usecode_table = {
 --OBJ_CLOSED_HATCH
 [421]=use_door,
 [427]=use_misc_text,
+--OBJ_ASSEMBLED_DRILL
+[441]=use_assembled_drill,
 --OBJ_PILE_OF_ROCKS
 [442]=use_misc_text,
 --OBJ_PILE_OF_IRON_ORE
