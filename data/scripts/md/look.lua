@@ -35,9 +35,9 @@ function look_barrow(obj)
       material = i18n("DIRT")
    elseif quality == 2 then
       material = i18n("ROCK")
-   elseif quality == 2 then
+   elseif quality == 3 then
       material = i18n("IRON_ORE")
-   elseif quality == 2 then
+   elseif quality == 4 then
       material = i18n("COAL")
    end
    
@@ -390,7 +390,7 @@ function look_obj(obj)
       return false
    end
    
-   print(".\n");
+   print(".\n\n");
    
    if look_usecode[obj.obj_n] ~= nil then
       look_usecode[obj.obj_n](obj)

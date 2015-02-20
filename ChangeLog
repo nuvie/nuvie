@@ -1,3 +1,6 @@
+2015-02-20  Eric Fry <efry at users.sourceforge.net> r2005
+	* Work on MD usecode to unload dirt/ore from containers.
+
 2015-02-18  Eric Fry <efry at users.sourceforge.net> r2004
 	* More work on MD use shovel on ore to container logic.
 

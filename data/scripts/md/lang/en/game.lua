@@ -171,4 +171,5 @@ YOU_PUT_THE_ORE_INTO_THE_WHEELBARROW="You put the %s into the wheelbarrow.\n",
 YOU_PUT_THE_ORE_INTO_THE_RAIL_CAR="You put the %s into the rail car.\n",
 THERE_IS_NO_MORE_ROOM="There is no more room.\n",
 YOU_CANT_MIX_DIFFERENT_THINGS_IN_THE_SAME_LOAD="You can't mix different things in the same load!\n",
+THERE_IS_NOTHING_TO_UNLOAD="There is nothing to unload.\n",
 }

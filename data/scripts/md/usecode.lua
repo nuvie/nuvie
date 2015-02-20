@@ -303,6 +303,7 @@ function use_shovel_on_ore_to_container(obj, target_obj, to_obj, actor)
       else
          printl("THERE_IS_NO_MORE_ROOM")
          play_md_sfx(5)
+         return false
       end
    elseif to_obj.obj_n == 410 then --OBJ_RAIL_CAR
       local qty = to_obj.qty
@@ -310,6 +311,7 @@ function use_shovel_on_ore_to_container(obj, target_obj, to_obj, actor)
          if to_obj.qty > 0 and to_obj.quality ~= ore_quality then
             printl("YOU_CANT_MIX_DIFFERENT_THINGS_IN_THE_SAME_LOAD")
             play_md_sfx(5)
+            return false
          else
             to_obj.quality = ore_quality
             to_obj.qty = to_obj.qty + 1
@@ -322,9 +324,60 @@ function use_shovel_on_ore_to_container(obj, target_obj, to_obj, actor)
       else
          printl("THERE_IS_NO_MORE_ROOM")
          play_md_sfx(5)
+         return false
       end
    end
+   
+   return true
 end
+
+function use_shovel_to_unload_container(obj, target_obj, to_obj, actor)
+   if target_obj.qty == 0 then
+      printl("THERE_IS_NOTHING_TO_UNLOAD")
+      play_md_sfx(5)
+      return
+   end
+   
+   local ore = Obj.new(get_obj_num_from_ore_quality(target_obj.quality))
+   
+   --FIXME if to_obj == nil do something
+   
+   local success_flag = false
+   if to_obj.obj_n == 268 or to_obj.obj_n == 410 then --OBJ_MARTIAN_WHEEL_BARROW
+      success_flag = use_shovel_on_ore_to_container(obj, ore, to_obj, actor)
+   elseif to_obj.obj_n == 233 then --OBJ_FURNACE
+      success_flag = use_shovel_on_ore_to_furnace(obj, ore, to_obj, actor)
+   elseif to_obj.obj_n == 257 then --OBJ_HOLE
+      --FIXME need to wire up this logic.
+   else
+      --FIXME need to implement burying logic
+   end
+   
+   if success_flag then
+      target_obj.qty = target_obj.qty - 1
+      if target_obj.obj_n == 410 then --OBJ_RAIL_CAR
+         if target_obj.qty == 6 or target_obj.qty == 0 then
+            target_obj.frame_n = target_obj.frame_n - 2
+         end
+      end
+   end 
+end
+
+function use_shovel_on_ore_to_furnace(obj, target_obj, to_obj, actor)
+   local obj_n = target_obj.obj_n
+   
+   play_md_sfx(0x1b)
+   
+   Obj.removeFromEngine(target_obj)
+   if obj_n == 444 then --OBJ_PILE_OF_COAL
+      if to_obj.frame_n < 4 then
+         --FIXME start power logic here.
+      end
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
 
 function use_ruby_slippers(obj, actor)
    if obj.readied == false then
@@ -1056,10 +1109,22 @@ function get_ore_container_quality(ore_obj_num)
    local tbl = {[258]=1,[442]=2,[443]=3,[444]=4} --OBJ_DIRT_PILE, OBJ_PILE_OF_ROCKS, OBJ_PILE_OF_IRON_ORE, OBJ_PILE_OF_COAL
    local quality = tbl[ore_obj_num]
    if quality == nil then
-      qaulity = 1
+      quality = 1
    end
    
    return quality   
+end
+
+function get_obj_num_from_ore_quality(ore_quality)
+   if ore_quality == 2 then
+      return 442 --OBJ_PILE_OF_ROCKS
+   elseif ore_quality == 3 then
+      return 443 --OBJ_PILE_OF_IRON_ORE
+   elseif ore_quality == 4 then
+      return 444 --OBJ_PILE_OF_COAL
+   end
+
+   return 258 --OBJ_DIRT_PILE
 end
 
 function can_drill_at_loc(x,y,z)
@@ -1071,6 +1136,35 @@ function can_drill_at_loc(x,y,z)
    
    return false
 end
+
+local use_shovel_on_tbl = {
+--on
+   [255]=use_misc_text,
+   [257]=use_misc_text,
+   [258]={[257]=use_shovel_on_pile_to_hole},
+   [268]={
+      [233]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_MARTIAN_WHEEL_BARROW to OBJ_FURNACE
+      [257]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_MARTIAN_WHEEL_BARROW to OBJ_HOLE
+      [268]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_MARTIAN_WHEEL_BARROW to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_MARTIAN_WHEEL_BARROW to OBJ_RAIL_CAR
+   },
+   [410]={
+      [233]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_RAIL_CAR to OBJ_FURNACE
+      [257]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_RAIL_CAR to OBJ_HOLE
+      [268]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_RAIL_CAR to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_to_unload_container, --use OBJ_SHOVEL on OBJ_RAIL_CAR to OBJ_RAIL_CAR
+   },
+   [442]={
+      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_ROCKS to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_ROCKS to OBJ_RAIL_CAR
+   [443]={
+      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_IRON_ORE to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_IRON_ORE to OBJ_RAIL_CAR
+   [444]={
+      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_COAL to OBJ_MARTIAN_WHEEL_BARROW
+      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_COAL to OBJ_RAIL_CAR
+   [0]=use_tool_on_ground, --hole in ice, hole
+}
 
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
@@ -1095,21 +1189,7 @@ local usecode_table = {
 --OBJ_PICK
 [65]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_SHOVEL
-[66]={
---on
-   [255]=use_misc_text,
-   [257]=use_misc_text,
-   [258]={[257]=use_shovel_on_pile_to_hole},
-   [442]={
-      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_ROCKS to OBJ_MARTIAN_WHEEL_BARROW
-      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_ROCKS to OBJ_RAIL_CAR
-   [443]={
-      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_IRON_ORE to OBJ_MARTIAN_WHEEL_BARROW
-      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_IRON_ORE to OBJ_RAIL_CAR
-   [444]={
-      [268]=use_shovel_on_ore_to_container, --use OBJ_SHOVEL on OBJ_PILE_OF_COAL to OBJ_MARTIAN_WHEEL_BARROW
-      [410]=use_shovel_on_ore_to_container}, --use OBJ_SHOVEL on OBJ_PILE_OF_COAL to OBJ_RAIL_CAR
-   [0]=use_tool_on_ground}, --hole in ice, hole
+[66]=use_shovel_on_tbl, 
 --OBJ_HOE 
 [67]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_BERRY
@@ -1159,14 +1239,7 @@ local usecode_table = {
 --OBJ_MARTIAN_HOE
 [263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL
-[267]={
---on
-   [255]=use_misc_text,
-   [257]=use_misc_text,
-   [258]={ --OBJ_DIRT_PILE
-      --to
-      [257]=use_shovel_on_pile_to_hole},
-   [0]=use_tool_on_ground}, --hole in ice, hole
+[267]=use_shovel_on_tbl,
 [273]={[86]=use_crate}, --Hammer needs more codes
 --OBJ_CYMBALS
 [280]=use_musical_instrument,
@@ -1355,7 +1428,7 @@ function use_obj_on_to(obj, target_obj, actor, use_to_tbl)
 	local to_obj = map_get_obj(to_x, to_y, actor.z)
 	
 	if to_obj ~= nil then
-		print(to_obj.name.."\n")
+		print(to_obj.name.."\n\n")
 		local func = use_to_tbl[to_obj.obj_n]
 		if func ~= nil then
 			func(obj, target_obj, to_obj, actor)
