@@ -990,27 +990,55 @@ bool ObjManager::has_reduced_weight(uint16 obj_n)
   }
   else if(game_type==NUVIE_GAME_SE)
   {
-	switch (obj_n)
-	{
-		case OBJ_SE_RIFLE_BULLET:
-		case OBJ_SE_FEATHER:
-		case OBJ_SE_CHOCOLATL:
-		case OBJ_SE_PINDE:
-		case OBJ_SE_YOPO:
-		case OBJ_SE_GOLD:
-		case OBJ_SE_DIAMOND:
-		case OBJ_SE_EMERALD:
-		case OBJ_SE_RUBY:
-		case OBJ_SE_PEPPER:
-		case OBJ_SE_SULFUR:
-		case OBJ_SE_CHARCOAL:
-		case OBJ_SE_POTASSIUM_NITRATE:
-		case OBJ_SE_CLOTH_STRIP:
-			return true;
-		default:
-			return false;
-	}
+    switch (obj_n)
+    {
+      case OBJ_SE_RIFLE_BULLET:
+      case OBJ_SE_FEATHER:
+      case OBJ_SE_CHOCOLATL:
+      case OBJ_SE_PINDE:
+      case OBJ_SE_YOPO:
+      case OBJ_SE_GOLD:
+      case OBJ_SE_DIAMOND:
+      case OBJ_SE_EMERALD:
+      case OBJ_SE_RUBY:
+      case OBJ_SE_PEPPER:
+      case OBJ_SE_SULFUR:
+      case OBJ_SE_CHARCOAL:
+      case OBJ_SE_POTASSIUM_NITRATE:
+      case OBJ_SE_CLOTH_STRIP:
+        return true;
+      default:
+        return false;
+    }
   }
+  else if(game_type==NUVIE_GAME_MD)
+  {
+    switch(obj_n)
+    {
+      case OBJ_MD_PISTOL_ROUND:
+      case OBJ_MD_SHOTGUN_SHELL:
+      case OBJ_MD_RIFLE_ROUND:
+      case OBJ_MD_ELEPHANT_GUN_ROUND:
+      case OBJ_MD_SLING_STONE:
+      case OBJ_MD_ARROW:
+      case OBJ_MD_POCKETWATCH:
+      case OBJ_MD_SPECTACLES:
+      case OBJ_MD_MASONIC_SYMBOL:
+      case OBJ_MD_MATCH:
+      case OBJ_MD_BLOB_OF_OXIUM:
+      case OBJ_MD_BERRY:
+      case OBJ_MD_BERRY1:
+      case OBJ_MD_BERRY2:
+      case OBJ_MD_BERRY4:
+      case OBJ_MD_DREAMSTUFF:
+      case OBJ_MD_DOLLAR:
+      case OBJ_MD_RUBLE:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   return false;
 }
 
@@ -1428,6 +1456,17 @@ const char *ObjManager::get_obj_name(uint16 obj_n)
 const char *ObjManager::get_obj_name(uint16 obj_n, uint8 frame_n)
 {
  return tile_manager->lookAtTile(get_obj_tile_num(obj_n)+frame_n,0,false);
+}
+
+float ObjManager::get_obj_weight(uint16 obj_n)
+{
+  float weight = (float)get_obj_weight_unscaled(obj_n);
+  if(has_reduced_weight(obj_n))
+  {
+    weight /= 10;
+  }
+
+  return weight / 10;
 }
 
 float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool scale, bool include_qty)

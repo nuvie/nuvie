@@ -1101,12 +1101,20 @@ function player_before_move_action(rel_x, rel_y)
    
    for obj in objs_at_loc(x, y, z) do
       local obj_n = obj.obj_n
-      if obj_n == 410 and can_move_obj(obj, rel_x, rel_y) then --railcar
+      if obj_n == 268 then --wheelbarrow
+         move_wheelbarrow(obj, rel_x, rel_y)
+         if can_move_obj(obj, rel_x, rel_y) then
+            obj.x = obj.x + rel_x
+            obj.y = obj.y + rel_y
+         end
+      elseif obj_n == 410 and can_move_obj(obj, rel_x, rel_y) then --railcar
          move_rail_cart(obj, rel_x, rel_y)
-      elseif obj_n == 441 and can_move_drill(obj, rel_x, rel_y) then --assembled drill
-         move_drill(obj, rel_x, rel_y)
-         obj.x = obj.x + rel_x
-         obj.y = obj.y + rel_y
+      elseif obj_n == 441 then --assembled drill
+         move_drill(obj, rel_x, rel_y) --update drill direction
+         if can_move_drill(obj, rel_x, rel_y) then
+            obj.x = obj.x + rel_x
+            obj.y = obj.y + rel_y
+         end
       end
    end
    

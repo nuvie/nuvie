@@ -1002,7 +1002,7 @@ bool ConverseInterpret::evop(stack<converse_typed_value> &i)
         {
             v[1] = pop_arg(i); // quantity
             v[0] = pop_arg(i); // object
-            float weight = converse->objects->get_obj_weight(v[0]) * v[1];
+            float weight = (float)converse->objects->get_obj_weight_unscaled(v[0]) * v[1]; //FIXME should this be scaled down by 10???
             if(converse->objects->has_reduced_weight(v[0]))
                 weight /= 10;
             out.val = weight;

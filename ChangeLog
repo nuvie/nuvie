@@ -1,3 +1,10 @@
+2015-02-25  Eric Fry <efry at users.sourceforge.net> r2006
+	* Added MD reduced weight values.
+	* Fixed weight scaling issue with MD can carry obj logic in conversations.
+	* MD use repaired belt on bare rollers logic.
+	* MD Added support for pushing wheel barrows.
+	* Change drill or wheel barrow direction if pushed and blocked.
+
 2015-02-20  Eric Fry <efry at users.sourceforge.net> r2005
 	* Work on MD usecode to unload dirt/ore from containers.
 

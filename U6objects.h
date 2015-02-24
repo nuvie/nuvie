@@ -452,6 +452,10 @@
 #define OBJ_MD_WOODEN_CRATE           86
 #define OBJ_MD_STEAMER_TRUNK          87
 #define OBJ_MD_CARPET_BAG             89
+#define OBJ_MD_POCKETWATCH            91
+#define OBJ_MD_MASONIC_SYMBOL         92
+#define OBJ_MD_SPECTACLES             93
+
 #define OBJ_MD_BARREL                104
 #define OBJ_MD_MATCH                 107
 #define OBJ_MD_TORCH                 109
@@ -465,6 +469,7 @@
 #define OBJ_MD_BAG                   285
 #define OBJ_MD_BRASS_TRUNK           304
 #define OBJ_MD_OXYGENATED_AIR_BOTTLE 324
+#define OBJ_MD_DREAMSTUFF            331
 #define OBJ_MD_DEAD_BODY             341
 #define OBJ_MD_CHIP_OF_RADIUM        449
 

@@ -371,13 +371,56 @@ function use_shovel_on_ore_to_furnace(obj, target_obj, to_obj, actor)
    Obj.removeFromEngine(target_obj)
    if obj_n == 444 then --OBJ_PILE_OF_COAL
       if to_obj.frame_n < 4 then
-         --FIXME start power logic here.
+         activate_power_system()
       end
    else
       printl("IT_HAS_NO_EFFECT")
    end
+   
+   return true
 end
 
+function activate_power_system()
+   printl("THE_COAL_BEGINS_MOVING_DOWN_THE_BELT")
+   Actor.set_talk_flag(0x73, 2)
+   Actor.set_talk_flag(0x71, 3)
+   --FIXME animate tiles here
+   --FIXME update_conveyor_belt()
+end
+
+function use_fixed_belt_on_bare_rollers(obj, target_obj, actor)
+   local start_obj = nil
+   local rollers = target_obj
+   while rollers ~= nil do
+      if rollers.frame_n == 0 then
+         start_obj = rollers
+         break
+      end
+      rollers = map_get_obj(rollers.x-1,rollers.y,rollers.z, rollers.obj_n)
+   end
+   
+   if start_obj == nil then
+      printl("OOOPS_THESE_ROLLERS_CAN_NEVER_BE_FIXED")
+      return
+   end
+   
+   rollers = start_obj
+   local i = 4
+   while rollers ~= nil do
+      rollers.obj_n = 188
+      if i == 0 then
+         i = 4
+         local belt_join_obj = Obj.new(189)
+         Obj.moveToMap(belt_join_obj, rollers.x, rollers.y, rollers.z)
+      else
+         i = i - 1
+      end
+      rollers = map_get_obj(rollers.x+1,rollers.y,rollers.z, 192) --OBJ_BARE_ROLLERS
+   end
+   
+   Obj.removeFromEngine(obj)
+   Actor.set_talk_flag(0x72, 2)
+end
 
 function use_ruby_slippers(obj, actor)
    if obj.readied == false then
@@ -1220,6 +1263,11 @@ local usecode_table = {
    [440]=use_wrench_on_drill,
    [458]=use_wrench_on_panel
 },
+--OBJ_REPAIRED_BELT
+[144]={
+--on
+   [192]=use_fixed_belt_on_bare_rollers,
+},
 --OBJ_DOOR 
 [152]=use_door,
 [181]=use_gate,
@@ -1328,6 +1376,24 @@ function move_drill(obj, rel_x, rel_y)
   return true
 end
 
+function move_wheelbarrow(obj, rel_x, rel_y)
+  if rel_x ~= 0 and rel_y ~= 0 then
+    return false
+  end
+  
+  if rel_x < 0 then
+    obj.frame_n = 3
+  elseif rel_x > 0 then
+      obj.frame_n = 1
+  elseif rel_y < 0 then
+      obj.frame_n = 0
+  elseif rel_y > 0 then
+      obj.frame_n = 2
+  end
+  
+  return true
+end
+
 function move_rail_cart(obj, rel_x, rel_y)
    local frame_n = obj.frame_n
    if rel_x ~= 0 and rel_y ~= 0 then
@@ -1399,6 +1465,7 @@ function is_track_tile(tile_num)
 end
 
 local usecode_move_obj_table = {
+[268]=move_wheelbarrow,
 [410]=move_rail_cart,
 [441]=move_drill,
 }

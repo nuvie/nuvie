@@ -181,7 +181,8 @@ class ObjManager
  const char *get_obj_name(uint16 obj_n, uint8 frame_n);
  
  float get_obj_weight(Obj *obj, bool include_container_items=OBJ_WEIGHT_INCLUDE_CONTAINER_ITEMS, bool scale=true, bool include_qty = true);
- uint8 get_obj_weight(uint16 obj_n) { return(obj_weight[obj_n]); }
+ uint8 get_obj_weight_unscaled(uint16 obj_n) { return(obj_weight[obj_n]); }
+ float get_obj_weight(uint16 obj_n);
 
  void animate_forwards(Obj *obj, uint32 loop_count = 1);
  void animate_backwards(Obj *obj, uint32 loop_count = 1);
