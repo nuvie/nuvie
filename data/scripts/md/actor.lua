@@ -251,9 +251,110 @@ function actor_map_dmg(actor, map_x, map_y, map_z)
 	--FIXME
 end
 
+function subtract_map_movement_pts(actor)
+   local points = map_get_impedence(actor.x, actor.y, actor.z, false) + 5
+   subtract_movement_pts(actor, points)
+end
+
+function actor_move(actor, direction, flag)
+   ----dgb("actor_move("..actor.name..", "..direction_string(direction)..", "..flag..") actor("..actor.x..","..actor.y..")\n");
+   local x,y,z = actor.x, actor.y, actor.z
+   if direction == DIR_NORTH then y = y - 1 end
+   if direction == DIR_SOUTH then y = y + 1 end
+   if direction == DIR_EAST then x = x + 1 end
+   if direction == DIR_WEST then x = x - 1 end
+   
+   actor.direction = direction
+   local did_move = Actor.move(actor, x, y, z)
+   
+   --FIXME need more logic here.
+   --footprints, bots etc.
+      
+   if did_move then
+      subtract_map_movement_pts(actor)
+      ----dgb("actor_move() did move actor("..actor.x..","..actor.y..")\n");
+   end
+   
+   return did_move
+end
+
+function worktype_9D_stoker_wait_for_coal(actor)
+   local coal
+   coal = map_get_obj(actor.x, actor.y+1, actor.z, 447) --OBJ_HUGE_LUMP_OF_COAL
+   
+   if coal ~= nil then
+      while coal ~= nil do
+         Obj.removeFromEngine(coal)
+         coal = map_get_obj(actor.x, actor.y+1, actor.z, 447) --OBJ_HUGE_LUMP_OF_COAL
+      end
+      actor.wt = 0x9E
+   end
+   
+end
+
+function worktype_9E_stoker_walk_to_furnace(actor)
+   if actor_move(actor, DIR_NORTH) == false then
+      local furnace = map_get_obj(actor.x, actor.y-1, actor.z, 233)
+      if furnace == nil then
+         furnace = map_get_obj(actor.x+1, actor.y-1, actor.z, 233)
+      end
+      
+      if furnace ~= nil then
+         if Actor.get_talk_flag(0x72, 2) == false then
+            activate_power_system()
+         else
+            if Actor.get_talk_flag(0x73, 2) == false or Actor.get_talk_flag(0x71, 3) == true then
+               if Actor.get_talk_flag(0x71, 3) == true then
+                  Actor.clear_talk_flag(0x73, 2)
+                  Actor.clear_talk_flag(0x71, 3)
+                  --FIXME sub_3F740
+               end
+               Actor.set_talk_flag(0x73, 2)
+               --FIXME animate_tiles
+               midgame_cutscene_2()
+            end
+         end
+         actor.wt = 0x9C
+      else
+         stoker_blocked(actor)
+      end
+   end
+end
+
+function stoker_blocked(stoker)
+   if map_is_on_screen(stoker.x, stoker.y, stoker.z) then
+      printl("STOKERS_PATH_IS_BLOCKED")
+      play_md_sfx(0)
+   end  
+end
+
+function worktype_9C_stoker_return_to_conveyor_belt(actor)
+   if map_get_obj(actor.x, actor.y+2, actor.z, 191) == nil then --OBJ_CONVEYOR_BELT2
+      if actor_move(actor, DIR_SOUTH) == false then
+         stoker_blocked(actor)
+      end
+   else
+      actor.wt = 0x9D
+   end
+end
+
+local worktype_tbl = {
+   [0x9c]=worktype_9C_stoker_return_to_conveyor_belt,
+   [0x9d]=worktype_9D_stoker_wait_for_coal,
+   [0x9e]=worktype_9E_stoker_walk_to_furnace,
+}
+
 function perform_worktype(actor)
    print("wt="..actor.wt.."\n")
-   subtract_movement_pts(actor, 10)
+   local mpts = actor.mpts
+   if worktype_tbl[actor.wt] ~= nil then
+      local func = worktype_tbl[actor.wt]
+      func(actor)
+   end
+   
+   if mpts == actor.mpts then
+      subtract_movement_pts(actor, 10)
+   end
 end
 
 function revive_avatar()

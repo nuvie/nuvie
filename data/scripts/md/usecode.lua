@@ -388,6 +388,22 @@ function activate_power_system()
    --FIXME update_conveyor_belt()
 end
 
+function midgame_cutscene_2()
+   play_midgame_sequence(2)
+   
+   for tower in find_obj(0, 201) do --OBJ_TOWER_TOP
+      if tower.x >= 0x3d0 and tower.x <= 0x3f0 and tower.y >= 0x1d0 and tower.y <= 0x1e7 then
+         tower.frame_n = 4 + (tower.frame_n % 4)
+      end
+   end
+   
+   for cable in find_obj(0, 214) do --OBJ_POWER_CABLE
+      if cable.x >= 0x3d0 and cable.x <= 0x3f0 and cable.y >= 0x1d0 and cable.y <= 0x1e7 then
+         cable.obj_n = 215
+      end
+   end   
+end
+
 function use_fixed_belt_on_bare_rollers(obj, target_obj, actor)
    local start_obj = nil
    local rollers = target_obj

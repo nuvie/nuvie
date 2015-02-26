@@ -1,3 +1,6 @@
+2015-02-26  Eric Fry <efry at users.sourceforge.net> r2007
+	* Work on Stoker worktype logic. 0x9C, 0x9D, 0x9E
+
 2015-02-25  Eric Fry <efry at users.sourceforge.net> r2006
 	* Added MD reduced weight values.
 	* Fixed weight scaling issue with MD can carry obj logic in conversations.

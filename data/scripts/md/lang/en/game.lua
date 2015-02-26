@@ -174,4 +174,5 @@ YOU_CANT_MIX_DIFFERENT_THINGS_IN_THE_SAME_LOAD="You can't mix different things i
 THERE_IS_NOTHING_TO_UNLOAD="There is nothing to unload.\n",
 THE_COAL_BEGINS_MOVING_DOWN_THE_BELT="The coal begins moving down the belt.\n",
 OOOPS_THESE_ROLLERS_CAN_NEVER_BE_FIXED="Ooops. These rollers can never be fixed!\n",
+STOKERS_PATH_IS_BLOCKED="Stoker's path is blocked!\n",
 }
