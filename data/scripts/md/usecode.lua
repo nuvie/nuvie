@@ -385,7 +385,69 @@ function activate_power_system()
    Actor.set_talk_flag(0x73, 2)
    Actor.set_talk_flag(0x71, 3)
    --FIXME animate tiles here
-   --FIXME update_conveyor_belt()
+   update_conveyor_belt(false)
+end
+
+function update_conveyor_belt(can_stop)
+   if Actor.get_talk_flag(0x73, 2) == false then
+      return
+   end
+   local player_loc = player_get_location()
+   
+   if player_loc.z ~= 5 then
+      return
+   end
+
+   --NOTE. The original game used generalised logic to search for conveyors.
+   -- I haven't used that here as there is only one conveyor in the game.
+
+   local x = 0x3c
+   local y = 0x63
+   local z = 5
+   
+   local conveyor = map_get_obj(x, y, z, 188) --OBJ_CONVEYOR_BELT
+   
+   while conveyor ~= nil do
+      if conveyor.frame_n == 2 then
+         local seam = map_get_obj(x, y, z, 189) --OBJ_CONVEYOR_BELT1
+         if seam ~= nil then
+            Obj.removeFromEngine(seam)
+         end
+      elseif conveyor.frame_n == 0 then
+         if conveyor.qty == 0 then
+            local seam = Obj.new(189)
+            Obj.moveToMap(seam, x, y, z)
+            conveyor.qty = 4
+         end
+         conveyor.qty = conveyor.qty - 1
+      end
+      
+      local seam = map_get_obj(x, y, z, 189) --OBJ_CONVEYOR_BELT1
+      if seam ~= nil then
+         seam.x = seam.x + 1
+      end
+
+      for obj in objs_at_loc(x, y, z) do
+         if obj.obj_n == 447 or obj.weight > 0 then --OBJ_HUGE_LUMP_OF_COAL
+            obj.x = obj.x + 1
+         end
+      end
+      
+      x = x - 1
+      conveyor = map_get_obj(x, y, z, 188) --OBJ_CONVEYOR_BELT
+   end
+   
+   
+   if can_stop and Actor.get_talk_flag(0x71, 3) then
+      if math.random(0, 6) == 0 then
+         printl("THE_CONVEYOR_BELT_STOPS")
+         Actor.clear_talk_flag(0x73, 2)
+         Actor.clear_talk_flag(0x71, 3)
+         --FIXME turn off lights.
+      end
+   end
+   
+   
 end
 
 function midgame_cutscene_2()

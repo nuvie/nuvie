@@ -278,6 +278,43 @@ function actor_move(actor, direction, flag)
    return did_move
 end
 
+function worktype_99_coker_move_to_coal_vein(actor)
+   if actor_move(actor, DIR_NORTH) == false then
+      local vein = map_get_obj(actor.x, actor.y-1, actor.z, 446) --OBJ_VEIN_OF_COAL FIXME should be -2 not -1 need to fix actor_move for coker.
+      if vein ~= nil then
+         if map_is_on_screen(actor.x, actor.y, actor.z) then
+            play_md_sfx(0x10)
+         end
+         actor.wt = 0x9A
+      end
+   end
+end
+
+function worktype_9A_coker_drop_coal(actor)
+   local obj = map_get_obj(actor.x, actor.y+1, actor.z, 188) --OBJ_CONVEYOR_BELT
+   if obj ~= nil then
+      local coal = Obj.new(447) --OBJ_HUGE_LUMP_OF_COAL
+      Obj.moveToMap(coal, actor.x, actor.y+1, actor.z)
+   else
+      obj = map_get_obj(actor.x, actor.y+1, actor.z, 192) --OBJ_BARE_ROLLERS
+      if obj == nil then
+         actor_move(actor, DIR_SOUTH)
+         return
+      end
+   end
+   actor.wt = 0x9B
+end
+
+function worktype_9B_coker_wait_for_coal_to_move_away(actor)
+   local obj = map_get_obj(actor.x, actor.y+1, actor.z, 447) --OBJ_HUGE_LUMP_OF_COAL
+   if obj == nil then
+      obj = map_get_obj(actor.x, actor.y+1, actor.z, 192) --OBJ_BARE_ROLLERS
+      if obj == nil then
+         actor.wt = 0x99
+      end
+   end
+end
+
 function worktype_9D_stoker_wait_for_coal(actor)
    local coal
    coal = map_get_obj(actor.x, actor.y+1, actor.z, 447) --OBJ_HUGE_LUMP_OF_COAL
@@ -339,6 +376,9 @@ function worktype_9C_stoker_return_to_conveyor_belt(actor)
 end
 
 local worktype_tbl = {
+   [0x99]=worktype_99_coker_move_to_coal_vein,
+   [0x9a]=worktype_9A_coker_drop_coal,
+   [0x9b]=worktype_9B_coker_wait_for_coal_to_move_away,
    [0x9c]=worktype_9C_stoker_return_to_conveyor_belt,
    [0x9d]=worktype_9D_stoker_wait_for_coal,
    [0x9e]=worktype_9E_stoker_walk_to_furnace,
@@ -1247,25 +1287,32 @@ end
 function player_post_move_action(did_move)
    local player_loc = player_get_location()
 
-   for obj in objs_at_loc(player_loc) do
-      if (obj.obj_n == 175 or obj.obj_n == 163) then
-         if obj.obj_n == 175 then --Mine entry
-            for transfer_obj in objs_at_loc(player_loc.x, player_loc.y-1, player_loc.z) do
-               transfer_obj.x = map_entrance_tbl[obj.quality].x
-               transfer_obj.y = map_entrance_tbl[obj.quality].y-1
-               transfer_obj.z = map_entrance_tbl[obj.quality].z
+   if did_move then
+      update_conveyor_belt(true)
+      
+      for obj in objs_at_loc(player_loc) do
+         if (obj.obj_n == 175 or obj.obj_n == 163) then
+            if obj.obj_n == 175 then --Mine entry
+               for transfer_obj in objs_at_loc(player_loc.x, player_loc.y-1, player_loc.z) do
+                  transfer_obj.x = map_entrance_tbl[obj.quality].x
+                  transfer_obj.y = map_entrance_tbl[obj.quality].y-1
+                  transfer_obj.z = map_entrance_tbl[obj.quality].z
+               end
+            else --Mine exit
+               for transfer_obj in objs_at_loc(player_loc.x, player_loc.y+1, player_loc.z) do
+                  transfer_obj.x = map_entrance_tbl[obj.quality].x
+                  transfer_obj.y = map_entrance_tbl[obj.quality].y+2
+                  transfer_obj.z = map_entrance_tbl[obj.quality].z
+               end
             end
-         else --Mine exit
-            for transfer_obj in objs_at_loc(player_loc.x, player_loc.y+1, player_loc.z) do
-               transfer_obj.x = map_entrance_tbl[obj.quality].x
-               transfer_obj.y = map_entrance_tbl[obj.quality].y+2
-               transfer_obj.z = map_entrance_tbl[obj.quality].z
-            end
+            party_use_entrance(player_loc.x, player_loc.y, player_loc.z, map_entrance_tbl[obj.quality])
          end
-         party_use_entrance(player_loc.x, player_loc.y, player_loc.z, map_entrance_tbl[obj.quality])
       end
+   else
+      --FIXME do map damage here.
+      play_md_sfx(0)
    end
-
+   
 end
 
 function actor_hit(actor, damage)

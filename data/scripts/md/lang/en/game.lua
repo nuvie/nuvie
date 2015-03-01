@@ -175,4 +175,5 @@ THERE_IS_NOTHING_TO_UNLOAD="There is nothing to unload.\n",
 THE_COAL_BEGINS_MOVING_DOWN_THE_BELT="The coal begins moving down the belt.\n",
 OOOPS_THESE_ROLLERS_CAN_NEVER_BE_FIXED="Ooops. These rollers can never be fixed!\n",
 STOKERS_PATH_IS_BLOCKED="Stoker's path is blocked!\n",
+THE_CONVEYOR_BELT_STOPS="The conveyor belt stops.\n",
 }
