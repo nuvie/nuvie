@@ -1,0 +1,4 @@
+EXPORTS
+	SetNuvieGamePaths
+	SetNuvieLoadGame
+	VerifyGameDirectory
