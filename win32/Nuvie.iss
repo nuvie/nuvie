@@ -144,7 +144,7 @@ begin
   U6Edit := TEdit.Create(DataDirPage);
   U6Edit.Top := U6Text.Top + U6Text.Height + ScaleY(8);
   U6Edit.Width := DataDirPage.SurfaceWidth - (U6BrowseButton.Width + ScaleX(8));
-  U6Edit.Text := 'C:\GOG Games\Ultima VI\ULTIMA6';
+  U6Edit.Text := 'C:\ultima6';
   U6Edit.Parent := DataDirPage.Surface;
 
 
@@ -166,7 +166,7 @@ begin
   MDEdit := TEdit.Create(DataDirPage);
   MDEdit.Top := MDText.Top + MDText.Height + ScaleY(8);
   MDEdit.Width := DataDirPage.SurfaceWidth - (MDBrowseButton.Width + ScaleX(8));
-  MDEdit.Text := 'C:\GOG Games\Martian Dreams\MARTIAN';
+  MDEdit.Text := 'C:\MARTIAN';
   MDEdit.Parent := DataDirPage.Surface;
 
 
@@ -188,7 +188,7 @@ begin
   SEEdit := TEdit.Create(DataDirPage);
   SEEdit.Top := SEText.Top + SEText.Height + ScaleY(8);
   SEEdit.Width := DataDirPage.SurfaceWidth - (SEBrowseButton.Width + ScaleX(8));
-  SEEdit.Text := 'C:\GOG Games\The Savage Empire\SAVAGE';
+  SEEdit.Text := 'C:\SAVAGE';
   SEEdit.Parent := DataDirPage.Surface;
 
   GameSelectPage := CreateCustomPage(DataDirPage.ID, 'Select Game', 'Select the game that Nuvie will load on startup. (you can change this later)');
