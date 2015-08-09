@@ -75,7 +75,7 @@ const char *config_defaults[] = {
 };
 
 const char *BASE_Files[] = {
-	"MAP"
+	"MAP",
 	0
 };
 
