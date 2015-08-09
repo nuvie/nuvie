@@ -88,11 +88,19 @@ UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%) Debug.o
 unpack.exe: $(UNPACK_OBJS)
 	$(CXX) $(LFLAGS) -o $@ $+
 
+nvconfig_rc.o: win32/nvconfig.rc
+	windres --include-dir win32 win32/nvconfig.rc nvconfig_rc.o
+
+DLL_OBJS = conf/Configuration.o conf/XMLTree.o conf/XMLNode.o Debug.o misc/U6misc.o
+nvconfig.dll: win32/nvconfig.def nvconfig_rc.o win32/nvconfig.o $(DLL_OBJS)
+	dllwrap --def win32/nvconfig.def -o $@ nvconfig_rc.o win32/nvconfig.o $(DLL_OBJS) -static -lstdc++
+
 clean:
 	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o nuvie.exe \
 	$(U6DECOMP_OBJS) u6decomp.exe $(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKFONT_OBJS) unpack_font.exe \
 	$(UNPACKMAPTILES_OBJS) unpack_maptiles.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
-	$(UNPACKTALK_OBJS) unpack_talk.exe $(UNPACK_OBJS) unpack.exe
+	$(UNPACKTALK_OBJS) unpack_talk.exe $(UNPACK_OBJS) unpack.exe \
+	nvconfig.dll nvconfig_rc.o win32/nvconfig.o
 
 install: all copy_scripts
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
@@ -176,7 +184,7 @@ tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe unpack_maptiles.e
 	strip unpack_portraits.exe -o $(U6PATH)/tools/unpack_portraits.exe
 	strip unpack_talk.exe -o $(U6PATH)/tools/unpack_talk.exe
 
-dist: install tools
+dist: install tools nvconfig.dll
 	cp nuvie.cfg.sample $(U6PATH)
 	cp AUTHORS $(U6PATH)/AUTHORS.txt
 	cp ChangeLog $(U6PATH)/ChangeLog.txt
@@ -187,4 +195,4 @@ dist: install tools
 	cp SDL/lib/SDL.dll $(U6PATH)/tools
 	cp win32/Nuvie.iss $(U6PATH)
 	u2d $(U6PATH)/*.txt
-
+	strip nvconfig.dll -o $(U6PATH)/nvconfig.dll
