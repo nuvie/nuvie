@@ -75,8 +75,7 @@ const char *config_defaults[] = {
 };
 
 const char *BASE_Files[] = {
-	"MAP",
-	"OBJTILES.VGA",
+	"MAP"
 	0
 };
 
