@@ -50,6 +50,7 @@ class Nuvie
    protected:
 
    bool initConfig();
+   const char *getConfigPathWin32();
    void SharedDefaultConfigValues();
    void set_safe_video_settings();
    bool initDefaultConfigWin32();

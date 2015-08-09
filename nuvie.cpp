@@ -48,6 +48,11 @@
 
 #include "nuvie.h"
 
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 Nuvie::Nuvie()
 {
  config = NULL;
@@ -212,6 +217,47 @@ bool Nuvie::play()
  return true;
 }
 
+const char *Nuvie::getConfigPathWin32()
+{
+#ifdef WIN32
+	static char configFile[MAXPATHLEN];
+
+	OSVERSIONINFO win32OsVersion;
+	ZeroMemory(&win32OsVersion, sizeof(OSVERSIONINFO));
+	win32OsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	GetVersionEx(&win32OsVersion);
+	// Check for non-9X version of Windows.
+	if (win32OsVersion.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS) {
+		// Use the Application Data directory of the user profile.
+		if (win32OsVersion.dwMajorVersion >= 5) {
+			if (!GetEnvironmentVariable("APPDATA", configFile, sizeof(configFile)))
+				DEBUG(0,LEVEL_ERROR,"Unable to access application data directory\n");
+
+		} else {
+			if (!GetEnvironmentVariable("USERPROFILE", configFile, sizeof(configFile)))
+				DEBUG(0,LEVEL_ERROR,"Unable to access user profile directory\n");
+
+			strcat(configFile, "\\Application Data");
+
+			// If the directory already exists (as it should in most cases),
+			// we don't want to fail, but we need to stop on other errors (such as ERROR_PATH_NOT_FOUND)
+			if (!CreateDirectory(configFile, NULL)) {
+				if (GetLastError() != ERROR_ALREADY_EXISTS)
+					DEBUG(0,LEVEL_ERROR,"Cannot create Application data folder\n");
+			}
+		}
+
+		strcat(configFile, "\\Nuvie");
+		if (!CreateDirectory(configFile, NULL)) {
+			if (GetLastError() != ERROR_ALREADY_EXISTS)
+				DEBUG(0,LEVEL_ERROR,"Cannot create Nuvie application data folder\n");
+		}
+
+		strcat(configFile, "\\" "nuvie.cfg");
+	}
+#endif
+	return configFile;
+}
 
 bool Nuvie::initConfig()
 {
@@ -219,6 +265,13 @@ bool Nuvie::initConfig()
 
 
  config = new Configuration();
+
+#ifdef WIN32
+	const char *configFilePath = getConfigPathWin32();
+	 config_path.assign(configFilePath);
+	 if(loadConfigFile(config_path))
+	   return true;
+#endif
 
 #ifndef WIN32
  // ~/.nuvierc

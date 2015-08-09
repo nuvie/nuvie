@@ -43,7 +43,16 @@ Nuvie can be configured by editing the configuration file.
 The config file will be automatically created the first time you launch
 Nuvie on Windows and Mac OS X environments.
 
-On Windows the config file is called "nuvie.cfg" and it lives alongside
+On Windows Vista/7/8 the config file (nuvie.cfg) is located at
+\Users\username\AppData\Roaming\Nuvie\
+
+On Windows 2000/XP the config file (nuvie.cfg) is located at
+\Documents and Settings\username\Application Data\Nuvie\
+
+On Windows NT4 the config file (nuvie.cfg) is located at
+<windir>\Profiles\username\Application Data\Nuvie\
+
+On Windows 95/98/ME the config file (nuvie.cfg) lives alongside
 the nuvie.exe file.
 
 On Mac OS X the configuration file is called "Nuvie Preferences" and lives in
