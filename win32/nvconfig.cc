@@ -17,7 +17,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/*
+/* Original comments from EXConfig:
  *  What is this?
  *
  *  EXCONFIG is a dll that is used by the InstallShield Wizard to get and set the
@@ -25,7 +25,7 @@
  *
  */
 
-#include "exconfig.h"
+#include "nvconfig.h"
 #include "Configuration.h"
 //#include "utils.h"
 #include <string>

@@ -59,16 +59,16 @@ end;
 
 // Write Paths into Nuvie.cfg
 procedure SetNuvieGamePaths(sNuvieDir, sU6Path, sMDPath, sSEPath: String);
-external 'SetNuvieGamePaths@files:exconfig.dll stdcall';
+external 'SetNuvieGamePaths@files:nvconfig.dll stdcall';
 
 // Write default game selection
 procedure SetNuvieLoadGame(sNuvieDir, sLoadGame: String);
-external 'SetNuvieLoadGame@files:exconfig.dll stdcall';
+external 'SetNuvieLoadGame@files:nvconfig.dll stdcall';
 
 
 // Verify Game dir
 function VerifyGameDirectory(sPath, gameName: String) : Integer;
-external 'VerifyGameDirectory@files:exconfig.dll stdcall';
+external 'VerifyGameDirectory@files:nvconfig.dll stdcall';
 
 procedure OnU6BrowseButton(Sender: TObject);
 var
@@ -332,7 +332,7 @@ Source: "nuvie.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme
 Source: "README-SDL.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "exconfig.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "nvconfig.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "data\BorderU6_1.bmp"; DestDir: "{app}\data\"; Flags: ignoreversion
 Source: "data\BorderU6_2.bmp"; DestDir: "{app}\data\"; Flags: ignoreversion
 Source: "data\BorderU6_3.bmp"; DestDir: "{app}\data\"; Flags: ignoreversion
