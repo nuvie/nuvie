@@ -33,6 +33,7 @@
 #include <cstdio>
 #include <sys/stat.h>
 //#include "fnames.h"
+#include "nuvieDefs.h"  // getConfigPathWin32
 
 #define MAX_STRLEN  512
 
@@ -43,6 +44,8 @@
 #endif
 
 const std::string c_empty_string;
+
+const char *CONFIG_FILENAME = "nuvie.cfg";
 
 // Not setting these in Nuvie yet.
 const char *config_defaults[] = {
@@ -279,6 +282,95 @@ bool fileExists(const char *fname)
 	return false;
 }
 
+Configuration *getConfig(char *p) {
+	// Open config file, Create if it doesn't exist
+	Configuration *config = new Configuration();
+	//if (!config->readConfigFile(p, "config", false))
+	//	config->readConfigFile(CONFIG_FILENAME, "config", false);
+	bool gotConfig = false;
+	if (get_system_path("<CONFIG>") == ".")
+		gotConfig = config->readConfigFile(p, "config", false);
+	else
+		gotConfig = config->readConfigFile(CONFIG_FILENAME, "config", false);
+	if(!gotConfig)
+		return NULL;
+	return config;
+}
+
+//
+// Get the Game paths from the config file
+//
+	__declspec(dllexport) int __stdcall GetNuvieGamePaths(char *NuvieDir, char *U6Path, char *MDPath, char *SEPath, char *configPath, int MaxPath) {
+		MessageBoxDebug(NULL, NuvieDir, "NuvieDir", MB_OK);
+		MessageBoxDebug(NULL, U6Path, "U6Path", MB_OK);
+		MessageBoxDebug(NULL, MDPath, "MDPath", MB_OK);
+		MessageBoxDebug(NULL, SEPath, "SEPath", MB_OK);
+
+		int p_size = strlen(NuvieDir) + strlen("/")+strlen(CONFIG_FILENAME) + MAX_STRLEN;
+		char *p = new char[p_size];
+		bool foundConfig = false;
+
+		// Get the complete path for the config file
+		Path config_path(NuvieDir);
+		config_path.AddString(CONFIG_FILENAME);
+		config_path.GetString(p, p_size);
+		setup_program_paths();
+
+		// Set defaults to blank, so the Installer can detect and handle
+		const static char *u6_pathdef = "";
+		const static char *md_pathdef = "";
+		const static char *se_pathdef = "";
+		const static char *config_pathdef = "";
+
+		MessageBoxDebug(NULL, NuvieDir, p, MB_OK);
+
+		try {
+			// Open config file
+			Configuration *config = getConfig(p);
+			if(config == NULL)
+			{
+				std::strncpy(U6Path, u6_pathdef, MaxPath);
+				std::strncpy(MDPath, md_pathdef, MaxPath);
+				std::strncpy(SEPath, se_pathdef, MaxPath);
+				std::strncpy(configPath, config_pathdef, MaxPath); // config is NOT valid
+				delete [] p;
+				return 0;
+			}
+			foundConfig = true;
+
+			std::string dir;
+			config->value("config/ultima6/gamedir", dir, u6_pathdef);
+			std::strncpy(configPath, p, MaxPath); // config is valid
+			if (dir != u6_pathdef) {
+				std::strncpy(U6Path, dir.c_str(), MaxPath);
+			} else {
+				std::strncpy(U6Path, u6_pathdef, MaxPath);
+			}
+
+			config->value("config/martian/gamedir", dir, md_pathdef);
+			if (dir != md_pathdef) {
+				std::strncpy(MDPath, dir.c_str(), MaxPath);
+			} else {
+				std::strncpy(MDPath, md_pathdef, MaxPath);
+			}
+
+			config->value("config/savage/gamedir", dir, se_pathdef);
+			if (dir != se_pathdef) {
+				std::strncpy(SEPath, dir.c_str(), MaxPath);
+			} else {
+				std::strncpy(SEPath, se_pathdef, MaxPath);
+			}
+		} catch (...) {
+			std::strncpy(U6Path, u6_pathdef, MaxPath);
+			std::strncpy(MDPath, md_pathdef, MaxPath);
+			std::strncpy(SEPath, se_pathdef, MaxPath);
+			std::strncpy(configPath, config_pathdef, MaxPath); // config is NOT valid
+		}
+
+		delete [] p;
+		return foundConfig?1:0;
+	}
+
 //
 // Set Game paths in the config file
 //
@@ -288,27 +380,23 @@ bool fileExists(const char *fname)
 		MessageBoxDebug(NULL, MDPath, "MDPath", MB_OK);
 		MessageBoxDebug(NULL, SEPath, "SEPath", MB_OK);
 
+		// TODO: Let Nuvie decide where to place the config.
+		//const char *configFilePath = getConfigPathWin32();
+		//MessageBoxDebug(NULL, configFilePath, "NuvieDir", MB_OK);
+		
 		int i;
-
-		int p_size = strlen(NuvieDir) + strlen("/nuvie.cfg") + MAX_STRLEN;
+		int p_size = strlen(NuvieDir) + strlen("/")+strlen(CONFIG_FILENAME) + MAX_STRLEN;
 		char *p = new char[p_size];
 
 		Path config_path(NuvieDir);
-		config_path.AddString("nuvie.cfg");
+		config_path.AddString(CONFIG_FILENAME);
 		config_path.GetString(p, p_size);
 		setup_program_paths();
 
 		MessageBoxDebug(NULL, p, "WriteConfig: p", MB_OK);
 
 		try {
-			// Open config file
-			Configuration *config = new Configuration();
-			if (get_system_path("<CONFIG>") == ".")
-				config->readConfigFile(p, "config", false);
-				//config.read_config_file(p);
-			else
-				config->readConfigFile("nuvie.cfg", "config", false);
-				//config.read_config_file("exult.cfg");
+			Configuration *config = getConfig(p);
 
 			// Set U6 Path
 			MessageBoxDebug(NULL, p, "WriteConfig: Ultima6", MB_OK);
@@ -330,7 +418,6 @@ bool fileExists(const char *fname)
 			//	if (s.empty()) config.set(config_defaults[i], config_defaults[i + 1]);
 			//}
 
-			//config.write_back();
 			config->write();
 			delete config;
 		} catch (...) {
@@ -344,23 +431,17 @@ bool fileExists(const char *fname)
 	__declspec(dllexport) void __stdcall SetNuvieLoadGame(char *NuvieDir, char *sLoadGame) {
 		int i;
 
-		int p_size = strlen(NuvieDir) + strlen("/nuvie.cfg") + MAX_STRLEN;
+		int p_size = strlen(NuvieDir) + strlen("/")+strlen(CONFIG_FILENAME) + MAX_STRLEN;
 		char *p = new char[p_size];
 
 		Path config_path(NuvieDir);
-		config_path.AddString("nuvie.cfg");
+		config_path.AddString(CONFIG_FILENAME);
 		config_path.GetString(p, p_size);
 		setup_program_paths();
 
 		try {
 			// Open config file
-			Configuration *config = new Configuration();
-			if (get_system_path("<CONFIG>") == ".")
-				config->readConfigFile(p, "config", false);
-				//config.read_config_file(p);
-			else
-				config->readConfigFile("nuvie.cfg", "config", false);
-				//config.read_config_file("exult.cfg");
+			Configuration *config = getConfig(p);
 
 			// set
 			std::string gameName("ultima6");
