@@ -45,6 +45,7 @@ var
   U6Text: TNewStaticText;
   MDText: TNewStaticText;
   SEText: TNewStaticText;
+  InfoText: TNewStaticText;
   U6Edit: TEdit;
   MDEdit: TEdit;
   SEEdit: TEdit;
@@ -65,6 +66,9 @@ external 'SetNuvieGamePaths@files:nvconfig.dll stdcall';
 procedure SetNuvieLoadGame(sNuvieDir, sLoadGame: String);
 external 'SetNuvieLoadGame@files:nvconfig.dll stdcall';
 
+// Read Paths from Nuvie.cfg
+function GetNuvieGamePaths(sNuvieDir, sU6Path, sMDPath, sSEPath, sConfigPath: String; MaxPath: Integer) : Integer;
+external 'GetNuvieGamePaths@files:nvconfig.dll stdcall';
 
 // Verify Game dir
 function VerifyGameDirectory(sPath, gameName: String) : Integer;
@@ -191,6 +195,12 @@ begin
   SEEdit.Text := 'C:\SAVAGE';
   SEEdit.Parent := DataDirPage.Surface;
 
+  InfoText := TNewStaticText.Create(DataDirPage);
+  InfoText.Caption := 'Previous settings were found at:';
+  InfoText.AutoSize := True;
+  InfoText.Top := SEEdit.Top + SEEdit.Height + ScaleY(23);
+  InfoText.Parent := DataDirPage.Surface;
+
   GameSelectPage := CreateCustomPage(DataDirPage.ID, 'Select Game', 'Select the game that Nuvie will load on startup. (you can change this later)');
   GameCombo := TNewComboBox.Create(GameSelectPage);
   GameCombo.Parent := GameSelectPage.Surface;
@@ -211,20 +221,31 @@ var
   sU6Path: String;
   sMDPath: String;
   sSEPath: String;
+  sConfigPath: String;
+  iConfigExists: Integer;
 begin
   if CurPageID = DataDirPage.ID then begin
     if bSetPaths = False then begin
       setlength(sU6Path, 1024);
       setlength(sMDPath, 1024);
       setlength(sSEPath, 1024);
-      //GetExultGamePaths(ExpandConstant('{app}'), sBGPath, sSIPath, 1023 );
-      sU6Path := 'None';
-      sMDPath := 'None';
-      sSEPath := 'None';
+      setlength(sConfigPath, 1024);
+      iConfigExists := GetNuvieGamePaths(ExpandConstant('{app}'), sU6Path, sMDPath, sSEPath, sConfigPath, 1023 );
 
-      //U6Edit.Text := sU6Path;
-      //MDEdit.Text := sMDPath;
-      //SEEdit.Text := sSEPath;
+      if (iConfigExists = 1) and not(CompareText(sU6Path, '') = 0) then begin
+        U6Edit.Text := sU6Path;
+      end;
+      if (iConfigExists = 1) and not(CompareText(sMDPath, '') = 0) then begin
+        MDEdit.Text := sMDPath;
+      end;
+      if (iConfigExists = 1) and not(CompareText(sSEPath, '') = 0) then begin
+        SEEdit.Text := sSEPath;
+      end;
+      if iConfigExists = 0 then begin
+        InfoText.Caption := '';
+      end else
+        InfoText.Caption := 'Previous settings were found at ' + sConfigPath;
+
     end;
   end;
 
@@ -326,8 +347,8 @@ end;
 Source: "AUTHORS.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "COPYING.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "nuvie.cfg.sample"; DestDir: "{app}"; DestName: "nuvie.cfg"; Flags: ignoreversion confirmoverwrite
 Source: "nuvie.cfg.sample"; DestDir: "{app}"; Flags: ignoreversion
+Source: "nuvie.cfg.sample"; DestDir: "{app}"; DestName: "nuvie.cfg"; Flags: ignoreversion onlyifdoesntexist
 Source: "nuvie.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme
 Source: "README-SDL.txt"; DestDir: "{app}"; Flags: ignoreversion
