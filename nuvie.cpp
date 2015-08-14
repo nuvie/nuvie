@@ -219,8 +219,9 @@ bool Nuvie::play()
 
 const char *Nuvie::getConfigPathWin32()
 {
-#ifdef WIN32
 	static char configFile[MAXPATHLEN];
+	configFile[0] = '\0';
+#ifdef WIN32
 
 	OSVERSIONINFO win32OsVersion;
 	ZeroMemory(&win32OsVersion, sizeof(OSVERSIONINFO));
