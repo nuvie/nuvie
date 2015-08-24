@@ -1871,7 +1871,7 @@ unsigned char *Screen::copy_area32(SDL_Rect *area, uint16 down_scale)
 // (NULL area = entire screen)
 unsigned char *Screen::copy_area(SDL_Rect *area, unsigned char *buf)
 {
-    SDL_Rect screen_area = { 0, 0, surface->w, surface->h };
+    SDL_Rect screen_area = { 0, 0, (uint16)surface->w, (uint16)surface->h };
     if(!area)
         area = &screen_area;
 
@@ -1887,7 +1887,7 @@ unsigned char *Screen::copy_area(SDL_Rect *area, unsigned char *buf)
 void Screen::restore_area(unsigned char *pixels, SDL_Rect *area,
                           unsigned char *target, SDL_Rect *target_area, bool free_src)
 {
-    SDL_Rect screen_area = { 0, 0, surface->w, surface->h };
+    SDL_Rect screen_area = { 0, 0, (Uint16)surface->w, (Uint16)surface->h };
     if(!area)
         area = &screen_area;
 
