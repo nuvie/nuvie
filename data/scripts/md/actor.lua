@@ -263,8 +263,11 @@ function actor_move(actor, direction, flag)
    if direction == DIR_SOUTH then y = y + 1 end
    if direction == DIR_EAST then x = x + 1 end
    if direction == DIR_WEST then x = x - 1 end
-   
-   actor.direction = direction
+
+   if actor.obj_n ~= 382 then --COKER FIXME need to have an update frame function here.
+      actor.direction = direction
+   end
+
    local did_move = Actor.move(actor, x, y, z)
    
    --FIXME need more logic here.
