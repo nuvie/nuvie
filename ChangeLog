@@ -1,3 +1,8 @@
+2015-08-24  Eric Fry <efry at users.sourceforge.net>
+	* Added CMake build file. (OS X specific at the moment)
+	* MD Fixed Coker walk frames.
+	* Fixed some C++11 compile errors.
+
 2015-01-01  Eric Fry <efry at users.sourceforge.net> r2008
 	* Work on MD conveyor belt logic
 	* Work on Coker worktypes.
