@@ -109,6 +109,7 @@ class Script
    bool play_cutscene(const char *script_file);
    bool call_player_before_move_action(sint16 rel_x, sint16 rel_y);
    bool call_player_post_move_action(bool didMove);
+   bool call_player_pass();
    bool call_actor_update_all();
    bool call_actor_init(Actor *actor, uint8 alignment);
    bool call_actor_attack(Actor *actor, MapCoord location, Obj *weapon, Actor * foe);
@@ -156,7 +157,7 @@ class Script
  protected:
    bool call_loadsave_game(const char *function, NuvieIO *objlist);
    void seed_random();
- 
+
 };
 
 

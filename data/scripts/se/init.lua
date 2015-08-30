@@ -114,3 +114,6 @@ end
 
 -- init usecode
 usecode_init = nuvie_load("se/usecode.lua"); usecode_init();
+
+player_init = nuvie_load("se/player.lua"); player_init();
+

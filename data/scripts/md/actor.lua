@@ -247,9 +247,6 @@ function actor_init(actor, alignment)
    
 end
 
-function actor_map_dmg(actor, map_x, map_y, map_z)
-	--FIXME
-end
 
 function subtract_map_movement_pts(actor)
    local points = map_get_impedence(actor.x, actor.y, actor.z, false) + 5
@@ -279,6 +276,37 @@ function actor_move(actor, direction, flag)
    end
    
    return did_move
+end
+
+function actor_update_frame(actor, direction)
+   local obj_n = actor.obj_n
+
+   --actor.direction = direction
+   if obj_n >= 342 or obj_n <= 358 then --human actors
+      --print("actor: "..actor.actor_num.."("..actor.x..","..actor.y..","..actor.z..")")
+      for obj in objs_at_loc(actor.x, actor.y, actor.z) do
+         if obj ~= nil then
+            local tmp_obj_n = obj.obj_n
+            --print("actor:"..actor.actor_num.." obj: " .. tmp_obj_n)
+            if tmp_obj_n == 406 or (tmp_obj_n == 407) or tmp_obj_n == 216 or tmp_obj_n == 289 then
+               --sit here
+               if tmp_obj_n ==  406 then -- OBJ_BENCH
+                  actor.frame_n = 3
+               elseif tmp_obj_n == 407 then -- OBJ_COUCH
+                  actor.frame_n = 4 + 3
+               elseif tmp_obj_n == 289 then -- OBJ_DREAM_MACHINE2
+                  actor.frame_n = 8 + 3
+               else
+                  actor.frame_n = math.floor(direction/2) * 4 + 3
+               end
+
+               return
+            end
+         end
+      end
+      --standing
+
+   end
 end
 
 function worktype_99_coker_move_to_coal_vein(actor)
@@ -858,10 +886,13 @@ end
 function actor_map_dmg(actor, map_x, map_y, map_z) --FIXME
    local obj_n = actor.obj_n
    local actor_type = actor_tbl[obj_n]
-   
+
+   --print("actor_map_dmg("..actor.actor_num..")")
+
    if actor.alive == false or actor.hit_flag == true then
       return
    end
+   actor_update_frame(actor, actor.direction)
 end
 
 function actor_remove_charm(actor)

@@ -557,6 +557,7 @@ void Player::moveDown()
 
 void Player::pass()
 {
+    Game::get_game()->get_script()->call_player_pass();
 // uint16 x = actor->x, y = actor->y;
 // uint8 z = actor->z;
 

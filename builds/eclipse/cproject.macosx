@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?fileVersion 4.0.0?>
-
-<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189" moduleId="org.eclipse.cdt.core.settings" name="Debug">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -110,8 +108,6 @@
 							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1869266131" name="Resource Custom Build Step Output Type"/>
 						</tool>
 					</fileInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.848961356" name="raw.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/wave/raw.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1736073815" name="pcspeaker_dosbox.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/pcspeaker_dosbox.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.938838863" name="doublebuffersdl-mixer.cpp" rcbsApplicability="disable" resourcePath="sound/mixer/doublebuffersdl-mixer.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1200235901">
 						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1200235901" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547">
 							<option id="gnu.cpp.compiler.option.preprocessor.def.2087179116" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -121,10 +117,12 @@
 							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1074698230" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 						</tool>
 					</fileInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.848961356" name="raw.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/wave/raw.h" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1736073815" name="pcspeaker_dosbox.h" rcbsApplicability="disable" resourcePath="sound/mixer/decoder/pcspeaker_dosbox.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.1990226738" name="Sample.h" rcbsApplicability="disable" resourcePath="sound/Sample.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.901814189.656370029" name="Script.cpp" rcbsApplicability="disable" resourcePath="script/Script.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1467319741">
 						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547.1467319741" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.19942547">
-							<option id="gnu.cpp.compiler.option.include.paths.1092554758" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+							<option id="gnu.cpp.compiler.option.include.paths.1092554758" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 								<listOptionValue builtIn="false" value="/opt/local/include/SDL"/>
 								<listOptionValue builtIn="false" value="&quot;${workspace_loc:/nuvie/lua}&quot;"/>
 								<listOptionValue builtIn="false" value="/opt/local/include"/>
@@ -152,7 +150,7 @@
 						</tool>
 					</fileInfo>
 					<sourceEntries>
-						<entry excluding="sound/mixer/decoder/PCSpeakerFreqStream.h|sound/mixer/decoder/PCSpeakerFreqStream.cpp|sound/mixer/decoder/pcspeaker_dosbox.h|sound/mixer/decoder/pcspeaker_dosbox.cpp|sound/mixer/algorithm.h|sound/Sample.h|sound/Sample.cpp|sound/mixer/rate_arm.cpp|sound/mixer/rate_arm_asm.s|sound/mixer/common|tools|msvc|PBBuild|XCodeBuild|visualc7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="builds|win32|sound/mixer/decoder/PCSpeakerFreqStream.h|sound/mixer/decoder/PCSpeakerFreqStream.cpp|sound/mixer/decoder/pcspeaker_dosbox.h|sound/mixer/decoder/pcspeaker_dosbox.cpp|sound/mixer/algorithm.h|sound/Sample.h|sound/Sample.cpp|sound/mixer/rate_arm.cpp|sound/mixer/rate_arm_asm.s|sound/mixer/common|tools|msvc|PBBuild|XCodeBuild|visualc7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -165,12 +163,12 @@
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.macosx.exe.release.1665335514" moduleId="org.eclipse.cdt.core.settings" name="Release">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -232,7 +230,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="sound/mixer/rate_arm.cpp|sound/mixer/rate_arm_asm.s|sound/mixer/common|tools|msvc|PBBuild|XCodeBuild|visualc7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="builds|win32|sound/mixer/rate_arm.cpp|sound/mixer/rate_arm_asm.s|sound/mixer/common|tools|msvc|PBBuild|XCodeBuild|visualc7" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

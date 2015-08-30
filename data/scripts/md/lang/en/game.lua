@@ -1,4 +1,5 @@
 return {
+PASS="Pass!\n",
 YOU_SEE="you see %s",
 ON="On - ",
 TO="To - ",

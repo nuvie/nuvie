@@ -3462,7 +3462,6 @@ void Event::cancelAction()
 
     if(mode == MOVE_MODE)
     {
-        scroll->display_string("Pass!\n");
         player->pass();
     }
     else if(mode == CAST_MODE)

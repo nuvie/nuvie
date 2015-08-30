@@ -1,3 +1,13 @@
+2015-08-30  Eric Fry <efry at users.sourceforge.net>
+	* Started on MD sit logic
+	* Starting moving player "Pass!" logic into lua script.
+	* Added internationalisation files for U6 and SE
+	* Added new player.lua script file.
+	* Fixed crash when trying to use garg font in WOU games.
+	* Fixed crash when invalid coordinates are passed to objs_at_loc()
+	  script function.
+	* Move actors along the conveyor belt in MD
+
 2015-08-24  Eric Fry <efry at users.sourceforge.net>
 	* Added CMake build file. (OS X specific at the moment)
 	* MD Fixed Coker walk frames.
@@ -3294,7 +3304,7 @@
 	* Added new ConverseGump class.
 
 2012-05-01  Eric Fry <efry at users.sourceforge.net> r1320
-	* Added Daniel c. Würl to the AUTHORS file.
+	* Added Daniel c. Wï¿½rl to the AUTHORS file.
 	* Reorganised the AUTHORS file to list active and inactive team members.
 	* Added new grey roof tiles.
 
@@ -3390,7 +3400,7 @@
 
 2012-03-10  Eric Fry <efry at users.sourceforge.net> r1299
 	* Started work on newlook spellbook gump for fullscreen mode.
-	  Thanks to Daniel c. Würl for his awesome artwork.
+	  Thanks to Daniel c. Wï¿½rl for his awesome artwork.
 
 2012-03-06  Eric Fry <efry at users.sourceforge.net> r1298
 	* Started work fullscreen map mode.
@@ -7574,7 +7584,7 @@ not-sure-when  Eric Fry <efry at users.sourceforge.net>
 	* Fixed look display for animated objects.
 	* Added GameSelect class which will contain game selection menu etc.
 
-2003-05-28  Markus Niemistö <niemisto at users.sourceforge.net>
+2003-05-28  Markus Niemistï¿½ <niemisto at users.sourceforge.net>
         * ObjManager: Many containers can now be used and items got out of
         them.
         * U6Shape: Added support for loading U6 shapes
@@ -7593,7 +7603,7 @@ not-sure-when  Eric Fry <efry at users.sourceforge.net>
 	* U6Lib_n: now handling (read or skip) 4byte filesize at start of files
 
 2003-05-24  Eric Fry <efry at users.sourceforge.net>
-	* Get support thanks to a patch by Markus Niemistö.
+	* Get support thanks to a patch by Markus Niemistï¿½.
 
 2003-05-23  Eric Fry <efry at users.sourceforge.net>
 	* Work done on object weight. "you see blah. I weighs x.x stones."

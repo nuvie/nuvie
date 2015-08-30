@@ -965,6 +965,13 @@ bool Script::call_player_post_move_action(bool didMove)
   return call_function("player_post_move_action", 1, 0);
 }
 
+bool Script::call_player_pass()
+{
+   lua_getglobal(L, "player_pass");
+
+   return call_function("player_pass", 0, 0);
+}
+
 bool Script::call_actor_update_all()
 {
    lua_getglobal(L, "actor_update_all");
@@ -4199,17 +4206,24 @@ static int nscript_objs_at_loc(lua_State *L)
    if(nscript_get_location_from_args(L, &x, &y, &z) == false)
       return 0;
 
-   
-   U6LList *obj_list = obj_manager->get_obj_list(x, y, z);
-   if(obj_list != NULL)
-	  link = obj_list->start();
-   
+   if(x >= 0 &&  x < 1024 && y >= 0 && y < 1024 && z >= 0 && z <= 5)
+   {
+      U6LList *obj_list = obj_manager->get_obj_list(x, y, z);
+      if(obj_list != NULL)
+         link = obj_list->start();
+   }
+   else
+   {
+      DEBUG(0, LEVEL_ERROR, "objs_at_loc() Invalid coordinates (%d, %d, %d)\n", x, y, z);
+   }
+
    lua_pushcfunction(L, nscript_u6llist_iter);
    
    U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
    *p_link = link;
 
-   retainU6Link(link);
+   if(link)
+      retainU6Link(link);
 
    luaL_getmetatable(L, "nuvie.U6Link");
    lua_setmetatable(L, -2);

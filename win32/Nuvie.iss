@@ -623,6 +623,7 @@ Source: "data\scripts\md\ending.lua"; DestDir: "{app}\data\scripts\md"; Flags: i
 Source: "data\scripts\md\init.lua"; DestDir: "{app}\data\scripts\md"; Flags: ignoreversion
 Source: "data\scripts\md\intro.lua"; DestDir: "{app}\data\scripts\md"; Flags: ignoreversion
 Source: "data\scripts\md\look.lua"; DestDir: "{app}\data\scripts\md"; Flags: ignoreversion
+Source: "data\scripts\md\player.lua"; DestDir: "{app}\data\scripts\md"; Flags: ignoreversion
 Source: "data\scripts\md\talk.lua"; DestDir: "{app}\data\scripts\md"; Flags: ignoreversion
 Source: "data\scripts\md\usecode.lua"; DestDir: "{app}\data\scripts\md"; Flags: ignoreversion
 Source: "data\scripts\md\lang\en\game.lua"; DestDir: "{app}\data\scripts\md\lang\en"; Flags: ignoreversion
@@ -630,12 +631,16 @@ Source: "data\scripts\md\lang\it\game.lua"; DestDir: "{app}\data\scripts\md\lang
 Source: "data\scripts\se\actor.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\init.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\intro.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
+Source: "data\scripts\se\player.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\usecode.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
+Source: "data\scripts\se\lang\en\game.lua"; DestDir: "{app}\data\scripts\se\lang\en"; Flags: ignoreversion
 Source: "data\scripts\u6\actor.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
 Source: "data\scripts\u6\ending.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
 Source: "data\scripts\u6\init.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
 Source: "data\scripts\u6\intro.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
+Source: "data\scripts\u6\player.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
 Source: "data\scripts\u6\usecode.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
+Source: "data\scripts\u6\lang\en\game.lua"; DestDir: "{app}\data\scripts\u6\lang\en"; Flags: ignoreversion
 Source: "data\scripts\u6\magic.lua"; DestDir: "{app}\data\scripts\u6"; Flags: ignoreversion
 Source: "data\scripts\u6\magic\circle_01\create_food.lua"; DestDir: "{app}\data\scripts\u6\magic\circle_01"; Flags: ignoreversion
 Source: "data\scripts\u6\magic\circle_01\detect_magic.lua"; DestDir: "{app}\data\scripts\u6\magic\circle_01"; Flags: ignoreversion

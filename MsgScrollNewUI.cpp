@@ -174,7 +174,10 @@ void MsgScrollNewUI::set_font(uint8 font_type)
 	}
 	else
 	{
-		font = font_garg;
+		if(font_garg)
+		{
+			font = font_garg;
+		}
 	}
 }
 

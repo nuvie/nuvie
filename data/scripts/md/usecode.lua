@@ -432,7 +432,12 @@ function update_conveyor_belt(can_stop)
             obj.x = obj.x + 1
          end
       end
-      
+
+      local actor = map_get_actor(x, y, z)
+      if actor ~= nil then
+         Actor.move(actor, x+1, y, z)
+      end
+
       x = x - 1
       conveyor = map_get_obj(x, y, z, 188) --OBJ_CONVEYOR_BELT
    end

@@ -148,7 +148,11 @@ copy_scripts:
 	mkdir -p $(U6PATH)/data/scripts/md/lang/en
 	mkdir -p $(U6PATH)/data/scripts/md/lang/it
 	mkdir -p $(U6PATH)/data/scripts/se
+	mkdir -p $(U6PATH)/data/scripts/se/lang
+	mkdir -p $(U6PATH)/data/scripts/se/lang/en
 	mkdir -p $(U6PATH)/data/scripts/u6
+	mkdir -p $(U6PATH)/data/scripts/u6/lang
+	mkdir -p $(U6PATH)/data/scripts/u6/lang/en
 	mkdir -p $(U6PATH)/data/scripts/u6/magic
 	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_01
 	mkdir -p $(U6PATH)/data/scripts/u6/magic/circle_02
@@ -171,7 +175,9 @@ copy_scripts:
 	cp data/scripts/md/lang/en/*.lua $(U6PATH)/data/scripts/md/lang/en
 	cp data/scripts/md/lang/it/*.lua $(U6PATH)/data/scripts/md/lang/it
 	cp data/scripts/se/*.lua $(U6PATH)/data/scripts/se
+	cp data/scripts/se/lang/en/*.lua $(U6PATH)/data/scripts/se/lang/en
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
+	cp data/scripts/u6/lang/en/*.lua $(U6PATH)/data/scripts/u6/lang/en
 
 tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe unpack_maptiles.exe unpack_portraits.exe unpack_talk.exe
 	mkdir -p $(U6PATH)
