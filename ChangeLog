@@ -1,3 +1,7 @@
+2015-09-08  Eric Fry <efry at users.sourceforge.net>
+	* Added anim_play() and anim_stop() script functions.
+	* MD work on power activation logic
+
 2015-08-30  Eric Fry <efry at users.sourceforge.net>
 	* Started on MD sit logic
 	* Starting moving player "Pass!" logic into lua script.

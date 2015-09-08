@@ -266,6 +266,8 @@ static int nscript_anim_get_number_of_entries(lua_State *L);
 static int nscript_anim_get_tile(lua_State *L);
 static int nscript_anim_get_first_frame(lua_State *L);
 static int nscript_anim_set_first_frame(lua_State *L);
+static int nscript_anim_play(lua_State *L);
+static int nscript_anim_stop(lua_State *L);
 
 //Misc
 static int nscript_new_hit_entities_tbl_var(lua_State *L, ProjectileEffect *effect);
@@ -671,6 +673,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_anim_get_first_frame);
    lua_setglobal(L, "anim_get_first_frame");
+
+   lua_pushcfunction(L, nscript_anim_play);
+   lua_setglobal(L, "anim_play");
+
+   lua_pushcfunction(L, nscript_anim_stop);
+   lua_setglobal(L, "anim_stop");
 
    lua_pushcfunction(L, nscript_objs_at_loc);
    lua_setglobal(L, "objs_at_loc");
@@ -3304,6 +3312,30 @@ static int nscript_anim_get_first_frame(lua_State *L)
 
   lua_pushinteger(L, Game::get_game()->get_tile_manager()->get_anim_first_frame(anim_index));
   return 1;
+}
+
+/***
+start playing animation
+@function anim_play
+@int anim_index index of animation to play
+*/
+static int nscript_anim_play(lua_State *L)
+{
+   uint8 anim_index = (uint8) luaL_checkinteger(L, 1);
+   Game::get_game()->get_tile_manager()->anim_play_repeated(anim_index);
+   return 0;
+}
+
+/***
+stop playing animation
+@function anim_stop
+@int anim_index index of animation
+*/
+static int nscript_anim_stop(lua_State *L)
+{
+   uint8 anim_index = (uint8) luaL_checkinteger(L, 1);
+   Game::get_game()->get_tile_manager()->anim_stop_playing(anim_index);
+   return 0;
 }
 
 /***

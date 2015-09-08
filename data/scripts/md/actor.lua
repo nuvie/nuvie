@@ -378,7 +378,8 @@ function worktype_9E_stoker_walk_to_furnace(actor)
                   --FIXME sub_3F740
                end
                Actor.set_talk_flag(0x73, 2)
-               --FIXME animate_tiles
+               activate_power_update_tiles()
+               activate_tower_electricity()
                midgame_cutscene_2()
             end
          end
@@ -387,6 +388,26 @@ function worktype_9E_stoker_walk_to_furnace(actor)
          stoker_blocked(actor)
       end
    end
+end
+
+function activate_tower_electricity()
+   for obj in find_obj(0, 201) do --OBJ_TOWER_TOP
+      if obj ~= nil then
+         if obj.x >= 0x3d0 and obj.x <= 0x3f0 and obj.y >= 0x1d0 and obj.y <= 0x1e7 then
+            local frame_n = obj.frame_n
+            obj.frame_n = bit32.bor(frame_n, 4)
+         end
+      end
+   end
+
+   for obj in find_obj(0, 214) do --OBJ_POWER_CABLE
+      if obj ~= nil then
+         if obj.x >= 0x3d0 and obj.x <= 0x3f0 and obj.y >= 0x1d0 and obj.y <= 0x1e7 then
+            obj.obj_n = 215 --OBJ_POWER_CABLE1
+         end
+      end
+   end
+
 end
 
 function stoker_blocked(stoker)

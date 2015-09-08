@@ -179,6 +179,9 @@ class TileManager
    uint16 get_anim_tile(uint8 anim_index) { return anim_index < animdata.number_of_tiles_to_animate ? animdata.tile_to_animate[anim_index] : 0; }
    uint16 get_anim_first_frame(uint8 anim_index) { return anim_index < animdata.number_of_tiles_to_animate ? animdata.first_anim_frame[anim_index] : 0; }
    void set_anim_first_frame(uint16 anim_index, uint16 new_start_tile_num);
+   void anim_play_repeated(uint8 anim_index);
+   void anim_stop_playing(uint8 anim_index);
+
 
    Tile *get_rotated_tile(Tile *tile, float rotate, uint8 src_y_offset=0);
    void get_rotated_tile(Tile *tile, Tile *dest_tile, float rotate, uint8 src_y_offset=0);

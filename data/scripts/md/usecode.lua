@@ -384,8 +384,44 @@ function activate_power_system()
    printl("THE_COAL_BEGINS_MOVING_DOWN_THE_BELT")
    Actor.set_talk_flag(0x73, 2)
    Actor.set_talk_flag(0x71, 3)
-   --FIXME animate tiles here
+   activate_power_update_tiles()
    update_conveyor_belt(false)
+end
+
+function activate_power_update_tiles()
+   anim_play(9)
+   anim_play(10)
+   anim_play(11)
+   anim_play(12)
+   local loc = player_get_location()
+   for obj in find_obj(loc.z, 208) do --OBJ_CRACK
+      if obj ~= nil then
+         if map_get_obj(obj.x, obj.y, obj.z, 209) == nil then
+            local steam = Obj.new(209, 1)
+            Obj.moveToMap(steam, obj.x, obj.y+1, obj.z)
+         end
+      end
+   end
+
+   for obj in find_obj(loc.z, 233) do --OBJ_FURNACE
+      if obj ~= nil then
+         local frame_n = obj.frame_n
+         if frame_n == 1 or frame_n == 3 then
+            obj.frame_n = frame_n + 4
+         end
+      end
+   end
+
+   for obj in find_obj(loc.z, 154) do --OBJ_LAMP
+      if obj ~= nil then
+         obj.frame_n = 1
+      end
+   end
+   for obj in find_obj(4, 154) do --OBJ_LAMP
+      if obj ~= nil then
+         obj.frame_n = 1
+      end
+   end
 end
 
 function update_conveyor_belt(can_stop)
