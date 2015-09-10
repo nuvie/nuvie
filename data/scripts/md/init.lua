@@ -295,3 +295,5 @@ usecode_init = nuvie_load("md/usecode.lua"); usecode_init();
 talk_init = nuvie_load("md/talk.lua"); talk_init();
 
 player_init = nuvie_load("md/player.lua"); player_init();
+
+worktype_init = nuvie_load("md/worktype.lua"); worktype_init();
