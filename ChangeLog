@@ -1,3 +1,6 @@
+2015-09-10  Eric Fry <efry at users.sourceforge.net>
+	* MD turn off power when conveyor belt stops.
+
 2015-09-08  Eric Fry <efry at users.sourceforge.net>
 	* Added anim_play() and anim_stop() script functions.
 	* MD work on power activation logic

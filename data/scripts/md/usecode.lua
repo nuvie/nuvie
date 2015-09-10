@@ -424,6 +424,39 @@ function activate_power_update_tiles()
    end
 end
 
+function shutdown_power_update_tiles()
+   anim_stop(9)
+   anim_stop(10)
+   anim_stop(11)
+   anim_stop(12)
+   local loc = player_get_location()
+   for obj in find_obj(loc.z, 209) do --OBJ_STEAM_LEAK
+      if obj ~= nil then
+         Obj.removeFromEngine(obj)
+      end
+   end
+
+   for obj in find_obj(loc.z, 233) do --OBJ_FURNACE
+      if obj ~= nil then
+         local frame_n = obj.frame_n
+         if frame_n == 5 or frame_n == 7 then
+            obj.frame_n = frame_n - 4
+         end
+      end
+   end
+
+   for obj in find_obj(loc.z, 154) do --OBJ_LAMP
+      if obj ~= nil then
+         obj.frame_n = 0
+      end
+   end
+   for obj in find_obj(4, 154) do --OBJ_LAMP
+      if obj ~= nil then
+         obj.frame_n = 0
+      end
+   end
+end
+
 function update_conveyor_belt(can_stop)
    if Actor.get_talk_flag(0x73, 2) == false then
       return
@@ -484,7 +517,7 @@ function update_conveyor_belt(can_stop)
          printl("THE_CONVEYOR_BELT_STOPS")
          Actor.clear_talk_flag(0x73, 2)
          Actor.clear_talk_flag(0x71, 3)
-         --FIXME turn off lights.
+         shutdown_power_update_tiles()
       end
    end
    
