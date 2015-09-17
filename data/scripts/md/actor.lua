@@ -112,6 +112,17 @@ actor_tbl = {
 [403] = {20,20,10,255,ALIGNMENT_EVIL,99,12,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 }
 
+function  is_actor_stat_bit_set(obj_n, bit_number)
+   local stats = actor_tbl[obj_n]
+   if stats ~= nil then
+      if stats[23 - bit_number] == 1 then
+         return true
+      end
+   end
+
+   return false
+end
+
 g_party_is_warm = false
 
 -- Berry logic
@@ -251,6 +262,227 @@ end
 function subtract_map_movement_pts(actor)
    local points = map_get_impedence(actor.x, actor.y, actor.z, false) + 5
    subtract_movement_pts(actor, points)
+end
+
+function actor_divide(actor)
+
+   local random = math.random
+   local from_x, from_y, from_z = actor.x, actor.y, actor.z
+
+   for i=1,8 do
+
+      local new_x = wrap_coord(random(1, 2) + from_x - 1, from_z)
+      local new_y = wrap_coord(random(1, 2) + from_y - 1, from_z)
+
+      if map_can_put(new_x, new_y, from_z) then
+
+         --FIXME need to call sub_2C657 which I think updates the existing actor
+         Actor.clone(actor, new_x, new_y, from_z)
+         printfl("ACTOR_DIVIDES", actor.name)
+         return
+      end
+   end
+end
+
+function defender_update_alignment(attacker, defender, damage)
+   if defender.luatype ~= "actor" then
+      return
+   end
+
+   if defender.align == ALIGNMENT_NEUTRAL and defender.in_party == false and (defender.wt <= 0x10 or defender.wt >= 0x80) then
+      if attacker.wt == WT_PLAYER and is_actor_stat_bit_set(defender.obj_n, 14) and damage > 0 then
+         printfl("ACTOR_ATTACKS", defender.name)
+      end
+
+      if defender.actor_num >= 0xc0 or defender.wt < 0x80 then
+         if attacker.align == ALIGNMENT_GOOD and defender.align ~= ALIGNMENT_EVIL and defender.wt ~= ALIGNMENT_CHAOTIC then
+            defender.align = ALIGNMENT_EVIL
+         end
+
+         if defender.wt >= 0xc0 then
+            defender.wt = 8
+         end
+      else
+         if attacker.wt == WT_PLAYER then
+            defender.wt = 0xa0
+         end
+      end
+   end
+end
+
+function canal_worm_eat_body(worm_actor)
+   --FIXME
+   --only eat if a body was created when the actor was killed.
+end
+
+function actor_handle_damage(defender)
+   --FIXME
+end
+
+function actor_take_hit(attacker, defender, max_dmg, damage_mode)
+   if max_dmg == -1 then
+      max_dmg = 1
+   elseif max_dmg > 1 and max_dmg < 255 then
+      max_dmg = math.random(1, max_dmg)
+   end
+
+   local armour_value = 0
+   if damage_mode ~= 2 then
+      if defender.luatype == "actor" then
+         armour_value = actor_get_ac(defender)
+      elseif defender.obj_n == 388 and defender.frame_n == 0 then --OBJ_GLOW_WORM
+         armour_value = 2
+      end
+   end
+
+   if armour_value > 0 and max_dmg < 255 then
+      max_dmg = max_dmg - math.random(1, armour_value)
+   end
+
+   if max_dmg > 0 then
+      if (attacker.align == ALIGNMENT_EVIL or attacker.align == ALIGNMENT_CHAOTIC)
+              and defender.luatype == "actor" and defender.in_party
+              and party_is_in_combat_mode() == false
+              and player_is_in_solo_mode() == false then
+         party_set_combat_mode(true)
+      end
+
+      attacker.exp = attacker.exp + actor_hit(defender, max_dmg, attacker, damage_mode)
+   else
+      --FIXME call either sub_19088 or sub_18F7D
+      printfl("ACTOR_GRAZED", defender.name)
+   end
+
+   if defender.luatype == "actor" then
+      --FIXME only call if defender == selected obj
+      defender_update_alignment(attacker, defender, max_dmg)
+      if defender.hp == 0 then
+         if attacker.obj_n == 379 then --OBJ_CANAL_WORM
+            canal_worm_eat_body(attacker)
+         end
+      else
+         if is_actor_stat_bit_set(attacker.obj_n, 2) and math.random(0, 3) == 0 and actor_immune_to_dmg(defender) == false then
+            printfl("ACTOR_PARALYZED", defender.name)
+            defender.paralyzed = true
+         end
+
+         if defender.alive and max_dmg > 0 then
+            actor_handle_damage(defender)
+         end
+      end
+   end
+
+end
+
+function actor_immune_to_dmg(actor)
+   local actor_num = actor.actor_num
+   local obj_n = actor.obj_n
+   if obj_n == 381 or obj_n == 391 or obj_n == 358 or obj_n == 382 then
+      return true
+   end
+
+   if actor_num == 0x5c or actor_num == 0x5d or actor_num == 0x59 or actor_num == 0x5a or actor_num == 0x54 or actor_num == 0x52
+      or actor_num == 0x6d or actor_num == 0x68 or actor_num == 0x67 or actor_num == 0x69 or actor_num == 0x77 or actor_num == 0x78
+      or actor_num == 0x40 or actor_num == 0x3c then
+      return true
+   end
+
+   return false
+end
+
+function actor_print_custom_hit_message(actor)
+   local actor_num = actor.actor_num
+   if actor_num == 0x69 then
+      printfl("ACTOR_CRITICAL", Actor.get(0x19).name)
+   elseif actor_num == 0x3c then
+      printfl("ACTOR_CRITICAL", actor.name)
+   elseif actor_num == 0x52 then
+      printfl("ACTOR_HEAVILY_WOUNDED", actor.name)
+   elseif actor_num == 0x68 then
+      if Actor.get_talk_flag(actor, 2) then
+         printfl("ACTOR_CRITICAL", actor.name)
+      else
+         printfl("ACTOR_HEAVILY_WOUNDED", actor.name)
+      end
+      Actor.set_talk_flag(actor, 5)
+      Actor.talk(actor)
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
+function actor_hit(defender, max_dmg, attacker, damage_mode)
+
+   local defender_obj_n = defender.obj_n
+   local exp_gained = 0
+   local player_loc = player_get_location()
+
+   if defender.z ~= player_loc.z or max_dmg < 0 then
+      return 0
+   end
+
+   if defender.luatype == "actor" then
+      --attacking an object
+      --FIXME
+      --      if defender.actor_num == 0 and defender.hp <= max_dmg then -- and word_41184 == 0E0h
+      --        max_dmg = defender.hp - 1
+      --      end
+
+      --FIXME do sub_19B37 or sub_18F7D depending on damage_mode
+
+      if actor_immune_to_dmg(defender) then
+         actor_print_custom_hit_message(defender)
+         defender.hp = 0xff
+         if defender_obj_n == 391 then --OBJ_YOUR_MOTHER
+            local gender_title = ""
+            if player_get_gender() == 0 then
+               gender_title = i18n("MAN")
+            else
+               gender_title = i18n("WOMAN")
+            end
+            printfl("HOW_DARE_YOU_YOUNG_PERSON", gender_title)
+            actor_take_hit(defender, Actor.get(0), 45, 0)
+            actor_take_hit(defender, Actor.get(0), 45, 0)
+            actor_take_hit(defender, Actor.get(0), 45, 0)
+         elseif defender.actor_num == 0x6d or defender.actor_num == 0x67 then
+            Actor.set_talk_flag(Actor.get(0x6b), 3)
+            --FIXME teleport actor back to old_player coords
+         elseif defender.actor_num == 0x40 then --Rasputin
+            --FIXME attack_rasputin()
+         end
+      else
+         if damage_mode == 3 and is_actor_stat_bit_set(defender_obj_n, 3) then
+            printl("IT_HAS_NO_EFFECT")
+            return 0
+         end
+         if damage_mode == 0 and actor_num ~= 0 then --or word_41184 ~= 0xe0
+            if math.random(6, 0x64) <= max_dmg then
+               --FIXME actor_add_blood()
+            end
+            local hp = defender.hp
+            if hp <= max_dmg then
+               --FIXME exp_gained = kill_actor()
+            else
+               defender.hp = hp - max_dmg
+
+               if defender.wt == 9 or defender.wt == 11 then
+                  defender.wt = 8
+               elseif defender.wt == 10 or defender.wt == 12 then
+                  defender.wt = 0x1b
+               end
+
+               if is_actor_stat_bit_set(defender_obj_n, 6) then
+                  actor_divide(defender)
+               end
+            end
+         end
+      end
+   else
+      --FIXME
+      --Hit object here.
+   end
+
+   return exp_gained
 end
 
 function actor_move(actor, direction, flag)
@@ -606,6 +838,20 @@ armour_tbl =
 --[90] = 0, --electric belt?
 --[234] = 0, --martian jewelry
 }
+
+function actor_get_ac(actor)
+   local ac = 0
+
+   for obj in actor_inventory(actor) do
+      if obj.readied then
+
+         local armour = armour_tbl[obj.obj_n]
+         if armour ~= nil then
+            ac = ac + armour
+         end
+      end
+   end
+end
 
 function out_of_ammo(attacker, weapon, print_message) -- untested function
 
