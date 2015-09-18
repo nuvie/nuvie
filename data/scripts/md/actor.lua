@@ -316,7 +316,43 @@ function canal_worm_eat_body(worm_actor)
 end
 
 function actor_handle_damage(defender)
-   --FIXME
+   if defender.obj_n == 370 or defender.hp == 0 then --OBJ_ROCKWORM_BASE
+      return
+   end
+
+   local hp_level = math.floor(((defender.hp * 4) / defender.max_hp))
+   if hp_level == 0 then
+      printfl("ACTOR_CRITICAL", defender.name)
+      --FIXME giant_maw check
+      local wt = defender.wt
+      if wt == 0xd then
+         defender.wt = 0x11
+         --FIXME if actor qaul ~= 0 then set actor.get(qual).wt = 0x11
+      elseif wt ~= 6 and wt ~= 0xe and wt ~= 2 and wt ~= 1 and wt ~= 0 and wt ~= 0x11 and wt ~= 0x19
+            and ( is_actor_stat_bit_set(defender.obj_n, 7) or is_actor_stat_bit_set(defender.obj_n, 14) ) then
+         if actor_int_adj(defender) >= 5 and defender.obj_n ~= 145 then --OBJ_MONSTER_FOOTPRINTS
+            defender.wt = 7
+         end
+      end
+   elseif hp_level < 4 then
+      local suffix
+      if is_actor_stat_bit_set(defender.obj_n, 14) and is_actor_stat_bit_set(defender.obj_n, 7) then
+         suffix = i18n("DAMAGED")
+      else
+         suffix = i18n("WOUNDED")
+      end
+
+      local damage_type
+      if hp_level == 1 then
+         damage_type = i18n("HEAVILY")
+      elseif hp_level == 2 then
+         damage_type = i18n("LIGHTLY")
+      elseif hp_level == 3 then
+         damage_type = i18n("BEARLY")
+      end
+      printfl("ACTOR_HIT_MESSAGE", defender.name, damage_type, suffix)
+
+   end
 end
 
 function actor_take_hit(attacker, defender, max_dmg, damage_mode)
@@ -397,12 +433,12 @@ function actor_print_custom_hit_message(actor)
    elseif actor_num == 0x3c then
       printfl("ACTOR_CRITICAL", actor.name)
    elseif actor_num == 0x52 then
-      printfl("ACTOR_HEAVILY_WOUNDED", actor.name)
+      printfl("ACTOR_HIT_MESSAGE", actor.name, i18n("HEAVILY"), i18n("WOUNDED"))
    elseif actor_num == 0x68 then
       if Actor.get_talk_flag(actor, 2) then
          printfl("ACTOR_CRITICAL", actor.name)
       else
-         printfl("ACTOR_HEAVILY_WOUNDED", actor.name)
+         printfl("ACTOR_HIT_MESSAGE", actor.name, i18n("HEAVILY"), i18n("WOUNDED"))
       end
       Actor.set_talk_flag(actor, 5)
       Actor.talk(actor)
