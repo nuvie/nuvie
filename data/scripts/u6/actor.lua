@@ -262,10 +262,7 @@ function subtract_map_movement_pts(actor)
 	subtract_movement_pts(actor, points)
 end
 
-function actor_find_max_xy_distance(actor, x, y)
-   x, y = abs(actor.x - x), abs(actor.y - y)
-   return (x > y) and x or y
-end
+
 
 function actor_move(actor, direction, flag)
    ----dgb("actor_move("..actor.name..", "..direction_string(direction)..", "..flag..") actor("..actor.x..","..actor.y..")\n");

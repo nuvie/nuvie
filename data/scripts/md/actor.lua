@@ -449,6 +449,7 @@ end
 
 function actor_hit(defender, max_dmg, attacker, damage_mode)
 
+   print("actor_hit("..actor.actor_num..")\n")
    local defender_obj_n = defender.obj_n
    local exp_gained = 0
    local player_loc = player_get_location()
@@ -587,11 +588,24 @@ function revive_avatar()
    end
 end
 
+function actor_resurrect(actor)
+   --FIXME do we need to do anything here?
+end
+
 function avatar_falls_unconscious()
    printl("OVERCOME_BY_YOUR_WOUNDS_YOU_FALL_UNCONSCIOUS")
    
    fade_out()
-   
+
+   local input
+   while input == nil do
+      --canvas_update()
+      input = input_poll()
+      if input ~= nil then
+         break
+      end
+   end
+
    local location
    local target
    if Actor.get_talk_flag(0x46, 3) then
@@ -603,7 +617,9 @@ function avatar_falls_unconscious()
    end
    
    printfl("YOU_AWAKEN_BACK_AT_FEELING_RESTORED", location)
-   
+
+   input_select(nil, true)
+
    party_resurrect_dead_members()
    
    for actor in party_members() do
@@ -1045,17 +1061,60 @@ function actor_int_adj(actor)
    return int
 end
 
-
-function actor_map_dmg(actor, map_x, map_y, map_z) --FIXME
+function actor_map_dmg(actor, map_x, map_y, map_z)
    local obj_n = actor.obj_n
    local actor_type = actor_tbl[obj_n]
+   local player_loc = player_get_location()
 
-   --print("actor_map_dmg("..actor.actor_num..")")
+
+   if is_actor_stat_bit_set(obj_n, 8) or is_actor_stat_bit_set(obj_n, 10)
+           or actor.z ~= player_loc.z
+           or actor_find_max_wrapped_xy_distance(actor, player_loc.x, player_loc.y) > 40 then
+      return
+   end
 
    if actor.alive == false or actor.hit_flag == true then
       return
    end
+--print("actor_map_dmg("..actor.actor_num..")\n")
+
+   for obj in objs_at_loc(actor.x, actor.y, actor.z) do
+      local tile_num = obj.tile_num_original
+      if tile_get_flag(tile_num, 3, 2) == false and tile_get_flag(tile_num, 1, 3) == true then --force passable and damaging
+         actor_take_damage_from_obj(actor, obj)
+      end
+
+   end
+
    actor_update_frame(actor, actor.direction)
+end
+
+function actor_take_damage_from_obj(actor, obj)
+   if actor_immune_to_dmg(actor) or actor.alive == false then
+      return
+   end
+
+   local obj_n = obj.obj_n
+   local damage = 0
+   local damage_mode = 0
+
+   if obj_n == 168 then --OBJ_PORCUPOD
+      damage = math.random(1, 0x14)
+   elseif obj_n == 209 then --OBJ_STEAM_LEAK
+      damage_mode = 3
+      if actor.actor_num ~= 6 then
+         damage = math.random(math.floor(actor.hp / 2), math.floor(actor.max_hp / 2))
+      end
+   elseif obj_n == 215 then --OBJ_POWER_CABLE1
+      play_md_sfx(0x15)
+      damage = math.random(1, 0x14) + math.random(1, 0x14)
+   elseif obj_n == 381 then --OBJ_DUST_DEVIL
+      damage = math.random(1, 0xa) + math.random(1, 0xa)
+   elseif obj_n == 463 then --hidden effect obj
+      --FIXME here
+   end
+
+   actor_hit(actor, damage, damage_mode)
 end
 
 function actor_remove_charm(actor)

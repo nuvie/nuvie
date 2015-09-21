@@ -2008,7 +2008,16 @@ static int nscript_obj_get(lua_State *L)
       Tile *tile = obj_manager->get_obj_tile(obj->obj_n, obj->frame_n);
       lua_pushinteger(L, (int)tile->tile_num); return 1;
    }
-   
+
+   if(!strcmp(key, "tile_num_original"))
+   {
+      ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+      TileManager *tile_manager = Game::get_game()->get_tile_manager();
+      Tile *tile = tile_manager->get_original_tile(obj_manager->get_obj_tile_num(obj->obj_n)+obj->frame_n);
+      lua_pushinteger(L, (int)tile->tile_num); return 1;
+   }
+
+
    if(!strcmp(key, "getable"))
    {
 	   ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -3223,7 +3232,7 @@ static int nscript_tile_get_flag(lua_State *L)
 	uint8 flag_set = (uint8) luaL_checkinteger(L, 2);
 	uint8 bit = (uint8) luaL_checkinteger(L, 3);
 
-	Tile *tile = Game::get_game()->get_tile_manager()->get_tile(tile_num);
+	Tile *tile = Game::get_game()->get_tile_manager()->get_original_tile(tile_num);
 
 	if(tile == NULL || flag_set < 1 || flag_set > 3 || bit > 7)
 		return 0;

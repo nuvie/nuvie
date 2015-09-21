@@ -1,3 +1,9 @@
+2015-09-21  Eric Fry <efry at users.sourceforge.net>
+	* More work on MD map damage logic
+	* changed tile_get_flag() script func to use the original tile
+	* Added tile_num_original object getter method to return original
+	  tile number.
+
 2015-09-18  Eric Fry <efry at users.sourceforge.net>
 	* MD more work on attack/defence script logic
 

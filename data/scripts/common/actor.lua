@@ -66,3 +66,13 @@ function actor_is_holding_obj(actor, obj_n)
    
    return false   
 end
+
+function actor_find_max_xy_distance(actor, x, y)
+   x, y = abs(actor.x - x), abs(actor.y - y)
+   return (x > y) and x or y
+end
+
+function actor_find_max_wrapped_xy_distance(actor, x, y)
+   x, y = get_wrapped_dist(actor.x, x), get_wrapped_dist(actor.y, y)
+   return (x > y) and x or y
+end

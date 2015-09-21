@@ -87,7 +87,7 @@ function player_post_move_action(did_move)
             end
         end
     else
-        --FIXME do map damage here.
+        actor_map_dmg(Actor.get_player_actor(), player_loc.x, player_loc.y, player_loc.z)
         play_md_sfx(0)
     end
 
