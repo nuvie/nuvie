@@ -50,7 +50,7 @@ public:
     ~CommandBarNewUI();
 
     virtual void Display(bool full_redraw);
-    virtual GUI_status KeyDown(SDL_keysym key);
+    virtual GUI_status KeyDown(SDL_Keysym key);
     virtual GUI_status MouseDown(int x, int y, int button);
     virtual GUI_status MouseUp(int x, int y, int button);
 

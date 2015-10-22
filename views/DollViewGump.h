@@ -71,6 +71,7 @@ public:
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x, int y, int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state) { return DraggableView::MouseMotion(x, y, state); }
+ virtual GUI_status MouseWheel(sint32 xpos, sint32 ypos);
  virtual void MoveRelative(int dx,int dy) { return DraggableView::MoveRelative(dx, dy); }
 
 
@@ -89,7 +90,8 @@ public:
  void setColorKey(SDL_Surface *image);
  GUI_status set_cursor_pos(gumpCursorPos pos);
  GUI_status moveCursorRelative(uint8 direction);
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
+
 };
 
 #endif /* __DollViewGump_h__ */

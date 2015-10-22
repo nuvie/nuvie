@@ -78,7 +78,7 @@ bool VideoDialog::init() {
 #if SCALER_AND_SCALE_CANNOT_BE_CHANGED
 	only2x_button = NULL; scale_button = scaler_button = scale_win_button = scaler_win_button = NULL;
 	int scale = screen->get_scale_factor();
-	no_fullscreen = !SDL_VideoModeOK(scr_width * scale, scr_height * scale, bpp, SDL_FULLSCREEN);
+	no_fullscreen = false; //FIXME SDL2 !SDL_VideoModeOK(scr_width * scale, scr_height * scale, bpp, SDL_FULLSCREEN);
 #else
 	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128, 141 };
 	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 139, 152 };
@@ -330,7 +330,7 @@ GUI_status VideoDialog::close_dialog() {
 	return GUI_YUM;
 }
 
-GUI_status VideoDialog::KeyDown(SDL_keysym key) {
+GUI_status VideoDialog::KeyDown(SDL_Keysym key) {
 	KeyBinder *keybinder = Game::get_game()->get_keybinder();
 	ActionType a = keybinder->get_ActionType(key);
 

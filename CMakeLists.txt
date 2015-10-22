@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DLUA_USE_MACOSX -DUNIX -DMAC
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLUA_USE_MACOSX -DMACOSX")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 INCLUDE(FindPkgConfig)
-PKG_SEARCH_MODULE(SDL REQUIRED sdl)
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 
 set(SOURCE_FILES
     actors/Actor.cpp
@@ -562,7 +562,7 @@ set(SOURCE_FILES
     Weather.cpp
     Weather.h)
 
-INCLUDE_DIRECTORIES(${SDL_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
 include_directories(.)
 include_directories(actors)
 include_directories(conf)
@@ -587,4 +587,4 @@ include_directories(views)
 
 
 add_executable(nuvie ${SOURCE_FILES})
-TARGET_LINK_LIBRARIES(nuvie ${SDL_LIBRARIES} -Wl,-framework,Cocoa)
+TARGET_LINK_LIBRARIES(nuvie ${SDL2_LIBRARIES} -Wl,-framework,Cocoa)

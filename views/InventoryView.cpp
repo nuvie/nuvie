@@ -334,7 +334,7 @@ void InventoryView::display_combat_mode()
 /* Move the cursor around, ready or unready objects, select objects, switch
  * to container view, use command icons.
  */
-GUI_status InventoryView::KeyDown(SDL_keysym key)
+GUI_status InventoryView::KeyDown(SDL_Keysym key)
 {
     if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
         return(GUI_PASS);
@@ -698,21 +698,34 @@ bool InventoryView::select_obj(Obj *obj)
     return false;
 }
 
-GUI_status InventoryView::MouseDown(int x, int y, int button)
-{
-	if(!is_party_member)
-		return GUI_PASS;
-	x -= area.x;
-	y -= area.y;
-	bool wheel_range = (x < 64 || y > 78);
-	if(button == SDL_BUTTON_WHEELUP && wheel_range) {
-		View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
-		return GUI_YUM;
-	} else if(button == SDL_BUTTON_WHEELDOWN && wheel_range) {
-		View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
-		return GUI_YUM;
-	}
-	return GUI_PASS;
+GUI_status InventoryView::MouseDown(int x, int y, int button) {
+    return GUI_PASS;
+}
+
+GUI_status InventoryView::MouseWheel(sint32 x, sint32 y) {
+
+    if (!is_party_member)
+        return GUI_PASS;
+
+    int xpos, ypos;
+    SDL_GetMouseState(&xpos, &ypos);
+
+    xpos = screen->get_translated_x(xpos<0?0:(uint16)xpos);
+    ypos = screen->get_translated_y(ypos<0?0:(uint16)ypos);
+
+    xpos -= area.x;
+    ypos -= area.y;
+
+    bool wheel_range = (xpos < 64 || ypos > 78);
+
+    if (y < 0 && wheel_range) {
+        View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
+        return GUI_YUM;
+    } else if (y > 0 && wheel_range) {
+        View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
+        return GUI_YUM;
+    }
+    return GUI_PASS;
 }
 
 /* Messages from child widgets, Inventory & Doll.

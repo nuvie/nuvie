@@ -690,7 +690,7 @@ void MapWindow::update()
 	   && keybinder->get_next_joy_repeat_time() < clock->get_ticks())
 // !game->user_paused(), !game->get_view_manager()->gumps_are_active() - I don't think these are needed but may need them later
 	{
-		SDLKey key;
+		SDL_Keycode key;
 		if(keybinder->is_hat_repeating())
 			key = keybinder->get_key_from_joy_hat_button(SDL_JoystickGetHat(keybinder->get_joystick(), 0));
 		else
@@ -2331,15 +2331,15 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_YUM;
 	}
 
-	if(game->is_new_style()) {
-		if(button == SDL_BUTTON_WHEELDOWN) {
-			game->get_scroll()->move_scroll_down();
-			return GUI_YUM;
-		} else if(button == SDL_BUTTON_WHEELUP) {
-			game->get_scroll()->move_scroll_up();
-			return GUI_YUM;
-		}
-	}
+//FIXME SDL2 	if(game->is_new_style()) {
+//		if(button == SDL_BUTTON_WHEELDOWN) {
+//			game->get_scroll()->move_scroll_down();
+//			return GUI_YUM;
+//		} else if(button == SDL_BUTTON_WHEELUP) {
+//			game->get_scroll()->move_scroll_up();
+//			return GUI_YUM;
+//		}
+//	}
 	if(game->is_original_plus() && y <= Game::get_game()->get_game_y_offset() + 200
 	   && x >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width) {
 		looking = false;
@@ -2394,19 +2394,18 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_PASS;
 	}
 
-//	if(!game->is_new_style())
-	{
-		if(button == SDL_BUTTON_WHEELDOWN)
-		{
-			game->get_scroll()->page_down();
-			return GUI_YUM;
-		}
-		else if(button == SDL_BUTTON_WHEELUP)
-		{
-			game->get_scroll()->page_up();
-			return GUI_YUM;
-		}
-	}
+
+//FIXME SDL2		if(button == SDL_BUTTON_WHEELDOWN)
+//		{
+//			game->get_scroll()->page_down();
+//			return GUI_YUM;
+//		}
+//		else if(button == SDL_BUTTON_WHEELUP)
+//		{
+//			game->get_scroll()->page_up();
+//			return GUI_YUM;
+//		}
+
 
 	if (!obj || button != DRAG_BUTTON)
 		return	GUI_PASS;
@@ -2510,7 +2509,7 @@ void	MapWindow::drag_drop_failed (int x, int y, int message, void *data)
 }
 
 // this does nothing
-GUI_status MapWindow::KeyDown(SDL_keysym key)
+GUI_status MapWindow::KeyDown(SDL_Keysym key)
 {
 	if(is_wizard_eye_mode())
 	{
@@ -2910,6 +2909,6 @@ void MapWindow::loadRoofTiles()
 	roof_tiles = SDL_LoadBMP(imagefile.c_str());
 	if(roof_tiles && game->is_orig_style())
 	{
-		SDL_SetColorKey(roof_tiles, SDL_SRCCOLORKEY, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
+		SDL_SetColorKey(roof_tiles, SDL_TRUE, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
 	}
 }

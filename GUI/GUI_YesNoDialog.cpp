@@ -59,7 +59,7 @@ GUI_YesNoDialog::~GUI_YesNoDialog()
 {
 }
 
-GUI_status GUI_YesNoDialog::KeyDown(SDL_keysym key)
+GUI_status GUI_YesNoDialog::KeyDown(SDL_Keysym key)
 {
  if(key.sym == SDLK_y)
    return yes_callback_object->callback(YESNODIALOG_CB_YES, this, this);

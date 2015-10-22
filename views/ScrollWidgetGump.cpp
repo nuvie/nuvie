@@ -155,7 +155,7 @@ void ScrollWidgetGump::Display(bool full_redraw)
 	screen->update(area.x,area.y, area.w, area.h);
 }
 
-GUI_status ScrollWidgetGump::KeyDown(SDL_keysym key)
+GUI_status ScrollWidgetGump::KeyDown(SDL_Keysym key)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
 
@@ -188,8 +188,8 @@ GUI_status ScrollWidgetGump::MouseDown(int x, int y, int button)
 
 	switch(button)
 	{
-	case SDL_BUTTON_WHEELDOWN : event = SCROLL_DOWN; break;
-	case SDL_BUTTON_WHEELUP : event = SCROLL_UP; break;
+//FIXME SDL2	case SDL_BUTTON_WHEELDOWN : event = SCROLL_DOWN; break;
+//	case SDL_BUTTON_WHEELUP : event = SCROLL_UP; break;
 	case SDL_BUTTON_LEFT : {
 	                       x -= area.x;
 	                       y -= area.y;

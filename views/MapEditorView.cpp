@@ -115,7 +115,7 @@ void MapEditorView::Display(bool full_redraw)
 	screen->update(area.x, area.y, area.w, area.h);
 }
 
-GUI_status MapEditorView::KeyDown(SDL_keysym key)
+GUI_status MapEditorView::KeyDown(SDL_Keysym key)
 {
 	MapCoord loc;
 	uint16 *roof_data;
@@ -126,10 +126,10 @@ GUI_status MapEditorView::KeyDown(SDL_keysym key)
 	// alt input
 	if(key.mod & KMOD_ALT)
 	{
-		SDL_keysym key_without_alt = key; // need to see what action is without alt
-		uint16 mod_without_alt = key_without_alt.mod; // this and next 2 lines are due SDLMod not wanting to do the bitwise ~ operation
+		SDL_Keysym key_without_alt = key; // need to see what action is without alt
+		uint16 mod_without_alt = key_without_alt.mod; // this and next 2 lines are due SDL_Keymod not wanting to do the bitwise ~ operation
 		mod_without_alt &= ~KMOD_ALT;
-		key_without_alt.mod = (SDLMod)mod_without_alt;
+		key_without_alt.mod = (SDL_Keymod)mod_without_alt;
 		ActionType action_without_alt = keybinder->get_ActionType(key_without_alt);
 
 		if(keybinder->GetActionKeyType(action_without_alt) <= SOUTH_WEST_KEY)

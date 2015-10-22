@@ -55,6 +55,7 @@ public:
  virtual GUI_status MouseDown(int x, int y, int button);
  virtual GUI_status MouseUp(int x, int y, int button);
  virtual GUI_status MouseMotion(int x,int y,Uint8 state) { return DraggableView::MouseMotion(x, y, state); }
+ virtual GUI_status MouseWheel(sint32 x, sint32 y);
  virtual void MoveRelative(int dx,int dy) { return DraggableView::MoveRelative(dx, dy); }
 
 

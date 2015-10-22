@@ -159,11 +159,12 @@ public:
 	   or not the event should be passed on to other widgets.
 	   These are called by the default HandleEvent function.
 	*/
-	virtual GUI_status KeyDown(SDL_keysym key);
-	virtual GUI_status KeyUp(SDL_keysym key);
+	virtual GUI_status KeyDown(SDL_Keysym key);
+	virtual GUI_status KeyUp(SDL_Keysym key);
 	virtual GUI_status MouseDown(int x, int y, int button);
 	virtual GUI_status MouseUp(int x, int y, int button);
 	virtual GUI_status MouseMotion(int x, int y, Uint8 state);
+	virtual GUI_status MouseWheel(sint32 x, sint32 y);
 	// <SB-X>
 	virtual GUI_status MouseEnter(Uint8 state);
 	virtual GUI_status MouseLeave(Uint8 state);

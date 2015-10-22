@@ -30,7 +30,7 @@
 #include <string.h>
 #include <iostream>
 #include <cmath>
-#include "SDL.h"
+#include <SDL.h>
 
 #include "nuvieDefs.h"
 #include "U6misc.h"
@@ -148,7 +148,11 @@ config->value("config/video/scale_factor", scale_factor, 1);
 
  set_screen_mode();
 
- return true;
+    SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
+    SDL_RenderClear(sdlRenderer);
+    SDL_RenderPresent(sdlRenderer);
+
+    return true;
 }
 
 void Screen::set_lighting_style(int lighting)
@@ -1387,7 +1391,12 @@ void Screen::update()
    src += surface->pitch; */
   }
 
-SDL_UpdateRect(sdl_surface,0,0,0,0);
+    SDL_UpdateTexture(sdlTexture, NULL, sdl_surface->pixels, sdl_surface->pitch);
+    SDL_RenderClear(sdlRenderer);
+    SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+    SDL_RenderPresent(sdlRenderer);
+
+    //SDL_UpdateRect(sdl_surface,0,0,0,0);
 
  return;
 }
@@ -1465,7 +1474,13 @@ void Screen::preformUpdate()
   }
 */
   
- SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
+ //FIXME SDL2 SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
+
+    SDL_UpdateTexture(sdlTexture, NULL, sdl_surface->pixels, sdl_surface->pitch);
+    SDL_RenderClear(sdlRenderer);
+    SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+    SDL_RenderPresent(sdlRenderer);
+
  num_update_rects = 0;
 }
 
@@ -1490,122 +1505,84 @@ bool Screen::initScaler()
  return true;
 }
 
+bool Screen::SDL_VideoModeOK(int scaled_width, int scaled_height, int bpp, int flags)
+{
+    return (bpp==32);
+}
+
 void Screen::set_screen_mode()
 {
-	// Get info. about video.
-	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
 	uint32 flags = 0;
 
 	if (scale_factor == 0) scale_factor = 1;
 	scaler = 0;
 
 	// Get BPP
-	int bpp = vinfo->vfmt->BitsPerPixel;
+	int bpp = 32; //vinfo->vfmt->BitsPerPixel;
 
 	// If we can't use the format, force 16 bit
 	if (bpp != 16 && bpp != 32)
 		bpp = 16;
 
-#ifdef MACOSX 
-    if (scale_factor == 1) //FIXME There appears to be an update issue with 32bpp x1 scale on OS X
-        bpp = 16;          // I'll need to look into this further. For now we can just use 16bpp at x1 scale.
-#endif
+
 
 	DEBUG(0,LEVEL_DEBUGGING,"Attempting to set vid mode: %dx%dx%dx%d",width,height,bpp,scale_factor);
 
-	// Is Fullscreen?
-	if (fullscreen) {
-		flags |= SDL_FULLSCREEN;
-		DEBUG(1,LEVEL_DEBUGGING," Fullscreen");
-	}
-//	else
-//		flags |= SDL_RESIZABLE;
+    SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_FULLSCREEN_DESKTOP, &sdlWindow, &sdlRenderer); //SDL_WINDOW_SHOWN
 
-	// Opengl Stuff
-#ifdef WANT_OPENGL
-	if (useOpengl) {
-		DEBUG(0,LEVEL_DEBUGGING," OpenGL\n");
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
+    SDL_RenderSetLogicalSize(sdlRenderer, width, height);
 
-		// Want double-buffering.
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
 
-		//SDL_GL_LoadLibrary("opengl32.dll");
-
-		// Allocate surface: 640x480x32bpp.
-		sdl_surf = SDL_SetVideoMode(width*scale_factor, height*scale_factor, bpp, flags|SDL_OPENGL|SDL_GL_DOUBLEBUFFER|SDL_HWSURFACE);
-		if (sdl_surf) {
-			opengl = new OpenGL(width, height, palette);
-			surface = CreateRenderSurface(opengl);
-			surface->w = width;
-			surface->h = height;
-
-			mouse->init_opengl(screen);
-			ShapeManager::get().init_opengl(screen);
-
-			DEBUG(0,LEVEL_DEBUGGING,"%d bytes of textures loaded so far\n",opengl->get_texture_mem_used());
-
-			// Hide system mouse cursor
-			SDL_ShowCursor(0);
-
-			return;
-		}
-
-		DEBUG(0,LEVEL_DEBUGGING,"Setting up OpenGL Failed. Trying\n");
-	}
-#endif //WANT_OPENGL
-
-	if (vinfo->hw_available && doubleBuffer && fullscreen) {
-		flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
-		DEBUG(1,LEVEL_DEBUGGING," Hardware Double Buffered\n");
-	}
-	else {
-		flags |= SDL_SWSURFACE;
-		DEBUG(1,LEVEL_DEBUGGING," Software Surface\n");
-	}
+//    // Is Fullscreen?
+//	if (fullscreen) {
+//		flags |= SDL_FULLSCREEN;
+//		DEBUG(1,LEVEL_DEBUGGING," Fullscreen");
+//	}
 
 	// Old Software rendering. Try a scaler_index first,
 	if (!try_scaler(width, height, flags, bpp)) {
 
 		scale_factor = 1;
 		scaler = 0;
-		sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
+		sdl_surface = SDL_CreateRGBSurface(0, width, height, bpp,
+                                             0x00FF0000,
+                                             0x0000FF00,
+                                             0x000000FF,
+                                             0xFF000000);
+        sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                       SDL_PIXELFORMAT_ARGB8888,
+                                       SDL_TEXTUREACCESS_STREAMING,
+                                       width, height);
 
-		// Couldn't create it, so disable double buffering
-		if (!sdl_surface) {
-			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
-			flags |= SDL_SWSURFACE;
-			scale_factor = 1;
-			scaler = 0;
-			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
-		}
-
-		if (!sdl_surface) {
-			DEBUG(0,LEVEL_NOTIFICATION,"Unable to create surface. Attempting 320x200x1 Software Surface\n");
-			width = 320;
-			height = 200;
-			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
-			if (!sdl_surface) {
-				DEBUG(0,LEVEL_EMERGENCY,"Unable to create surface. Exiting\n");
-				exit (-1);
-			}
-		}
-
-		if (sdl_surface->flags & SDL_HWSURFACE) {
-			DEBUG(0,LEVEL_DEBUGGING,"Created Double Buffered Surface\n");
-			surface = CreateRenderSurface (width, height, bpp);
-		}
-		else {
+//        // Couldn't create it, so disable double buffering
+//		if (!sdl_surface) {
+//			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+//			flags |= SDL_SWSURFACE;
+//			scale_factor = 1;
+//			scaler = 0;
+//			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
+//		}
+//
+//		if (!sdl_surface) {
+//			DEBUG(0,LEVEL_NOTIFICATION,"Unable to create surface. Attempting 320x200x1 Software Surface\n");
+//			width = 320;
+//			height = 200;
+//			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
+//			if (!sdl_surface) {
+//				DEBUG(0,LEVEL_EMERGENCY,"Unable to create surface. Exiting\n");
+//				exit (-1);
+//			}
+//		}
+//
+//		if (sdl_surface->flags & SDL_HWSURFACE) {
+//			DEBUG(0,LEVEL_DEBUGGING,"Created Double Buffered Surface\n");
+//			surface = CreateRenderSurface (width, height, bpp);
+//		}
+//		else {
 			surface = CreateRenderSurface(sdl_surface);
-		}
+//		}
 	}
-#ifdef UNDER_CE
-	SHFullScreen(GetActiveWindow(), SHFS_HIDETASKBAR | SHFS_HIDESIPBUTTON | SHFS_HIDESTARTICON);
-#endif
-	// Hide system mouse cursor
-#ifndef UNDER_CE
-//	SDL_ShowCursor(0);
-#endif
 
 	surface->set_format(sdl_surface->format);
 
@@ -1615,38 +1592,39 @@ void Screen::set_screen_mode()
 
 bool Screen::toggle_fullscreen()
 {
-	uint32 flags = sdl_surface->flags;
-	int scaled_height = height*scale_factor;
-	int scaled_width = width*scale_factor;
-	if(fullscreen)
-	{
-		flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
-		flags &= ~SDL_FULLSCREEN;
-		flags |= SDL_SWSURFACE;
-	}
-	else
-	{
-		flags |= SDL_FULLSCREEN;
-		if ( SDL_GetVideoInfo()->hw_available && doubleBuffer)
-			flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
-	}
-	uint8 bpp = get_sdl_surface()->format->BitsPerPixel;
-
-	if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
-	{
-		if(!fullscreen) // try software
-		{
-			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
-			flags |= SDL_SWSURFACE;
-		}
-		if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
-		{
-			DEBUG(0,LEVEL_ERROR,"Couldn't toggle to %\n", fullscreen ? "a window" : "fullscreen");
-			return false;
-		}
-	}
+    //FIXME SDL2
+//	uint32 flags = sdl_surface->flags;
+//	int scaled_height = height*scale_factor;
+//	int scaled_width = width*scale_factor;
+//	if(fullscreen)
+//	{
+//		flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+//		flags &= ~SDL_FULLSCREEN;
+//		flags |= SDL_SWSURFACE;
+//	}
+//	else
+//	{
+//		flags |= SDL_FULLSCREEN;
+//		if ( SDL_GetVideoInfo()->hw_available && doubleBuffer)
+//			flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
+//	}
+//	uint8 bpp = get_sdl_surface()->format->BitsPerPixel;
+//
+//	if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
+//	{
+//		if(!fullscreen) // try software
+//		{
+//			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+//			flags |= SDL_SWSURFACE;
+//		}
+//		if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
+//		{
+//			DEBUG(0,LEVEL_ERROR,"Couldn't toggle to %\n", fullscreen ? "a window" : "fullscreen");
+//			return false;
+//		}
+//	}
 	fullscreen = !fullscreen;
-	return SDL_SetVideoMode(scaled_width, scaled_height, bpp, flags);
+	return false;//SDL_SetVideoMode(scaled_width, scaled_height, bpp, flags);
 }
 
 bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
@@ -1713,8 +1691,19 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		{
 			DEBUG(0,LEVEL_NOTIFICATION,"%s requires 16/32 bit colour. Couldn't set mode.\n",scaler->name);
 		}
-		else if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
+		else
 		{
+            sdl_surface = SDL_CreateRGBSurface(0, scaled_width, scaled_height, hwdepth,
+                                               0x00FF0000,
+                                               0x0000FF00,
+                                               0x000000FF,
+                                               0xFF000000);
+            sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                           SDL_PIXELFORMAT_ARGB8888,
+                                           SDL_TEXTUREACCESS_STREAMING,
+                                           width, height);
+            //if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
+
 			/* Create render surface */
 			surface = CreateRenderSurface (w, h, hwdepth);
 			return true;

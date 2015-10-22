@@ -48,7 +48,7 @@ GUI_YesNoDialog(GUI *gui, int x, int y, int w, int h, const char *msg, GUI_CallB
 
 ~GUI_YesNoDialog();
 
-GUI_status KeyDown(SDL_keysym key);
+GUI_status KeyDown(SDL_Keysym key);
 
 GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };

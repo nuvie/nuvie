@@ -134,7 +134,7 @@ bool Nuvie::init(int argc, char **argv)
     return false;
    }
 
- SDL_WM_SetCaption("Nuvie","Nuvie");
+ //FIXME SDL2 SDL_WM_SetCaption("Nuvie","Nuvie");
 
  GUI *gui = new GUI(config, screen);
 
@@ -460,16 +460,18 @@ void Nuvie::set_safe_video_settings()
 		DEBUG(0,LEVEL_ERROR,"Couldn't initialize SDL_VIDEO!\n");
 		exit(EXIT_FAILURE);
 	}
-	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
-	if(!vinfo) // couldn't get display mode
-		config->set("config/video/scale_factor", "1");
-	else
-	{
-		if(vinfo->current_w  >= 640 && vinfo->current_h >= 400)
-			config->set("config/video/scale_factor", "2");
-		else // portable with small screen
-			config->set("config/video/scale_factor", "1");
-	}
+	config->set("config/video/scale_factor", "1");
+
+//FIXME SDL2 	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
+//	if(!vinfo) // couldn't get display mode
+//		config->set("config/video/scale_factor", "1");
+//	else
+//	{
+//		if(vinfo->current_w  >= 640 && vinfo->current_h >= 400)
+//			config->set("config/video/scale_factor", "2");
+//		else // portable with small screen
+//			config->set("config/video/scale_factor", "1");
+//	}
 	SDL_Quit();
 
 	config->set("config/video/fullscreen", "no");

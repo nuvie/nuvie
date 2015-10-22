@@ -80,7 +80,7 @@ class ConverseGump: public MsgScroll
 
  void Display(bool full_redraw);
 
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
  GUI_status MouseUp(int x, int y, int button);
 
  GUI_status MouseDown(int x, int y, int button) { return GUI_YUM; }

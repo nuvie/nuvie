@@ -351,12 +351,12 @@ GUI_status GUI_Widget::Idle(void)
    or not the event should be passed on to other widgets.
    These are called by the default HandleEvent function.
 */
-GUI_status GUI_Widget::KeyDown(SDL_keysym key)
+GUI_status GUI_Widget::KeyDown(SDL_Keysym key)
 {
 	return(GUI_PASS);
 }
 
-GUI_status GUI_Widget::KeyUp(SDL_keysym key)
+GUI_status GUI_Widget::KeyUp(SDL_Keysym key)
 {
 	return(GUI_PASS);
 }
@@ -373,6 +373,11 @@ GUI_status GUI_Widget::MouseUp(int x, int y, int button)
 
 
 GUI_status GUI_Widget::MouseMotion(int x, int y, Uint8 state)
+{
+	return(GUI_PASS);
+}
+
+GUI_status GUI_Widget::MouseWheel(sint32 x,sint32 y)
 {
 	return(GUI_PASS);
 }

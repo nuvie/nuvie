@@ -84,7 +84,7 @@ class ScrollWidgetGump: public MsgScroll
 
  bool can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token);
 
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
  GUI_status MouseDown(int x, int y, int button);
  GUI_status MouseUp(int x, int y, int button) { return GUI_YUM; } // otherwise we do Msgscroll::MouseUp
 

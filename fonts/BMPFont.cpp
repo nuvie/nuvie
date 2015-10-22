@@ -70,7 +70,7 @@ bool BMPFont::init(std::string bmp_filename, bool dual_fontmap)
 
 	sdl_font_data = SDL_LoadBMP(full_filename.c_str());
 
-	SDL_SetColorKey(sdl_font_data, SDL_SRCCOLORKEY, SDL_MapRGB(sdl_font_data->format, 0, 0x70, 0xfc));
+	SDL_SetColorKey(sdl_font_data, SDL_TRUE, SDL_MapRGB(sdl_font_data->format, 0, 0x70, 0xfc));
 
 	char_w = sdl_font_data->w / 16;
 	char_h = sdl_font_data->h / 16;

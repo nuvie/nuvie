@@ -1108,11 +1108,11 @@ static int nscript_input_poll(lua_State *L)
 #endif
 		if(event.type == SDL_KEYDOWN)
 		{
-			SDL_keysym key = event.key.keysym;
+			SDL_Keysym key = event.key.keysym;
 			if((((key.mod & KMOD_CAPS) == KMOD_CAPS && (key.mod & KMOD_SHIFT) == 0) || ((key.mod & KMOD_CAPS) == 0 && (key.mod & KMOD_SHIFT)))
 			   && key.sym >= SDLK_a && key.sym <= SDLK_z)
-				key.sym = (SDLKey)(key.sym -32);
-			if(!isprint(key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_META))
+				key.sym = (SDL_Keycode)(key.sym -32);
+			if(!isprint(key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_GUI))
 			{
 				ActionType a = keybinder->get_ActionType(key);
 				switch(keybinder->GetActionKeyType(a))

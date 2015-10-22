@@ -9,7 +9,7 @@
  *
  */
 #include <string>
-#include "SDL.h"
+#include <SDL.h>
 #include "nuvieDefs.h"
 
 class Configuration;

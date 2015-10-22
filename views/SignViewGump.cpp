@@ -123,7 +123,7 @@ GUI_status SignViewGump::MouseDown(int x, int y, int button)
 	return GUI_YUM;
 }
 
-GUI_status SignViewGump::KeyDown(SDL_keysym key)
+GUI_status SignViewGump::KeyDown(SDL_Keysym key)
 {
 	Game::get_game()->get_view_manager()->close_gump(this);
 	return GUI_YUM;
