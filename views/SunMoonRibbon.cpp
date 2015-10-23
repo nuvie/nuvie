@@ -252,7 +252,6 @@ GUI_status SunMoonRibbon::MouseDown(int x, int y, int button)
         return GUI_YUM;
       }
     }
-  }
 
   return GUI_PASS;
 }
