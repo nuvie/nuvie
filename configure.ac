@@ -23,7 +23,7 @@ case "$host_os" in
 		CPPFLAGS="$CPPFLAGS -DLUA_USE_LINUX"
 		;;
 	darwin*)
-		dnl We have a problem here: both MacOS X and Darwin report 
+		dnl We have a problem here: both MacOS X and Darwin report
 		dnl the same signature "powerpc-apple-darwin*" - so we have
 		dnl to do more to distinguish them. Plain Darwin will propably
 		dnl use X-Windows; and it is of course lacking Cocoa.
@@ -47,6 +47,9 @@ AM_PATH_SDL($SDL_VERSION,
 )
 AC_LANG_CPLUSPLUS
 
+AC_SEARCH_LIBS([dlopen], [dl dld], [], [
+  AC_MSG_ERROR([unable to find the dlopen() function])
+])
 
 # debugging
 DEBUG_FLAGS="-O2"
