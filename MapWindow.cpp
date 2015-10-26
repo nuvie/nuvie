@@ -658,7 +658,8 @@ void MapWindow::update()
     if(walking)
     {
         int mx, my; // bit-AND buttons with mouse state to test
-        if(SDL_GetMouseState(&mx, &my) & walk_button_mask)
+        screen->get_mouse_location(&mx, &my);
+        if(SDL_GetMouseState(NULL, NULL) & walk_button_mask)
         {
         	if(game->user_paused())
         		return;
@@ -2555,7 +2556,7 @@ Actor *MapWindow::get_actorAtMousePos(int mx, int my)
 void MapWindow::teleport_to_cursor()
 {
 	int mx, my, wx, wy;
-	SDL_GetMouseState(&mx, &my);
+	screen->get_mouse_location(&mx, &my);
 	mx = screen->get_translated_x((uint16)mx);
 	my = screen->get_translated_y((uint16)my);
 

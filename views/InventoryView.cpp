@@ -708,7 +708,7 @@ GUI_status InventoryView::MouseWheel(sint32 x, sint32 y) {
         return GUI_PASS;
 
     int xpos, ypos;
-    SDL_GetMouseState(&xpos, &ypos);
+    screen->get_mouse_location(&xpos, &ypos);
 
     xpos = screen->get_translated_x(xpos<0?0:(uint16)xpos);
     ypos = screen->get_translated_y(ypos<0?0:(uint16)ypos);

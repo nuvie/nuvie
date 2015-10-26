@@ -215,7 +215,7 @@ void GUI::Display()
 	//SDL_UpdateRect(screen, 0, 0, 0, 0);
 
 	int mx, my;
-	SDL_GetMouseState (&mx, &my);
+	screen->get_mouse_location(&mx, &my);
 
 	gui_drag_manager->draw (screen->get_translated_x((uint16)mx), screen->get_translated_y((uint16)my));
 

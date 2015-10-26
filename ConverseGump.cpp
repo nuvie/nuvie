@@ -658,7 +658,7 @@ void ConverseGump::Display(bool full_redraw)
 
 GUI_status ConverseGump::KeyDown(SDL_Keysym key)
 {
-    char ascii = 0;
+    char ascii = get_ascii_char_from_keysym(key);
 
     if(page_break || !is_talking())
       {

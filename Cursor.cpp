@@ -162,7 +162,8 @@ bool Cursor::display(sint32 px, sint32 py)
         return(true);
     if(px == -1 || py == -1)
     {
-        SDL_GetMouseState(&px, &py);
+        screen->get_mouse_location(&px, &py);
+//        DEBUG(0,LEVEL_DEBUGGING,"mouse pos: %d,%d", px, py);
         px /= screen->get_scale_factor();
         py /= screen->get_scale_factor();
     }

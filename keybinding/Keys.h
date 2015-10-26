@@ -68,6 +68,8 @@ typedef std::map<SDL_Keysym, ActionType, ltSDLkeysym>   KeyMap;
 
 class Configuration;
 
+char get_ascii_char_from_keysym(SDL_Keysym keysym);
+
 class KeyBinder {
  private:
 	KeyMap bindings;

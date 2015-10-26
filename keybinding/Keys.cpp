@@ -1078,3 +1078,17 @@ void KeyBinder::init_joystick(sint8 joy_num)
 }
 
 #endif /* HAVE_JOYSTICK_SUPPORT */
+
+char get_ascii_char_from_keysym(SDL_Keysym keysym)
+{
+	char ascii = 0;
+	if(keysym.sym < 128)
+	{
+		ascii = (char) keysym.sym;
+		if(ascii >= 97 && ascii <= 122 && keysym.mod & (KMOD_SHIFT|KMOD_CAPS))
+		{
+			ascii -= 32;
+		}
+	}
+	return ascii;
+}

@@ -1064,7 +1064,7 @@ static int nscript_music_stop(lua_State *L)
 static int nscript_get_mouse_x(lua_State *L)
 {
 	int x, y;
-	SDL_GetMouseState(&x, &y);
+	cutScene->get_screen()->get_mouse_location(&x, &y);
 	int scale_factor = cutScene->get_screen()->get_scale_factor();
 	if(scale_factor > 1)
 		x /= scale_factor;
@@ -1076,7 +1076,7 @@ static int nscript_get_mouse_x(lua_State *L)
 static int nscript_get_mouse_y(lua_State *L)
 {
 	int x, y;
-	SDL_GetMouseState(&x, &y);
+	cutScene->get_screen()->get_mouse_location(&x, &y);
 	int scale_factor = cutScene->get_screen()->get_scale_factor();
 	if(scale_factor > 1)
 		y /= scale_factor;

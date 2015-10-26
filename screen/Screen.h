@@ -132,6 +132,8 @@ class Screen
 
    void draw_line (int sx, int sy, int ex, int ey, uint8 color);
 
+   void get_mouse_location(sint32 *x, sint32 *y);
+
 protected:
    int lighting_style, old_lighting_style;
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
@@ -166,6 +168,8 @@ void set_screen_mode();
 bool try_scaler(int w, int h, uint32 flags, int hwdepth);
 
     bool SDL_VideoModeOK(int scaled_width, int scaled_height, int bbp, int flags);
+
+
 };
 
 

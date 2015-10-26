@@ -73,8 +73,9 @@ void GUI_Widget::Init(void *data, int x, int y, int w, int h)
  held_button = 0; // optional mousedown-delay; SB-X
  mouse_moved = false;
 
- int mx, my;
- SDL_GetMouseState(&mx, &my);
+ int mx=0, my=0;
+ if(screen)
+ 	screen->get_mouse_location(&mx, &my);
  mouse_over = HitRect(mx, my);
 }
 
@@ -636,7 +637,7 @@ GUI_status GUI_Widget::try_mouse_delayed()
     {
         int button = held_button;
         int x, y; // position isn't saved anywhere so we get it here
-        SDL_GetMouseState(&x, &y); // hopefully it hasn't changed since MouseDown
+        screen->get_mouse_location(&x, &y); // hopefully it hasn't changed since MouseDown
         x = screen->get_translated_x((uint16)x);
         y = screen->get_translated_y((uint16)y);
 	held_button = 0; // no need to clear mousedown time, MouseUp does that
@@ -647,7 +648,7 @@ GUI_status GUI_Widget::try_mouse_delayed()
     {
         int button = delayed_button;
         int x, y; // position isn't saved anywhere so we get it here
-        SDL_GetMouseState(&x, &y); // hopefully it hasn't changed since MouseClick/MouseUp
+		screen->get_mouse_location(&x, &y); // hopefully it hasn't changed since MouseClick/MouseUp
         x = screen->get_translated_x((uint16)x);
         y = screen->get_translated_y((uint16)y);
 	delayed_button = 0;

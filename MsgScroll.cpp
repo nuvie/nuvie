@@ -787,7 +787,7 @@ void MsgScroll::process_page_break()
  */
 GUI_status MsgScroll::KeyDown(SDL_Keysym key)
 {
-    char ascii = 0;
+    char ascii = get_ascii_char_from_keysym(key);
 
     if(page_break == false && input_mode == false)
         return(GUI_PASS);
@@ -882,6 +882,10 @@ GUI_status MsgScroll::KeyDown(SDL_Keysym key)
                                   input_buf_remove_char();
                             }
                             break;
+        case SDLK_LSHIFT :
+            return(GUI_YUM);
+        case SDLK_RSHIFT :
+            return(GUI_YUM);
         default: // alphanumeric characters
                  if(input_mode && is_printable)
                   {
