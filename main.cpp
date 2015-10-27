@@ -38,7 +38,7 @@
 
 #ifdef MACOSX
 #include <CoreFoundation/CoreFoundation.h>
-#include <xcodebuild/main.cpp>
+#include <XCodeBuild/main.cpp>
 int nuvieMain(int argc, char **argv)
 #else
 int main(int argc, char **argv)
