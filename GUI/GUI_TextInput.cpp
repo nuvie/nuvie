@@ -86,14 +86,11 @@ GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
 
 GUI_status GUI_TextInput::KeyDown(SDL_Keysym key)
 {
-// char ascii;
- char ascii = 0;
+ char ascii = get_ascii_char_from_keysym(key);
 
  if(!focused)
    return GUI_PASS;
-    //FIXME SDL2 find an alternative ascii check.
-// if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-//   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+
 
  if(!isprint(ascii) && key.sym != SDLK_BACKSPACE)
  {

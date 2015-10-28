@@ -674,10 +674,6 @@ GUI_status ConverseGump::KeyDown(SDL_Keysym key)
        return(GUI_YUM);
       }
 
-//FIXME SDL2	if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-//		ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-//	else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
-
 	if(!input_mode || !isprint(ascii))
 	{
 		KeyBinder *keybinder = Game::get_game()->get_keybinder();

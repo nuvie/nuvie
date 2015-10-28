@@ -273,6 +273,7 @@ typedef std::map<std::string, const Action*> ParseActionMap;
 static ParseKeyMap keys;
 static ParseActionMap actions;
 
+const Action doNothingAction = { "DO_NOTHING", ActionDoNothing, "", Action::dont_show, true, OTHER_KEY };
 
 KeyBinder::KeyBinder(Configuration *config)
 {
@@ -401,6 +402,11 @@ void KeyBinder::AddKeyBinding( SDL_Keycode key, int mod, const Action* action,
 ActionType KeyBinder::get_ActionType(SDL_Keysym key)
 {
 	KeyMap::iterator sdlkey_index = get_sdlkey_index(key);
+	if(sdlkey_index == bindings.end())
+	{
+		ActionType actionType = {&doNothingAction, {0}};
+		return actionType;
+	}
 	return (*sdlkey_index).second;
 }
 

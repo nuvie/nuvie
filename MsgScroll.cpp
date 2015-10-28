@@ -791,9 +791,6 @@ GUI_status MsgScroll::KeyDown(SDL_Keysym key)
 
     if(page_break == false && input_mode == false)
         return(GUI_PASS);
-//FIXME SDL2    if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-//        ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-//    else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
 
     bool is_printable = isprint(ascii);
     KeyBinder *keybinder = Game::get_game()->get_keybinder();
