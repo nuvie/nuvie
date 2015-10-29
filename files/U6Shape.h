@@ -2,7 +2,7 @@
  *  U6Shape.h
  *  Nuvie
  *
- *  Created by Markus Niemistö on Sun May 25 2003.
+ *  Created by Markus Niemisto on Sun May 25 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or

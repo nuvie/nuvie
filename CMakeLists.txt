@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.3)
 project(nuvie)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DLUA_USE_MACOSX -DUNIX -DMACOSX")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DLUA_USE_MACOSX -DUNIX -DMACOSX -DHAVE_JOYSTICK_SUPPORT")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLUA_USE_MACOSX -DMACOSX")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLUA_USE_MACOSX -DMACOSX -DHAVE_JOYSTICK_SUPPORT")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 INCLUDE(FindPkgConfig)
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
@@ -300,6 +300,7 @@ set(SOURCE_FILES
     misc/iAVLTree.cpp
     misc/iAVLTree.h
     misc/MapEntity.h
+    misc/SDL_compat.h
     misc/U6LineWalker.cpp
     misc/U6LineWalker.h
     misc/U6LList.cpp

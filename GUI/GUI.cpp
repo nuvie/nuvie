@@ -286,7 +286,7 @@ GUI:: HandleEvent(SDL_Event *event)
 	if(event->type >= SDL_JOYAXISMOTION && event->type <= SDL_JOYBUTTONUP)
 	{
 		event->key.keysym.sym = Game::get_game()->get_keybinder()->get_key_from_joy_events(event);
-		if(event->key.keysym.sym == SDLK_LAST) // isn't mapped, is in deadzone, or axis didn't return to center before moving again
+		if(event->key.keysym.sym == SDLK_UNKNOWN) // isn't mapped, is in deadzone, or axis didn't return to center before moving again
 		{
 			HandleStatus(status);
 			CleanupDeletedWidgets(status != GUI_QUIT);

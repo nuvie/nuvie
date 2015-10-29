@@ -365,7 +365,6 @@ GUI_status VideoDialog::KeyDown(SDL_Keysym key) {
 
 GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 	if(caller == (GUI_CallBack *)cancel_button) {
-!Game::get_game()->get_map_window()->using_map_tile_lighting;
 		return close_dialog();
 	} else if(fullscreen_button && caller == (GUI_CallBack *)fullscreen_button) {
 		rebuild_buttons(false);
