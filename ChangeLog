@@ -1,3 +1,11 @@
+2015-10-23  Eric Fry <efry at users.sourceforge.net>
+	* Fixed bug with incorrect inventory items for U6 guards.
+	  Thanks to Quentinak for pointing it out. I think I may have
+	  been experimenting with the original exe and changed them then
+	  forgot about it and copied the new values into Nuvie.
+	  Guards now have crossbows, halberds and gold coins instead of
+	  torches, firewands and chests.
+
 2015-09-21  Eric Fry <efry at users.sourceforge.net>
 	* More work on MD map damage logic
 	* changed tile_get_flag() script func to use the original tile
