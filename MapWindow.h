@@ -27,6 +27,7 @@
 #include <vector>
 #include "SDL.h"
 
+#include "nuvieDefs.h"
 #include "ObjManager.h"
 #include "GUI_widget.h"
 #include "Map.h"

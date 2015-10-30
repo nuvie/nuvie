@@ -26,7 +26,7 @@
 #include <list>
 #include <string>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "ObjManager.h"
 //#include "GUI_CallBack.h"
