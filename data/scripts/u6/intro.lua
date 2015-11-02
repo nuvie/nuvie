@@ -1,3 +1,8 @@
+SDLK_UP           = 82 + 1073741824
+SDLK_DOWN         = 81 + 1073741824
+SDLK_RIGHT        = 79 + 1073741824
+SDLK_LEFT         = 80 + 1073741824
+
 g_img_tbl = {}
 
 local function poll_for_esc()
@@ -1125,10 +1130,10 @@ local function gypsy_ab_select(question)
 				return a_lookup_tbl[question - 104] + 1
 			elseif input == 66 or input == 98 or input == 13 then
 				return b_lookup_tbl[question - 104] + 1
-			elseif input == 275 and g_highlight_index == 0 then -- right
+			elseif input == SDLK_RIGHT and g_highlight_index == 0 then -- right
 				g_highlight_index = 1
 				g_ab_highlight.x = g_ab_highlight.x + 17
-			elseif input == 276 and g_highlight_index == 1 then -- left
+			elseif input == SDLK_LEFT and g_highlight_index == 1 then -- left
 				g_highlight_index = 0
 				g_ab_highlight.x = g_ab_highlight.x - 17
 			elseif input == 0 then
@@ -1691,7 +1696,7 @@ local function create_character()
 			end
 			local name_text = name.text
 			local len = string.len(name_text)
-			if (input == 8 or input == 276) and len > 0 then
+			if (input == 8 or input == SDLK_LEFT) and len > 0 then
 				name.text = string.sub(name_text, 1, len - 1)
 				if len == 1 then -- old len
 					char_index = 0
@@ -1703,7 +1708,7 @@ local function create_character()
 			elseif g_keycode_tbl[input] ~= nil and len < 13 then
 				char_index = input
 				name.text = name_text..g_keycode_tbl[input]
-			elseif input == 273 then --up
+			elseif input == SDLK_UP then --up
 				if char_index == 0 then
 					if len > 0 then
 						char_index = 97 --a
@@ -1726,7 +1731,7 @@ local function create_character()
 					name_text = string.sub(name_text, 1, len - 1)
 				end
 				name.text = name_text..g_keycode_tbl[char_index]
-			elseif input == 274 then --down
+			elseif input == SDLK_DOWN then --down
 				if char_index == 0 then
 					if len > 0 then
 						char_index = 122 --z
@@ -1749,7 +1754,7 @@ local function create_character()
 					name_text = string.sub(name_text, 1, len - 1)
 				end
 				name.text = name_text..g_keycode_tbl[char_index]
-			elseif input == 275 and len < 13 then --right
+			elseif input == SDLK_RIGHT and len < 13 then --right
 				char_index = 97 --a
 				name.text = name_text.."a"
 			end
@@ -1781,7 +1786,7 @@ local function create_character()
 			elseif input == 70 or input == 102 then
 				gender = 0 --female
 				break
-			elseif input == 273 or input == 274 then --up and down
+			elseif input == SDLK_UP or input == SDLK_DOWN then --up and down
 				if gender == 0 then
 					gender = 1 --male
 					gender_sprite.text = "M"
@@ -1859,9 +1864,9 @@ local function create_character()
 				avatar.image = montage_img_tbl[gender*6+portrait_num]
 			elseif input == 99 or input == 67 or (input == 13 and button_index == 2) then
 				break
-			elseif input == 273 and button_index > 0 then --up
+			elseif input == SDLK_UP and button_index > 0 then --up
 				button_index = button_index -1;
-			elseif input == 274 and button_index < 3 then --down
+			elseif input == SDLK_DOWN and button_index < 3 then --down
 				button_index = button_index +1;
 			elseif input == 0 then -- FIXME redundant stuff
 				local x = get_mouse_x()
@@ -3033,12 +3038,12 @@ local function main_menu()
 				main_menu_set_pal(4)
 				fade_out()
 				return "J"
-			elseif input == 274 then --down key
+			elseif input == SDLK_DOWN then --down key
 				if g_menu_idx < 4 then
 					g_menu_idx = g_menu_idx + 1
 					main_menu_set_pal(g_menu_idx)
 				end
-			elseif input == 273 then --up key
+			elseif input == SDLK_UP then --up key
 				if g_menu_idx > 0 then
 					g_menu_idx = g_menu_idx - 1
 					main_menu_set_pal(g_menu_idx)

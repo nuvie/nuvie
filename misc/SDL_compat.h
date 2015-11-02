@@ -7,10 +7,12 @@
 
 #include <SDL.h>
 
-#if SDL_MAJOR_VERSION == 1
+#if !SDL_VERSION_ATLEAST(1,3,0)
 #define SDLK_UNKNOWN SDLK_LAST
 #define SDL_Keycode SDLKey
+#define SDL_Keymod SDLMod
 #define SDL_Keysym SDL_keysym
+#define KMOD_GUI KMOD_META
 #define SDL_JoystickNameForIndex SDL_JoystickName
 #define SDL_Window void
 #define SDL_Renderer void
@@ -28,5 +30,7 @@
 #define SDLK_KP_9 SDLK_KP9
 
 #define SDL_TRUE SDL_SRCCOLORKEY
+#else
+
 #endif
 #endif //NUVIE_SDL_COMPAT_H

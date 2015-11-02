@@ -40,6 +40,11 @@
 
 #define DELUXE_PAINT_MAGIC 0x4d524f46 // "FORM"
 
+#define INPUT_KEY_RIGHT 79 | (1<<30)
+#define INPUT_KEY_LEFT 80 | (1<<30)
+#define INPUT_KEY_DOWN  81 | (1<<30)
+#define INPUT_KEY_UP  82 | (1<<30)
+
 static ScriptCutscene *cutScene = NULL;
 ScriptCutscene *get_cutscene() { return cutScene; }
 
@@ -1117,10 +1122,10 @@ static int nscript_input_poll(lua_State *L)
 				ActionType a = keybinder->get_ActionType(key);
 				switch(keybinder->GetActionKeyType(a))
 				{
-					case WEST_KEY: key.sym = SDLK_LEFT; break;
-					case EAST_KEY: key.sym = SDLK_RIGHT; break;
-					case SOUTH_KEY: key.sym = SDLK_DOWN; break;
-					case NORTH_KEY: key.sym = SDLK_UP; break;
+					case WEST_KEY: key.sym = INPUT_KEY_LEFT; break;
+					case EAST_KEY: key.sym = INPUT_KEY_RIGHT; break;
+					case SOUTH_KEY: key.sym = INPUT_KEY_DOWN; break;
+					case NORTH_KEY: key.sym = INPUT_KEY_UP; break;
 					case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
 					case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
 					default: if(keybinder->handle_always_available_keys(a)) return 0; break;

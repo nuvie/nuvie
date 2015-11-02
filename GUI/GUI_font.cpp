@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <cmath>
+#include <misc/U6misc.h>
 
 #include "SDL.h"
 
@@ -98,15 +99,13 @@ void GUI_Font::SetTransparency(int on)
 void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 br, Uint8 bg, Uint8 bb)
 {
   SDL_Color colors[3]={{br,bg,bb,0},{fr,fg,fb,0}};
-  SDL_SetPaletteColors(fontStore->format->palette, colors, 0, 2);
-  //SDL_SetColors(fontStore,colors,0,2);
+  SDL_SetColors(fontStore,colors,0,2);
 }
 
 void GUI_Font::SetColoring(Uint8 fr, Uint8 fg, Uint8 fb, Uint8 fr1, Uint8 fg1, Uint8 fb1, Uint8 br, Uint8 bg, Uint8 bb)
 {
   SDL_Color colors[4]={{br,bg,bb,0},{fr,fg,fb,0},{fr1,fg1,fb1,0}};
-  SDL_SetPaletteColors(fontStore->format->palette, colors, 0, 3);
-  //SDL_SetColors(fontStore,colors,0,3);
+  SDL_SetColors(fontStore,colors,0,3);
 }
 
 /* put the text onto the given surface using the preset mode and colors */
