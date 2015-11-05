@@ -29,6 +29,8 @@
 #define SDLK_KP_8 SDLK_KP8
 #define SDLK_KP_9 SDLK_KP9
 
+#define SDL_CreateThread(x, y, z) SDL_CreateThread(x, z)
+
 #define SDL_TRUE SDL_SRCCOLORKEY
 #else
 

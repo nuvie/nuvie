@@ -138,20 +138,13 @@ config->value("config/video/scale_factor", scale_factor, 1);
 
  config->value("config/video/fullscreen", fullscreen, false);
 
- //scaled_surface = SDL_SetVideoMode(width, height, 8, SDL_SWSURFACE | SDL_HWPALETTE);
- //pitch = scaled_surface->pitch;
- //bpp = scaled_surface->format->BitsPerPixel;
-
- //DEBUG(0,LEVEL_DEBUGGING,"surface pitch = %d\n",pitch);
-
-// memcpy(palette,0,768);
-
  set_screen_mode();
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_SetRenderDrawColor(sdlRenderer, 0, 0, 0, 255);
     SDL_RenderClear(sdlRenderer);
     SDL_RenderPresent(sdlRenderer);
-
+#endif
     return true;
 }
 
@@ -1370,7 +1363,6 @@ uint16 Screen::get_bpp()
 
 void Screen::update()
 {
- //if(scaled_surface)
  if(scaler)
   {
    scaler->Scale(surface->format_type, surface->pixels,		// type, source
@@ -1380,23 +1372,15 @@ void Screen::update()
 				         sdl_surface->pitch/sdl_surface->format->BytesPerPixel,	// destpixels/line
                  scale_factor);
   }
- else
-  {
-/*  
-   uint8 *src = (uint8 *)surface->pixels;
-   uint8 *dest = (uint8 *)sdl_surface->pixels;
 
-   memcpy(dest,src,surface->w*surface->bytes_per_pixel);
-   dest += sdl_surface->pitch;
-   src += surface->pitch; */
-  }
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_UpdateTexture(sdlTexture, NULL, sdl_surface->pixels, sdl_surface->pitch);
     SDL_RenderClear(sdlRenderer);
     SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
     SDL_RenderPresent(sdlRenderer);
-
-    //SDL_UpdateRect(sdl_surface,0,0,0,0);
+#else
+    SDL_UpdateRect(sdl_surface,0,0,0,0);
+#endif
 
  return;
 }
@@ -1457,30 +1441,14 @@ void Screen::update(sint32 x, sint32 y, uint16 w, uint16 h)
 
 void Screen::preformUpdate()
 {
-/*
- uint16 i;
- //DEBUG(0,LEVEL_DEBUGGING,"Screen update %d.\n",num_update_rects);
- if(!scaler)
-  {
-   uint8 *src = (uint8 *)surface->pixels;
-   uint8 *dest = (uint8 *)sdl_surface->pixels;
-
-   for(i=0;i < num_update_rects;i++)
-    {
-     memcpy(dest + update_rects[i].y * sdl_surface->pitch + sdl_surface->format->BytesPerPixel * update_rects[i].x,
-            src + update_rects[i].y * surface->pitch + surface->bytes_per_pixel * update_rects[i].x,
-            update_rects[i].w * surface->bytes_per_pixel);
-    }
-  }
-*/
-  
- //FIXME SDL2 SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_UpdateTexture(sdlTexture, NULL, sdl_surface->pixels, sdl_surface->pitch);
     SDL_RenderClear(sdlRenderer);
     SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
     SDL_RenderPresent(sdlRenderer);
-
+#else
+    SDL_UpdateRects(sdl_surface,num_update_rects,update_rects);
+#endif
  num_update_rects = 0;
 }
 
@@ -1505,9 +1473,28 @@ bool Screen::initScaler()
  return true;
 }
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 bool Screen::SDL_VideoModeOK(int scaled_width, int scaled_height, int bpp, int flags)
 {
-    return (bpp==32);
+    return (bpp==get_screen_bpp());
+}
+#endif
+
+int Screen::get_screen_bpp()
+{
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    SDL_DisplayMode mode;
+    if(SDL_GetDisplayMode(0, 0, &mode) != 0)
+    {
+        return 0;
+    }
+
+    return SDL_BITSPERPIXEL(mode.format);
+#else
+    // Get info. about video.
+	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
+    return vinfo->vfmt->BitsPerPixel;
+#endif
 }
 
 void Screen::set_screen_mode()
@@ -1518,32 +1505,43 @@ void Screen::set_screen_mode()
 	scaler = 0;
 
 	// Get BPP
-	int bpp = 32; //vinfo->vfmt->BitsPerPixel;
+	int bpp = get_screen_bpp();
 
 	// If we can't use the format, force 16 bit
 	if (bpp != 16 && bpp != 32)
 		bpp = 16;
 
 
-
 	DEBUG(0,LEVEL_DEBUGGING,"Attempting to set vid mode: %dx%dx%dx%d",width,height,bpp,scale_factor);
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_CreateWindowAndRenderer(width*scale_factor, (int)(height*1.2)*scale_factor, SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
 
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
     SDL_RenderSetLogicalSize(sdlRenderer, width*scale_factor, (int)(height*1.2)*scale_factor); //VGA non-square pixels.
 
-
-
 	if (fullscreen) {
 		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	}
+#else
+    // Get info. about video.
+	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
 
+    fullscreen = false;
+    if (vinfo->hw_available && doubleBuffer && fullscreen) {
+		flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
+		DEBUG(1,LEVEL_DEBUGGING," Hardware Double Buffered\n");
+	}
+	else {
+		flags |= SDL_SWSURFACE;
+		DEBUG(1,LEVEL_DEBUGGING," Software Surface\n");
+	}
+#endif
 	// Old Software rendering. Try a scaler_index first,
 	if (!try_scaler(width, height, flags, bpp)) {
 
 		scale_factor = 1;
 		scaler = 0;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 		sdl_surface = SDL_CreateRGBSurface(0, width, height, bpp,
                                              0x00FF0000,
                                              0x0000FF00,
@@ -1553,34 +1551,38 @@ void Screen::set_screen_mode()
                                        SDL_PIXELFORMAT_ARGB8888,
                                        SDL_TEXTUREACCESS_STREAMING,
                                        width, height);
+        surface = CreateRenderSurface(sdl_surface);
+#else
+        sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
 
-//        // Couldn't create it, so disable double buffering
-//		if (!sdl_surface) {
-//			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
-//			flags |= SDL_SWSURFACE;
-//			scale_factor = 1;
-//			scaler = 0;
-//			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
-//		}
-//
-//		if (!sdl_surface) {
-//			DEBUG(0,LEVEL_NOTIFICATION,"Unable to create surface. Attempting 320x200x1 Software Surface\n");
-//			width = 320;
-//			height = 200;
-//			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
-//			if (!sdl_surface) {
-//				DEBUG(0,LEVEL_EMERGENCY,"Unable to create surface. Exiting\n");
-//				exit (-1);
-//			}
-//		}
-//
-//		if (sdl_surface->flags & SDL_HWSURFACE) {
-//			DEBUG(0,LEVEL_DEBUGGING,"Created Double Buffered Surface\n");
-//			surface = CreateRenderSurface (width, height, bpp);
-//		}
-//		else {
+		// Couldn't create it, so disable double buffering
+		if (!sdl_surface) {
+			flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+			flags |= SDL_SWSURFACE;
+			scale_factor = 1;
+			scaler = 0;
+			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
+		}
+
+		if (!sdl_surface) {
+			DEBUG(0,LEVEL_NOTIFICATION,"Unable to create surface. Attempting 320x200x1 Software Surface\n");
+			width = 320;
+			height = 200;
+			sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
+			if (!sdl_surface) {
+				DEBUG(0,LEVEL_EMERGENCY,"Unable to create surface. Exiting\n");
+				exit (-1);
+			}
+		}
+
+		if (sdl_surface->flags & SDL_HWSURFACE) {
+			DEBUG(0,LEVEL_DEBUGGING,"Created Double Buffered Surface\n");
+			surface = CreateRenderSurface (width, height, bpp);
+		}
+		else {
 			surface = CreateRenderSurface(sdl_surface);
-//		}
+		}
+#endif
 	}
 
 	surface->set_format(sdl_surface->format);
@@ -1591,12 +1593,16 @@ void Screen::set_screen_mode()
 
 bool Screen::toggle_fullscreen()
 {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     Uint32 windowFlags = 0;
     if(!fullscreen)
         windowFlags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 
     fullscreen = !fullscreen;
     return SDL_SetWindowFullscreen(sdlWindow, windowFlags) == 0 ? true : false;
+#else
+    return false;
+#endif
 }
 
 bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
@@ -1665,20 +1671,32 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		}
 		else
 		{
+#if SDL_VERSION_ATLEAST(2, 0, 0)
             sdl_surface = SDL_CreateRGBSurface(0, scaled_width, scaled_height, hwdepth,
                                                0x00FF0000,
                                                0x0000FF00,
                                                0x000000FF,
                                                0xFF000000);
-            sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                           SDL_PIXELFORMAT_ARGB8888,
-                                           SDL_TEXTUREACCESS_STREAMING,
-                                           scaled_width, scaled_height);
-            //if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
-
-			/* Create render surface */
-			surface = CreateRenderSurface (w, h, hwdepth);
-			return true;
+            if(sdl_surface)
+            {
+                sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                               SDL_PIXELFORMAT_ARGB8888,
+                                               SDL_TEXTUREACCESS_STREAMING,
+                                               scaled_width, scaled_height);
+                if(sdlTexture)
+                {
+                  surface = CreateRenderSurface(w, h, hwdepth);
+                  return true;
+                }
+            }
+#else
+            if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
+            {
+                /* Create render surface */
+                surface = CreateRenderSurface(w, h, hwdepth);
+                return true;
+            }
+#endif
 		}
 
 		// Output that scaled surface creation failed
@@ -2024,9 +2042,11 @@ void Screen::draw_line (int sx, int sy, int ex, int ey, uint8 color)
 
 void Screen::get_mouse_location(sint32 *x, sint32 *y)
 {
+    sint32 mx, my;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     float sx, sy;
     SDL_RenderGetScale(sdlRenderer, &sx, &sy);
-    sint32 mx, my;
+
     SDL_Rect viewport;
     SDL_RenderGetViewport(sdlRenderer, &viewport);
     SDL_GetMouseState(&mx, &my);
@@ -2036,6 +2056,9 @@ void Screen::get_mouse_location(sint32 *x, sint32 *y)
         mx = (sint32)((float)mx / sx) - viewport.x;
         my = (sint32)((float)my / sy) - viewport.y;
     }
+#else
+    SDL_GetMouseState(&mx, &my);
+#endif
 
     *x = mx;
     *y = my;

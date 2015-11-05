@@ -42,10 +42,11 @@ class Screen
  Configuration *config;
  SDL_Surface *sdl_surface;
  RenderSurface *surface;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
  SDL_Window *sdlWindow;
  SDL_Renderer *sdlRenderer;
  SDL_Texture *sdlTexture;
-
+#endif
  ScalerRegistry		scaler_reg;		// Scaler Registry
  const ScalerStruct	*scaler;		// Scaler
  int scaler_index;	// Index of Current Scaler
@@ -167,9 +168,12 @@ inline void blitbitmap32(uint16 dest_x, uint16 dest_y, const unsigned char *src_
 void set_screen_mode();
 bool try_scaler(int w, int h, uint32 flags, int hwdepth);
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     bool SDL_VideoModeOK(int scaled_width, int scaled_height, int bbp, int flags);
+#endif
 
-
+private:
+    int get_screen_bpp();
 };
 
 

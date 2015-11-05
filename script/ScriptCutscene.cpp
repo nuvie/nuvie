@@ -1122,10 +1122,10 @@ static int nscript_input_poll(lua_State *L)
 				ActionType a = keybinder->get_ActionType(key);
 				switch(keybinder->GetActionKeyType(a))
 				{
-					case WEST_KEY: key.sym = INPUT_KEY_LEFT; break;
-					case EAST_KEY: key.sym = INPUT_KEY_RIGHT; break;
-					case SOUTH_KEY: key.sym = INPUT_KEY_DOWN; break;
-					case NORTH_KEY: key.sym = INPUT_KEY_UP; break;
+					case WEST_KEY: lua_pushinteger(L, INPUT_KEY_LEFT); return 1;
+					case EAST_KEY: lua_pushinteger(L, INPUT_KEY_RIGHT); return 1;
+					case SOUTH_KEY: lua_pushinteger(L, INPUT_KEY_DOWN); return 1;
+					case NORTH_KEY: lua_pushinteger(L, INPUT_KEY_UP); return 1;
 					case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
 					case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
 					default: if(keybinder->handle_always_available_keys(a)) return 0; break;
