@@ -409,11 +409,11 @@ GUI_status ContainerViewGump::MouseWheel(sint32 x, sint32 y)
 
 	if(y_off >= container_widget_y_offset && y_off < container_widget_y_offset + container_widget->H())
 	{
-		if(y < 0)
+		if(y > 0)
 		{
 			container_widget->up_arrow();
 		}
-		else if(y > 0)
+		else if(y < 0)
 		{
 			container_widget->down_arrow();
 		}
@@ -422,11 +422,11 @@ GUI_status ContainerViewGump::MouseWheel(sint32 x, sint32 y)
 	{
 		if(is_actor_container() && party->get_member_num(actor) >= 0)
 		{
-			if(y < 0)
+			if(y > 0)
 			{
 				left_arrow();
 			}
-			else if(y > 0)
+			else if(y < 0)
 			{
 				right_arrow();
 			}

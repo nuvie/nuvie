@@ -217,11 +217,11 @@ GUI_status SaveSlot::KeyDown(SDL_Keysym key)
 GUI_status SaveSlot::MouseWheel(sint32 x,sint32 y)
 {
  SaveManager *save_manager = Game::get_game()->get_save_manager();
- if(y < 0)
+ if(y > 0)
  {
   save_manager->get_dialog()->get_scroller()->move_up();
  }
- else if(y > 0)
+ else if(y < 0)
  {
   save_manager->get_dialog()->get_scroller()->move_down();
  }

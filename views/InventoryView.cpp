@@ -718,10 +718,10 @@ GUI_status InventoryView::MouseWheel(sint32 x, sint32 y) {
 
     bool wheel_range = (xpos < 64 || ypos > 78);
 
-    if (y < 0 && wheel_range) {
+    if (y > 0 && wheel_range) {
         View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
         return GUI_YUM;
-    } else if (y > 0 && wheel_range) {
+    } else if (y < 0 && wheel_range) {
         View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
         return GUI_YUM;
     }

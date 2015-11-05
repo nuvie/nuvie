@@ -293,11 +293,11 @@ GUI_status PortraitViewGump::KeyDown(SDL_Keysym key)
 }
 
 GUI_status PortraitViewGump::MouseWheel(sint32 x, sint32 y) {
-	if (y < 0)
+	if (y > 0)
 	{
 		left_arrow();
 	}
-	else if (y > 0)
+	else if (y < 0)
 	{
 		right_arrow();
 	}

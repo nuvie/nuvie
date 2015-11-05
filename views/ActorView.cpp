@@ -282,11 +282,11 @@ void ActorView::display_actor_stats()
 
 GUI_status ActorView::MouseWheel(sint32 x, sint32 y)
 {
- if(y < 0)
+ if(y > 0)
  {
   View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
  }
- else if(y > 0)
+ else if(y < 0)
  {
   View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
  }

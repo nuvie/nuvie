@@ -230,11 +230,11 @@ inline void GUI_ScrollBar::DisplaySlider()
 }
 GUI_status GUI_ScrollBar::MouseWheel(sint32 x,sint32 y)
 {
-    if(y < 0)
+    if(y > 0)
     {
         send_up_button_msg();
     }
-    else if(y > 0)
+    else if(y < 0)
     {
         send_down_button_msg();
     }

@@ -308,6 +308,9 @@ GUI:: HandleEvent(SDL_Event *event)
 		 case SDL_MOUSEBUTTONUP:
 		 case SDL_KEYDOWN:
 		 case SDL_KEYUP:
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		 case SDL_MOUSEWHEEL:
+#endif
 //			 /* Go through widgets, topmost first */
 //			 status = GUI_PASS;
 //			 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {

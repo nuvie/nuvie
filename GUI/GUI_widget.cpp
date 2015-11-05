@@ -428,6 +428,13 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			button = event->button.button;
 			if ( focused || HitRect(x, y) ) {
 				set_mousedown(SDL_GetTicks(), button);
+
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
+                if(button == SDL_BUTTON_WHEELUP)
+                    return MouseWheel(0, 1);
+                else if(button == SDL_BUTTON_WHEELDOWN)
+                    return MouseWheel(0, -1);
+#endif
 				return(MouseDown(x, y, button));
 			}
 		}
@@ -489,6 +496,11 @@ GUI_status GUI_Widget::HandleEvent(const SDL_Event *event)
 			}
 		}
 		break;
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+        case SDL_MOUSEWHEEL: {
+            return MouseWheel(event->wheel.x, event->wheel.y);
+        }
+#endif
 		default: {
 			/* Pass it along.. */;
 		}

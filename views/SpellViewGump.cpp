@@ -312,11 +312,11 @@ sint16 SpellViewGump::getSpell(int x, int y)
 }
 
 GUI_status SpellViewGump::MouseWheel(sint32 x, sint32 y) {
-	if (y<0)
+	if (y>0)
 	{
 		move_left();
 	}
-	else if (y>0)
+	else if (y<0)
 	{
 		move_right();
 	}

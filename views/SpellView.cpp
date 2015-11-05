@@ -465,9 +465,9 @@ GUI_status SpellView::cancel_spell()
 
 GUI_status SpellView::MouseWheel(sint32 x, sint32 y)
 {
-	if(y<0)
-		return move_up();
 	if(y>0)
+		return move_up();
+	if(y<0)
 		return move_down();
 
 	return GUI_YUM;

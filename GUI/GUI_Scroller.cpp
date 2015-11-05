@@ -151,9 +151,9 @@ GUI_status GUI_Scroller::MouseMotion(int x,int y,Uint8 state)
 
 GUI_status GUI_Scroller::MouseWheel(sint32 x,sint32 y)
 {
-    if(y < 0)
+    if(y > 0)
         move_up();
-    else if(y > 0)
+    else if(y < 0)
         move_down();
 
     return (GUI_YUM);

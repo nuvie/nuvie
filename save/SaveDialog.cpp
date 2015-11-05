@@ -196,11 +196,11 @@ GUI_status SaveDialog::close_dialog()
 
 GUI_status SaveDialog::MouseWheel(sint32 x,sint32 y)
 {
-    if(y < 0)
+    if(y > 0)
     {
         scroller->move_up();
     }
-    else if(y > 0)
+    else if(y < 0)
     {
         scroller->move_down();
     }
