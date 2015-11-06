@@ -77,7 +77,7 @@ protected:
  GUI_status MouseDouble(int x, int y, int button);
  GUI_status MouseClick(int x,int y,int button);
  GUI_status MouseDelayed(int x, int y, int button);
-
+ GUI_status MouseWheel(sint32 x, sint32 y);
  void drag_drop_success(int x, int y, int message, void *data);
  void drag_drop_failed(int x, int y, int message, void *data);
 
@@ -106,6 +106,8 @@ protected:
  bool up_arrow();
  bool down_arrow();
  Obj *get_obj_at_location(int x, int y);
+
+
 };
 
 #endif /* __InventoryWidget_h__ */

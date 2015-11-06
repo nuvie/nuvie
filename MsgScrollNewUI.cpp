@@ -297,13 +297,6 @@ GUI_status MsgScrollNewUI::MouseDown(int x, int y, int button)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
 
-	switch(button)
-	{
-//FIXME SDL2	case SDL_BUTTON_WHEELDOWN : return GUI_PASS;
-//	case SDL_BUTTON_WHEELUP : return GUI_PASS;
-	default : break;
-	}
-
 	return scroll_movement_event(event);
 }
 

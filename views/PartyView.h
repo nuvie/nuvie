@@ -50,6 +50,7 @@ class PartyView : public View {
  bool init(void *vm, uint16 x, uint16 y, Font *f, Party *p, Player *pl, TileManager *tm, ObjManager *om);
  GUI_status MouseUp(int x,int y,int button);
  GUI_status MouseDown(int x,int y,int button) { return(GUI_YUM); }
+ GUI_status MouseWheel(sint32 x, sint32 y);
  bool drag_accept_drop(int x, int y, int message, void *data);
  void drag_perform_drop(int x, int y, int message, void *data);
  void Display(bool full_redraw);
@@ -71,6 +72,8 @@ class PartyView : public View {
  bool party_view_targeting;
 
  Actor *get_actor(int x, int y);
+
+
 };
 
 #endif /* __PartyView_h__ */

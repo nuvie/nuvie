@@ -472,6 +472,7 @@ GUI_status SpellView::MouseWheel(sint32 x, sint32 y)
 
 	return GUI_YUM;
 }
+
 GUI_status SpellView::MouseDown(int x, int y, int button)
 {
 	y -= area.y;

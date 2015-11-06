@@ -398,6 +398,24 @@ Obj *InventoryWidget::get_obj_at_location(int x, int y)
  return NULL;
 }
 
+GUI_status InventoryWidget::MouseWheel(sint32 x, sint32 y)
+{
+    if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+    {
+        if (y > 0)
+        {
+            up_arrow();
+        }
+        if (y < 0)
+        {
+            down_arrow();
+        }
+
+        selected_obj = NULL;
+    }
+    return GUI_YUM;
+}
+
 // change container, ready/unready object, activate arrows
 GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 {
@@ -438,14 +456,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 
        Redraw();
       }
-//FIXME SDL2
-//    if((button == SDL_BUTTON_WHEELUP || HitRect(x,y,arrow_rects[0])) //up arrow hit rect
-//       && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-//       up_arrow();
-//
-//    if((button == SDL_BUTTON_WHEELDOWN || HitRect(x,y,arrow_rects[1])) //down arrow hit rect
-//       && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-//       down_arrow();
 
     // only act now if objects can't be used with DoubleClick
     if(selected_obj && !Game::get_game()->get_map_window()->is_doubleclick_enabled())
@@ -456,11 +466,6 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
         ready_obj = selected_obj;
       }
    }
-//FIXME SDL2
-//   else if(button == SDL_BUTTON_WHEELUP && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-//       up_arrow();
-//   else if(button == SDL_BUTTON_WHEELDOWN && Game::get_game()->get_game_type() == NUVIE_GAME_U6)
-//       down_arrow();
 
  selected_obj = NULL;
 

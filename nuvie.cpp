@@ -134,7 +134,9 @@ bool Nuvie::init(int argc, char **argv)
     return false;
    }
 
- //FIXME SDL2 SDL_WM_SetCaption("Nuvie","Nuvie");
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
+ SDL_WM_SetCaption("Nuvie","Nuvie");
+#endif
 
  GUI *gui = new GUI(config, screen);
 

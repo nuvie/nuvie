@@ -1515,7 +1515,7 @@ void Screen::set_screen_mode()
 	DEBUG(0,LEVEL_DEBUGGING,"Attempting to set vid mode: %dx%dx%dx%d",width,height,bpp,scale_factor);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
     SDL_CreateWindowAndRenderer(width*scale_factor, (int)(height*1.2)*scale_factor, SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
-
+    SDL_SetWindowTitle(sdlWindow, "Nuvie");
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
     SDL_RenderSetLogicalSize(sdlRenderer, width*scale_factor, (int)(height*1.2)*scale_factor); //VGA non-square pixels.
 

@@ -182,14 +182,24 @@ GUI_status ScrollWidgetGump::KeyDown(SDL_Keysym key)
 static SDL_Rect arrow_up_rect[1] = {{SCROLLWIDGETGUMP_W - 8 - 1, 4 + 1, 7, 5}};
 static SDL_Rect arrow_down_rect[1] = {{SCROLLWIDGETGUMP_W - 8 - 1, SCROLLWIDGETGUMP_H - 8 + 3, 7 , 5}};
 
+GUI_status ScrollWidgetGump::MouseWheel(sint32 x, sint32 y)
+{
+	ScrollEventType event = SCROLL_ESCAPE;
+
+	if (y > 0)
+		event = SCROLL_UP;
+	if (y < 0)
+		event = SCROLL_DOWN;
+
+	return scroll_movement_event(event);
+}
+
 GUI_status ScrollWidgetGump::MouseDown(int x, int y, int button)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
 
 	switch(button)
 	{
-//FIXME SDL2	case SDL_BUTTON_WHEELDOWN : event = SCROLL_DOWN; break;
-//	case SDL_BUTTON_WHEELUP : event = SCROLL_UP; break;
 	case SDL_BUTTON_LEFT : {
 	                       x -= area.x;
 	                       y -= area.y;

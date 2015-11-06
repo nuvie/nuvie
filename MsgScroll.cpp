@@ -907,6 +907,34 @@ GUI_status MsgScroll::KeyDown(SDL_Keysym key)
  return(GUI_YUM);
 }
 
+
+GUI_status MsgScroll::MouseWheel(sint32 x, sint32 y)
+{
+    if(page_break) // any click == scroll-to-end
+    {
+        process_page_break();
+        return(GUI_YUM);
+    }
+
+    Game *game = Game::get_game();
+
+    if(game->is_new_style())
+    {
+        if (y > 0)
+            move_scroll_up();
+        if (y < 0)
+            move_scroll_down();
+    }
+    else
+    {
+        if (y > 0)
+            page_up();
+        if (y < 0)
+            page_down();
+    }
+    return GUI_YUM;
+}
+
 GUI_status MsgScroll::MouseUp(int x, int y, int button)
 {
  uint16 i;
@@ -917,25 +945,7 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
         process_page_break();
         return(GUI_YUM);
     }
-//FIXME SDL2    else if(button == SDL_BUTTON_WHEELUP)
-//    {
-//        if(!Game::get_game()->is_new_style())
-//            page_up();
-//        else if(input_mode)
-//            move_scroll_up();
-//        if(!Game::get_game()->is_new_style())
-//            return GUI_YUM;
-//    }
-//    else if(button == SDL_BUTTON_WHEELDOWN)
-//    {
-//        if(!Game::get_game()->is_new_style())
-//            page_down();
-//        else if(input_mode)
-//            move_scroll_down();
-//        if(!Game::get_game()->is_new_style())
-//            return GUI_YUM;
-//    }
-//    else
+
     if(button == 1) // left click == select word
     {
      if(input_mode)

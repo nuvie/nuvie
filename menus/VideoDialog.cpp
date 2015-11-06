@@ -78,7 +78,12 @@ bool VideoDialog::init() {
 #if SCALER_AND_SCALE_CANNOT_BE_CHANGED
 	only2x_button = NULL; scale_button = scaler_button = scale_win_button = scaler_win_button = NULL;
 	int scale = screen->get_scale_factor();
-	no_fullscreen = false; //FIXME SDL2 !SDL_VideoModeOK(scr_width * scale, scr_height * scale, bpp, SDL_FULLSCREEN);
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	no_fullscreen = false;
+#else
+    no_fullscreen = true;
+#endif
+
 #else
 	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128, 141 };
 	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 139, 152 };

@@ -2319,6 +2319,27 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
+GUI_status MapWindow::MouseWheel(sint32 x, sint32 y)
+{
+    Game *game = Game::get_game();
+
+    if(game->is_new_style())
+    {
+        if (y > 0)
+            game->get_scroll()->move_scroll_up();
+        if (y < 0)
+            game->get_scroll()->move_scroll_down();
+    }
+    else
+    {
+        if (y > 0)
+            game->get_scroll()->page_up();
+        if (y < 0)
+            game->get_scroll()->page_down();
+    }
+    return GUI_YUM;
+}
+
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
 	//DEBUG(0,LEVEL_DEBUGGING,"MapWindow::MouseDown, button = %i\n", button);
@@ -2332,15 +2353,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_YUM;
 	}
 
-//FIXME SDL2 	if(game->is_new_style()) {
-//		if(button == SDL_BUTTON_WHEELDOWN) {
-//			game->get_scroll()->move_scroll_down();
-//			return GUI_YUM;
-//		} else if(button == SDL_BUTTON_WHEELUP) {
-//			game->get_scroll()->move_scroll_up();
-//			return GUI_YUM;
-//		}
-//	}
 	if(game->is_original_plus() && y <= Game::get_game()->get_game_y_offset() + 200
 	   && x >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width) {
 		looking = false;
@@ -2394,19 +2406,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	{
 		return GUI_PASS;
 	}
-
-
-//FIXME SDL2		if(button == SDL_BUTTON_WHEELDOWN)
-//		{
-//			game->get_scroll()->page_down();
-//			return GUI_YUM;
-//		}
-//		else if(button == SDL_BUTTON_WHEELUP)
-//		{
-//			game->get_scroll()->page_up();
-//			return GUI_YUM;
-//		}
-
 
 	if (!obj || button != DRAG_BUTTON)
 		return	GUI_PASS;
