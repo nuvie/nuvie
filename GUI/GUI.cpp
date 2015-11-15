@@ -264,6 +264,20 @@ GUI:: HandleEvent(SDL_Event *event)
 
         }
     }
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	if(event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
+	{
+		SDL_GetMouseState(&event->button.x, &event->button.y);
+		screen->scale_sdl_window_coords(&event->button.x, &event->button.y);
+	}
+	if(event->type == SDL_MOUSEMOTION)
+	{
+		SDL_GetMouseState(&event->motion.x, &event->motion.y);
+		screen->scale_sdl_window_coords(&event->motion.x, &event->motion.y);
+	}
+#endif
+
   if(dragging) //&& !block_input)
    {
     if(event->type == SDL_MOUSEBUTTONUP) //FIX for button up that doesn't hit a widget.

@@ -1497,6 +1497,27 @@ int Screen::get_screen_bpp()
 #endif
 }
 
+bool Screen::init_sdl2_window(uint16 scale)
+{
+    uint32 win_width = width;
+    uint32 win_height = height;
+
+    window_scale_w = (float)scale;
+    window_scale_h = (float)scale;// * 1.2;
+
+    SDL_CreateWindowAndRenderer(width*scale, (int)(height/**1.2*/*scale), SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
+    if(sdlWindow == NULL || sdlRenderer == NULL)
+        return false;
+
+    SDL_SetWindowTitle(sdlWindow, "Nuvie");
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
+    SDL_RenderSetLogicalSize(sdlRenderer, width*scale, (int)(height/**1.2*/*scale)); //VGA non-square pixels.
+
+    set_fullscreen(fullscreen);
+
+    return true;
+}
+
 void Screen::set_screen_mode()
 {
 	uint32 flags = 0;
@@ -1513,16 +1534,7 @@ void Screen::set_screen_mode()
 
 
 	DEBUG(0,LEVEL_DEBUGGING,"Attempting to set vid mode: %dx%dx%dx%d",width,height,bpp,scale_factor);
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-    SDL_CreateWindowAndRenderer(width*scale_factor, (int)(height*1.2)*scale_factor, SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
-    SDL_SetWindowTitle(sdlWindow, "Nuvie");
-    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(sdlRenderer, width*scale_factor, (int)(height*1.2)*scale_factor); //VGA non-square pixels.
-
-	if (fullscreen) {
-		SDL_SetWindowFullscreen(sdlWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
-	}
-#else
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
     // Get info. about video.
 	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
 
@@ -1539,9 +1551,10 @@ void Screen::set_screen_mode()
 	// Old Software rendering. Try a scaler_index first,
 	if (!try_scaler(width, height, flags, bpp)) {
 
-		scale_factor = 1;
 		scaler = 0;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
+        init_sdl2_window(scale_factor);
+        scale_factor = 1;
 		sdl_surface = SDL_CreateRGBSurface(0, width, height, bpp,
                                              0x00FF0000,
                                              0x0000FF00,
@@ -1553,6 +1566,7 @@ void Screen::set_screen_mode()
                                        width, height);
         surface = CreateRenderSurface(sdl_surface);
 #else
+        scale_factor = 1;
         sdl_surface = SDL_SetVideoMode(width, height, bpp, flags);
 
 		// Couldn't create it, so disable double buffering
@@ -1591,14 +1605,18 @@ void Screen::set_screen_mode()
 //	if (zbuffer) screen->create_zbuffer();
 }
 
-bool Screen::toggle_fullscreen()
+bool Screen::toggle_fullscreen() {
+    return set_fullscreen(!fullscreen);
+}
+
+bool Screen::set_fullscreen(bool value)
 {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
+    fullscreen = value;
     Uint32 windowFlags = 0;
-    if(!fullscreen)
+    if(fullscreen)
         windowFlags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 
-    fullscreen = !fullscreen;
     return SDL_SetWindowFullscreen(sdlWindow, windowFlags) == 0 ? true : false;
 #else
     return false;
@@ -1607,6 +1625,10 @@ bool Screen::toggle_fullscreen()
 
 bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    if(scaler_index == 0) //point scaler
+        return false;
+#endif
 	// Try the universal scalers
 	if (scale_factor > 1 && scaler_index >= 0) {
 		int scaled_height = h*scale_factor;
@@ -1672,6 +1694,7 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		else
 		{
 #if SDL_VERSION_ATLEAST(2, 0, 0)
+            init_sdl2_window(scale_factor);
             sdl_surface = SDL_CreateRGBSurface(0, scaled_width, scaled_height, hwdepth,
                                                0x00FF0000,
                                                0x0000FF00,
@@ -2042,24 +2065,41 @@ void Screen::draw_line (int sx, int sy, int ex, int ey, uint8 color)
 
 void Screen::get_mouse_location(sint32 *x, sint32 *y)
 {
-    sint32 mx, my;
+    SDL_GetMouseState(x, y);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-    float sx, sy;
-    SDL_RenderGetScale(sdlRenderer, &sx, &sy);
+    scale_sdl_window_coords(x, y);
+#endif
+}
 
-    SDL_Rect viewport;
-    SDL_RenderGetViewport(sdlRenderer, &viewport);
-    SDL_GetMouseState(&mx, &my);
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+void Screen::scale_sdl_window_coords(sint32 *mx, sint32 *my)
+{
     if(fullscreen)
     {
-        mx = (sint32)((float)mx / sx) - viewport.x;
-        my = (sint32)((float)my / sy) - viewport.y;
-    }
-#else
-    SDL_GetMouseState(&mx, &my);
-#endif
+        float sx, sy;
+        SDL_RenderGetScale(sdlRenderer, &sx, &sy);
 
-    *x = mx;
-    *y = my;
+        SDL_Rect viewport;
+        SDL_RenderGetViewport(sdlRenderer, &viewport);
+
+        *mx = *mx - (sint32)((float)viewport.x * sx);
+
+        sx = ((float)viewport.w / width) * sx;
+        sy = ((float)viewport.h / height) * sy;
+
+        *mx = (sint32)((float)*mx / sx) ;
+        *my = (sint32)((float)*my / sy) ;
+    }
+    else
+    {
+        sint32 w, h;
+        SDL_RenderGetLogicalSize(sdlRenderer, &w, &h);
+
+        w = w / width;
+        h = h / height;
+
+        *mx = (sint32)((float)*mx / window_scale_w);
+        *my = (sint32)((float)*my / window_scale_h);
+    }
 }
+#endif

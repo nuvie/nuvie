@@ -46,6 +46,7 @@ class Screen
  SDL_Window *sdlWindow;
  SDL_Renderer *sdlRenderer;
  SDL_Texture *sdlTexture;
+ float window_scale_w = 1.0, window_scale_h = 1.0;
 #endif
  ScalerRegistry		scaler_reg;		// Scaler Registry
  const ScalerStruct	*scaler;		// Scaler
@@ -135,6 +136,10 @@ class Screen
 
    void get_mouse_location(sint32 *x, sint32 *y);
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    void scale_sdl_window_coords(sint32 *x, sint32 *y);
+#endif
+
 protected:
    int lighting_style, old_lighting_style;
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
@@ -174,6 +179,12 @@ bool try_scaler(int w, int h, uint32 flags, int hwdepth);
 
 private:
     int get_screen_bpp();
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    bool init_sdl2_window(uint16 scale);
+#endif
+
+    bool set_fullscreen(bool value);
 };
 
 
