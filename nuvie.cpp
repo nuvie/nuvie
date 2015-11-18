@@ -477,6 +477,7 @@ void Nuvie::set_safe_video_settings()
 	SDL_Quit();
 
 	config->set("config/video/fullscreen", "no");
+	config->set("config/video/non_square_pixels", "no");
 	config->set("config/video/screen_width", 320);
 	config->set("config/video/screen_height", 200);
 	config->set("config/video/game_width", 320);

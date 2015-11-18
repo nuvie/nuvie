@@ -191,6 +191,13 @@ bool VideoDialog::init() {
 		fullscreen_button = new GUI_TextToggleButton(this, colX[4], buttonY, yesno_width, height, yesno_text, 2, screen->is_fullscreen(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(fullscreen_button);
 		button_index[last_index] = fullscreen_button;
+
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Non-square pixels:", gui->get_font());
+		AddWidget(widget);
+		non_square_pixels_button = new GUI_TextToggleButton(this, colX[4], buttonY += row_h, yesno_width, height, yesno_text, 2, screen->is_non_square_pixels(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(non_square_pixels_button);
+		button_index[last_index += 1] = non_square_pixels_button;
+
 		first_index = false;
 	}
 	else
@@ -399,6 +406,8 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 #if SCALER_AND_SCALE_CANNOT_BE_CHANGED
 		if(fullscreen != screen->is_fullscreen())
 			screen->toggle_fullscreen();
+		bool non_square_pixels = (bool)non_square_pixels_button->GetSelection();
+		screen->set_non_square_pixels(non_square_pixels);
 #else
 	// scaler
 		int scaler;
@@ -417,6 +426,8 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 #endif
 	// fullscreen
 		config->set("config/video/fullscreen", fullscreen ? "yes" : "no");
+	// non-square pixels
+	config->set("config/video/non_square_pixels", non_square_pixels ? "yes" : "no");
 	// roof mode
 		bool roof_mode = roof_button->GetSelection();
 		game->set_roof_mode(roof_mode);

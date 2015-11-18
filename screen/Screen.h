@@ -56,6 +56,7 @@ class Screen
  bool fullscreen;
  bool doubleBuffer;
  bool is_no_darkness;
+ bool non_square_pixels;
 
  uint8 palette[768];
  uint16 width;
@@ -77,6 +78,7 @@ class Screen
    bool init();
 
    bool is_fullscreen() { return fullscreen; }
+   bool is_non_square_pixels() { return non_square_pixels; }
    int get_scaler_index() { return scaler_index; }
    ScalerRegistry *get_scaler_reg() { return &scaler_reg; }
    bool toggle_darkness_cheat();
@@ -139,6 +141,8 @@ class Screen
 #if SDL_VERSION_ATLEAST(2, 0, 0)
     void scale_sdl_window_coords(sint32 *x, sint32 *y);
 #endif
+
+    void set_non_square_pixels(bool value);
 
 protected:
    int lighting_style, old_lighting_style;

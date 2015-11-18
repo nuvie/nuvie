@@ -64,6 +64,7 @@ Screen::Screen(Configuration *cfg)
  fullscreen = false;
  doubleBuffer = false;
  is_no_darkness = false;
+ non_square_pixels = false;
  shading_ambient = 255;
  width = 320;
  height = 200;
@@ -137,6 +138,7 @@ bool Screen::init()
 config->value("config/video/scale_factor", scale_factor, 1);
 
  config->value("config/video/fullscreen", fullscreen, false);
+ config->value("config/video/non_square_pixels", non_square_pixels, false);
 
  set_screen_mode();
 
@@ -1503,15 +1505,18 @@ bool Screen::init_sdl2_window(uint16 scale)
     uint32 win_height = height;
 
     window_scale_w = (float)scale;
-    window_scale_h = (float)scale;// * 1.2;
+    window_scale_h = (float)scale;
 
-    SDL_CreateWindowAndRenderer(width*scale, (int)(height/**1.2*/*scale), SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
+    if(non_square_pixels)
+        window_scale_h *= 1.2;
+
+    SDL_CreateWindowAndRenderer(width*window_scale_w, (int)(height*window_scale_h), SDL_WINDOW_SHOWN, &sdlWindow, &sdlRenderer);
     if(sdlWindow == NULL || sdlRenderer == NULL)
         return false;
 
     SDL_SetWindowTitle(sdlWindow, "Nuvie");
     //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(sdlRenderer, width*scale, (int)(height/**1.2*/*scale)); //VGA non-square pixels.
+    SDL_RenderSetLogicalSize(sdlRenderer, width*window_scale_w, (int)(height*window_scale_h)); //VGA non-square pixels.
 
     set_fullscreen(fullscreen);
 
@@ -2103,3 +2108,23 @@ void Screen::scale_sdl_window_coords(sint32 *mx, sint32 *my)
     }
 }
 #endif
+
+void Screen::set_non_square_pixels(bool value) {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    if(value == non_square_pixels)
+        return;
+
+    non_square_pixels = value;
+
+    if(non_square_pixels)
+        window_scale_h *= 1.2;
+    else
+        window_scale_h /= 1.2;
+
+    int sw = (int)(width*window_scale_w);
+    int sh = (int)(height*window_scale_h);
+
+    SDL_RenderSetLogicalSize(sdlRenderer, sw, sh); //VGA non-square pixels.
+    SDL_SetWindowSize(sdlWindow, sw, sh);
+#endif
+}
