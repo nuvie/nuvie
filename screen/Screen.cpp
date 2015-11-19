@@ -1499,6 +1499,7 @@ int Screen::get_screen_bpp()
 #endif
 }
 
+#if SDL_VERSION_ATLEAST(2, 0, 0)
 bool Screen::init_sdl2_window(uint16 scale)
 {
     uint32 win_width = width;
@@ -1522,6 +1523,7 @@ bool Screen::init_sdl2_window(uint16 scale)
 
     return true;
 }
+#endif
 
 void Screen::set_screen_mode()
 {
