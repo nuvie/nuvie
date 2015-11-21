@@ -51,6 +51,7 @@ VideoDialog::VideoDialog(GUI_CallBack *callback)
                        Game::get_game()->get_game_y_offset() + (Game::get_game()->get_game_height() - VD_HEIGHT)/2,
                        VD_WIDTH, VD_HEIGHT, 244, 216, 131, GUI_DIALOG_UNMOVABLE) {
 	callback_object = callback;
+	non_square_pixels_button = NULL;
 	init();
 	grab_focus();
 }
@@ -81,7 +82,7 @@ bool VideoDialog::init() {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	no_fullscreen = false;
 #else
-    no_fullscreen = true;
+	no_fullscreen = !SDL_VideoModeOK(scr_width * scale, scr_height * scale, bpp, SDL_FULLSCREEN);
 #endif
 
 #else
@@ -406,7 +407,7 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 #if SCALER_AND_SCALE_CANNOT_BE_CHANGED
 		if(fullscreen != screen->is_fullscreen())
 			screen->toggle_fullscreen();
-		bool non_square_pixels = (bool)non_square_pixels_button->GetSelection();
+		bool non_square_pixels = non_square_pixels_button ? (bool)non_square_pixels_button->GetSelection() : false;
 		screen->set_non_square_pixels(non_square_pixels);
 #else
 	// scaler

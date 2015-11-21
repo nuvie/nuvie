@@ -1545,7 +1545,11 @@ void Screen::set_screen_mode()
     // Get info. about video.
 	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
 
-    fullscreen = false;
+	// Is Fullscreen?
+	if (fullscreen) {
+		flags |= SDL_FULLSCREEN;
+		DEBUG(1,LEVEL_DEBUGGING," Fullscreen");
+	}
     if (vinfo->hw_available && doubleBuffer && fullscreen) {
 		flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
 		DEBUG(1,LEVEL_DEBUGGING," Hardware Double Buffered\n");
@@ -1613,8 +1617,50 @@ void Screen::set_screen_mode()
 }
 
 bool Screen::toggle_fullscreen() {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
     return set_fullscreen(!fullscreen);
+#else
+    return sdl1_toggle_fullscreen();
+#endif
 }
+
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
+bool Screen::sdl1_toggle_fullscreen()
+{
+    uint32 flags = sdl_surface->flags;
+    int scaled_height = height*scale_factor;
+    int scaled_width = width*scale_factor;
+    if(fullscreen)
+    {
+        flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+        flags &= ~SDL_FULLSCREEN;
+        flags |= SDL_SWSURFACE;
+    }
+    else
+    {
+        flags |= SDL_FULLSCREEN;
+        if ( SDL_GetVideoInfo()->hw_available && doubleBuffer)
+            flags |= SDL_HWSURFACE|SDL_DOUBLEBUF;
+    }
+    uint8 bpp = get_sdl_surface()->format->BitsPerPixel;
+
+    if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
+    {
+        if(!fullscreen) // try software
+        {
+            flags &= ~(SDL_HWSURFACE|SDL_DOUBLEBUF);
+            flags |= SDL_SWSURFACE;
+        }
+        if(!SDL_VideoModeOK(scaled_width, scaled_height, bpp, flags))
+        {
+            DEBUG(0,LEVEL_ERROR,"Couldn't toggle to %\n", fullscreen ? "a window" : "fullscreen");
+            return false;
+        }
+    }
+    fullscreen = !fullscreen;
+    return SDL_SetVideoMode(scaled_width, scaled_height, bpp, flags);
+}
+#endif
 
 bool Screen::set_fullscreen(bool value)
 {

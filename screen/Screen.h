@@ -186,6 +186,8 @@ private:
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
     bool init_sdl2_window(uint16 scale);
+#else
+    bool sdl1_toggle_fullscreen();
 #endif
 
     bool set_fullscreen(bool value);
