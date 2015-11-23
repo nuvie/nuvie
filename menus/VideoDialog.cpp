@@ -44,7 +44,7 @@
 #include "Keys.h"
 
 #define VD_WIDTH 311
-#define VD_HEIGHT 158
+#define VD_HEIGHT 171 // add or subtract 13 if you add/remove a row
 
 VideoDialog::VideoDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - VD_WIDTH)/2,
