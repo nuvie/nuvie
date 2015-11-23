@@ -9,7 +9,14 @@ SRC=.
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+
+ifdef SDL2
+	SDL_DLL=SDL2.dll
+	SDL_LIBS=-L$(SRC)/sdl/lib -lSDL2main -lSDL2
+else
+	SDL_DLL=SDL.dll
+	SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+endif
 
 CPPFLAGS=-Wall -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DHAVE_JOYSTICK_SUPPORT \
 	-I$(SRC) -I$(SRC)/actors \
@@ -197,8 +204,8 @@ dist: install tools nvconfig.dll
 	cp COPYING $(U6PATH)/COPYING.txt
 	cp README $(U6PATH)/README.txt
 	cp SDL/README-SDL.txt $(U6PATH)
-	cp SDL/lib/SDL.dll $(U6PATH)
-	cp SDL/lib/SDL.dll $(U6PATH)/tools
+	cp SDL/lib/$(SDL_DLL) $(U6PATH)
+	cp SDL/lib/$(SDL_DLL) $(U6PATH)/tools
 	cp win32/Nuvie.iss $(U6PATH)
 	u2d $(U6PATH)/*.txt
 	strip nvconfig.dll -o $(U6PATH)/nvconfig.dll

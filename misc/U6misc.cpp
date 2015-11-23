@@ -12,7 +12,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <string>
+#include <string.h>
 #include <vector>
 #include "nuvieDefs.h"
 

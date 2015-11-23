@@ -23,6 +23,8 @@
  *
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include "nuvieDefs.h"
 #include "types.h"
 #include "decoder/wave/endian.h"

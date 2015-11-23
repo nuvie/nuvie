@@ -17,6 +17,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "nuvieDefs.h"
 #include "NuvieIO.h"
 #include "U6Lib_n.h"

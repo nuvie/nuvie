@@ -1,4 +1,6 @@
 #include <cassert>
+#include <stdlib.h>
+#include <string.h>
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "Screen.h"

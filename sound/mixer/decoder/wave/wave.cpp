@@ -24,6 +24,7 @@
  */
 
 #include <assert.h>
+#include <string.h>
 //#include "common/debug.h"
 //#include "common/util.h"
 #include "decoder/wave/stream.h"

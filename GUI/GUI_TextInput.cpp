@@ -26,6 +26,7 @@
 #include "GUI_TextInput.h"
 #include "GUI_font.h"
 #include "Keys.h"
+#include <stdlib.h>
 
 GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str,
                               GUI_Font *gui_font, uint16 width, uint16 height, GUI_CallBack *callback)
