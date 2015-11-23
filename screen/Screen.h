@@ -186,6 +186,7 @@ private:
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
     bool init_sdl2_window(uint16 scale);
+    bool create_sdl_surface_and_texture(sint32 w, sint32 h, Uint32 format);
 #else
     bool sdl1_toggle_fullscreen();
 #endif

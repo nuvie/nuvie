@@ -1523,6 +1523,41 @@ bool Screen::init_sdl2_window(uint16 scale)
 
     return true;
 }
+
+bool Screen::create_sdl_surface_and_texture(sint32 w, sint32 h, Uint32 format)
+{
+    uint32 rmask, gmask, bmask, amask;
+    int bpp;
+
+    if(!SDL_PixelFormatEnumToMasks(format, &bpp, &rmask, &gmask, &bmask, &amask))
+        return false;
+
+    sdl_surface = SDL_CreateRGBSurface(0, w, h, bpp,
+                                       rmask,
+                                       gmask,
+                                       bmask,
+                                       amask);
+
+    if(sdl_surface == NULL) {
+        fprintf(stderr, "CreateRGBSurface failed: %s\n", SDL_GetError());
+        return false;
+    }
+
+    sdlTexture = SDL_CreateTexture(sdlRenderer,
+                                   format,
+                                   SDL_TEXTUREACCESS_STREAMING,
+                                   w, h);
+
+    if(sdlTexture == NULL) {
+        SDL_FreeSurface(sdl_surface);
+        sdl_surface = NULL;
+        fprintf(stderr, "SDL_CreateTexture failed: %s\n", SDL_GetError());
+        return false;
+    }
+
+    return true;
+}
+
 #endif
 
 void Screen::set_screen_mode()
@@ -1537,7 +1572,11 @@ void Screen::set_screen_mode()
 
 	// If we can't use the format, force 16 bit
 	if (bpp != 16 && bpp != 32)
-		bpp = 16;
+    {
+        DEBUG(0,LEVEL_DEBUGGING,"BPP %d selected. Using 16 instead.", bpp);
+        bpp = 16;
+    }
+
 
 
 	DEBUG(0,LEVEL_DEBUGGING,"Attempting to set vid mode: %dx%dx%dx%d",width,height,bpp,scale_factor);
@@ -1563,18 +1602,20 @@ void Screen::set_screen_mode()
 	if (!try_scaler(width, height, flags, bpp)) {
 
 		scaler = 0;
+        bpp = 16;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
         init_sdl2_window(scale_factor);
         scale_factor = 1;
-		sdl_surface = SDL_CreateRGBSurface(0, width, height, bpp,
-                                             0x00FF0000,
-                                             0x0000FF00,
-                                             0x000000FF,
-                                             0xFF000000);
-        sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                       SDL_PIXELFORMAT_ARGB8888,
-                                       SDL_TEXTUREACCESS_STREAMING,
-                                       width, height);
+        if(bpp == 32) {
+            if(!create_sdl_surface_and_texture(width, height, SDL_PIXELFORMAT_ARGB8888))
+                exit(EXIT_FAILURE);
+        }
+        else
+        {
+            if(!create_sdl_surface_and_texture(width, height, SDL_PIXELFORMAT_RGB565))
+                exit(EXIT_FAILURE);
+        }
+
         surface = CreateRenderSurface(sdl_surface);
 #else
         scale_factor = 1;
@@ -1748,22 +1789,14 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 		{
 #if SDL_VERSION_ATLEAST(2, 0, 0)
             init_sdl2_window(scale_factor);
-            sdl_surface = SDL_CreateRGBSurface(0, scaled_width, scaled_height, hwdepth,
-                                               0x00FF0000,
-                                               0x0000FF00,
-                                               0x000000FF,
-                                               0xFF000000);
-            if(sdl_surface)
+            if(hwdepth == 32) {
+                if(!create_sdl_surface_and_texture(width, height, SDL_PIXELFORMAT_ARGB8888))
+                    return false;
+            }
+            else
             {
-                sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                               SDL_PIXELFORMAT_ARGB8888,
-                                               SDL_TEXTUREACCESS_STREAMING,
-                                               scaled_width, scaled_height);
-                if(sdlTexture)
-                {
-                  surface = CreateRenderSurface(w, h, hwdepth);
-                  return true;
-                }
+                if(!create_sdl_surface_and_texture(width, height, SDL_PIXELFORMAT_RGB565))
+                    return false;
             }
 #else
             if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
