@@ -307,6 +307,7 @@ GUI:: HandleEvent(SDL_Event *event)
 			return status; // pretend nothing happened
 		}
 		event->type = SDL_KEYDOWN;
+		event->key.keysym.mod = KMOD_NONE;
 	}
 #endif
 	  switch (event->type) {

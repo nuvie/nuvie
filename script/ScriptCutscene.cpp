@@ -1109,6 +1109,7 @@ static int nscript_input_poll(lua_State *L)
 			if(event.key.keysym.sym == SDLK_UNKNOWN) // make sure button isn't mapped or is in deadzone
 				return 0; // pretend nothing happened
 			event.type = SDL_KEYDOWN;
+			event.key.keysym.mod = KMOD_NONE;
 		}
 #endif
 		if(event.type == SDL_KEYDOWN)
