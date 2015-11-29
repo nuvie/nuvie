@@ -1707,11 +1707,25 @@ bool Screen::set_fullscreen(bool value)
 {
 #if SDL_VERSION_ATLEAST(2, 0, 0)
     fullscreen = value;
-    Uint32 windowFlags = 0;
-    if(fullscreen)
-        windowFlags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+    Uint32 windowFlags = SDL_GetWindowFlags(sdlWindow);
 
-    return SDL_SetWindowFullscreen(sdlWindow, windowFlags) == 0 ? true : false;
+    if(fullscreen)
+        windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    else if((windowFlags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)
+        windowFlags ^= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+    if(SDL_SetWindowFullscreen(sdlWindow, windowFlags) < 0)
+    {
+        DEBUG(0,LEVEL_NOTIFICATION,"error toggling fullscreen mode %s\n",SDL_GetError());
+        return false;
+    }
+#ifdef WIN32
+    if(!fullscreen)
+    {
+        SDL_SetWindowSize(sdlWindow, (int)(width*window_scale_w), (int)(height*window_scale_h));
+    }
+#endif
+    return true;
 #else
     return false;
 #endif
