@@ -1,3 +1,6 @@
+2015-11-30  anylonen
+	* Added support for linux in CMake build script.
+ 
 2015-10-23  Eric Fry <efry at users.sourceforge.net>
 	* Fixed bug with incorrect inventory items for U6 guards.
 	  Thanks to Quentinak for pointing it out. I think I may have
