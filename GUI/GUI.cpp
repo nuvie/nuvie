@@ -217,7 +217,7 @@ void GUI::Display()
 	int mx, my;
 	screen->get_mouse_location(&mx, &my);
 
-	gui_drag_manager->draw (screen->get_translated_x((uint16)mx), screen->get_translated_y((uint16)my));
+	gui_drag_manager->draw (mx, my);
 
     if(full_redraw)
        full_redraw = false;

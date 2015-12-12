@@ -166,8 +166,6 @@ bool Cursor::display(sint32 px, sint32 py)
     {
         screen->get_mouse_location(&px, &py);
 //        DEBUG(0,LEVEL_DEBUGGING,"mouse pos: %d,%d", px, py);
-        px /= screen->get_scale_factor();
-        py /= screen->get_scale_factor();
     }
     MousePointer *ptr = cursors[cursor_id];
 

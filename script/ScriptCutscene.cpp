@@ -1070,9 +1070,6 @@ static int nscript_get_mouse_x(lua_State *L)
 {
 	int x, y;
 	cutScene->get_screen()->get_mouse_location(&x, &y);
-	int scale_factor = cutScene->get_screen()->get_scale_factor();
-	if(scale_factor > 1)
-		x /= scale_factor;
 	x -= cutScene->get_x_off();
 	lua_pushinteger(L, x);
 	return 1;
@@ -1082,9 +1079,6 @@ static int nscript_get_mouse_y(lua_State *L)
 {
 	int x, y;
 	cutScene->get_screen()->get_mouse_location(&x, &y);
-	int scale_factor = cutScene->get_screen()->get_scale_factor();
-	if(scale_factor > 1)
-		y /= scale_factor;
 	y -= cutScene->get_y_off();
 	lua_pushinteger(L, y);
 	return 1;

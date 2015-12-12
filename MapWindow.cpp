@@ -657,14 +657,15 @@ void MapWindow::update()
 
     if(walking)
     {
-        int mx, my; // bit-AND buttons with mouse state to test
-        screen->get_mouse_location(&mx, &my);
+
         if(SDL_GetMouseState(NULL, NULL) & walk_button_mask)
         {
         	if(game->user_paused())
         		return;
-        	mx = screen->get_translated_x((uint16)mx);
-        	my = screen->get_translated_y((uint16)my);
+
+            int mx, my; // bit-AND buttons with mouse state to test
+            screen->get_mouse_location(&mx, &my);
+
         	if(is_wizard_eye_mode())
         	{
 //        		int wx, wy;
@@ -2556,8 +2557,6 @@ void MapWindow::teleport_to_cursor()
 {
 	int mx, my, wx, wy;
 	screen->get_mouse_location(&mx, &my);
-	mx = screen->get_translated_x((uint16)mx);
-	my = screen->get_translated_y((uint16)my);
 
 	mouseToWorldCoords(mx, my, wx, wy);
 	game->get_player()->move(wx, wy, cur_level, true);

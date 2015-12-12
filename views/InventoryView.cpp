@@ -710,9 +710,6 @@ GUI_status InventoryView::MouseWheel(sint32 x, sint32 y) {
     int xpos, ypos;
     screen->get_mouse_location(&xpos, &ypos);
 
-    xpos = screen->get_translated_x(xpos<0?0:(uint16)xpos);
-    ypos = screen->get_translated_y(ypos<0?0:(uint16)ypos);
-
     xpos -= area.x;
     ypos -= area.y;
 

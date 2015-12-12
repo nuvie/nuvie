@@ -1804,13 +1804,17 @@ bool Screen::try_scaler(int w, int h, uint32 flags, int hwdepth)
 #if SDL_VERSION_ATLEAST(2, 0, 0)
             init_sdl2_window(scale_factor);
             if(hwdepth == 32) {
-                if(!create_sdl_surface_and_texture(width, height, SDL_PIXELFORMAT_ARGB8888))
+                if(!create_sdl_surface_and_texture(scaled_width, scaled_height, SDL_PIXELFORMAT_ARGB8888))
                     return false;
             }
             else
             {
-                if(!create_sdl_surface_and_texture(width, height, SDL_PIXELFORMAT_RGB565))
+                if(!create_sdl_surface_and_texture(scaled_width, scaled_height, SDL_PIXELFORMAT_RGB565))
                     return false;
+            }
+            surface = CreateRenderSurface(w, h, hwdepth);
+            if(surface) {
+                return true;
             }
 #else
             if ((sdl_surface = SDL_SetVideoMode(scaled_width, scaled_height, hwdepth, flags)))
@@ -2168,6 +2172,12 @@ void Screen::get_mouse_location(sint32 *x, sint32 *y)
     SDL_GetMouseState(x, y);
 #if SDL_VERSION_ATLEAST(2, 0, 0)
     scale_sdl_window_coords(x, y);
+#else
+    if(scale_factor != 1)
+    {
+        *x /= scale_factor;
+        *y /= scale_factor;
+    }
 #endif
 }
 
@@ -2198,8 +2208,8 @@ void Screen::scale_sdl_window_coords(sint32 *mx, sint32 *my)
         w = w / width;
         h = h / height;
 
-        *mx = (sint32)((float)*mx / window_scale_w);
-        *my = (sint32)((float)*my / window_scale_h);
+        *mx = (sint32) ((float) *mx / window_scale_w);
+        *my = (sint32) ((float) *my / window_scale_h);
     }
 }
 #endif
