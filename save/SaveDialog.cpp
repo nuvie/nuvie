@@ -194,16 +194,25 @@ GUI_status SaveDialog::close_dialog()
  return callback_object->callback(SAVEDIALOG_CB_DELETE, this, this);
 }
 
+GUI_status SaveDialog::MouseWheel(sint32 x,sint32 y)
+{
+    if(y > 0)
+    {
+        scroller->move_up();
+    }
+    else if(y < 0)
+    {
+        scroller->move_down();
+    }
+    return GUI_YUM;
+}
+
 GUI_status SaveDialog::MouseDown(int x, int y, int button)
 {
- if(button == SDL_BUTTON_WHEELUP)
-	scroller->move_up();
- else if(button == SDL_BUTTON_WHEELDOWN)
-	scroller->move_down();
  return GUI_YUM;
 }
 
-GUI_status SaveDialog::KeyDown(SDL_keysym key)
+GUI_status SaveDialog::KeyDown(SDL_Keysym key)
 {
  KeyBinder *keybinder = Game::get_game()->get_keybinder();
  ActionType a = keybinder->get_ActionType(key);

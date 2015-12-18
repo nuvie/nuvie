@@ -202,7 +202,7 @@ void SaveSlot::Display(bool full_redraw)
 
 }
 
-GUI_status SaveSlot::KeyDown(SDL_keysym key)
+GUI_status SaveSlot::KeyDown(SDL_Keysym key)
 {
 
  //if(key.sym == SDLK_ESCAPE)
@@ -214,19 +214,22 @@ GUI_status SaveSlot::KeyDown(SDL_keysym key)
  return GUI_PASS;
 }
 
-GUI_status SaveSlot::MouseDown(int x, int y, int button)
+GUI_status SaveSlot::MouseWheel(sint32 x,sint32 y)
 {
  SaveManager *save_manager = Game::get_game()->get_save_manager();
- if(button == SDL_BUTTON_WHEELUP)
+ if(y > 0)
  {
-	save_manager->get_dialog()->get_scroller()->move_up();
-	return GUI_YUM;
+  save_manager->get_dialog()->get_scroller()->move_up();
  }
- else if(button == SDL_BUTTON_WHEELDOWN)
+ else if(y < 0)
  {
-	save_manager->get_dialog()->get_scroller()->move_down();
-	return GUI_YUM;
+  save_manager->get_dialog()->get_scroller()->move_down();
  }
+ return GUI_YUM;
+}
+
+GUI_status SaveSlot::MouseDown(int x, int y, int button)
+{
  if(selected != true)
    {
     selected = true;

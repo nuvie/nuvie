@@ -215,9 +215,9 @@ void GUI::Display()
 	//SDL_UpdateRect(screen, 0, 0, 0, 0);
 
 	int mx, my;
-	SDL_GetMouseState (&mx, &my);
+	screen->get_mouse_location(&mx, &my);
 
-	gui_drag_manager->draw (screen->get_translated_x((uint16)mx), screen->get_translated_y((uint16)my));
+	gui_drag_manager->draw (mx, my);
 
     if(full_redraw)
        full_redraw = false;
@@ -264,6 +264,20 @@ GUI:: HandleEvent(SDL_Event *event)
 
         }
     }
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	if(event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
+	{
+		SDL_GetMouseState(&event->button.x, &event->button.y);
+		screen->scale_sdl_window_coords(&event->button.x, &event->button.y);
+	}
+	if(event->type == SDL_MOUSEMOTION)
+	{
+		SDL_GetMouseState(&event->motion.x, &event->motion.y);
+		screen->scale_sdl_window_coords(&event->motion.x, &event->motion.y);
+	}
+#endif
+
   if(dragging) //&& !block_input)
    {
     if(event->type == SDL_MOUSEBUTTONUP) //FIX for button up that doesn't hit a widget.
@@ -286,13 +300,14 @@ GUI:: HandleEvent(SDL_Event *event)
 	if(event->type >= SDL_JOYAXISMOTION && event->type <= SDL_JOYBUTTONUP)
 	{
 		event->key.keysym.sym = Game::get_game()->get_keybinder()->get_key_from_joy_events(event);
-		if(event->key.keysym.sym == SDLK_LAST) // isn't mapped, is in deadzone, or axis didn't return to center before moving again
+		if(event->key.keysym.sym == SDLK_UNKNOWN) // isn't mapped, is in deadzone, or axis didn't return to center before moving again
 		{
 			HandleStatus(status);
 			CleanupDeletedWidgets(status != GUI_QUIT);
 			return status; // pretend nothing happened
 		}
 		event->type = SDL_KEYDOWN;
+		event->key.keysym.mod = KMOD_NONE;
 	}
 #endif
 	  switch (event->type) {
@@ -308,6 +323,9 @@ GUI:: HandleEvent(SDL_Event *event)
 		 case SDL_MOUSEBUTTONUP:
 		 case SDL_KEYDOWN:
 		 case SDL_KEYUP:
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+		 case SDL_MOUSEWHEEL:
+#endif
 //			 /* Go through widgets, topmost first */
 //			 status = GUI_PASS;
 //			 for (i=numwidgets-1; (i>=0)&&(status==GUI_PASS); --i) {

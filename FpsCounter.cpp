@@ -21,6 +21,7 @@
  *
  */
 #include <cassert>
+#include <string.h>
 #include "SDL.h"
 
 #include "Configuration.h"

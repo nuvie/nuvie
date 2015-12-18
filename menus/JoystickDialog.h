@@ -44,7 +44,7 @@ class JoystickDialog : public GUI_Dialog {
 		bool init();
 
 		GUI_status close_dialog();
-		GUI_status KeyDown(SDL_keysym key);
+		GUI_status KeyDown(SDL_Keysym key);
 		GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 #endif /* HAVE_JOYSTICK_SUPPORT */

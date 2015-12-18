@@ -193,7 +193,7 @@ GUI_status CommandBarNewUI::MouseUp(int x, int y, int button)
     return(GUI_YUM);
 }
 
-GUI_status CommandBarNewUI::KeyDown(SDL_keysym key)
+GUI_status CommandBarNewUI::KeyDown(SDL_Keysym key)
 {
     KeyBinder *keybinder = Game::get_game()->get_keybinder();
     ActionType a = keybinder->get_ActionType(key);

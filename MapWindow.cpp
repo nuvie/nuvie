@@ -657,13 +657,15 @@ void MapWindow::update()
 
     if(walking)
     {
-        int mx, my; // bit-AND buttons with mouse state to test
-        if(SDL_GetMouseState(&mx, &my) & walk_button_mask)
+
+        if(SDL_GetMouseState(NULL, NULL) & walk_button_mask)
         {
         	if(game->user_paused())
         		return;
-        	mx = screen->get_translated_x((uint16)mx);
-        	my = screen->get_translated_y((uint16)my);
+
+            int mx, my; // bit-AND buttons with mouse state to test
+            screen->get_mouse_location(&mx, &my);
+
         	if(is_wizard_eye_mode())
         	{
 //        		int wx, wy;
@@ -690,12 +692,12 @@ void MapWindow::update()
 	   && keybinder->get_next_joy_repeat_time() < clock->get_ticks())
 // !game->user_paused(), !game->get_view_manager()->gumps_are_active() - I don't think these are needed but may need them later
 	{
-		SDLKey key;
+		SDL_Keycode key;
 		if(keybinder->is_hat_repeating())
 			key = keybinder->get_key_from_joy_hat_button(SDL_JoystickGetHat(keybinder->get_joystick(), 0));
 		else
 			key = keybinder->get_key_from_joy_walk_axes();
-		if(key != SDLK_LAST)
+		if(key != SDLK_UNKNOWN)
 		{
 			SDL_Event sdl_event;
 			sdl_event.type = SDL_KEYDOWN;
@@ -2318,6 +2320,27 @@ GUI_status MapWindow::MouseDouble(int x, int y, int button)
     return(MouseUp(x, y, button)); // do MouseUp so selected_obj is cleared
 }
 
+GUI_status MapWindow::MouseWheel(sint32 x, sint32 y)
+{
+    Game *game = Game::get_game();
+
+    if(game->is_new_style())
+    {
+        if (y > 0)
+            game->get_scroll()->move_scroll_up();
+        if (y < 0)
+            game->get_scroll()->move_scroll_down();
+    }
+    else
+    {
+        if (y > 0)
+            game->get_scroll()->page_up();
+        if (y < 0)
+            game->get_scroll()->page_down();
+    }
+    return GUI_YUM;
+}
+
 GUI_status MapWindow::MouseDown (int x, int y, int button)
 {
 	//DEBUG(0,LEVEL_DEBUGGING,"MapWindow::MouseDown, button = %i\n", button);
@@ -2331,15 +2354,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		return GUI_YUM;
 	}
 
-	if(game->is_new_style()) {
-		if(button == SDL_BUTTON_WHEELDOWN) {
-			game->get_scroll()->move_scroll_down();
-			return GUI_YUM;
-		} else if(button == SDL_BUTTON_WHEELUP) {
-			game->get_scroll()->move_scroll_up();
-			return GUI_YUM;
-		}
-	}
 	if(game->is_original_plus() && y <= Game::get_game()->get_game_y_offset() + 200
 	   && x >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width) {
 		looking = false;
@@ -2392,20 +2406,6 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 	else if(event->get_mode() != MOVE_MODE && event->get_mode() != EQUIP_MODE)
 	{
 		return GUI_PASS;
-	}
-
-//	if(!game->is_new_style())
-	{
-		if(button == SDL_BUTTON_WHEELDOWN)
-		{
-			game->get_scroll()->page_down();
-			return GUI_YUM;
-		}
-		else if(button == SDL_BUTTON_WHEELUP)
-		{
-			game->get_scroll()->page_up();
-			return GUI_YUM;
-		}
 	}
 
 	if (!obj || button != DRAG_BUTTON)
@@ -2510,7 +2510,7 @@ void	MapWindow::drag_drop_failed (int x, int y, int message, void *data)
 }
 
 // this does nothing
-GUI_status MapWindow::KeyDown(SDL_keysym key)
+GUI_status MapWindow::KeyDown(SDL_Keysym key)
 {
 	if(is_wizard_eye_mode())
 	{
@@ -2556,9 +2556,7 @@ Actor *MapWindow::get_actorAtMousePos(int mx, int my)
 void MapWindow::teleport_to_cursor()
 {
 	int mx, my, wx, wy;
-	SDL_GetMouseState(&mx, &my);
-	mx = screen->get_translated_x((uint16)mx);
-	my = screen->get_translated_y((uint16)my);
+	screen->get_mouse_location(&mx, &my);
 
 	mouseToWorldCoords(mx, my, wx, wy);
 	game->get_player()->move(wx, wy, cur_level, true);
@@ -2910,6 +2908,6 @@ void MapWindow::loadRoofTiles()
 	roof_tiles = SDL_LoadBMP(imagefile.c_str());
 	if(roof_tiles && game->is_orig_style())
 	{
-		SDL_SetColorKey(roof_tiles, SDL_SRCCOLORKEY, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
+		SDL_SetColorKey(roof_tiles, SDL_TRUE, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
 	}
 }

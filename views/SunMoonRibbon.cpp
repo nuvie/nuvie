@@ -84,7 +84,7 @@ void SunMoonRibbon::loadBgImage(uint8 num)
   bg_data = bmp.getSdlSurface32(imagefile);
 
   Uint32 bg_color_key = SDL_MapRGB(bg_data->format, 0xb3, 0x94, 0x78);
-  SDL_SetColorKey(bg_data, SDL_SRCCOLORKEY, bg_color_key);
+  SDL_SetColorKey(bg_data, SDL_TRUE, bg_color_key);
 }
 
 void SunMoonRibbon::Display(bool full_redraw)
@@ -232,8 +232,6 @@ void SunMoonRibbon::display_dungeon_strip()
 
 GUI_status SunMoonRibbon::MouseDown(int x, int y, int button)
 {
-  if(button != SDL_BUTTON_WHEELDOWN && button != SDL_BUTTON_WHEELUP)
-  {
     SDL_Rect rect = area;
 
     if(retracted)
@@ -254,7 +252,6 @@ GUI_status SunMoonRibbon::MouseDown(int x, int y, int button)
         return GUI_YUM;
       }
     }
-  }
 
   return GUI_PASS;
 }

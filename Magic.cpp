@@ -489,7 +489,7 @@ uint16 Magic::callback(uint16 msg, CallBack *caller, void *data)
     {
         if(event->input.type != EVENTINPUT_KEY)
             return 0;
-        SDLKey sym = event->input.key;
+        SDL_Keycode sym = event->input.key;
 
         if(state == MAGIC_STATE_SELECT_SPELL) {
             if(sym>=SDLK_a && sym<=SDLK_z)

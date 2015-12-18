@@ -228,18 +228,23 @@ inline void GUI_ScrollBar::DisplaySlider()
  SDL_FillRect(surface, &rect, slider_shadow_c);
 
 }
+GUI_status GUI_ScrollBar::MouseWheel(sint32 x,sint32 y)
+{
+    if(y > 0)
+    {
+        send_up_button_msg();
+    }
+    else if(y < 0)
+    {
+        send_down_button_msg();
+    }
+
+    return GUI_YUM;
+}
 
 GUI_status GUI_ScrollBar::MouseDown(int x, int y, int button)
 {
-	if(button == SDL_BUTTON_WHEELUP)
-	{
-		send_up_button_msg();
-	}
-	else if(button == SDL_BUTTON_WHEELDOWN)
-	{
-		send_down_button_msg();
-	}
-	else if(y >= area.y + button_height + slider_y && y <= area.y + button_height + slider_y + slider_length)
+	if(y >= area.y + button_height + slider_y && y <= area.y + button_height + slider_y + slider_length)
 	{
 		drag = true;
 		slider_click_offset = y - area.y - button_height - slider_y;

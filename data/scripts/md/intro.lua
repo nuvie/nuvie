@@ -1382,6 +1382,7 @@ local g_cursor_sprite = sprite_new(nil, 120, 184, false)
 g_cursor_sprite.text = "_"
 g_cursor_sprite.text_color = 14
 local g_cursor_timer = 0
+g_char_index = 0
 
 
 function collect_player_name()
@@ -1399,11 +1400,65 @@ function collect_player_name()
       if (input == SDLK_BACKSPACE or input == SDLK_LEFT) and len > 0 then
          g_name_sprite.text = string.sub(name_text, 1, len - 1)
          len = len - 1
+         if len == 1 then -- old len
+           g_char_index = 0
+         else
+           g_char_index = string.byte(name_text, len -1)
+         end
       elseif (input == SDLK_RETURN or input == SDLK_KP_ENTER) and string.len(trim_string(name_text)) > 0 then --return
          g_name_sprite.visible = false
          g_cursor_sprite.visible = false
          g_player_name = trim_string(name_text)
          return true
+      elseif input == SDLK_UP then --up
+         if g_char_index == 0 then
+           if len > 0 then
+             g_char_index = SDLK_a
+           else
+             g_char_index = 65 --A
+         end
+         elseif g_char_index <= 32 then --gap in characters
+           g_char_index = 48
+         elseif g_char_index >= 57 and  g_char_index < 65 then --gap in characters
+           g_char_index = 65
+         elseif g_char_index >= 90 and g_char_index < 97 then --gap in characters
+           g_char_index = 97
+         elseif g_char_index >= 122 then --last char
+           g_char_index = 32
+         else
+           g_char_index = g_char_index + 1
+         end
+
+         if len > 0 then -- erase char
+           name_text = string.sub(name_text, 1, len - 1)
+         end
+         g_name_sprite.text = name_text..g_keycode_tbl[g_char_index]
+      elseif input == SDLK_DOWN then --down
+         if g_char_index == 0 then
+           if len > 0 then
+             g_char_index = 122 --z
+           else
+             g_char_index = 90 --Z
+           end
+         elseif g_char_index == 65 then --gap in characters
+           g_char_index = 57
+         elseif g_char_index == 97 then --gap in characters
+           g_char_index = 90
+         elseif g_char_index <= 32 then --first char
+           g_char_index = 122
+         elseif g_char_index <= 48 then --gap in characters
+           g_char_index = 32
+         else
+           g_char_index = g_char_index - 1
+         end
+
+         if len > 0 then -- erase char
+           name_text = string.sub(name_text, 1, len - 1)
+         end
+         g_name_sprite.text = name_text..g_keycode_tbl[g_char_index]
+      elseif input == SDLK_RIGHT and len < 13 then --right
+         g_char_index = SDLK_a --a
+         g_name_sprite.text = name_text.."a"
       elseif g_keycode_tbl[input] ~= nil and len < 13 then
          g_name_sprite.text = name_text..g_keycode_tbl[input]
          len = len + 1

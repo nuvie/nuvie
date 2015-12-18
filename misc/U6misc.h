@@ -9,7 +9,7 @@
  *
  */
 #include <string>
-#include "SDL.h"
+#include <SDL.h>
 #include "nuvieDefs.h"
 
 class Configuration;
@@ -90,5 +90,9 @@ uint16 wrap_signed_coord(sint16 coord, uint8 level);
 sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level);
 
 std::string encode_xml_entity(const std::string &s);
+
+#if SDL_VERSION_ATLEAST(2,0,0)
+int SDL_SetColors(SDL_Surface *surface, SDL_Color *colors, int firstcolor, int ncolors);
+#endif
 
 #endif /* __U6misc_h__ */

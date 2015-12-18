@@ -1,3 +1,7 @@
+2015-12-18  Eric Fry <efry at users.sourceforge.net>
+	* Added support for SDL2
+	* Added support for VGA 4:3 aspect ratio pixels.
+
 2015-11-30  anylonen
 	* Added support for linux in CMake build script.
  

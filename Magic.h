@@ -24,6 +24,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "Event.h"
 #include "CallBack.h"
 

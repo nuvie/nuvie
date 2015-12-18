@@ -52,7 +52,7 @@ class GUI_TextInput : public GUI_Text
  void release_focus();
 
  GUI_status MouseUp(int x, int y, int button);
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
 
  void add_char(char c);
  void remove_char();

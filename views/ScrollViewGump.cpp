@@ -109,7 +109,7 @@ GUI_status ScrollViewGump::MouseDown(int x, int y, int button)
 	return GUI_YUM;
 }
 
-GUI_status ScrollViewGump::KeyDown(SDL_keysym key)
+GUI_status ScrollViewGump::KeyDown(SDL_Keysym key)
 {
   if(scroll_widget->KeyDown(key) != GUI_YUM)
   {

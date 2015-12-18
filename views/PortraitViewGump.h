@@ -60,13 +60,14 @@ public:
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 
  GUI_status MouseDown(int x, int y, int button);
+ GUI_status MouseWheel(sint32 x, sint32 y);
 
  protected:
 
  void set_actor(Actor *a);
  void left_arrow();
  void right_arrow();
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
  GUI_status set_cursor_pos(gumpCursorPos pos);
 };
 

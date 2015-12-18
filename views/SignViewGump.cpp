@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <stdlib.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "Event.h"
@@ -123,7 +124,7 @@ GUI_status SignViewGump::MouseDown(int x, int y, int button)
 	return GUI_YUM;
 }
 
-GUI_status SignViewGump::KeyDown(SDL_keysym key)
+GUI_status SignViewGump::KeyDown(SDL_Keysym key)
 {
 	Game::get_game()->get_view_manager()->close_gump(this);
 	return GUI_YUM;

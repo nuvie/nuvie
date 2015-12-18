@@ -397,7 +397,7 @@ void SpellView::event_mode_select_spell()
 
 /* Move the cursor around
  */
-GUI_status SpellView::KeyDown(SDL_keysym key)
+GUI_status SpellView::KeyDown(SDL_Keysym key)
 {
     KeyBinder *keybinder = Game::get_game()->get_keybinder();
     ActionType a = keybinder->get_ActionType(key);
@@ -463,6 +463,16 @@ GUI_status SpellView::cancel_spell()
 	return GUI_YUM;
 }
 
+GUI_status SpellView::MouseWheel(sint32 x, sint32 y)
+{
+	if(y>0)
+		return move_up();
+	if(y<0)
+		return move_down();
+
+	return GUI_YUM;
+}
+
 GUI_status SpellView::MouseDown(int x, int y, int button)
 {
 	y -= area.y;
@@ -482,10 +492,6 @@ GUI_status SpellView::MouseDown(int x, int y, int button)
 		doing_nothing = (y < 8 || y > 71 || x < 16 || x > 134);
 	}
 
-	if(button == SDL_BUTTON_WHEELUP)
-		return move_up();
-	if(button == SDL_BUTTON_WHEELDOWN)
-		return move_down();
 	if(button == SDL_BUTTON_RIGHT)
 		return cancel_spell();
 

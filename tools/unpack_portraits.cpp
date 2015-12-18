@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../nuvieDefs.h"
+#include "../misc/U6misc.h"
 #include "../files/U6Lzw.h"
 #include "../files/U6Lib_n.h"
 #include "../files/U6Shape.h"
@@ -122,7 +123,8 @@ int main(int argc, char **argv)
   shp->load(&shp_lib, 0);
   shp->get_size(&w,&h);
   s = shp->get_shape_surface();
-  SDL_SetPalette(s, SDL_LOGPAL|SDL_PHYSPAL, c, 0, 256);
+  SDL_SetColors(s, c, 0, 256);
+
   sprintf(bmp_file, "%03u.bmp", i);
   SDL_SaveBMP(s, bmp_file);
  

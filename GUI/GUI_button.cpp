@@ -243,8 +243,8 @@ void GUI_Button:: Display(bool full_redraw)
 /* Mouse hits activate us */
 GUI_status GUI_Button:: MouseDown(int x, int y, int button)
 {
-	if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
-	  return GUI_PASS;
+//	if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
+//	  return GUI_PASS;
 	if (enabled &&(button==1 || button==3))
 	{
 	  pressed[0]=1;
@@ -255,8 +255,8 @@ GUI_status GUI_Button:: MouseDown(int x, int y, int button)
 
 GUI_status GUI_Button::MouseUp(int x,int y,int button)
 {
-	if (button==SDL_BUTTON_WHEELUP || button==SDL_BUTTON_WHEELDOWN)
-		return GUI_PASS;
+//	if (button==SDL_BUTTON_WHEELUP || button==SDL_BUTTON_WHEELDOWN)
+//		return GUI_PASS;
 	if ((button==1 || button==3) && (pressed[0]))
 	{
 	  pressed[0]=0;
@@ -310,8 +310,10 @@ SDL_Surface* GUI_Button::CreateTextButtonImage(int style, const char *text, int 
   int tx = 0, ty = 0;
   char *duptext = 0;
 
-  SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
-				    16,31 << 11,63 << 5,31,0);
+//  SDL_Surface *img=SDL_AllocSurface(SDL_SWSURFACE,area.w,area.h,
+//				    16,31 << 11,63 << 5,31,0);
+  SDL_Surface *img = SDL_CreateRGBSurface(SDL_SWSURFACE,area.w,area.h,
+                                          16,31 << 11,63 << 5,31,0);
 
   if (img==NULL) return NULL;
 

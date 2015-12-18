@@ -216,7 +216,7 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 	// when casting the magic class will handle keyboard events
 	if(mode == KEYINPUT_MODE)
 	{
-		SDLKey sym = event->key.keysym.sym;
+		SDL_Keycode sym = event->key.keysym.sym;
 		ActionKeyType action_key_type = OTHER_KEY;
 
 		if(!((magic->is_selecting_spell() && ((sym >= SDLK_a && sym <= SDLK_z) || sym == SDLK_BACKSPACE)) ||
@@ -241,40 +241,40 @@ bool Event::handleSDL_KEYDOWN (const SDL_Event *event)
 		return	true;
 	}
 
-	SDLMod mods = SDL_GetModState();
+	SDL_Keymod mods = SDL_GetModState();
 	// alt-code input
 	if(mods & KMOD_ALT)
 	{
 		if(mode == MOVE_MODE) switch(event->key.keysym.sym)
 		{
-			case SDLK_KP0:
+			case SDLK_KP_0:
 			case SDLK_0: alt_code_str[alt_code_len++] = '0'; break;
 
-			case SDLK_KP1:
+			case SDLK_KP_1:
 			case SDLK_1: alt_code_str[alt_code_len++] = '1'; break;
 
-			case SDLK_KP2:
+			case SDLK_KP_2:
 			case SDLK_2: alt_code_str[alt_code_len++] = '2'; break;
 
-			case SDLK_KP3:
+			case SDLK_KP_3:
 			case SDLK_3: alt_code_str[alt_code_len++] = '3'; break;
 
-			case SDLK_KP4:
+			case SDLK_KP_4:
 			case SDLK_4: alt_code_str[alt_code_len++] = '4'; break;
 
-			case SDLK_KP5:
+			case SDLK_KP_5:
 			case SDLK_5: alt_code_str[alt_code_len++] = '5'; break;
 
-			case SDLK_KP6:
+			case SDLK_KP_6:
 			case SDLK_6: alt_code_str[alt_code_len++] = '6'; break;
 
-			case SDLK_KP7:
+			case SDLK_KP_7:
 			case SDLK_7: alt_code_str[alt_code_len++] = '7'; break;
 
-			case SDLK_KP8:
+			case SDLK_KP_8:
 			case SDLK_8: alt_code_str[alt_code_len++] = '8'; break;
 
-			case SDLK_KP9:
+			case SDLK_KP_9:
 			case SDLK_9: alt_code_str[alt_code_len++] = '9'; break;
 			default:
 				keybinder->HandleEvent(event);

@@ -72,11 +72,12 @@ void SetDisplay(Screen *s);
 
 void Display(bool full_redraw);
 
-GUI_status KeyDown(SDL_keysym key);
+GUI_status KeyDown(SDL_Keysym key);
 GUI_status MouseDown(int x, int y, int button);
 GUI_status MouseUp(int x, int y, int button);
+GUI_status MouseWheel(sint32 x, sint32 y);
 
-GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
+    GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 
 protected:
 

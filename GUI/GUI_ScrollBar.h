@@ -79,6 +79,7 @@ public:
     GUI_status MouseDown(int x, int y, int button);
     GUI_status MouseUp(int x, int y, int button);
     GUI_status MouseMotion(int x,int y,Uint8 state);
+    GUI_status MouseWheel(sint32 x, sint32 y);
 
 protected:
     void loadButtons();

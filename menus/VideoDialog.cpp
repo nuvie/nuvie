@@ -44,13 +44,14 @@
 #include "Keys.h"
 
 #define VD_WIDTH 311
-#define VD_HEIGHT 158
+#define VD_HEIGHT 171 // add or subtract 13 if you add/remove a row
 
 VideoDialog::VideoDialog(GUI_CallBack *callback)
           : GUI_Dialog(Game::get_game()->get_game_x_offset() + (Game::get_game()->get_game_width() - VD_WIDTH)/2,
                        Game::get_game()->get_game_y_offset() + (Game::get_game()->get_game_height() - VD_HEIGHT)/2,
                        VD_WIDTH, VD_HEIGHT, 244, 216, 131, GUI_DIALOG_UNMOVABLE) {
 	callback_object = callback;
+	non_square_pixels_button = NULL;
 	init();
 	grab_focus();
 }
@@ -78,7 +79,12 @@ bool VideoDialog::init() {
 #if SCALER_AND_SCALE_CANNOT_BE_CHANGED
 	only2x_button = NULL; scale_button = scaler_button = scale_win_button = scaler_win_button = NULL;
 	int scale = screen->get_scale_factor();
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	no_fullscreen = false;
+#else
 	no_fullscreen = !SDL_VideoModeOK(scr_width * scale, scr_height * scale, bpp, SDL_FULLSCREEN);
+#endif
+
 #else
 	int textY[] = { 11, 24, 37, 50, 63 , 76, 89, 102, 115, 128, 141 };
 	int buttonY[] = { 9, 22, 35, 48, 61, 74, 87, 100, 113, 126, 139, 152 };
@@ -186,6 +192,13 @@ bool VideoDialog::init() {
 		fullscreen_button = new GUI_TextToggleButton(this, colX[4], buttonY, yesno_width, height, yesno_text, 2, screen->is_fullscreen(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
 		AddWidget(fullscreen_button);
 		button_index[last_index] = fullscreen_button;
+
+		widget = (GUI_Widget *) new GUI_Text(colX[0], textY += row_h, 0, 0, 0, "Non-square pixels:", gui->get_font());
+		AddWidget(widget);
+		non_square_pixels_button = new GUI_TextToggleButton(this, colX[4], buttonY += row_h, yesno_width, height, yesno_text, 2, screen->is_non_square_pixels(), font, BUTTON_TEXTALIGN_CENTER, this, 0);
+		AddWidget(non_square_pixels_button);
+		button_index[last_index += 1] = non_square_pixels_button;
+
 		first_index = false;
 	}
 	else
@@ -330,7 +343,7 @@ GUI_status VideoDialog::close_dialog() {
 	return GUI_YUM;
 }
 
-GUI_status VideoDialog::KeyDown(SDL_keysym key) {
+GUI_status VideoDialog::KeyDown(SDL_Keysym key) {
 	KeyBinder *keybinder = Game::get_game()->get_keybinder();
 	ActionType a = keybinder->get_ActionType(key);
 
@@ -365,7 +378,6 @@ GUI_status VideoDialog::KeyDown(SDL_keysym key) {
 
 GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 	if(caller == (GUI_CallBack *)cancel_button) {
-!Game::get_game()->get_map_window()->using_map_tile_lighting;
 		return close_dialog();
 	} else if(fullscreen_button && caller == (GUI_CallBack *)fullscreen_button) {
 		rebuild_buttons(false);
@@ -395,6 +407,8 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 #if SCALER_AND_SCALE_CANNOT_BE_CHANGED
 		if(fullscreen != screen->is_fullscreen())
 			screen->toggle_fullscreen();
+		bool non_square_pixels = non_square_pixels_button ? (bool)non_square_pixels_button->GetSelection() : false;
+		screen->set_non_square_pixels(non_square_pixels);
 #else
 	// scaler
 		int scaler;
@@ -413,6 +427,8 @@ GUI_status VideoDialog::callback(uint16 msg, GUI_CallBack *caller, void *data) {
 #endif
 	// fullscreen
 		config->set("config/video/fullscreen", fullscreen ? "yes" : "no");
+	// non-square pixels
+	config->set("config/video/non_square_pixels", non_square_pixels ? "yes" : "no");
 	// roof mode
 		bool roof_mode = roof_button->GetSelection();
 		game->set_roof_mode(roof_mode);

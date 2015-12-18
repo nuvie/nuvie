@@ -365,7 +365,7 @@ GUI_status ContainerViewGump::callback(uint16 msg, GUI_CallBack *caller, void *d
     return GUI_PASS;
 }
 
-GUI_status ContainerViewGump::KeyDown(SDL_keysym key)
+GUI_status ContainerViewGump::KeyDown(SDL_Keysym key)
 {
 	if(left_arrow_button && left_arrow_button->Status() == WIDGET_VISIBLE) // okay to change member number
 	{
@@ -403,39 +403,40 @@ GUI_status ContainerViewGump::KeyDown(SDL_keysym key)
 	return container_widget->KeyDown(key);
 }
 
-GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
+GUI_status ContainerViewGump::MouseWheel(sint32 x, sint32 y)
 {
 	int y_off = y - area.y;
 
 	if(y_off >= container_widget_y_offset && y_off < container_widget_y_offset + container_widget->H())
 	{
-		if(button == SDL_BUTTON_WHEELDOWN)
-		{
-			container_widget->down_arrow();
-			return GUI_YUM;
-		}
-		else if(button == SDL_BUTTON_WHEELUP)
+		if(y > 0)
 		{
 			container_widget->up_arrow();
-			return GUI_YUM;
+		}
+		else if(y < 0)
+		{
+			container_widget->down_arrow();
 		}
 	}
 	else
 	{
 		if(is_actor_container() && party->get_member_num(actor) >= 0)
 		{
-			if(button == SDL_BUTTON_WHEELDOWN)
-			{
-				right_arrow();
-				return GUI_YUM;
-			}
-			else if(button == SDL_BUTTON_WHEELUP)
+			if(y > 0)
 			{
 				left_arrow();
-				return GUI_YUM;
+			}
+			else if(y < 0)
+			{
+				right_arrow();
 			}
 		}
 	}
+	return GUI_YUM;
+}
+
+GUI_status ContainerViewGump::MouseDown(int x, int y, int button)
+{
 	return DraggableView::MouseDown(x, y, button);
 }
 

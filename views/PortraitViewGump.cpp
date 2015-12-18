@@ -242,7 +242,7 @@ GUI_status PortraitViewGump::callback(uint16 msg, GUI_CallBack *caller, void *da
     return GUI_PASS;
 }
 
-GUI_status PortraitViewGump::KeyDown(SDL_keysym key)
+GUI_status PortraitViewGump::KeyDown(SDL_Keysym key)
 {
 //	I was checking for numlock but probably don't need to
 	KeyBinder *keybinder = Game::get_game()->get_keybinder();
@@ -292,21 +292,19 @@ GUI_status PortraitViewGump::KeyDown(SDL_keysym key)
 	return GUI_PASS;
 }
 
+GUI_status PortraitViewGump::MouseWheel(sint32 x, sint32 y) {
+	if (y > 0)
+	{
+		left_arrow();
+	}
+	else if (y < 0)
+	{
+		right_arrow();
+	}
+	return GUI_YUM;
+}
+
 GUI_status PortraitViewGump::MouseDown(int x, int y, int button)
 {
-// if(party->get_member_num(actor) >= 0)
- {
-	 if(button == SDL_BUTTON_WHEELDOWN)
-	 {
-		right_arrow();
-		return GUI_YUM;
-	 }
-	 else if(button == SDL_BUTTON_WHEELUP)
-	 {
-		 left_arrow();
-		 return GUI_YUM;
-	 }
- }
-
 	return DraggableView::MouseDown(x, y, button);
 }

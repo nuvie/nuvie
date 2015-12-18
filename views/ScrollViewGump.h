@@ -48,7 +48,7 @@ public:
 
  GUI_status MouseDown(int x, int y, int button);
  GUI_status MouseUp(int x, int y, int button) { return GUI_YUM; }
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
 
  protected:
 

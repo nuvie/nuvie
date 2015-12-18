@@ -180,7 +180,7 @@ void DollWidget::setColorKey(SDL_Surface *image)
 {
 	if(image) {
 		Uint32 bg_color_key = SDL_MapRGB(image->format, 0xf1, 0x0f, 0xc4);
-		SDL_SetColorKey(image, SDL_SRCCOLORKEY, bg_color_key);
+		SDL_SetColorKey(image, SDL_TRUE, bg_color_key);
 	}
 }
 

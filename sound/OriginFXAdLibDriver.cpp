@@ -27,6 +27,8 @@
 #include "U6Lib_n.h"
 #include "opl.h"
 #include "OriginFXAdLibDriver.h"
+#include <string.h>
+#include <stdlib.h>
 
 const uint8 adlib_BD_cmd_tbl[] ={ 0, 1, 0, 1, 0, 1, 16, 8, 4, 2, 1 };
 

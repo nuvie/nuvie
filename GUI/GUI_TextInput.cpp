@@ -26,6 +26,7 @@
 #include "GUI_TextInput.h"
 #include "GUI_font.h"
 #include "Keys.h"
+#include <stdlib.h>
 
 GUI_TextInput:: GUI_TextInput(int x, int y, Uint8 r, Uint8 g, Uint8 b, char *str,
                               GUI_Font *gui_font, uint16 width, uint16 height, GUI_CallBack *callback)
@@ -62,13 +63,13 @@ void GUI_TextInput::release_focus()
 {
  GUI_Widget::release_focus();
  
- SDL_EnableUNICODE(0); //disable unicode.
+// SDL_EnableUNICODE(0); //disable unicode.
 }
 
 GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
 {
- if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
-   return GUI_PASS;
+// if(button == SDL_BUTTON_WHEELUP || button == SDL_BUTTON_WHEELDOWN)
+//   return GUI_PASS;
  //release focus if we click outside the text box.
  if(focused && !HitRect(x, y))
    release_focus();
@@ -77,22 +78,20 @@ GUI_status GUI_TextInput::MouseUp(int x, int y, int button)
    if(!focused)
      {
       grab_focus();
-      SDL_EnableUNICODE(1); //turn on unicode processing.
+// FIXME SDL2     SDL_EnableUNICODE(1); //turn on unicode processing.
      }
   }
 
  return(GUI_PASS);
 }
 
-GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
+GUI_status GUI_TextInput::KeyDown(SDL_Keysym key)
 {
-// char ascii;
- char ascii = 0;
+ char ascii = get_ascii_char_from_keysym(key);
 
  if(!focused)
    return GUI_PASS;
- if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-   ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
+
 
  if(!isprint(ascii) && key.sym != SDLK_BACKSPACE)
  {
@@ -129,12 +128,12 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
     case SDLK_HOME : pos = 0; break;
     case SDLK_END  : pos = length; break;
 
-    case SDLK_KP4  :
+    case SDLK_KP_4  :
     case SDLK_LEFT : if(pos > 0)
                        pos--;
                      break;
 
-    case SDLK_KP6   :
+    case SDLK_KP_6   :
     case SDLK_RIGHT : if(pos < length)
                        pos++;
                       break;
@@ -149,7 +148,7 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
     case SDLK_BACKSPACE : remove_char(); break; //delete the character to the left of the cursor
 
     case SDLK_UP :
-    case SDLK_KP8 :
+    case SDLK_KP_8 :
                     if(pos == length)
                     {
                         if(length+1 > max_width * max_height)
@@ -172,7 +171,7 @@ GUI_status GUI_TextInput::KeyDown(SDL_keysym key)
                         text[pos]++;
                     break;
 
-    case SDLK_KP2 :
+    case SDLK_KP_2 :
     case SDLK_DOWN : if(pos == length)
                      {
                          if(length+1 > max_width * max_height)

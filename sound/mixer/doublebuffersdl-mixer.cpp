@@ -61,7 +61,7 @@ void DoubleBufferSDLMixerManager::startAudio() {
 	_soundThreadIsRunning = true;
 
 	// Finally start the thread
-	_soundThread = SDL_CreateThread(mixerProducerThreadEntry, this);
+	_soundThread = SDL_CreateThread(mixerProducerThreadEntry, "Sound Thread", this);
 
 	SdlMixerManager::startAudio();
 }

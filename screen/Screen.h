@@ -42,7 +42,12 @@ class Screen
  Configuration *config;
  SDL_Surface *sdl_surface;
  RenderSurface *surface;
-
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+ SDL_Window *sdlWindow;
+ SDL_Renderer *sdlRenderer;
+ SDL_Texture *sdlTexture;
+ float window_scale_w = 1.0, window_scale_h = 1.0;
+#endif
  ScalerRegistry		scaler_reg;		// Scaler Registry
  const ScalerStruct	*scaler;		// Scaler
  int scaler_index;	// Index of Current Scaler
@@ -51,6 +56,7 @@ class Screen
  bool fullscreen;
  bool doubleBuffer;
  bool is_no_darkness;
+ bool non_square_pixels;
 
  uint8 palette[768];
  uint16 width;
@@ -72,6 +78,7 @@ class Screen
    bool init();
 
    bool is_fullscreen() { return fullscreen; }
+   bool is_non_square_pixels() { return non_square_pixels; }
    int get_scaler_index() { return scaler_index; }
    ScalerRegistry *get_scaler_reg() { return &scaler_reg; }
    bool toggle_darkness_cheat();
@@ -129,6 +136,14 @@ class Screen
 
    void draw_line (int sx, int sy, int ex, int ey, uint8 color);
 
+   void get_mouse_location(sint32 *x, sint32 *y);
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    void scale_sdl_window_coords(sint32 *x, sint32 *y);
+#endif
+
+    void set_non_square_pixels(bool value);
+
 protected:
    int lighting_style, old_lighting_style;
    bool fill16(uint8 colour_num, uint16 x, uint16 y, sint16 w, sint16 h);
@@ -161,6 +176,22 @@ inline void blitbitmap32(uint16 dest_x, uint16 dest_y, const unsigned char *src_
 
 void set_screen_mode();
 bool try_scaler(int w, int h, uint32 flags, int hwdepth);
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    bool SDL_VideoModeOK(int scaled_width, int scaled_height, int bbp, int flags);
+#endif
+
+private:
+    int get_screen_bpp();
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+    bool init_sdl2_window(uint16 scale);
+    bool create_sdl_surface_and_texture(sint32 w, sint32 h, Uint32 format);
+#else
+    bool sdl1_toggle_fullscreen();
+#endif
+
+    bool set_fullscreen(bool value);
 };
 
 

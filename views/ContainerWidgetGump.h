@@ -49,7 +49,7 @@ class ContainerWidgetGump : public ContainerWidget {
  bool init(Actor *a, uint16 x, uint16 y, uint8 Cols, uint8 Rows, TileManager *tm, ObjManager *om, Font *f, uint8 check_xoff, uint8 check_yoff);
 
  void Display(bool full_redraw);
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
 
  virtual void set_actor(Actor *a);
  private:

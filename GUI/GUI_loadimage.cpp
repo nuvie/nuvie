@@ -15,7 +15,7 @@ SDL_Surface *GUI_LoadImage(int w, int h, Uint8 *pal, Uint8 *data)
 {
 	SDL_Surface *image;
 
-	image = SDL_AllocSurface(SDL_SWSURFACE, w, h, 8, 0, 0, 0, 0);
+	image = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 8, 0, 0, 0, 0);
 	if ( image ) {
 		for ( int row=0; row<h; ++row ) {
 			memcpy((Uint8 *)image->pixels + row * image->pitch,

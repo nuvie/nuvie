@@ -711,12 +711,12 @@ void MsgScroll::set_input_mode(bool state, const char *allowed, bool can_escape,
  {
    if(allowed && strlen(allowed))
       set_permitted_input(allowed);
-   SDL_EnableUNICODE(1); // allow character translation
+   //FIXME SDL2 SDL_EnableUNICODE(1); // allow character translation
    input_buf.erase(0,input_buf.length());
  }
  else
  {
-   SDL_EnableUNICODE(0); // reduce translation overhead when not needed
+   //FIXME SDL2 SDL_EnableUNICODE(0); // reduce translation overhead when not needed
    if(callback_target)
      do_callback = true; // **DELAY until end-of-method so callback can set_input_mode() again**
  }
@@ -785,15 +785,12 @@ void MsgScroll::process_page_break()
 /* Take input from the main event handler and do something with it
  * if necessary.
  */
-GUI_status MsgScroll::KeyDown(SDL_keysym key)
+GUI_status MsgScroll::KeyDown(SDL_Keysym key)
 {
-    char ascii = 0;
+    char ascii = get_ascii_char_from_keysym(key);
 
     if(page_break == false && input_mode == false)
         return(GUI_PASS);
-    if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-        ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-    else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
 
     bool is_printable = isprint(ascii);
     KeyBinder *keybinder = Game::get_game()->get_keybinder();
@@ -882,6 +879,10 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
                                   input_buf_remove_char();
                             }
                             break;
+        case SDLK_LSHIFT :
+            return(GUI_YUM);
+        case SDLK_RSHIFT :
+            return(GUI_YUM);
         default: // alphanumeric characters
                  if(input_mode && is_printable)
                   {
@@ -906,6 +907,34 @@ GUI_status MsgScroll::KeyDown(SDL_keysym key)
  return(GUI_YUM);
 }
 
+
+GUI_status MsgScroll::MouseWheel(sint32 x, sint32 y)
+{
+    if(page_break) // any click == scroll-to-end
+    {
+        process_page_break();
+        return(GUI_YUM);
+    }
+
+    Game *game = Game::get_game();
+
+    if(game->is_new_style())
+    {
+        if (y > 0)
+            move_scroll_up();
+        if (y < 0)
+            move_scroll_down();
+    }
+    else
+    {
+        if (y > 0)
+            page_up();
+        if (y < 0)
+            page_down();
+    }
+    return GUI_YUM;
+}
+
 GUI_status MsgScroll::MouseUp(int x, int y, int button)
 {
  uint16 i;
@@ -916,25 +945,8 @@ GUI_status MsgScroll::MouseUp(int x, int y, int button)
         process_page_break();
         return(GUI_YUM);
     }
-    else if(button == SDL_BUTTON_WHEELUP)
-    {
-        if(!Game::get_game()->is_new_style())
-            page_up();
-        else if(input_mode)
-            move_scroll_up();
-        if(!Game::get_game()->is_new_style())
-            return GUI_YUM;
-    }
-    else if(button == SDL_BUTTON_WHEELDOWN)
-    {
-        if(!Game::get_game()->is_new_style())
-            page_down();
-        else if(input_mode)
-            move_scroll_down();
-        if(!Game::get_game()->is_new_style())
-            return GUI_YUM;
-    }
-    else if(button == 1) // left click == select word
+
+    if(button == 1) // left click == select word
     {
      if(input_mode)
        {

@@ -23,7 +23,7 @@
 
 #include <stdio.h>
 
-#include <string>
+#include <string.h>
 #include <cctype>
 
 #include "nuvieDefs.h"

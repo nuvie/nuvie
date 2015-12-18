@@ -40,6 +40,11 @@
 
 #define DELUXE_PAINT_MAGIC 0x4d524f46 // "FORM"
 
+#define INPUT_KEY_RIGHT 79 | (1<<30)
+#define INPUT_KEY_LEFT 80 | (1<<30)
+#define INPUT_KEY_DOWN  81 | (1<<30)
+#define INPUT_KEY_UP  82 | (1<<30)
+
 static ScriptCutscene *cutScene = NULL;
 ScriptCutscene *get_cutscene() { return cutScene; }
 
@@ -1064,10 +1069,7 @@ static int nscript_music_stop(lua_State *L)
 static int nscript_get_mouse_x(lua_State *L)
 {
 	int x, y;
-	SDL_GetMouseState(&x, &y);
-	int scale_factor = cutScene->get_screen()->get_scale_factor();
-	if(scale_factor > 1)
-		x /= scale_factor;
+	cutScene->get_screen()->get_mouse_location(&x, &y);
 	x -= cutScene->get_x_off();
 	lua_pushinteger(L, x);
 	return 1;
@@ -1076,10 +1078,7 @@ static int nscript_get_mouse_x(lua_State *L)
 static int nscript_get_mouse_y(lua_State *L)
 {
 	int x, y;
-	SDL_GetMouseState(&x, &y);
-	int scale_factor = cutScene->get_screen()->get_scale_factor();
-	if(scale_factor > 1)
-		y /= scale_factor;
+	cutScene->get_screen()->get_mouse_location(&x, &y);
 	y -= cutScene->get_y_off();
 	lua_pushinteger(L, y);
 	return 1;
@@ -1101,26 +1100,27 @@ static int nscript_input_poll(lua_State *L)
 		if(event.type >= SDL_JOYAXISMOTION && event.type <= SDL_JOYBUTTONUP)
 		{
 			event.key.keysym.sym = keybinder->get_key_from_joy_events(&event);
-			if(event.key.keysym.sym == SDLK_LAST) // make sure button isn't mapped or is in deadzone
+			if(event.key.keysym.sym == SDLK_UNKNOWN) // make sure button isn't mapped or is in deadzone
 				return 0; // pretend nothing happened
 			event.type = SDL_KEYDOWN;
+			event.key.keysym.mod = KMOD_NONE;
 		}
 #endif
 		if(event.type == SDL_KEYDOWN)
 		{
-			SDL_keysym key = event.key.keysym;
+			SDL_Keysym key = event.key.keysym;
 			if((((key.mod & KMOD_CAPS) == KMOD_CAPS && (key.mod & KMOD_SHIFT) == 0) || ((key.mod & KMOD_CAPS) == 0 && (key.mod & KMOD_SHIFT)))
 			   && key.sym >= SDLK_a && key.sym <= SDLK_z)
-				key.sym = (SDLKey)(key.sym -32);
-			if(!isprint(key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_META))
+				key.sym = (SDL_Keycode)(key.sym -32);
+			if(!isprint((char)key.sym) || (key.mod &KMOD_ALT) || (key.mod &KMOD_CTRL)|| (key.mod &KMOD_GUI))
 			{
 				ActionType a = keybinder->get_ActionType(key);
 				switch(keybinder->GetActionKeyType(a))
 				{
-					case WEST_KEY: key.sym = SDLK_LEFT; break;
-					case EAST_KEY: key.sym = SDLK_RIGHT; break;
-					case SOUTH_KEY: key.sym = SDLK_DOWN; break;
-					case NORTH_KEY: key.sym = SDLK_UP; break;
+					case WEST_KEY: lua_pushinteger(L, INPUT_KEY_LEFT); return 1;
+					case EAST_KEY: lua_pushinteger(L, INPUT_KEY_RIGHT); return 1;
+					case SOUTH_KEY: lua_pushinteger(L, INPUT_KEY_DOWN); return 1;
+					case NORTH_KEY: lua_pushinteger(L, INPUT_KEY_UP); return 1;
 					case CANCEL_ACTION_KEY: key.sym = SDLK_ESCAPE; break;
 					case DO_ACTION_KEY: key.sym = SDLK_RETURN; break;
 					default: if(keybinder->handle_always_available_keys(a)) return 0; break;

@@ -66,7 +66,7 @@ public:
  void Display(bool full_redraw);
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
  void close_look();
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
  GUI_status MouseDown(int x, int y, int button);
 
  GUI_status MouseUp(int x, int y, int button) { return GUI_YUM; }
@@ -77,6 +77,7 @@ public:
  GUI_status MouseDouble(int x, int y, int button) { return GUI_YUM; }
  GUI_status MouseDelayed(int x, int y, int button) { return GUI_YUM; }
  GUI_status MouseHeld(int x, int y, int button) { return GUI_YUM; }
+ GUI_status MouseWheel(sint32 x, sint32 y);
 
  protected:
 

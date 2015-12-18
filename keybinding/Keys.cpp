@@ -145,8 +145,8 @@ const struct Action {
 
 const struct {
 	const char *s;
-	SDLKey k;
-} SDLKeyStringTable[] = {
+	SDL_Keycode k;
+} SDL_KeycodeStringTable[] = {
 	{"LCTRL",     SDLK_LCTRL},
 	{"RCTRL",     SDLK_RCTRL},
 	{"LALT",      SDLK_LALT},
@@ -160,16 +160,16 @@ const struct {
 	{"ESC",       SDLK_ESCAPE}, 
 	{"SPACE",     SDLK_SPACE}, 
 	{"DEL",       SDLK_DELETE}, 
-	{"KP0",       SDLK_KP0}, 
-	{"KP1",       SDLK_KP1}, 
-	{"KP2",       SDLK_KP2}, 
-	{"KP3",       SDLK_KP3}, 
-	{"KP4",       SDLK_KP4}, 
-	{"KP5",       SDLK_KP5}, 
-	{"KP6",       SDLK_KP6}, 
-	{"KP7",       SDLK_KP7}, 
-	{"KP8",       SDLK_KP8}, 
-	{"KP9",       SDLK_KP9}, 
+	{"KP0",       SDLK_KP_0},
+	{"KP1",       SDLK_KP_1},
+	{"KP2",       SDLK_KP_2},
+	{"KP3",       SDLK_KP_3},
+	{"KP4",       SDLK_KP_4},
+	{"KP5",       SDLK_KP_5},
+	{"KP6",       SDLK_KP_6},
+	{"KP7",       SDLK_KP_7},
+	{"KP8",       SDLK_KP_8},
+	{"KP9",       SDLK_KP_9},
 	{"KP.",       SDLK_KP_PERIOD}, 
 	{"KP/",       SDLK_KP_DIVIDE}, 
 	{"KP*",       SDLK_KP_MULTIPLY}, 
@@ -267,12 +267,13 @@ const struct {
 };
 
 
-typedef std::map<std::string, SDLKey> ParseKeyMap;
+typedef std::map<std::string, SDL_Keycode> ParseKeyMap;
 typedef std::map<std::string, const Action*> ParseActionMap;
 
 static ParseKeyMap keys;
 static ParseActionMap actions;
 
+const Action doNothingAction = { "DO_NOTHING", ActionDoNothing, "", Action::dont_show, true, OTHER_KEY };
 
 KeyBinder::KeyBinder(Configuration *config)
 {
@@ -375,10 +376,10 @@ KeyBinder::~KeyBinder()
 {
 }
 
-void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action, 
+void KeyBinder::AddKeyBinding( SDL_Keycode key, int mod, const Action* action,
 				 int nparams, int* params)
 {
-	SDL_keysym k;
+	SDL_Keysym k;
 	ActionType a;
 
 	#if SDL_VERSION_ATLEAST(1, 3, 0)
@@ -387,8 +388,7 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 	k.scancode = 0;
 	#endif
 	k.sym      = key;
-	k.mod      = (SDLMod) mod;
-	k.unicode  = 0;
+	k.mod      = (SDL_Keymod) mod;
 	a.action    = action;
 	int i;	// For MSVC
 	for (i = 0; i < c_maxparams && i < nparams; i++)
@@ -399,9 +399,14 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 	bindings[k] = a;
 }
 
-ActionType KeyBinder::get_ActionType(SDL_keysym key)
+ActionType KeyBinder::get_ActionType(SDL_Keysym key)
 {
 	KeyMap::iterator sdlkey_index = get_sdlkey_index(key);
+	if(sdlkey_index == bindings.end())
+	{
+		ActionType actionType = {&doNothingAction, {0}};
+		return actionType;
+	}
 	return (*sdlkey_index).second;
 }
 
@@ -427,21 +432,21 @@ bool KeyBinder::DoAction(ActionType const& a) const
 	return true;
 }
 
-KeyMap::iterator KeyBinder::get_sdlkey_index(SDL_keysym keysym)
+KeyMap::iterator KeyBinder::get_sdlkey_index(SDL_Keysym keysym)
 {
-	SDL_keysym key = keysym;
+	SDL_Keysym key = keysym;
 	key.mod = KMOD_NONE;
 	if (keysym.mod & KMOD_SHIFT)
-		key.mod = (SDLMod)(key.mod | KMOD_SHIFT);
+		key.mod = (SDL_Keymod)(key.mod | KMOD_SHIFT);
 	if (keysym.mod & KMOD_CTRL)
-		key.mod = (SDLMod)(key.mod | KMOD_CTRL);
+		key.mod = (SDL_Keymod)(key.mod | KMOD_CTRL);
 #if defined(MACOS) || defined(MACOSX)
 	// map Meta to Alt on MacOS
-	if (keysym.mod & KMOD_META)
-		key.mod = (SDLMod)(key.mod | KMOD_ALT);
+	if (keysym.mod & KMOD_GUI)
+		key.mod = (SDL_Keymod)(key.mod | KMOD_ALT);
 #else
 	if (keysym.mod & KMOD_ALT)
-		key.mod = (SDLMod)(key.mod | KMOD_ALT);
+		key.mod = (SDL_Keymod)(key.mod | KMOD_ALT);
 #endif
 
 	return bindings.find(key);
@@ -449,7 +454,7 @@ KeyMap::iterator KeyBinder::get_sdlkey_index(SDL_keysym keysym)
 
 bool KeyBinder::HandleEvent(const SDL_Event *ev)
 {
-	SDL_keysym key = ev->key.keysym;
+	SDL_Keysym key = ev->key.keysym;
 	KeyMap::iterator sdlkey_index;
 
 	if (ev->type != SDL_KEYDOWN)
@@ -540,7 +545,7 @@ static void skipspace(string &s) {
 void KeyBinder::ParseLine(char *line)
 {
 	size_t i;
-	SDL_keysym k;
+	SDL_Keysym k;
 	ActionType a;
 	k.sym      = SDLK_UNKNOWN;
 	k.mod      = KMOD_NONE;
@@ -561,13 +566,13 @@ void KeyBinder::ParseLine(char *line)
 	while (s.length() && !isspace(s[0])) {
 		// check modifiers
 		if (u.substr(0,4) == "ALT-") {
-			k.mod = (SDLMod)(k.mod | KMOD_ALT);
+			k.mod = (SDL_Keymod)(k.mod | KMOD_ALT);
 			s.erase(0,4); u.erase(0,4);
 		} else if (u.substr(0,5) == "CTRL-") {
-			k.mod = (SDLMod)(k.mod | KMOD_CTRL);
+			k.mod = (SDL_Keymod)(k.mod | KMOD_CTRL);
 			s.erase(0,5); u.erase(0,5);
 		} else if (u.substr(0,6) == "SHIFT-") {
-			k.mod = (SDLMod)(k.mod | KMOD_SHIFT);
+			k.mod = (SDL_Keymod)(k.mod | KMOD_SHIFT);
 			s.erase(0,6); u.erase(0,6);
 		} else {
 			
@@ -580,12 +585,12 @@ void KeyBinder::ParseLine(char *line)
 				cerr << "Keybinder: parse error in line: " << s << endl;
 				return;
 			} else if (t.length() == 1) {
-				// translate 1-letter keys straight to SDLKey
+				// translate 1-letter keys straight to SDL_Keycode
 				char c = t[0];
 				if (c >= 33 && c <= 122 && c != 37) {
 					if (c >= 'A' && c <= 'Z')
 						c += 32; // need lowercase
-					k.sym = static_cast<SDLKey>(c);
+					k.sym = static_cast<SDL_Keycode>(c);
 				} else {
 					cerr << "Keybinder: unsupported key: " << keycode << endl;
 				}
@@ -754,8 +759,8 @@ void KeyBinder::LoadFromPatch() // FIXME default should probably be system speci
 void KeyBinder::FillParseMaps()
 {
 	int i;	// For MSVC
-	for (i = 0; strlen(SDLKeyStringTable[i].s) > 0; i++)
-		keys[SDLKeyStringTable[i].s] = SDLKeyStringTable[i].k;
+	for (i = 0; strlen(SDL_KeycodeStringTable[i].s) > 0; i++)
+		keys[SDL_KeycodeStringTable[i].s] = SDL_KeycodeStringTable[i].k;
 	
 	for (i = 0; strlen(NuvieActions[i].s) > 0; i++)
 		actions[NuvieActions[i].s] = &(NuvieActions[i]);
@@ -833,12 +838,12 @@ uint16 KeyBinder::get_y_axis_deadzone(joy_axes_pairs axes_pair)
 	}
 }
 
-SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
+SDL_Keycode KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 {
 	joy_axes_pairs axes_pair =  get_axes_pair(axis);
 
 	if(axes_pair == UNHANDLED_AXES_PAIR) // joystick NULL check doesn't seem to be needed - It is also checked before tring to repeat
-		return SDLK_LAST;
+		return SDLK_UNKNOWN;
 	sint8 xoff = 0;
 	sint8 yoff = 0;
 	int xaxis, yaxis;
@@ -849,7 +854,7 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 		case AXES_PAIR2: xaxis = x_axis2; yaxis = y_axis2; break;
 		case AXES_PAIR3: xaxis = x_axis3; yaxis = y_axis3; break;
 		case AXES_PAIR4: xaxis = x_axis4; yaxis = y_axis4; break;
-		default: return SDLK_LAST; // shouldn't happen
+		default: return SDLK_UNKNOWN; // shouldn't happen
 	}
 
 	if(xaxis != 255 && abs(SDL_JoystickGetAxis(joystick, xaxis)) > get_x_axis_deadzone(axes_pair))
@@ -865,10 +870,10 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 			next_axes_pair_update = 0; // centered so okay to reset
 			if(!repeat_hat)
 				next_joy_repeat_time = SDL_GetTicks() + joy_repeat_delay;
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 		}
 		else if((repeating && next_joy_repeat_time > SDL_GetTicks()) || (!repeating && next_axes_pair_update > SDL_GetTicks())) // don't repeat too fast
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 
 		next_axes_pair_update = SDL_GetTicks() + pair1_delay;
 		if(!repeat_hat)
@@ -883,7 +888,7 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 			case NUVIE_DIR_SE: return JOY_RIGHTDOWN;
 			case NUVIE_DIR_SW: return JOY_LEFTDOWN;
 			case NUVIE_DIR_NW: return JOY_LEFTUP;
-			default: return SDLK_LAST; // shouldn't happen
+			default: return SDLK_UNKNOWN; // shouldn't happen
 		}
 	}
 	else if(axes_pair == AXES_PAIR2)
@@ -891,10 +896,10 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 		if(dir == NUVIE_DIR_NONE)
 		{
 			next_axes_pair2_update = 0; // centered so okay to reset
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 		}
 		else if(next_axes_pair2_update > SDL_GetTicks()) // don't repeat too fast
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 		else
 			next_axes_pair2_update = SDL_GetTicks() + pair2_delay;
 		switch(dir)
@@ -907,7 +912,7 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 			case NUVIE_DIR_SE: return JOY_RIGHTDOWN2;
 			case NUVIE_DIR_SW: return JOY_LEFTDOWN2;
 			case NUVIE_DIR_NW: return JOY_LEFTUP2;
-			default: return SDLK_LAST; // shouldn't happen
+			default: return SDLK_UNKNOWN; // shouldn't happen
 		}
 	}
 	else if(axes_pair == AXES_PAIR3)
@@ -915,10 +920,10 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 		if(dir == NUVIE_DIR_NONE)
 		{
 			next_axes_pair3_update = 0; // centered so okay to reset
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 		}
 		else if(next_axes_pair3_update > SDL_GetTicks()) // don't repeat too fast
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 		else
 			next_axes_pair3_update = SDL_GetTicks() + pair3_delay;
 		switch(dir)
@@ -931,7 +936,7 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 			case NUVIE_DIR_SE: return JOY_RIGHTDOWN3;
 			case NUVIE_DIR_SW: return JOY_LEFTDOWN3;
 			case NUVIE_DIR_NW: return JOY_LEFTUP3;
-			default: return SDLK_LAST; // shouldn't happen
+			default: return SDLK_UNKNOWN; // shouldn't happen
 		}
 	}
 	else // AXES_PAIR4
@@ -939,10 +944,10 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 		if(dir == NUVIE_DIR_NONE)
 		{
 			next_axes_pair4_update = 0; // centered so okay to reset
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 		}
 		else if(next_axes_pair4_update > SDL_GetTicks()) // don't repeat too fast
-			return SDLK_LAST;
+			return SDLK_UNKNOWN;
 
 		next_axes_pair4_update = SDL_GetTicks() + pair4_delay;
 		switch(dir)
@@ -955,12 +960,12 @@ SDLKey KeyBinder::get_key_from_joy_axis_motion(int axis, bool repeating)
 			case NUVIE_DIR_SE: return JOY_RIGHTDOWN4;
 			case NUVIE_DIR_SW: return JOY_LEFTDOWN4;
 			case NUVIE_DIR_NW: return JOY_LEFTUP4;
-			default: return SDLK_LAST; // shouldn't happen
+			default: return SDLK_UNKNOWN; // shouldn't happen
 		}
 	}
 }
 
-SDLKey KeyBinder::get_key_from_joy_button(uint8 button)
+SDL_Keycode KeyBinder::get_key_from_joy_button(uint8 button)
 {
 	switch(button)
 	{
@@ -984,19 +989,19 @@ SDLKey KeyBinder::get_key_from_joy_button(uint8 button)
 		case 17: return JOY17;
 		case 18: return JOY18;
 		case 19: return JOY19;
-		default: return SDLK_LAST; // unhandled button
+		default: return SDLK_UNKNOWN; // unhandled button
 	}
 }
 
-SDLKey KeyBinder::get_key_from_joy_hat(SDL_JoyHatEvent jhat)
+SDL_Keycode KeyBinder::get_key_from_joy_hat(SDL_JoyHatEvent jhat)
 {
 //	if(jhat.which == 0) // only handling one jhat for now and some devices don't start at 0
 		return get_key_from_joy_hat_button(jhat.value);
 //	else
-//		return SDLK_LAST; // unhandled hat
+//		return SDLK_UNKNOWN; // unhandled hat
 }
 
-SDLKey KeyBinder::get_key_from_joy_hat_button(uint8 hat_button)
+SDL_Keycode KeyBinder::get_key_from_joy_hat_button(uint8 hat_button)
 {
 	if(repeat_hat)
 		next_joy_repeat_time = SDL_GetTicks() + joy_repeat_delay;
@@ -1010,11 +1015,11 @@ SDLKey KeyBinder::get_key_from_joy_hat_button(uint8 hat_button)
 		case SDL_HAT_RIGHTDOWN: return JOY_HAT_RIGHTDOWN;
 		case SDL_HAT_LEFTUP: return JOY_HAT_LEFTUP;
 		case SDL_HAT_LEFTDOWN: return JOY_HAT_LEFTDOWN;
-		default: return SDLK_LAST; // center or unhandled position
+		default: return SDLK_UNKNOWN; // center or unhandled position
 	}
 }
 
-SDLKey KeyBinder::get_key_from_joy_events(SDL_Event *event)
+SDL_Keycode KeyBinder::get_key_from_joy_events(SDL_Event *event)
 {
 	if(event->type == SDL_JOYBUTTONUP)
 		return get_key_from_joy_button(event->jbutton.button);
@@ -1023,7 +1028,7 @@ SDLKey KeyBinder::get_key_from_joy_events(SDL_Event *event)
 	else if(event->type == SDL_JOYAXISMOTION)
 		return get_key_from_joy_axis_motion(event->jaxis.axis, false);
 	else
-		return SDLK_LAST;
+		return SDLK_UNKNOWN;
 }
 
 void KeyBinder::init_joystick(sint8 joy_num)
@@ -1046,7 +1051,7 @@ void KeyBinder::init_joystick(sint8 joy_num)
 		if(SDL_NumJoysticks() > 0)
 		{
 			for(int i=0; i < SDL_NumJoysticks(); i++)
-				fprintf(stdout, "Joystick %i is %s.\n", i, SDL_JoystickName(i));
+				fprintf(stdout, "Joystick %i is %s.\n", i, SDL_JoystickNameForIndex(i));
 #if SDL_VERSION_ATLEAST(2,0,0)
 //can use SDL_GameControllerGetAttached(SDL_GameController* gamecontroller) when we implement SDL2
 			if(enable_joystick == 127) // autodetect - seems to always pick joystick 0 but there is some possiblity that SDL couldn't open it
@@ -1071,7 +1076,7 @@ void KeyBinder::init_joystick(sint8 joy_num)
 		}
 		else
 		{
-			fprintf(stdout, "Using joystick #%u, \"%s\". It has %u axes, %u %s, and %u buttons.\n", joystick_index, SDL_JoystickName(joystick_index),
+			fprintf(stdout, "Using joystick #%u, \"%s\". It has %u axes, %u %s, and %u buttons.\n", joystick_index, SDL_JoystickNameForIndex(joystick_index),
 			        SDL_JoystickNumAxes(joystick), SDL_JoystickNumHats(joystick), SDL_JoystickNumHats(joystick) == 1? "hat" : "hats", SDL_JoystickNumButtons(joystick));
 			SDL_JoystickEventState(SDL_ENABLE);
 		}
@@ -1079,3 +1084,17 @@ void KeyBinder::init_joystick(sint8 joy_num)
 }
 
 #endif /* HAVE_JOYSTICK_SUPPORT */
+
+char get_ascii_char_from_keysym(SDL_Keysym keysym)
+{
+	char ascii = 0;
+	if(keysym.sym < 128)
+	{
+		ascii = (char) keysym.sym;
+		if(ascii >= 97 && ascii <= 122 && keysym.mod & (KMOD_SHIFT|KMOD_CAPS))
+		{
+			ascii -= 32;
+		}
+	}
+	return ascii;
+}

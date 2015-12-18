@@ -26,7 +26,7 @@
 #include <list>
 #include <string>
 
-#include "SDL.h"
+#include <SDL.h>
 
 #include "ObjManager.h"
 //#include "GUI_CallBack.h"
@@ -91,7 +91,7 @@ struct EventInput_s
     uint8 type; // 0=loc,1=key,2=str,3=obj,4=actor
 //    union
 //    {
-        SDLKey key; // last key entered, if capturing input
+        SDL_Keycode key; // last key entered, if capturing input
         ActionKeyType action_key_type; // last ActionKeyType entered if capturing input
         MapCoord *loc; // target location, or direction if relative ???
         std::string *str; // ???

@@ -172,7 +172,7 @@ void ContainerWidgetGump::cursor_down()
 	}
 }
 
-GUI_status ContainerWidgetGump::KeyDown(SDL_keysym key)
+GUI_status ContainerWidgetGump::KeyDown(SDL_Keysym key)
 {
 	KeyBinder *keybinder = Game::get_game()->get_keybinder();
 	ActionType a = keybinder->get_ActionType(key);

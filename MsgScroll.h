@@ -233,8 +233,9 @@ private:
 
  bool get_page_break() { return(page_break); }
 
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
  GUI_status MouseUp(int x, int y, int button);
+ GUI_status MouseWheel(sint32 x, sint32 y);
  virtual std::string get_token_string_at_pos(uint16 x, uint16 y);
  //void updateScroll();
  void Display(bool full_redraw);
@@ -272,6 +273,8 @@ private:
  void decrease_input_char();
  uint8 get_char_from_input_char();
  virtual uint8 get_input_font_color() { return font_color; }
+
+
 };
 
 

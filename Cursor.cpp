@@ -1,4 +1,6 @@
 #include <cassert>
+#include <stdlib.h>
+#include <string.h>
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "Screen.h"
@@ -162,9 +164,8 @@ bool Cursor::display(sint32 px, sint32 py)
         return(true);
     if(px == -1 || py == -1)
     {
-        SDL_GetMouseState(&px, &py);
-        px /= screen->get_scale_factor();
-        py /= screen->get_scale_factor();
+        screen->get_mouse_location(&px, &py);
+//        DEBUG(0,LEVEL_DEBUGGING,"mouse pos: %d,%d", px, py);
     }
     MousePointer *ptr = cursors[cursor_id];
 

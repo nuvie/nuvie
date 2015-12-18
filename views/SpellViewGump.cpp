@@ -311,19 +311,21 @@ sint16 SpellViewGump::getSpell(int x, int y)
 	return -1;
 }
 
-GUI_status SpellViewGump::MouseDown(int x, int y, int button)
-{
-	if(button == SDL_BUTTON_WHEELDOWN)
-	{
-		move_right();
-		return GUI_YUM;
-	}
-	else if(button == SDL_BUTTON_WHEELUP)
+GUI_status SpellViewGump::MouseWheel(sint32 x, sint32 y) {
+	if (y>0)
 	{
 		move_left();
-		return GUI_YUM;
 	}
-	else if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
+	else if (y<0)
+	{
+		move_right();
+	}
+	return GUI_YUM;
+}
+
+GUI_status SpellViewGump::MouseDown(int x, int y, int button)
+{
+	if(SDL_BUTTON(button) & SDL_BUTTON_RMASK)
 	{
 		close_spellbook();
 		return GUI_YUM;

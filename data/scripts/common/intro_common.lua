@@ -20,10 +20,11 @@ SDLK_KP4          = 260
 SDLK_KP6          = 262
 SDLK_KP8          = 264
 SDLK_KP_ENTER     = 271
-SDLK_UP           = 273
-SDLK_DOWN         = 274
-SDLK_RIGHT        = 275
-SDLK_LEFT         = 276
+SDLK_UP           = 82 + 1073741824
+SDLK_DOWN         = 81 + 1073741824
+SDLK_RIGHT        = 79 + 1073741824
+SDLK_LEFT         = 80 + 1073741824
+
 
 function trim_string(s)
    return s:match'^%s*(.*%S)' or ''

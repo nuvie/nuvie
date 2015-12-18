@@ -81,7 +81,7 @@ class InventoryView : public View {
 
  void Display(bool full_redraw);
  void PlaceOnScreen(Screen *s, GUI_DragManager *dm, int x, int y);
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
  void simulate_CB_callback();
  bool is_picking_pocket() { return picking_pocket; }
 
@@ -95,6 +95,7 @@ class InventoryView : public View {
  void hide_buttons();
  void show_buttons();
  GUI_status MouseDown(int x, int y, int button);
+ GUI_status MouseWheel(sint32 x, sint32 y);
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 };
 

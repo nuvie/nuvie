@@ -2,7 +2,7 @@
  *  U6Shape.cpp
  *  Nuvie
  *
- *  Created by Markus Niemistö on Sun May 25 2003.
+ *  Created by Markus Niemisto on Sun May 25 2003.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@
  *  Includes
  * ==========
  */
-#include <string>
+#include <string.h>
 #include <stdlib.h>
 #include "SDL.h"
 #include "SDL_endian.h"
@@ -163,12 +163,12 @@ bool U6Shape::load_from_lzc(std::string filename, uint32 idx, uint32 sub_idx)
 
   if(!lib_n.open(filename, 4, NUVIE_GAME_MD))
   {
-    return NULL;
+    return false;
   }
 
   if(idx >= lib_n.get_num_items())
   {
-    return NULL;
+    return false;
   }
 
   buf = lib_n.get_item(idx,NULL);
@@ -179,7 +179,7 @@ bool U6Shape::load_from_lzc(std::string filename, uint32 idx, uint32 sub_idx)
 
   if(sub_idx >= lib1.get_num_items())
   {
-    return NULL;
+    return false;
   }
 
   if(load(&lib1, (uint32)sub_idx))

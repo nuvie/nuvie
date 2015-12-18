@@ -155,7 +155,7 @@ GUI_status JoystickDialog::close_dialog() {
 	return GUI_YUM;
 }
 
-GUI_status JoystickDialog::KeyDown(SDL_keysym key) {
+GUI_status JoystickDialog::KeyDown(SDL_Keysym key) {
 	KeyBinder *keybinder = Game::get_game()->get_keybinder();
 	ActionType a = keybinder->get_ActionType(key);
 

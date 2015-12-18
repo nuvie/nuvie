@@ -276,7 +276,7 @@ void MsgScrollNewUI::Display(bool full_redraw)
 	screen->update(area.x,area.y, scroll_width*7 + 8, scroll_height*10 + 8);
 }
 
-GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)
+GUI_status MsgScrollNewUI::KeyDown(SDL_Keysym key)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
 /*
@@ -296,13 +296,6 @@ GUI_status MsgScrollNewUI::KeyDown(SDL_keysym key)
 GUI_status MsgScrollNewUI::MouseDown(int x, int y, int button)
 {
 	ScrollEventType event = SCROLL_ESCAPE;
-
-	switch(button)
-	{
-	case SDL_BUTTON_WHEELDOWN : return GUI_PASS;
-	case SDL_BUTTON_WHEELUP : return GUI_PASS;
-	default : break;
-	}
 
 	return scroll_movement_event(event);
 }

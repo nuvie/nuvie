@@ -280,21 +280,27 @@ void ActorView::display_actor_stats()
  return;
 }
 
+GUI_status ActorView::MouseWheel(sint32 x, sint32 y)
+{
+ if(y > 0)
+ {
+  View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
+ }
+ else if(y < 0)
+ {
+  View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
+ }
+ return GUI_YUM;
+}
+
 GUI_status ActorView::MouseDown(int x, int y, int button)
 {
-	if(button == SDL_BUTTON_WHEELUP) {
-		View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
-		return GUI_YUM;
-	} else if(button == SDL_BUTTON_WHEELDOWN) {
-		View::callback(BUTTON_CB, right_button, Game::get_game()->get_view_manager());
-		return GUI_YUM;
-	}
 	return GUI_PASS;
 }
 
 /* Move the cursor around and use command icons.
  */
-GUI_status ActorView::KeyDown(SDL_keysym key)
+GUI_status ActorView::KeyDown(SDL_Keysym key)
 {
 	if(!show_cursor) // FIXME: don't rely on show_cursor to get/pass focus
 		return(GUI_PASS);

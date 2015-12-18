@@ -49,7 +49,7 @@ public:
  GUI_status callback(uint16 msg, GUI_CallBack *caller, void *data);
 
  GUI_status MouseDown(int x, int y, int button);
- GUI_status KeyDown(SDL_keysym key);
+ GUI_status KeyDown(SDL_Keysym key);
 
  protected:
 

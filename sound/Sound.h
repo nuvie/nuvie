@@ -34,6 +34,7 @@
 #include "SDL.h"
 
 #include <string>
+#include <stdlib.h>
 #include <list>
 #include <vector>
 #include <map>

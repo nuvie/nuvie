@@ -21,7 +21,8 @@
  *
  */
 #include <ctype.h>
-
+#include <stdlib.h>
+#include <string.h>
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "NuvieIOFile.h"

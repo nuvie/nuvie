@@ -656,9 +656,9 @@ void ConverseGump::Display(bool full_redraw)
 }
 
 
-GUI_status ConverseGump::KeyDown(SDL_keysym key)
+GUI_status ConverseGump::KeyDown(SDL_Keysym key)
 {
-    char ascii = 0;
+    char ascii = get_ascii_char_from_keysym(key);
 
     if(page_break || !is_talking())
       {
@@ -673,10 +673,6 @@ GUI_status ConverseGump::KeyDown(SDL_keysym key)
        }
        return(GUI_YUM);
       }
-
-	if((key.unicode & 0xFF80) == 0) // high 9bits 0 == ascii code
-		ascii = (char)(key.unicode & 0x7F); // (in low 7bits)
-	else DEBUG(0,LEVEL_WARNING,"unhandled unicode value (%d)\n",key.unicode);
 
 	if(!input_mode || !isprint(ascii))
 	{

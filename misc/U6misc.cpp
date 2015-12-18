@@ -12,7 +12,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <string>
+#include <string.h>
 #include <vector>
 #include "nuvieDefs.h"
 
@@ -781,3 +781,13 @@ std::string encode_xml_entity(const std::string &s)
   }
   return ret;
 }
+
+#if SDL_VERSION_ATLEAST(2,0,0)
+
+int SDL_SetColors(SDL_Surface *surface, SDL_Color *colors, int firstcolor, int ncolors)
+{
+    return SDL_SetPaletteColors(surface->format->palette, colors, firstcolor, ncolors);
+}
+
+#endif
+

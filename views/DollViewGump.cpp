@@ -146,7 +146,7 @@ void DollViewGump::setColorKey(SDL_Surface *image)
   if(image)
   {
     bg_color_key = SDL_MapRGB(image->format, 0xf1, 0x0f, 0xc4);
-    SDL_SetColorKey(image, SDL_SRCCOLORKEY, bg_color_key);
+    SDL_SetColorKey(image, SDL_TRUE, bg_color_key);
   }
 }
 
@@ -503,7 +503,7 @@ GUI_status DollViewGump::moveCursorRelative(uint8 direction)
 	}
 }
 
-GUI_status DollViewGump::KeyDown(SDL_keysym key)
+GUI_status DollViewGump::KeyDown(SDL_Keysym key)
 {
 // I was restricting numpad keys when in numlock but there shouldn't be any needed number input
 //	bool numlock = (key.mod & KMOD_NUM); // SDL doesn't get the proper num lock state in Windows
@@ -580,22 +580,21 @@ void DollViewGump::activate_combat_button()
 		event->newAction(COMBAT_MODE);
 }
 
+GUI_status DollViewGump::MouseWheel(sint32 x, sint32 y)
+{
+	if(y > 0)
+	{
+		left_arrow();
+	}
+	else if(y < 0)
+	{
+		right_arrow();
+	}
+	return GUI_YUM;
+}
+
 GUI_status DollViewGump::MouseDown(int x, int y, int button)
 {
-// if(party->get_member_num(actor) >= 0)
- {
-	 if(button == SDL_BUTTON_WHEELDOWN)
-	 {
-		right_arrow();
-		return GUI_YUM;
-	 }
-	 else if(button == SDL_BUTTON_WHEELUP)
-	 {
-		 left_arrow();
-		 return GUI_YUM;
-	 }
- }
-
 	return DraggableView::MouseDown(x, y, button);
 }
 
