@@ -122,6 +122,13 @@ if test x$HOST_SYSTEM == xMACOSX; then
 	fi
 fi
 
+# the bundle version of nuvie requires the cocoa framework. It isn't a requirement of SDL2 anymore.
+if test x$HOST_SYSTEM == xMACOSX; then
+	if test $SDL_MAJOR_VERSION -eq 2; then
+		SDL_LIBS="$SDL_LIBS -Wl,-framework,Cocoa"
+	fi
+fi
+
 # enable code signing on OS X to satisfy OS X 10.8's Gatekeeper
 AM_CONDITIONAL(WITH_OSX_CODE_SIGNATURE, false)
 AC_ARG_WITH(macosx-code-signature,

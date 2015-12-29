@@ -41,13 +41,13 @@ AC_DEFUN([EXULT_CHECK_SDL],[
     SDL_CFLAGS=`$SDL_CONFIG $sdl_args --cflags`
     SDL_LIBS=`$SDL_CONFIG $sdl_args --libs`
 
-    sdl_major_version=`$SDL_CONFIG $sdl_args --version | \
+    SDL_MAJOR_VERSION=`$SDL_CONFIG $sdl_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
     sdl_minor_version=`$SDL_CONFIG $sdl_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
     sdl_patchlevel=`$SDL_CONFIG $sdl_args --version | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
-    if test $sdl_major_version -eq 1 ; then
+    if test $SDL_MAJOR_VERSION -eq 1 ; then
       sdl_ver=sdl12
     else
       sdl_ver=sdl2
@@ -89,7 +89,7 @@ AC_DEFUN([EXULT_CHECK_SDL],[
 
   if test x$exult_sdlok = xyes ; then
 
-    if test ! \( \( $sdl_major_version -gt $REQ_MAJOR \) -o \( \( $sdl_major_version -eq $REQ_MAJOR \) -a \( \( $sdl_minor_version -gt $REQ_MINOR \) -o \( \( $sdl_minor_version -eq $REQ_MINOR \) -a \( $sdl_patchlevel -gt $REQ_PATCHLEVEL \) \) \) \) \); then
+    if test ! \( \( $SDL_MAJOR_VERSION -gt $REQ_MAJOR \) -o \( \( $SDL_MAJOR_VERSION -eq $REQ_MAJOR \) -a \( \( $sdl_minor_version -gt $REQ_MINOR \) -o \( \( $sdl_minor_version -eq $REQ_MINOR \) -a \( $sdl_patchlevel -gt $REQ_PATCHLEVEL \) \) \) \) \); then
       exult_sdlok="no, version < $REQ_VERSION found"
     else
       AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
@@ -97,7 +97,7 @@ AC_DEFUN([EXULT_CHECK_SDL],[
 
       int main()
       {
-        static int test_array[1-2*!(SDL_MAJOR_VERSION==$sdl_major_version&&SDL_MINOR_VERSION==$sdl_minor_version&&SDL_PATCHLEVEL==$sdl_patchlevel)];
+        static int test_array[1-2*!(SDL_MAJOR_VERSION==$SDL_MAJOR_VERSION&&SDL_MINOR_VERSION==$sdl_minor_version&&SDL_PATCHLEVEL==$sdl_patchlevel)];
         test_array[0] = 0;
         return 0;
       }
@@ -132,6 +132,7 @@ AC_DEFUN([EXULT_CHECK_SDL],[
   if test "x$exult_sdlok" = xyes; then
     AC_SUBST(SDL_CFLAGS)
     AC_SUBST(SDL_LIBS)
+    AC_SUBST(SDL_MAJOR_VERSION)
     ifelse([$1], , :, [$1])
   else
     ifelse([$2], , :, [$2])

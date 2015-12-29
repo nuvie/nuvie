@@ -50,7 +50,7 @@ int main(int argc, char **argv)
  DEBUG(1,LEVEL_DEBUGGING,"To just get less spam, set the default for CurrentDebugLevel in Debug.cpp lower.\n");
  #ifdef MACOSX
  srandom(time(NULL));
- #if !SDL_VERSION_ATLEAST(2,0,0)
+
 
  CFBundleRef bundle = CFBundleGetMainBundle();
  if(bundle != NULL)
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 		CFRelease(fileUrl);
 	}
  }
- #endif
+
  #else
  srand(time(NULL));
  #endif
