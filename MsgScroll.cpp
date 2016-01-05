@@ -1074,8 +1074,7 @@ void MsgScroll::Display(bool full_redraw)
    clearCursor(area.x + 8 * cursor_x, area.y + cursor_y * 8);
   }
 
- if((Game::get_game()->is_original_plus_full_map() || Game::get_game()->is_orig_style())
-     && show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height))
+ if(show_cursor && (msg_buf.size() <= scroll_height || display_pos == msg_buf.size() - scroll_height))
  {
    drawCursor(area.x + left_margin + 8 * cursor_x, area.y + cursor_y * 8);
  }
