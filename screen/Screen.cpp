@@ -1242,12 +1242,9 @@ void Screen::blitalphamap8(sint16 x, sint16 y, SDL_Rect *clip_rect)
                 pixels16[j] = ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Rmask ) >> surface->Rshift)) * (float)(src_buf[j])/255.0f) ) << surface->Rshift ) | //R
                               ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Gmask ) >> surface->Gshift)) * (float)(src_buf[j])/255.0f) ) << surface->Gshift ) | //G
                               ( ( (unsigned char)(( (float)(( pixels16[j] & surface->Bmask ) >> surface->Bshift)) * (float)(src_buf[j])/255.0f) ) << surface->Bshift );  //B
-
-                //Red = 0xF800 = 1111 1000 0000 0000
-                //Grn = 0x07E0 = 0000 0111 1110 0000
-                //Blu = 0x001F = 0000 0000 0001 1111
             }
             pixels16 += surface->w;
+            src_buf += shading_rect.w;
         }
         return;
         break;
@@ -1602,7 +1599,6 @@ void Screen::set_screen_mode()
 	if (!try_scaler(width, height, flags, bpp)) {
 
 		scaler = 0;
-        bpp = 16;
 #if SDL_VERSION_ATLEAST(2, 0, 0)
         init_sdl2_window(scale_factor);
         scale_factor = 1;

@@ -36,7 +36,7 @@
 
 #include "main.h"
 
-#ifdef MACOSX && !SDL_VERSION_ATLEAST(2,0,0)
+#ifdef MACOSX
 #include <CoreFoundation/CoreFoundation.h>
 #include <XCodeBuild/main.cpp>
 int nuvieMain(int argc, char **argv)
