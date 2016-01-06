@@ -456,6 +456,13 @@ GUI_status InventoryWidget::MouseUp(int x,int y,int button)
 
        Redraw();
       }
+	if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
+	{
+		if(HitRect(x,y,arrow_rects[0]) //up arrow hit rect
+			up_arrow();
+		else if(HitRect(x,y,arrow_rects[1]) //down arrow hit rect
+			down_arrow();
+	}
 
     // only act now if objects can't be used with DoubleClick
     if(selected_obj && !Game::get_game()->get_map_window()->is_doubleclick_enabled())

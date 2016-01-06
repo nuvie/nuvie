@@ -113,6 +113,8 @@ class U6Actor: public Actor
  void handle_lightsource(uint8 hour);
 
  uint8 get_hp_text_color();
+ uint8 get_str_text_color() { return 0x48; }
+ uint8 get_dex_text_color() { return 0x48; }
 
  protected:
  bool init_ship();

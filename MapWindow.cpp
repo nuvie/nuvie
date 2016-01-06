@@ -2353,6 +2353,11 @@ GUI_status MapWindow::MouseDown (int x, int y, int button)
 		set_walking(true);
 		return GUI_YUM;
 	}
+	if(event->is_looking_at_spellbook())
+	{
+		event->cancelAction();
+		return GUI_YUM;
+	}
 
 	if(game->is_original_plus() && y <= Game::get_game()->get_game_y_offset() + 200
 	   && x >= Game::get_game()->get_game_x_offset() + game->get_game_width() - border_width) {

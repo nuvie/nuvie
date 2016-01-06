@@ -493,6 +493,11 @@ void Event::request_input(CallBack *caller, void *user_data)
 // typically this will be coming from inventory
 bool Event::select_obj(Obj *obj, Actor *actor)
 {
+	if(looking_at_spellbook && view_manager->get_spell_view() != NULL)
+	{
+		view_manager->get_spell_view()->close_look();
+		return false;
+	}
     assert(mode == INPUT_MODE);
     //assert(input.select_from_inventory == true);
 

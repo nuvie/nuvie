@@ -355,6 +355,11 @@ GUI_status SpellViewGump::MouseDown(int x, int y, int button)
 	if(can_target)
 	{
 		Event *event = Game::get_game()->get_event();
+		if(event->is_looking_at_spellbook())
+		{
+			close_spellbook();
+			return GUI_YUM;
+		}
 		event->target_spell(); //Simulate a global key down event.
 		if(event->get_mode() == INPUT_MODE)
 			Game::get_game()->get_map_window()->select_target(x, y);
