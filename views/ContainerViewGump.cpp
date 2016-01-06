@@ -405,9 +405,11 @@ GUI_status ContainerViewGump::KeyDown(SDL_Keysym key)
 
 GUI_status ContainerViewGump::MouseWheel(sint32 x, sint32 y)
 {
-	int y_off = y - area.y;
+	int xpos, ypos;
+	screen->get_mouse_location(&xpos, &ypos);
+	ypos -= area.y;
 
-	if(y_off >= container_widget_y_offset && y_off < container_widget_y_offset + container_widget->H())
+	if(ypos >= container_widget_y_offset && ypos < container_widget_y_offset + container_widget->H())
 	{
 		if(y > 0)
 		{

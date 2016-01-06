@@ -920,6 +920,8 @@ GUI_status MsgScroll::MouseWheel(sint32 x, sint32 y)
 
     if(game->is_new_style())
     {
+        if(!input_mode)
+            return GUI_PASS;
         if (y > 0)
             move_scroll_up();
         if (y < 0)
