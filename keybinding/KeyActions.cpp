@@ -184,6 +184,11 @@ void ActionSelectNewCommandBar(int const *params)
 
 void ActionDollGump(int const *params)
 {
+	if(event->is_looking_at_spellbook())
+	{
+		event->cancelAction();
+		return;
+	}
 	if(params[0] > 0)
 	{
 		Actor *party_member = party->get_actor(params[0] -1);
@@ -212,6 +217,11 @@ void ActionShowStats(int const *params)
 
 void ActionInventory(int const *params)
 {
+	if(event->is_looking_at_spellbook())
+	{
+		event->cancelAction();
+		return;
+	}
 	if(event->using_control_cheat() || params[0] == 0)
 		return;
 	if(party->get_party_size() >= params[0])

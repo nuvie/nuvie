@@ -196,7 +196,7 @@ friend class Magic; // FIXME
  void get_direction(const MapCoord &from, const char *prompt);
  void get_target(const char *prompt);
  void get_target(const MapCoord &init, const char *prompt);
- void get_obj_from_inventory(Actor *actor, const char *prompt);
+// void get_obj_from_inventory(Actor *actor, const char *prompt);
  void display_portrait(Actor *actor, const char *name = NULL);
 // Start a new action, setting a new mode and prompting for input.
  bool newAction(EventMode new_mode);
