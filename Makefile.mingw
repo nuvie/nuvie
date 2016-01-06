@@ -68,13 +68,13 @@ UNPACKFONT_CPPs = $(filter %.cpp,$(unpack_font_SOURCES))
 UNPACKFONT_OBJS = $(UNPACKFONT_CPPs:%.cpp=tools/%.o)
 
 unpack_font.exe: $(UNPACKFONT_OBJS)
-	$(CXX) $(LFLAGS) -o $@ $+
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 UNPACKMAPTILES_CPPs = $(filter %.cpp,$(unpack_maptiles_SOURCES))
 UNPACKMAPTILES_OBJS = $(UNPACKMAPTILES_CPPs:%.cpp=tools/%.o)
 
 unpack_maptiles.exe: $(UNPACKMAPTILES_OBJS)
-	$(CXX) $(LFLAGS) -o $@ $+
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 UNPACKPORTRAITS_CPPs = $(filter %.cpp,$(unpack_portraits_SOURCES))
 UNPACKPORTRAITS_OBJS = $(UNPACKPORTRAITS_CPPs:%.cpp=tools/%.o)
@@ -86,14 +86,14 @@ UNPACKTALK_CPPs = $(filter %.cpp,$(unpack_talk_SOURCES))
 UNPACKTALK_OBJS = $(UNPACKTALK_CPPs:%.cpp=tools/%.o)
 
 unpack_talk.exe: $(UNPACKTALK_OBJS)
-	$(CXX) $(LFLAGS) -o $@ $+
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 include tools/FMTownsU6/Makefile.common
 
 UNPACK_OBJS = $(unpack_OBJS:%=tools/FMTownsU6/%) Debug.o
 
 unpack.exe: $(UNPACK_OBJS)
-	$(CXX) $(LFLAGS) -o $@ $+
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 nvconfig_rc.o: win32/nvconfig.rc
 	windres --include-dir win32 win32/nvconfig.rc nvconfig_rc.o
