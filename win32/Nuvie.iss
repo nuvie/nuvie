@@ -723,6 +723,14 @@ Source: "data\scripts\u6\magic\circle_08\slime.lua"; DestDir: "{app}\data\script
 Source: "data\scripts\u6\magic\circle_08\summon.lua"; DestDir: "{app}\data\scripts\u6\magic\circle_08"; Flags: ignoreversion
 Source: "data\scripts\u6\magic\circle_08\time_stop.lua"; DestDir: "{app}\data\scripts\u6\magic\circle_08"; Flags: ignoreversion
 Source: "data\scripts\u6\magic\circle_08\tremor.lua"; DestDir: "{app}\data\scripts\u6\magic\circle_08"; Flags: ignoreversion
+Source: "tools\SDL.dll"; DestDir: "{app}\tools\"
+Source: "tools\u6decomp.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "tools\unpack.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "tools\unpack_conv.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "tools\unpack_font.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "tools\unpack_maptiles.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "tools\unpack_portraits.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "tools\unpack_talk.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
 
 [Dirs]
 Name: "{app}\data"
