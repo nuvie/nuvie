@@ -88,6 +88,15 @@ bool PartyView::init(void *vm, uint16 x, uint16 y, Font *f, Party *p, Player *pl
 
 GUI_status PartyView::MouseWheel(sint32 x, sint32 y)
 {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	int xpos, ypos;
+    screen->get_mouse_location(&xpos, &ypos);
+
+    xpos -= area.x;
+    ypos -= area.y;
+	if(xpos < 0 || ypos > area.y + area.h - 6)
+		return GUI_PASS; // goes to MsgScrollw
+#endif
  if(y > 0)
    {
     if(up_arrow())

@@ -282,6 +282,15 @@ void ActorView::display_actor_stats()
 
 GUI_status ActorView::MouseWheel(sint32 x, sint32 y)
 {
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+	int xpos, ypos;
+    screen->get_mouse_location(&xpos, &ypos);
+
+    xpos -= area.x;
+    ypos -= area.y;
+	if(xpos < 0 || ypos > area.y + area.h - 7)
+		return GUI_PASS; // goes to MsgScroll
+#endif
  if(y > 0)
  {
   View::callback(BUTTON_CB, left_button, Game::get_game()->get_view_manager());
