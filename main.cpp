@@ -45,6 +45,7 @@ int main(int argc, char **argv)
 #endif
 {
  Nuvie *nuvie;
+ initLogging();
  DEBUG(0,LEVEL_INFORMATIONAL,"Debugging enabled\n");
  DEBUG(1,LEVEL_DEBUGGING,"To disable debugging altogether, recompile with \"WITHOUT_DEBUG\" defined.\n");
  DEBUG(1,LEVEL_DEBUGGING,"To just get less spam, set the default for CurrentDebugLevel in Debug.cpp lower.\n");

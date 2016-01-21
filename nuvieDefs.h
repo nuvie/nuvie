@@ -90,6 +90,8 @@ typedef enum { LEVEL_EMERGENCY=0, LEVEL_ALERT, LEVEL_CRITICAL, LEVEL_ERROR, LEVE
 DebugLevelType debug(const char * func, const char * file, const int line, const bool no_header,const DebugLevelType level, const char *format, ...);
 #endif /* WITHOUT_DEBUG */
 
+void initLogging();
+
 /*
 #ifndef BOOL
 typedef unsigned char BOOL;

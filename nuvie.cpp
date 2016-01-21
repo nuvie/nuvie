@@ -219,7 +219,7 @@ bool Nuvie::play()
  return true;
 }
 
-const char *Nuvie::getConfigPathWin32()
+const char *Nuvie::getConfigDirWin32()
 {
 	static char configFile[MAXPATHLEN];
 	configFile[0] = '\0';
@@ -255,9 +255,22 @@ const char *Nuvie::getConfigPathWin32()
 			if (GetLastError() != ERROR_ALREADY_EXISTS)
 				DEBUG(0,LEVEL_ERROR,"Cannot create Nuvie application data folder\n");
 		}
-
-		strcat(configFile, "\\" "nuvie.cfg");
 	}
+#endif
+	return configFile;
+}
+
+const char *Nuvie::getConfigPathWin32()
+{
+	static char configFile[MAXPATHLEN];
+	configFile[0] = '\0';
+
+#ifdef WIN32
+	const char *configDir = getConfigDirWin32();
+	strcpy(configFile, configDir);
+
+	strcat(configFile, "\\" "nuvie.cfg");
+
 #endif
 	return configFile;
 }

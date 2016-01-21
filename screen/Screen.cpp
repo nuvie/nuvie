@@ -118,6 +118,7 @@ bool Screen::init()
 
   	/* Initialize the SDL library */
 	if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+		initLogging();
 		DEBUG(0,LEVEL_EMERGENCY, "Couldn't initialize SDL: %s\n",
 			SDL_GetError());
    return false;

@@ -28,6 +28,8 @@ Name: "{group}\ChangeLog"; Filename: "{app}\ChangeLog.txt"; WorkingDir: "{app}";
 Name: "{group}\README"; Filename: "{app}\README.txt"; WorkingDir: "{app}"; Flags: createonlyiffileexists; Comment: "README"
 Name: "{group}\Configuration File"; Filename: "{app}\nuvie.cfg"; WorkingDir: "{app}"; Flags: createonlyiffileexists
 Name: "{group}\Nuvie Support Forum"; Filename: "http://nuvie.sourceforge.net/phorum/"
+Name: "{group}\Log Files\stdout.txt"; Filename: "{userappdata}\Nuvie\stdout.txt"
+Name: "{group}\Log Files\stderr.txt"; Filename: "{userappdata}\Nuvie\stderr.txt"
 
 [Run]
 Filename: {app}\nuvie.exe; Description: Launch Nuvie; Flags: nowait skipifdoesntexist postinstall skipifsilent
@@ -50,6 +52,13 @@ var
   MDEdit: TEdit;
   SEEdit: TEdit;
   GameCombo: TNewComboBox;
+
+// Call Nuvie::getConfigPathWin32()
+// Nuvie will use this anyway, and if we just use %appdata% here it might not be consistent.
+function GetDefaultDataDir(Param: String): String;
+begin
+  Result := ExpandConstant('{userappdata}' + '\Nuvie');
+end;
 
 function GetDirPath(const Value: string): string;
 begin
@@ -348,7 +357,7 @@ Source: "AUTHORS.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "ChangeLog.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "COPYING.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "nuvie.cfg.sample"; DestDir: "{app}"; Flags: ignoreversion
-Source: "nuvie.cfg.sample"; DestDir: "{app}"; DestName: "nuvie.cfg"; Flags: ignoreversion onlyifdoesntexist
+Source: "nuvie.cfg.sample"; DestDir: "{code:GetDefaultDataDir}"; DestName: "nuvie.cfg"; Flags: ignoreversion onlyifdoesntexist
 Source: "nuvie.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion isreadme
 Source: "README-SDL.txt"; DestDir: "{app}"; Flags: ignoreversion
@@ -732,6 +741,8 @@ Source: "tools\unpack_lzc.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
 Source: "tools\unpack_maptiles.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
 Source: "tools\unpack_portraits.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
 Source: "tools\unpack_talk.exe"; DestDir: "{app}\tools\"; Flags: ignoreversion
+Source: "stdout.txt"; DestDir: "{userappdata}\Nuvie"; DestName: "stdout.txt"
+Source: "stderr.txt"; DestDir: "{userappdata}\Nuvie"; DestName: "stderr.txt"
 
 [Dirs]
 Name: "{app}\data"

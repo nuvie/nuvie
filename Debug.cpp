@@ -26,6 +26,7 @@
 #include <time.h>
 #include <nuvieDefs.h>
 //#include "Console.h"
+#include <nuvie.h>
 
 #ifndef WITHOUT_DEBUG
 
@@ -35,6 +36,30 @@
 //#define WITHOUT_DEBUG_FUNC_IN_HEADER
 //#define WITHOUT_DEBUG_FILE_LINE_IN_HEADER
 //#define WITHOUT_DEBUG_NEWLINE_IN_HEADER
+
+// Redirect stderr/stdout to platform-dependent location (%appdata% on windows)
+// Must call SDL_Init() first for this to have any effect in SDL2.
+// With SDL2 it only affects things logged with Nuvie's debug() function. (not SDL messages)
+void initLogging() {
+	const char *STDERR_FN = "\\stdout.txt";
+	const char *STDOUT_FN = "\\stderr.txt";
+#ifdef WIN32
+	const char *configDir = Nuvie::getConfigDirWin32();
+	std::string stdout_fn = configDir;
+	std::string stderr_fn = configDir;
+	std::string infoMsg = "stdout/stderr writing to ";
+	infoMsg.append(configDir);
+	infoMsg.append("\n");
+
+	stdout_fn.append(STDOUT_FN);
+	stderr_fn.append(STDERR_FN);
+
+	DEBUG(1,LEVEL_INFORMATIONAL,infoMsg.c_str()); // write notice to the old file
+	freopen(stdout_fn.c_str(), "w", stdout);
+	freopen(stderr_fn.c_str(), "w", stderr);
+	DEBUG(1,LEVEL_INFORMATIONAL,infoMsg.c_str());
+#endif
+}
 
 DebugLevelType debug(const char * func, const char * file, const int line, const bool no_header,const DebugLevelType level, const char *format, ...)
 {
