@@ -2049,23 +2049,41 @@ void Event::alt_code_teleport_menu(uint32 selection)
     const char *teleport_dest = "";
     if(alt_code_input_num == 0) // select category
     {
-        scroll->display_string("\nLazy Teleporters' Menu!\n");
-        scroll->display_string(" 1) Cities\n");
-        scroll->display_string(" 2) Major Areas\n");
-        scroll->display_string(" 3) Shrines\n");
-        scroll->display_string(" 4) Gargoyles\n");
-        scroll->display_string(" 5) Dungeons\n");
-        scroll->display_string(" 6) More Dungeons\n");
-        scroll->display_string(" 7) Other\n");
-        scroll->display_string("Category? ");
-        get_scroll_input("01234567");
+		if (game->get_game_type() == NUVIE_GAME_U6)
+		{
+			scroll->display_string("\nLazy Teleporters' Menu!\n");
+			scroll->display_string(" 1) Cities\n");
+			scroll->display_string(" 2) Major Areas\n");
+			scroll->display_string(" 3) Shrines\n");
+			scroll->display_string(" 4) Gargoyles\n");
+			scroll->display_string(" 5) Dungeons\n");
+			scroll->display_string(" 6) More Dungeons\n");
+			scroll->display_string(" 7) Other\n");
+			scroll->display_string("Category? ");
+			get_scroll_input("01234567");
+		}
+		else if (game->get_game_type() == NUVIE_GAME_SE)
+		{
+			scroll->display_string("\nLazy Teleporters' Menu!\n");
+			scroll->display_string(" 1) Villages\n");
+			scroll->display_string(" 2) More Villages\n");
+			scroll->display_string(" 3) S. Places\n");
+			scroll->display_string(" 4) Resources\n");
+			scroll->display_string(" 5) Teleport Pads\n");
+			scroll->display_string(" 6) Caves\n");
+			scroll->display_string(" 7) Myrm. Holes\n");
+			scroll->display_string("Category? ");
+			get_scroll_input("01234567");
+		}
     }
     else if(alt_code_input_num == 1) // selected category, select location
     {
         category = selection;
         scroll->display_string("\n");
-        switch(selection)
-        {
+		if (game->get_game_type() == NUVIE_GAME_U6)
+		{
+			switch(selection)
+			{
             case 1:
                 scroll->display_string("Cities\n");
                 scroll->display_string(" 1) Britain\n");
@@ -2173,12 +2191,125 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 scroll->display_string("Location? ");
                 get_scroll_input("012345678");
                 break;
-        }
+			}
+		}
+		else if (game->get_game_type() == NUVIE_GAME_SE)
+		{
+			switch(selection)
+			{
+            case 1:
+                scroll->display_string("Villages\n");
+                scroll->display_string(" 1) Barako\n");
+                scroll->display_string(" 2) Kurak\n");
+                scroll->display_string(" 3) Pindiro\n");
+                scroll->display_string(" 4) Yolaru\n");
+                scroll->display_string(" 5) Tichticatl\n");
+                scroll->display_string(" 6) Jukari\n");
+                scroll->display_string(" 7) Disquiqui\n");
+                scroll->display_string(" 8) Barrab\n");
+				scroll->display_string(" 9) Urali\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 2:
+                scroll->display_string("More Villages\n");
+                scroll->display_string(" 1) Haakur\n");
+                scroll->display_string(" 2) Sakkhra\n");
+                scroll->display_string(" 3) Old Pindiro\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123");
+                break;
+            case 3:
+                scroll->display_string("Special Places\n");
+                scroll->display_string(" 1) Laboratory\n");
+                scroll->display_string(" 2) Drum Hill\n");
+                scroll->display_string(" 3) Topuru's Isle\n");
+                scroll->display_string(" 4) Gem Stand\n");
+                if(!game->is_new_style())
+					scroll->display_string(" 5) Thunderer\n");
+				else
+					scroll->display_string(" 5) Thunderer Peak\n");
+                scroll->display_string(" 6) Great Mesa\n");
+                scroll->display_string(" 7) Kotl City\n");
+                scroll->display_string(" 8) Disq. Tyran.\n");
+                scroll->display_string(" 9) Silverback\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 4:
+                scroll->display_string("Resources\n");
+                scroll->display_string(" 1) Sulphur Pits\n");
+                scroll->display_string(" 2) Tar Pits\n");
+                scroll->display_string(" 3) Pot.Nitrate\n");
+                scroll->display_string(" 4) Yucca Plants\n");
+                scroll->display_string(" 5) Bamboo\n");
+                scroll->display_string(" 6) River Banks\n");
+                scroll->display_string(" 7) Corn Stalks\n");
+                scroll->display_string(" 8) Blue Stone\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("012345678");
+                break;
+            case 5:
+                scroll->display_string("Teleport Pads\n");
+				scroll->display_string(" 1) Barako\n");
+                scroll->display_string(" 2) Dead Pad\n");
+                if(!game->is_new_style())
+					scroll->display_string(" 3) K./Y.\n");
+				else
+					scroll->display_string(" 3) Kurak/Yolaru\n");
+                scroll->display_string(" 4) Nahuatla\n");
+                scroll->display_string(" 5) Jukari\n");
+                scroll->display_string(" 6) Disquiqui\n");
+                scroll->display_string(" 7) Barrab\n");
+                scroll->display_string(" 8) Sakkhra\n");
+                scroll->display_string(" 9) Hub\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 6:
+                scroll->display_string("Caves\n");
+                scroll->display_string(" 1) Spider\n");
+				scroll->display_string(" 2) Jukari Ritual\n");
+                scroll->display_string(" 3) Silverback\n");
+                scroll->display_string(" 4) Fritz\n");
+                scroll->display_string(" 5) Urali Spirit\n");
+                scroll->display_string(" 6) Urali Chief\n");
+                scroll->display_string(" 7) To Urali\n");
+                scroll->display_string(" 8) From Urali\n");
+                scroll->display_string(" 9) Denys\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("0123456789");
+                break;
+            case 7:
+                scroll->display_string("Myrmidex Holes\n");
+                if(!game->is_new_style())
+					scroll->display_string(" 1) S of Disq.\n");
+				else
+					scroll->display_string(" 1) S of Disquiqui\n");
+                if(!game->is_new_style())
+					scroll->display_string(" 2) W of G. Mesa\n");
+				else
+					scroll->display_string(" 2) W of Great Mesa\n");
+                scroll->display_string(" 3) W of Hub\n");
+                if(!game->is_new_style())
+					scroll->display_string(" 4) E of Drum H.\n");
+				else
+					scroll->display_string(" 4) E of Drum Hill\n");
+                scroll->display_string(" 5) SW of Kurak\n");
+                scroll->display_string(" 6) Old Pindiro\n");
+                scroll->display_string(" 7) S of Pindiro\n");
+                scroll->display_string("Location? ");
+                get_scroll_input("01234567");
+                break;
+			}
+		}
     }
     else if(alt_code_input_num == 2) // selected location, teleport
     {
-        switch(category)
-        {
+		if (game->get_game_type() == NUVIE_GAME_U6)
+		{
+			switch(category)
+			{
             case 1:
                 if(selection == 1) // Britain
                     teleport_dest = "133 1a3 0";
@@ -2295,7 +2426,7 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 else if(selection == 9) // Wrong
                     teleport_dest = "1f4 53 0";
                 break;
-           case 7:
+			case 7:
                 if(selection == 1) // Iolo's Hut
                     teleport_dest = "c3 e8 0";
                 else if(selection == 2) // Lumberjack (Yew)
@@ -2313,7 +2444,138 @@ void Event::alt_code_teleport_menu(uint32 selection)
                 else if(selection == 8) // Phoenix
                     teleport_dest = "76 46 3";
                 break;
-        }
+			}
+		}
+		else if (game->get_game_type() == NUVIE_GAME_SE)
+		{
+			// Modifications needed when collision working
+			// Currently NPC's end in 'bad spots' on some locations
+			switch(category)
+			{
+            case 1:
+                if(selection == 1) // Barako
+                    teleport_dest = "153 d1 0";
+                else if(selection == 2) // Kurak
+                    teleport_dest = "19c 11a 0";
+                else if(selection == 3) // Pindiro
+                    teleport_dest = "244 7f 0";
+                else if(selection == 4) // Yolaru
+                    teleport_dest = "24b 142 0";
+                else if(selection == 5) // Tichticatl
+                    teleport_dest = "242 22f 0";
+                else if(selection == 6) // Jukari
+                    teleport_dest = "2ad 331 0";
+                else if(selection == 7) // Disquiqui
+                    teleport_dest = "17d 228 0";
+                else if(selection == 8) // Barrab
+                    teleport_dest = "f3 27a 0";
+                else if(selection == 9) // Urali
+                    teleport_dest = "3e5 157 0";
+                break;
+            case 2:
+                if(selection == 1) // Haakur
+                    teleport_dest = "34d 28e 0";
+                else if(selection == 2) // Sakkhra
+                    teleport_dest = "6c 25e 0";
+                else if(selection == 3) // Old Pindiro
+                    teleport_dest = "18e 2f 0";
+                break;
+            case 3:
+                if(selection == 1) // Laboratory
+                    teleport_dest = "1db 18a 0";
+                else if(selection == 2) // Drum Hill
+                    teleport_dest = "216 1c8 0";
+                else if(selection == 3) // Topuru's Isle
+                    teleport_dest = "10e b9 0";
+                else if(selection == 4) // Gem Stand
+                    teleport_dest = "a9 1e4 0";
+                else if(selection == 5) // Thunderer Peak
+                    teleport_dest = "d8 192 0";
+                else if(selection == 6) // Great Mesa
+                    teleport_dest = "c2 210 0";
+                else if(selection == 7) // Kotl City ??? Approx
+                    teleport_dest = "bd 1c9 0";
+                else if(selection == 8) // Disq. Tyran.
+                    teleport_dest = "1a6 249 0";
+                else if(selection == 9) // Silverback
+                    teleport_dest = "110 49 0";
+                break;
+            case 4:
+                if(selection == 1) // Sulphur Pits
+                    teleport_dest = "2da 2bb 0";
+                else if(selection == 2) // Tar Pits
+                    teleport_dest = "1c3 150 0";
+                else if(selection == 3) // Pot.Nitrate
+                    teleport_dest = "2dd 19e 0";
+                else if(selection == 4) // Yucca Plants
+                    teleport_dest = "19f 115 0";
+                else if(selection == 5) // Bamboo
+                    teleport_dest = "2fe 23e 0";
+                else if(selection == 6) // River Banks
+                    teleport_dest = "253 5e 0";
+                else if(selection == 7) // Corn Stalks
+                    teleport_dest = "18b 221 0";
+                else if(selection == 8) // Blue Stone
+                    teleport_dest = "a8 259 0";
+                break;
+            case 5:
+                if(selection == 1) // Barako
+                    teleport_dest = "178 ac 0";
+                else if(selection == 2) // Dead Pad
+                    teleport_dest = "198 1e 0";
+                else if(selection == 3) // Kurak/Yolaru
+                    teleport_dest = "216 11d 0";
+                else if(selection == 4) // Nahuatla
+                    teleport_dest = "26b 259 0";
+                else if(selection == 5) // Jukari
+                    teleport_dest = "2ba 306 0";
+                else if(selection == 6) // Disquiqui
+                    teleport_dest = "171 25b 0";
+                else if(selection == 7) // Barrab
+                    teleport_dest = "ce 26a 0";
+                else if(selection == 8) // Sakkhra
+                    teleport_dest = "67 266 0";
+                else if(selection == 9) // Hub
+                    teleport_dest = "b8 1c6 0";
+                break;
+            case 6:
+                if(selection == 1) // Spider
+                    teleport_dest = "389 2ed 0";
+                else if(selection == 2) // Jukari Ritual
+                    teleport_dest = "3a1 34d 0";
+                else if(selection == 3) // Silverback
+                    teleport_dest = "123 45 0";
+                else if(selection == 4) // Fritz
+                    teleport_dest = "1f1 4d 0";
+                else if(selection == 5) // Urali Spirit
+                    teleport_dest = "3bc ec 0";
+                else if(selection == 6) // Urali Chief
+                    teleport_dest = "3db 19e 0";
+                else if(selection == 7) // To Urali
+                    teleport_dest = "2ad 176 0";
+                else if(selection == 8) // From Urali
+                    teleport_dest = "335 15e 0";
+                else if(selection == 9) // Denys
+                    teleport_dest = "2d5 19e 0";
+                break;
+			case 7:
+                if(selection == 1) // S of Disquiqui
+                    teleport_dest = "15e 277 0";
+                else if(selection == 2) // W of Great Mesa
+                    teleport_dest = "8d 1fc 0";
+                else if(selection == 3) // W of Hub
+                    teleport_dest = "8d 1ca 0";
+                else if(selection == 4) // E of Drum Hill
+                    teleport_dest = "27b 1d3 0";
+                else if(selection == 5) // SW of Kurak
+                    teleport_dest = "173 14f 0";
+                else if(selection == 6) // Old Pindiro
+                    teleport_dest = "189 45 0";
+                else if(selection == 7) // S of Pindiro
+                    teleport_dest = "257 dc 0";
+                break;
+			}
+		}
         if(strlen(teleport_dest))
         {
             scroll->display_string("\n(");
