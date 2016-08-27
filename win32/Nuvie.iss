@@ -632,6 +632,7 @@ Source: "data\scripts\md\lang\it\game.lua"; DestDir: "{app}\data\scripts\md\lang
 Source: "data\scripts\se\actor.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\init.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\intro.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
+Source: "data\scripts\se\look.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\player.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\usecode.lua"; DestDir: "{app}\data\scripts\se"; Flags: ignoreversion
 Source: "data\scripts\se\lang\en\game.lua"; DestDir: "{app}\data\scripts\se\lang\en"; Flags: ignoreversion

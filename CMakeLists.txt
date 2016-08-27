@@ -65,7 +65,7 @@ set(SOURCE_FILES
     data/scripts/se/actor.lua
     data/scripts/se/init.lua
     data/scripts/se/intro.lua
-	data/scripts/se/look.lua
+    data/scripts/se/look.lua
     data/scripts/se/usecode.lua
     data/scripts/u6/magic/circle_01/create_food.lua
     data/scripts/u6/magic/circle_01/detect_magic.lua
