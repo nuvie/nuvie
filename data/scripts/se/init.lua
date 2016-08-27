@@ -13,17 +13,56 @@ end
 function save_game()
 end
 
-function look_obj(obj)
-	print("you see " .. obj.look_string);
+local g_container_obj_tbl = {
+[59] = 1,  [60] = 1,  [97] = 1,
+[182] = 1, [183] = 1, [184] = 1
+}
 
-	--FIXME usecode look description should be lua code.
-	if usecode_look(obj) then
-		print("\n")
-		return false
-	end
+function is_container_obj(obj_num)
+   if g_container_obj_tbl[obj_num] ~= nil then
+      return true
+   end
+   return false
+end
 
-	print(".\n");
-	return true
+function search(obj)
+   if obj.on_map == false then
+      return
+   end
+   
+   local found_obj = false
+   local child
+   local first_loop = true
+   local prev_obj = nil
+   for child in container_objs(obj) do
+      if prev_obj ~= nil then
+         printfl("SEARCH_NEXT_OBJ", prev_obj.look_string)
+         Obj.moveToMap(prev_obj, obj.x, obj.y, obj.z)
+      end
+
+      if first_loop == true then
+         found_obj = true
+         printfl("SEARCHING_HERE_YOU_FIND", child.look_string)
+         Obj.moveToMap(child, obj.x, obj.y, obj.z)
+      else
+         prev_obj = child
+      end
+
+      script_wait(50)
+      first_loop = false
+   end
+   
+   if prev_obj ~= nil then
+      printfl("SEARCH_LAST_OBJ", prev_obj.look_string)
+      Obj.moveToMap(prev_obj, obj.x, obj.y, obj.z)
+   end
+   
+   if found_obj == false then
+      printl("SEARCHING_HERE_YOU_FIND_NOTHING")
+   else
+      print(".\n")
+   end
+   
 end
 
 --tile_num, readied location
@@ -112,8 +151,9 @@ else
 	end
 end
 
+look_init = nuvie_load("se/look.lua"); look_init();
+
 -- init usecode
 usecode_init = nuvie_load("se/usecode.lua"); usecode_init();
 
 player_init = nuvie_load("se/player.lua"); player_init();
-

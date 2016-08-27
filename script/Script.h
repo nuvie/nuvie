@@ -150,6 +150,7 @@ class Script
 
    uint8 call_play_midgame_sequence(uint16 seq_num);
    bool call_talk_script(uint8 script_number);
+   bool call_is_container_obj(uint16 obj_n);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);

@@ -359,7 +359,8 @@ const char *TileManager::lookAtTile(uint16 tile_num, uint16 qty, bool show_prefi
  if(show_prefix == false)
    return desc;
 
- if(qty > 0 && plural)
+ if(qty > 0 &&
+	(plural || Game::get_game()->get_game_type() == NUVIE_GAME_SE))
    sprintf(desc_buf,"%u %s",qty, desc);
  else
    sprintf(desc_buf,"%s%s",article_tbl[tile->article_n], desc);
