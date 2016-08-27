@@ -63,7 +63,7 @@ void MDSkyStripWidget::Display(bool full_redraw)
   {
    update_display = false;
 
-   uint8 z = player->get_actor()->get_z();
+   uint8 z = player->get_actor() ? player->get_actor()->get_z() : 0;
    if(z == 0)
    {
      display_surface();
