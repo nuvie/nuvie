@@ -364,6 +364,8 @@ public:
 typedef enum { FADE_PIXELATED, FADE_CIRCLE, FADE_PIXELATED_ONTOP } FadeType;
 typedef enum { FADE_IN, FADE_OUT } FadeDirection;
 
+#define FADE_EFFECT_MAX_ITERATIONS 20
+
 /* Manipulate the MapWindow for two types of fades. One is a stippled-like fade
  * that draws pixels to random locations on the screen until completely flooded
  * with a set color. The other changes the ambient light until fully black.
@@ -387,6 +389,7 @@ protected:
 
     uint32 evtime, prev_evtime; // time of last message to callback()
     uint32 pixel_count, colored_total; // number of pixels total/colored
+    uint16 fade_iterations; // number of times we've updated the fade effect
 
 public:
     FadeEffect(FadeType fade, FadeDirection dir, uint32 color = 0, uint32 speed = 0);
@@ -656,6 +659,7 @@ public:
 };
 
 #define EFFECT_PROCESS_GUI_INPUT true
+
 /* Run an effect asynchronously and keep updating the world until the effect completes. */
 class AsyncEffect : public Effect
 {
