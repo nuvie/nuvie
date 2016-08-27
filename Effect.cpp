@@ -1027,7 +1027,6 @@ void FadeEffect::init(FadeType fade, FadeDirection dir, uint32 color, SDL_Surfac
     evtime = prev_evtime = 0;
     fade_x = x; fade_y = y;
     fade_from = NULL;
-    fade_iterations = 0;
     if(capture)
     {
         fade_from = SDL_CreateRGBSurface(SDL_SWSURFACE, capture->w, capture->h,
@@ -1234,7 +1233,7 @@ bool FadeEffect::pixelated_fade_core(uint32 pixels_to_check, sint16 fade_to)
         ++p;
     }
     // all but two lines colored
-    if(colored_total >= (pixel_count - fade_width*2) || fade_iterations > FADE_EFFECT_MAX_ITERATIONS) // fill the rest
+    if(colored_total >= (pixel_count - fade_width*2)) // fill the rest
     {
         if(fade_to >= 0)
             SDL_FillRect(overlay, NULL, (uint32)fade_to);
@@ -1282,7 +1281,6 @@ uint32 FadeEffect::pixels_to_check()
     uint32 fraction = 1000 / (time_passed > 0 ? time_passed : 1); // % of second passed, in milliseconds
     uint32 pixels_per_fraction = fade_speed / (fraction > 0 ? fraction : 1);
     prev_evtime = evtime;
-    fade_iterations++;
     return(pixels_per_fraction);
 }
 

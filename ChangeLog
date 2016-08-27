@@ -1,9 +1,3 @@
-2016-08-26  Eric Fry <efry at users.sourceforge.net>
-	* Fixed Issue #47 OS X: original+ is not getting any input
-
-2016-08-26  Mikey Alexander <firesword at yahoo.com>
-	* SE Lazy Teleport Locations
-
 2015-12-18  Eric Fry <efry at users.sourceforge.net>
 	* Added support for SDL2
 	* Added support for VGA 4:3 aspect ratio pixels.
