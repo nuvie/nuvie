@@ -106,6 +106,11 @@ bool UseCode::is_script_running()
   return false;
 }
 
+bool UseCode::is_container(Obj *obj)
+{
+    return script->call_is_container_obj(obj->obj_n);
+}
+
 bool UseCode::has_usecode(Obj *obj, UseCodeEvent ev)
 {
   return script->call_has_usecode(obj, ev);

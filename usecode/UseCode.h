@@ -205,7 +205,7 @@ private:
  virtual bool is_closed_door(Obj *obj)   { return(false); }
  virtual bool process_effects(Obj *container_obj, Actor *actor) { return(false); }
  virtual bool is_food(Obj *obj)          { return(false); }
- virtual bool is_container(Obj *obj)     { return(false); }
+ virtual bool is_container(Obj *obj);
  virtual bool is_container(uint16 obj_n, uint8 frame_n) { return(false); }
  virtual bool is_readable(Obj *obj)      { return(false); }
  virtual bool is_chest(Obj *obj)         { return(false); }
