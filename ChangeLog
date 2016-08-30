@@ -1,3 +1,10 @@
+2016-08-30  Eric Fry <efry at users.sourceforge.net>
+	* Added WOU support for writing LIB files.
+	* Changed the unpack_font tool to export the font as a bmp file.
+	* Created new pack_font tool to import a font bmp back into the
+	  in-game system font format. WOU only at this stage.
+	* Started to add CMake support for building the tools.
+
 2016-08-27  Mikey Alexander <firesword at yahoo.com>
 	* Enable Containers in SE (MD too?) and Look Code for SE
 

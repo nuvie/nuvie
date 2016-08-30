@@ -77,6 +77,7 @@ public:
 
    void load_index(FILE *index_f);
    void write_index();
+   void write_header();
 
    void calc_item_offsets();
 

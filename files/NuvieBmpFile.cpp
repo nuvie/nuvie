@@ -313,16 +313,6 @@ unsigned char *NuvieBmpFile::getRawIndexedDataCopy()
   return copy;
 }
 
-SDL_Surface *NuvieBmpFile::getSdlSurface8(Screen *screen)
-{
-  if(data == NULL || infoHeader.bits != 8)
-  {
-    return NULL;
-  }
-
-  return screen->create_sdl_surface_from(data, 8, infoHeader.width, infoHeader.height, infoHeader.width);
-}
-
 SDL_Surface *NuvieBmpFile::getSdlSurface32(std::string filename)
 {
   load(filename);

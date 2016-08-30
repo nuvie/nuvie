@@ -465,18 +465,43 @@ void U6Lib_n::calc_item_offsets()
     }
 }
 
+void U6Lib_n::write_header()
+{
+    data->seekStart();
+    if(game_type == NUVIE_GAME_U6)
+        return;
+
+    uint32 filesize = 4 + num_offsets * lib_size;
+
+    for(int i=0;i<num_offsets;i++)
+    {
+        filesize += items[i].size;
+    }
+
+    data->write4(filesize);
+}
 
 /* Write the library index. (the 2 or 4 byte offsets before the data)
  */
 void U6Lib_n::write_index()
 {
     data->seekStart();
+    if(game_type != NUVIE_GAME_U6)
+    {
+        data->seek(4);
+    }
+
     for(uint32 o = 0; o < num_offsets; o++)
     {
+        uint32 offset = items[o].offset;
+        if(game_type != NUVIE_GAME_U6 && offset != 0)
+        {
+            offset += 4;
+        }
         if(lib_size == 2)
-            data->write2(items[o].offset);
+            data->write2((uint16)offset);
         else if(lib_size == 4)
-            data->write4(items[o].offset);
+            data->write4(offset);
     }
 }
 
@@ -498,6 +523,9 @@ void U6Lib_n::write_item(uint32 item_number)
     if(item_number >= num_offsets
        || items[item_number].offset == 0 || items[item_number].size == 0)
         return;
-    data->seek(items[item_number].offset);
+    if(game_type == NUVIE_GAME_U6)
+        data->seek(items[item_number].offset);
+    else
+        data->seek(items[item_number].offset + 4);
     ((NuvieIOFileWrite *)data)->writeBuf(items[item_number].data, items[item_number].size);
 }
