@@ -29,8 +29,6 @@
 #include "NuvieIOFile.h"
 #include "TileManager.h"
 
-class Screen;
-
 class NuvieBmpFile
 {
  private:

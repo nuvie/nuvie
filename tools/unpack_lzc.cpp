@@ -20,8 +20,6 @@ int main(int argc, char **argv)
 {
  U6Lib_n library;
  unsigned char *data;
- string name;
- char gametype[3]; // 'xx\0'
  char outfile[8]; // 'nnn.dat\0'
 
  if(argc != 2)

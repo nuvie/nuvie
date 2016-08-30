@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "nuvieDefs.h"
-#include "Screen.h"
 #include "NuvieBmpFile.h"
 
 #define NUVIEBMPFILE_MAGIC 0x4d42 // 'BM'
