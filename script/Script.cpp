@@ -1503,7 +1503,8 @@ bool Script::call_is_container_obj(uint16 obj_n)
 {
     lua_getglobal(L, "is_container_obj");
     lua_pushnumber(L, (lua_Number)obj_n);
-    return call_function("is_container_object", 1, 0);
+    call_function("is_container_object", 1, 1);
+    return(lua_toboolean(L,-1));
 }
 
 ScriptThread *Script::new_thread(const char *scriptfile)
