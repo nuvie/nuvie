@@ -43,36 +43,57 @@ void packFontData(unsigned char *dest, unsigned char *bmp_data)
     }
 }
 
-int main(int argc, char **argv)
+void saveU6Font(NuvieBmpFile *bmpFile)
 {
-    string name = "system.lzc";
-    string output_file = "system.lzc.new";
-    U6Lib_n library;
-    U6Lib_n output;
-    NuvieBmpFile bmpFile;
-    unsigned char fontData[1024];
+    unsigned char fontData[2048];
+    NuvieIOFileWrite u6ch;
+    unsigned char *pixels = bmpFile->getRawIndexedData();
 
-    if (argc != 2)
+    if (bmpFile->getWidth() != 128 || bmpFile->getHeight() != 128)
     {
-        printf("Usage: %s <bmp font file>", argv[0]);
-        exit(1);
+        printf("bmp file must be 128x128 pixels\n");
+        return;
     }
 
-    if (!bmpFile.load(argv[1]))
-        exit(1);
+    u6ch.open("u6.ch");
+    u6ch.seekStart();
+
+    packFontData(fontData, pixels);
+
+    pixels += (16 * 8 * 8 * 8);
+    packFontData(&fontData[1024], pixels);
+
+    u6ch.writeBuf(fontData, sizeof(fontData));
+
+    u6ch.close();
+}
+
+void saveWOUFont(NuvieBmpFile *bmpFile)
+{
+    string name = "system.lzc";
+    string outputFile = "system.lzc.new";
+    unsigned char fontData[1024];
+    U6Lib_n library;
+    U6Lib_n output;
+
+    if (bmpFile->getWidth() != 128 || bmpFile->getHeight() != 64)
+    {
+        printf("bmp file must be 128x64 pixels\n");
+        return;
+    }
 
     if (library.open(name, 4, NUVIE_GAME_SE) == false)
-        exit(1);
+        return;
 
-    output.create(output_file, 4, NUVIE_GAME_SE);
+    output.create(outputFile, 4, NUVIE_GAME_SE);
 
-    for(int i=0;i<3;i++)
+    for(uint32 i=0;i<3;i++)
     {
         output.add_item(0, "");
         output.set_item_data(i, library.get_item(i, NULL), library.get_item_size(i));
     }
 
-    packFontData(fontData, bmpFile.getRawIndexedData());
+    packFontData(fontData, bmpFile->getRawIndexedData());
     output.add_item(0, "");
     output.set_item_data(3, fontData, sizeof(fontData));
 
@@ -82,6 +103,32 @@ int main(int argc, char **argv)
     output.write_items();
     output.close();
     library.close();
+}
+
+int main(int argc, char **argv)
+{
+    NuvieBmpFile bmpFile;
+
+    if (argc != 3 || (strcmp(argv[1], "md") != 0 && strcmp(argv[1], "se") != 0 && strcmp(argv[1], "u6") != 0))
+    {
+        printf("Usage: %s [u6,se,md] bmp_font_file", argv[0]);
+        exit(1);
+    }
+
+    if (!bmpFile.load(argv[2]))
+    {
+        printf("Failed to open BMP file: '%s'\n", argv[2]);
+        exit(1);
+    }
+
+    if (argv[1][0] == 'u')
+    {
+        saveU6Font(&bmpFile);
+    } else
+    {
+        saveWOUFont(&bmpFile);
+    }
+
     return 0;
 }
 
