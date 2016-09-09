@@ -77,6 +77,7 @@ int main(int argc, char **argv)
  if(nuvie->init(argc, argv) == false)
  {
    ConsolePause();
+   delete nuvie;
    return 1;
  }
 
