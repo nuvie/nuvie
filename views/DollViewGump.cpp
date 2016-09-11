@@ -21,7 +21,6 @@
  *
  */
 #include <cassert>
-#include <math.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "Event.h"
@@ -230,13 +229,13 @@ void DollViewGump::Display(bool full_redraw)
 void DollViewGump::displayEquipWeight()
 {
 	uint8 strength = actor->get_strength();
-	float equip_weight = ceilf(actor->get_inventory_equip_weight());
+	unsigned int equip_weight = Game::get_game()->get_view_manager()->get_display_weight(actor->get_inventory_equip_weight());
 	char string[4]; //nnn\0
 
-	snprintf(string, 4, "%d", (int)equip_weight);
-	font->TextOut(screen->get_sdl_surface(), area.x + (((int)equip_weight > 9) ? 59 : 64), area.y + 82, string);
+	snprintf(string, 4, "%u", equip_weight);
+	font->TextOut(screen->get_sdl_surface(), area.x + ((equip_weight > 9) ? 59 : 64), area.y + 82, string);
 
-	snprintf(string, 4, "%d", strength);
+	snprintf(string, 4, "%u", strength);
 	font->TextOut(screen->get_sdl_surface(), area.x + ((strength > 9) ? 76 : 81), area.y + 82, string);
 }
 

@@ -1,3 +1,6 @@
+2016-09-10 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Use proper rounding for displayed inventory and equipped weight.
+
 2016-08-30  Eric Fry <efry at users.sourceforge.net>
 	* Added WOU support for writing LIB files.
 	* Changed the unpack_font tool to export the font as a bmp file.

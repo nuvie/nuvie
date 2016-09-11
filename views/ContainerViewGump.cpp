@@ -21,7 +21,6 @@
  *
  */
 #include <cassert>
-#include <math.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 #include "Event.h"
@@ -300,10 +299,10 @@ void ContainerViewGump::Display(bool full_redraw)
 void ContainerViewGump::display_inventory_weight()
 {
 	uint8 strength = actor->get_strength();
-	float equip_weight = ceilf(actor->get_inventory_weight());
+	unsigned int equip_weight = Game::get_game()->get_view_manager()->get_display_weight(actor->get_inventory_weight());
 	char string[11]; //I:nnn/nnns\0
 
-	snprintf(string, 10, "I:%d/%ds", (int)equip_weight,strength*2);
+	snprintf(string, 10, "I:%u/%us", equip_weight,strength*2);
 	font->drawString(screen, string, area.x + (container_obj ? 18 : 18 + 34), area.y + bg_image->h + 2, 15, 15);
 }
 
