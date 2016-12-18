@@ -3431,3 +3431,9 @@ bool U6UseCode::cannot_unready(Obj *obj)
 
 	return false;
 }
+bool U6UseCode::use_harpsichord(Obj *obj, UseCodeEvent ev) {
+  if(ev == USE_EVENT_SEARCH) {
+    return search_container(obj);
+  }
+  return play_instrument(obj, ev);
+}

@@ -1,3 +1,7 @@
+2016-12-18  Eric Fry <efry at users.sourceforge.net>
+	* Fixed bug when searching harpsichords and beds.
+	  Thanks to Jarkko Kuivanen for finding it.
+
 2016-08-30  Eric Fry <efry at users.sourceforge.net>
 	* Added WOU support for writing LIB files.
 	* Changed the unpack_font tool to export the font as a bmp file.

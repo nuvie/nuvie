@@ -152,6 +152,7 @@ class U6UseCode: public UseCode, public CallBack
  bool use_fountain(Obj *obj, UseCodeEvent ev);
  bool use_rubber_ducky(Obj *obj, UseCodeEvent ev);
  bool use_crystal_ball(Obj *obj, UseCodeEvent ev);
+ bool use_harpsichord(Obj *obj, UseCodeEvent ev);
  bool play_instrument(Obj *obj, UseCodeEvent ev);
  bool look_mirror(Obj *obj, UseCodeEvent ev);
  bool look_sign(Obj *obj, UseCodeEvent ev);

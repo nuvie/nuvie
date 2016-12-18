@@ -68,6 +68,8 @@ const U6ObjectType U6ObjectTypes[] =
 
     { OBJ_U6_CRANK, 255,0,USE_EVENT_USE,&U6UseCode::use_crank,OBJTYPE_NONE },
 
+    { OBJ_U6_BED,       255,0,USE_EVENT_SEARCH,&U6UseCode::use_container,OBJTYPE_CONTAINER },
+
     { OBJ_U6_FIREPLACE, 255,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },
     { OBJ_U6_CANDLE,    255,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },
     { OBJ_U6_CANDELABRA,255,0,USE_EVENT_USE,&U6UseCode::use_firedevice,OBJTYPE_NONE },
@@ -156,7 +158,7 @@ const U6ObjectType U6ObjectTypes[] =
     { OBJ_U6_CRYSTAL_BALL, 0,0,USE_EVENT_USE|USE_EVENT_MESSAGE,&U6UseCode::use_crystal_ball,OBJTYPE_NONE },
 
     { OBJ_U6_PANPIPES,   0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
-    { OBJ_U6_HARPSICHORD,0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
+    { OBJ_U6_HARPSICHORD,0,0,USE_EVENT_SEARCH|USE_EVENT_USE,&U6UseCode::use_harpsichord,OBJTYPE_NONE },
     { OBJ_U6_HARP,       0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
     { OBJ_U6_LUTE,       0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
     { OBJ_U6_XYLOPHONE,  0,0,USE_EVENT_USE,&U6UseCode::play_instrument,OBJTYPE_NONE },
