@@ -1145,6 +1145,7 @@ function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
          Actor.talk(spector)
       end
    else
+      play_md_sfx(0x1f)
       Obj.removeFromEngine(target_obj)
       Actor.set_talk_flag(0x73, 4)
       --FIXME add logic from midgame_cutscene_2() here.
