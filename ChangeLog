@@ -1,3 +1,9 @@
+2016-12-31  Eric Fry <efry at users.sourceforge.net>
+	* Lighting fixes for issue #55.
+	* Increased border from 2 to 3 to give a smoother
+	  light experience for light globes with a radius of
+	  3 tiles.
+ 
 2016-12-18  Eric Fry <efry at users.sourceforge.net>
 	* Fixed bug when searching harpsichords and beds.
 

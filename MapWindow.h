@@ -312,6 +312,8 @@ protected:
 private:
  void createLightOverlay();
 
+  void AddMapTileToVisibleList(uint16 tile_num, uint16 x, uint16 y);
+  bool can_display_obj(uint16 x, uint16 y, Obj *obj);
 };
 
 #endif /* __MapWindow_h__ */

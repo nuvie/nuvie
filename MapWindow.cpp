@@ -27,29 +27,23 @@
 #include "U6misc.h"
 #include "U6LList.h"
 #include "Actor.h"
-#include "TileManager.h"
 #include "ActorManager.h"
 #include "ViewManager.h"
 #include "MapWindow.h"
-#include "Map.h"
 #include "Event.h"
 #include "MsgScroll.h"
 #include "MsgScrollNewUI.h"
 #include "Effect.h" /* for initial fade-in */
 
-#include "AnimManager.h"
 #include "SoundManager.h"
 
 #include "GUI.h"
-#include "GUI_widget.h"
-#include "Game.h"
 #include "GameClock.h"
 #include "GamePalette.h"
 #include "Party.h"
 #include "Weather.h"
 #include "Script.h"
 #include "U6objects.h"
-#include "UseCode.h"
 #include "CommandBar.h"
 #include "ActorView.h"
 #include "InventoryView.h"
@@ -61,7 +55,7 @@
 #define ACTION_BUTTON 3
 #define DRAG_BUTTON 1
 
-#define TMP_MAP_BORDER 2
+#define TMP_MAP_BORDER 3
 
 #define WRAP_VIEWP(p,p1,s) ((p1-p) < 0 ? (p1-p) + s : p1-p)
 
@@ -530,6 +524,36 @@ bool MapWindow::is_on_screen(uint16 x, uint16 y, uint8 z)
 	return false;
 }
 
+/**
+ * Can we display an object at this location on the tmp map buffer.
+ *
+ * @param x coord on the tmp buf
+ * @param y coord on the tmp buf
+ * @param obj object to display
+ * @return
+ */
+bool MapWindow::can_display_obj(uint16 x, uint16 y, Obj *obj)
+{
+  uint16 tile_num = tmp_map_buf[y*tmp_map_width+x];
+  if(tile_num == 0) //don't draw object if area is in darkness.
+    return false;
+  else
+  {
+    if(x >= tmp_map_width - 1 || y >= tmp_map_height - 1)
+      return false;
+
+    // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
+    if(tmp_map_buf[y*tmp_map_width+(x+1)] == 0 || tmp_map_buf[(y+1)*tmp_map_width+x] == 0)
+    {
+      Tile *tile = tile_manager->get_tile(tile_num);
+      if(((tile->flags1 & TILEFLAG_WALL) || (game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_BARS)))
+        return false;
+    }
+  }
+
+  return true;
+}
+
 bool MapWindow::tile_is_black(uint16 x, uint16 y, Obj *obj)
 {
  if(game->using_hackmove())
@@ -829,13 +853,19 @@ void MapWindow::updateLighting()
             {
               Obj *obj = (Obj *)link->data;
               tile = tile_manager->get_tile(obj_manager->get_obj_tile_num(obj)+obj->frame_n); //FIXME do we need to check the light for each tile in a multi-tile object.
-              if(GET_TILE_LIGHT_LEVEL(tile) > 0)
+              if(GET_TILE_LIGHT_LEVEL(tile) > 0 && can_display_obj(x, y, obj))
                 screen->drawalphamap8globe( x-TMP_MAP_BORDER, y-TMP_MAP_BORDER, GET_TILE_LIGHT_LEVEL(tile) );
             }
           }
         }
         ptr++;
       }
+    }
+
+    for (std::vector<TileInfo>::iterator ti = m_ViewableMapTiles.begin();
+         ti != m_ViewableMapTiles.end(); ti++) {
+      if (GET_TILE_LIGHT_LEVEL((*ti).t) > 0)
+        screen->drawalphamap8globe((*ti).x, (*ti).y, GET_TILE_LIGHT_LEVEL((*ti).t));
     }
   }
 
@@ -876,7 +906,6 @@ void MapWindow::updateBlacking()
 
  m_ViewableObjects.clear();
 /// m_ViewableObjTiles.clear();
- m_ViewableMapTiles.clear();
 
  draw_brit_lens_anim = false;
  draw_garg_lens_anim = false;
@@ -926,14 +955,6 @@ void MapWindow::Display(bool full_redraw)
          tile = tile_manager->get_tile(map_ptr[j]);
          screen->blit(draw_x,draw_y,(unsigned char *)tile->data,8,16,16,16,tile->transparent,&clip_rect);
 
-         if(window_updated)
-           {
-            TileInfo ti;
-            ti.t=tile;
-            ti.x=j; // +cur_x; - in_town needs the addition but rendering below needs it without
-            ti.y=i; // +cur_y; - so it gets priority
-            m_ViewableMapTiles.push_back(ti);
-           }
         }
 
      }
@@ -1223,11 +1244,11 @@ inline void MapWindow::drawObj(Obj *obj, bool draw_lowertiles, bool toptile)
     return;
  else
     {
-	 // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
+     // We don't show objects on walls if the area to the right or bottom of the wall is in darkness
      if(tmp_map_buf[(y+TMP_MAP_BORDER)*tmp_map_width+(x+TMP_MAP_BORDER+1)] == 0 || tmp_map_buf[(y+TMP_MAP_BORDER+1)*tmp_map_width+(x+TMP_MAP_BORDER)] == 0)
      {
       if((!(tile->flags1 & TILEFLAG_WALL) || (game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_BARS)))
-    	  return;
+        return;
      }
     }
 
@@ -1477,6 +1498,20 @@ void MapWindow::drawRain()
 	}
 }
 
+void MapWindow::AddMapTileToVisibleList(uint16 tile_num, uint16 x, uint16 y)
+{
+  if(x >= TMP_MAP_BORDER &&
+      y >= TMP_MAP_BORDER &&
+      x < tmp_map_width - TMP_MAP_BORDER &&
+      y < tmp_map_height - TMP_MAP_BORDER) {
+    TileInfo ti;
+    ti.t = tile_manager->get_tile(tile_num);
+    ti.x = (uint16)(x - TMP_MAP_BORDER);
+    ti.y = (uint16)(y - TMP_MAP_BORDER);
+    m_ViewableMapTiles.push_back(ti);
+  }
+}
+
 void MapWindow::drawGrid()
 {
 	for(uint16 i=0;i<win_height;i++)
@@ -1494,27 +1529,28 @@ void MapWindow::generateTmpMap()
  uint16 pitch;
  uint16 x, y;
  Tile *tile;
- 
+
+ m_ViewableMapTiles.clear();
+
  map_ptr = map->get_map_data(cur_level);
  pitch = map->get_width(cur_level);
 
- if(enable_blacking == false)
- {
-	 uint16 *ptr = tmp_map_buf;
-	for(y=0;y<tmp_map_height;y++)
-	{
-		for(x=0;x<tmp_map_width;x++)
-		{
-			uint16 x1 = cur_x + x - TMP_MAP_BORDER;
-			uint16 y1 = cur_y + y - TMP_MAP_BORDER;
-			WRAP_COORD(x1,cur_level);
-			WRAP_COORD(y1,cur_level);
-			*ptr = map_ptr[y1 * pitch + x1];
-			ptr++;
-		}
-	}
-	return;
- }
+  if (enable_blacking == false) {
+    uint16 *ptr = tmp_map_buf;
+    for (y = 0; y < tmp_map_height; y++) {
+      for (x = 0; x < tmp_map_width; x++) {
+        uint16 x1 = cur_x + x - TMP_MAP_BORDER;
+        uint16 y1 = cur_y + y - TMP_MAP_BORDER;
+        WRAP_COORD(x1, cur_level);
+        WRAP_COORD(y1, cur_level);
+        *ptr = map_ptr[y1 * pitch + x1];
+        AddMapTileToVisibleList(*ptr, x, y);
+
+        ptr++;
+      }
+    }
+    return;
+  }
 
  roof_display = ROOF_DISPLAY_NORMAL;
 
@@ -1560,6 +1596,7 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  unsigned char current;
  uint16 *ptr;
  uint16 pos;
+ uint16 tmp_x, tmp_y;
  uint16 p_cur_x, p_cur_y; //wrapped cur_x - 1 and wrapped cur_y - 1
  
  p_cur_x = WRAPPED_COORD(cur_x - TMP_MAP_BORDER,cur_level);
@@ -1572,16 +1609,18 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
    return;
  
  if(p_cur_y > y)
-	 pos = pitch - p_cur_y + y;
+	 tmp_y = pitch - p_cur_y + y;
  else
-	 pos = y - p_cur_y;
+	 tmp_y = y - p_cur_y;
  
- pos *= tmp_map_width;
- 
- if(p_cur_x > x)
-	 pos += pitch - p_cur_x + x;
-	else
-		pos += x - p_cur_x;
+ pos = tmp_y * tmp_map_width;
+
+  if (p_cur_x > x)
+    tmp_x = pitch - p_cur_x + x;
+  else
+    tmp_x = x - p_cur_x;
+
+  pos += tmp_x;
 
  ptr = &tmp_map_buf[pos];
 
@@ -1591,6 +1630,8 @@ void MapWindow::boundaryFill(unsigned char *map_ptr, uint16 pitch, uint16 x, uin
  current = map_ptr[y * pitch + x];
 
  *ptr = (uint16)current;
+
+  AddMapTileToVisibleList(current, tmp_x, tmp_y);
 
  if(x_ray_view <= X_RAY_OFF && map->is_boundary(x,y,cur_level)) //hit the boundary wall tiles
   {
