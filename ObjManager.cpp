@@ -474,7 +474,7 @@ U6LList *ObjManager::get_obj_superchunk(uint16 x, uint16 y, uint8 level)
 }
 */
 
-bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type)
+bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type, Obj *excluded_obj)
 {
  U6Link *link;
  U6LList *obj_list;
@@ -501,6 +501,8 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_typ
           for(check_tile = false;link != NULL;link = link->prev)
             {
              obj = (Obj *)link->data;
+             if(obj == excluded_obj)
+                continue;
              tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
              tile = tile_manager->get_original_tile(tile_num);
 

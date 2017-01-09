@@ -127,7 +127,7 @@ class ObjManager
  EggManager *get_egg_manager() { return(egg_manager); }
 
  //U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
- bool is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type=TILEFLAG_BOUNDARY);
+ bool is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type=TILEFLAG_BOUNDARY, Obj *excluded_obj = NULL);
  //bool is_door(Obj * obj);
  bool is_damaging(uint16 x, uint16 y, uint8 level);
  uint8 is_passable(uint16 x, uint16 y, uint8 level);

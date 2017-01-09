@@ -150,7 +150,7 @@ class Map
  bool is_passable(uint16 x, uint16 y, uint8 level);
  bool is_water(uint16 x, uint16 y, uint16 level, bool ignore_objects=false);
  bool is_boundary(uint16 x, uint16 y, uint8 level);
- bool is_missile_boundary(uint16 x, uint16 y, uint8 level);
+ bool is_missile_boundary(uint16 x, uint16 y, uint8 level, Obj *excluded_obj = NULL);
  bool is_damaging(uint16 x, uint16 y, uint8 level, bool ignore_objects=false);
  bool can_put_obj(uint16 x, uint16 y, uint8 level);
  bool actor_at_location(uint16 x, uint16 y, uint8 level, bool inc_surrounding_objs=true);

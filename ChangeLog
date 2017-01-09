@@ -1,3 +1,6 @@
+2017-01-09  Eric Fry <efry at users.sourceforge.net>
+	* Fixed barrel movement bug in Blue Bottle Tavern.
+
 2016-12-31  Eric Fry <efry at users.sourceforge.net>
 	* Lighting fixes for issue #55.
 	* Increased border from 2 to 3 to give a smoother
