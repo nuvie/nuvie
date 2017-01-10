@@ -124,6 +124,15 @@ typedef uint16 UseCodeEvent;
  * FIXME: might remove this and add as a player action
  *
  */
+
+typedef enum {
+  USE,
+  GET,
+  MOVE
+} UseCodeType;
+
+const char *useCodeTypeToString(UseCodeType type);
+
 class ActorManager;
 class Configuration;
 class Event;

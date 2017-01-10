@@ -88,3 +88,7 @@ end
 function move_obj(obj, rel_x, rel_y)
   return false
 end
+
+function is_ranged_select(operation)
+    return false
+end

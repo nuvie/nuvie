@@ -226,10 +226,12 @@ friend class Magic; // FIXME
 
  bool use_start();
  bool use(sint16 rel_x, sint16 rel_y);
+ bool use(MapCoord coord);
  bool use(Obj *obj);
  bool use(Actor *actor, uint16 x, uint16 y);
 
  bool get_start();
+ bool get(MapCoord coord);
  bool get(sint16 rel_x, sint16 rel_y);
  bool perform_get(Obj *obj, Obj *container_obj = NULL, Actor *actor = NULL);
 
@@ -250,6 +252,7 @@ friend class Magic; // FIXME
  bool push_start();
  bool pushFrom(Obj *obj);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
+ bool pushFrom(MapCoord target);
  bool pushTo(Obj *obj, Actor *actor);
  bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);
 

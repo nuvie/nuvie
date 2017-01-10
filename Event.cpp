@@ -872,7 +872,10 @@ bool Event::get_start()
 {
     if(game->user_paused())
         return false;
-    get_direction("Get-");
+    if(game->get_script()->call_is_ranged_select(GET))
+      get_target("Get-");
+    else
+      get_direction("Get-");
     return true;
 }
 
@@ -882,7 +885,10 @@ bool Event::push_start()
         return false;
     push_obj = NULL;
     push_actor = NULL;
-    get_direction("Move-");
+    if(game->get_script()->call_is_ranged_select(MOVE))
+      get_target("Move-");
+    else
+      get_direction("Move-");
     return true;
 }
 
@@ -917,7 +923,8 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 		else if(obj->is_on_map())
 		{
 			MapCoord target(obj->x, obj->y, obj->z);
-			if(player->get_actor()->get_location().distance(target) > 1
+			if(!game->get_script()->call_is_ranged_select(GET)
+                && player->get_actor()->get_location().distance(target) > 1
 				   && map_window->get_interface() == INTERFACE_NORMAL)
 			{
 					scroll->display_string("\n\nOut of range!");
@@ -952,14 +959,7 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 			return(false); // ???
 		}
 
-		if(game->get_script()->call_actor_get_obj(actor, obj))
-		{
-			obj_manager->remove_obj_from_map(obj); //remove object from map.
-
-			actor->inventory_add_object(obj, container_obj);
-			game->get_script()->call_actor_subtract_movement_points(actor, 3);
-			got_object = true;
-		}
+		got_object = game->get_script()->call_actor_get_obj(actor, obj, container_obj);
   }
 
     scroll->display_string("\n\n");
@@ -969,15 +969,16 @@ bool Event::perform_get(Obj *obj, Obj *container_obj, Actor *actor)
 }
 
 /* Get object at selected position, and end action. */
-bool Event::get(sint16 rel_x, sint16 rel_y)
-{
- Obj *obj;
- uint16 x,y;
- uint8 level;
+bool Event::get(sint16 rel_x, sint16 rel_y) {
+  uint16 x, y;
+  uint8 level;
 
- player->get_location(&x,&y,&level);
+  player->get_location(&x, &y, &level);
+  return get(MapCoord((uint16)(x+rel_x), (uint16)(y+rel_y), level));
+}
 
- obj = obj_manager->get_obj((uint16)(x+rel_x), (uint16)(y+rel_y), level, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+bool Event::get(MapCoord coord) {
+  Obj *obj = obj_manager->get_obj(coord.x, coord.y, coord.z, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
  bool got_object;
  if(!game->is_new_style())
     got_object = perform_get(obj, view_manager->get_inventory_view()->get_inventory_widget()->get_container(),
@@ -994,7 +995,11 @@ bool Event::use_start()
 {
     if(game->user_paused())
         return false;
-    get_direction("Use-");
+    if(game->get_script()->call_is_ranged_select(USE))
+      get_target("Use-");
+    else
+      get_direction("Use-");
+
     return true;
 }
 
@@ -1030,7 +1035,7 @@ bool Event::use(Obj *obj)
         DEBUG(0,LEVEL_DEBUGGING,"Object %d:%d\n", obj->obj_n, obj->frame_n);
     }
     else if(!obj->is_in_inventory() && map_window->get_interface() == INTERFACE_NORMAL
-        && player->get_actor()->get_location().distance(target) > 1)
+        && !game->get_script()->call_is_ranged_select(USE) && player->get_actor()->get_location().distance(target) > 1)
     {
         scroll->display_string("\nOut of range!\n");
         DEBUG(0,LEVEL_DEBUGGING,"distance to object: %d\n", player->get_actor()->get_location().distance(target));
@@ -1039,7 +1044,7 @@ bool Event::use(Obj *obj)
     {
         scroll->display_string("\nNot on screen.\n");
     }
-    else if(!obj->is_in_inventory() && !map_window->can_get_obj(player->get_actor(), obj) && player_loc != target)
+    else if(!obj->is_in_inventory() && !game->get_script()->call_is_ranged_select(USE) && !map_window->can_get_obj(player->get_actor(), obj) && player_loc != target)
     {
         scroll->display_string("\nCan't reach it\n");
     }
@@ -1100,34 +1105,39 @@ assert(mode == USE_MODE || game->user_paused());
     return(true);
 }
 
-bool Event::use(sint16 rel_x, sint16 rel_y)
-{
- map_window->centerCursor();
- map_window->moveCursorRelative(rel_x, rel_y);
- Actor *actor = map_window->get_actorAtCursor();
- Obj *obj = map_window->get_objAtCursor();
+bool Event::use(sint16 rel_x, sint16 rel_y) {
+  map_window->centerCursor();
+  map_window->moveCursorRelative(rel_x, rel_y);
+  return use(map_window->get_cursorCoord());
+}
 
+bool Event::use(MapCoord coord) {
  if(game->user_paused())
     return false;
 
- if(obj && obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj))
- {
-    Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
-    if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
-       && !map_window->tile_is_black(obj->x, obj->y, bottom_obj))
+  if(!map_window->tile_is_black(coord.x, coord.y))
+  {
+    Actor *actor = game->get_actor_manager()->get_actor(coord.x, coord.y, coord.z);
+    Obj *obj = obj_manager->get_obj(coord.x, coord.y, coord.z, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+
+    if(obj && obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj))
+    {
+      Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
+      if(game->get_game_type() == NUVIE_GAME_U6 && bottom_obj->obj_n == OBJ_U6_SECRET_DOOR // hack for frame 2
+          && !map_window->tile_is_black(obj->x, obj->y, bottom_obj))
         obj = bottom_obj;
-    else
+      else
         obj = NULL;
- }
- bool visible_actor = actor && actor->is_visible();
- 
- if(obj && (!visible_actor || !usecode->has_usecode(actor)))
-    return(use(obj));
- if(visible_actor)
- {
-    MapCoord loc = player->get_actor()->get_location();
-    return(use(actor, loc.x + rel_x, loc.y + rel_y));
- }
+    }
+    bool visible_actor = actor && actor->is_visible();
+
+    if(obj && (!visible_actor || !usecode->has_usecode(actor)))
+      return(use(obj));
+    if(visible_actor)
+    {
+      return(use(actor, coord.x, coord.y));
+    }
+  }
 
  scroll->display_string("nothing\n");
  endAction(true);
@@ -1593,15 +1603,23 @@ bool Event::pushFrom(Obj *obj)
 /* Select object to move. */
 bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
 {
+  MapCoord from = player->get_actor()->get_location();
+  MapCoord target = MapCoord(from.x + rel_x, from.y + rel_y, from.z);
+  return pushFrom(target);
+}
+
+/* Select object to move. */
+bool Event::pushFrom(MapCoord target)
+{
     ActorManager *actor_manager = game->get_actor_manager();
+    Script *script = game->get_script();
     MapCoord from = player->get_actor()->get_location();
-    MapCoord target = MapCoord(from.x + rel_x, from.y + rel_y, from.z);
 
     if(game->user_paused())
         return(false);
 
     map_window->set_show_use_cursor(false);
-    if(rel_x || rel_y)
+    if(from.x != target.x || from.y != target.y)
     {
         push_obj = obj_manager->get_obj(target.x, target.y, from.z);
     }
@@ -1633,7 +1651,7 @@ bool Event::pushFrom(sint16 rel_x, sint16 rel_y)
         return false;
     }
 
-    if(from.distance(target) > 1 && map_window->get_interface() == INTERFACE_NORMAL)
+    if(from.distance(target) > 1 && !script->call_is_ranged_select(MOVE) && map_window->get_interface() == INTERFACE_NORMAL)
     {
         scroll->display_string("\n\nOut of range!\n");
         endAction(true);
@@ -3439,6 +3457,10 @@ void Event::doAction()
             else
               use(input.loc->sx,input.loc->sy);
           }
+          else if(input.type == EVENTINPUT_MAPCOORD)
+          {
+            use(*input.loc);
+          }
           else
           {
             scroll->display_string("what?\n");
@@ -3471,6 +3493,8 @@ void Event::doAction()
             perform_get(input.obj);
         else if(input.type == EVENTINPUT_MAPCOORD_DIR)
             get(input.loc->sx,input.loc->sy);
+        else if(input.type == EVENTINPUT_MAPCOORD)
+          get(*input.loc);
         else
         {
             scroll->display_string("what?\n");
@@ -3494,7 +3518,10 @@ void Event::doAction()
         }
         else if(input.type == EVENTINPUT_MAPCOORD && !move_in_inventory)
         {
-        	pushTo(input.loc->x,input.loc->y);
+          if(!push_obj && !push_actor)
+            pushFrom(*input.loc);
+          else
+            pushTo(input.loc->x,input.loc->y);
         }
     	else
     	{

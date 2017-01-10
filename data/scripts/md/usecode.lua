@@ -1125,13 +1125,12 @@ function use_sledge_hammer_on_replacement_track_to_broken_track(obj, target_obj,
 end
 
 function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
-   --FIXME error when using telekinesis
---[[
-   if telekinetic flag then
+
+    if actor_find_max_wrapped_xy_distance(actor, to_obj.x, to_obj.y) > 1 then
       printl("THE_WORK_IS_TO_PRECISE_TO_PERFORM_TELEKINETICALLY")
       return
    end
---]]
+
    if Actor.get_talk_flag(0x73, 2) == false or Actor.get_talk_flag(0x71, 3) == true then
       printl("THE_CABLE_DOES_NOT_NEED_REPLACEMENT")
       return
@@ -1610,6 +1609,12 @@ function move_car_obj(obj, rel_x, rel_y)
    return true
 end
 
+function move_plank(obj, rel_x, rel_y)
+   obj.x = obj.x + rel_x
+   obj.y = obj.y + rel_y
+   return true
+end
+
 function is_track_tile(tile_num)
    if tile_num == 108 or tile_num == 109 or tile_num == 110 or tile_num == 77 or tile_num == 79 then
       return true
@@ -1619,6 +1624,7 @@ end
 
 local usecode_move_obj_table = {
 [268]=move_wheelbarrow,
+[395]=move_plank,
 [410]=move_rail_cart,
 [441]=move_drill,
 }
@@ -1697,7 +1703,28 @@ function use_obj_on(obj, actor, use_on_tbl)
 	end
 end
 
+function can_interact_with_obj(actor, obj)
+    if obj.on_map then
+        --FIXME get_combat_range()
+        local distance = actor_find_max_wrapped_xy_distance(actor, obj.x, obj.y)
+        if actor_is_affected_by_purple_berries(actor.actor_num) and distance <= actor.level then
+            return true
+        end
+
+        if distance > 1 then
+            printl("OUT_OF_RANGE")
+            return false
+        end
+    end
+
+    return true
+end
+
 function use_obj(obj, actor)
+    if not can_interact_with_obj(actor, obj) then
+        return
+    end
+
 	if type(usecode_table[obj.obj_n]) == "function" then
 		local func = usecode_table[obj.obj_n]
 		if func ~= nil then
@@ -1734,4 +1761,8 @@ function move_obj(obj, rel_x, rel_y)
     return usecode_move_obj_table[obj.obj_n](obj, rel_x, rel_y)
   end
 	return true
+end
+
+function is_ranged_select(operation)
+    return actor_is_affected_by_purple_berries(Actor.get_player_actor().actor_num)
 end

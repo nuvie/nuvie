@@ -279,6 +279,9 @@ function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
 
 --		print("\nYou are carrying too much already.");
 
+	Obj.moveToInv(obj, actor.actor_num)
+	subtract_movement_pts(actor, 3)
+
 	return true
 end
 

@@ -126,7 +126,7 @@ local worktype_tbl = {
 }
 
 function perform_worktype(actor)
-   print("wt="..actor.wt.."\n")
+   --print("wt="..actor.wt.."\n")
    local mpts = actor.mpts
    if worktype_tbl[actor.wt] ~= nil then
       local func = worktype_tbl[actor.wt]

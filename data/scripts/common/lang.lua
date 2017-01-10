@@ -41,6 +41,10 @@ function i18n(code)
    return str;
 end
 
+function printnl(code)
+   print("\n"..i18n(code))
+end
+
 function printl(code)
    print(i18n(code))
 end

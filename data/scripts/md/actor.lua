@@ -1335,7 +1335,7 @@ function advance_time(num_turns)
    local minute = clock_get_minute()
    
    clock_inc(num_turns)
-   	
+
    if minute + num_turns >= 60 then
       
       update_watch_tile()
@@ -1427,22 +1427,66 @@ end
 function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
 
 	if obj.getable == false then
-		print("\nThat is not possible.")
-		return false
-	end
-	
-	if Actor.can_carry_obj_weight(actor, obj) == false then
-		print("\nThe total is too heavy.")
+		printnl("THAT_IS_NOT_POSSIBLE")
 		return false
 	end
 
---		print("\nYou are carrying too much already.");
+   if actor_find_max_wrapped_xy_distance(actor, obj.x, obj.y) > 1 then
+      play_md_sfx(0x32)
+      projectile_anim(obj.tile_num, obj.x, obj.y, actor.x, actor.y, 4, false, 0)
+   end
+
+	if Actor.can_carry_obj_weight(actor, obj) == false then
+		printl("THE_TOTAL_IS_TOO_HEAVY")
+		return false
+	end
+
+   if not Actor.can_carry_obj(actor, obj) then
+      printnl("YOU_ARE_CARRYING_TOO_MUCH_ALREADY")
+      return false
+   end
 
    subtract_movement_pts(actor, 3)
 
    actor_radiation_check(actor, obj)
 
-   --FIXME more logic here.
+   if obj.obj_n == 256 then -- OBJ_CHUNK_OF_ICE
+      printnl("THE_ICE_IS_MELTING")
+   end
+
+   if obj.obj_n == 110 -- OBJ_LIT_TORCH
+           or obj.obj_n == 112
+           or obj.obj_n == 114
+           or obj.obj_n == 116
+           or obj.obj_n == 118 then
+      if not actor_has_free_arm(actor) then
+         printl("YOUR_HANDS_ARE_FULL")
+         return false
+      end
+
+      Obj.moveToInv(obj, actor.actor_num)
+      Actor.inv_ready_obj(actor, obj)
+      if obj.obj_n == 110 then -- OBJ_LIT_TORCH
+         obj.quality = 0xb4
+      end
+
+      advance_time(0)
+
+      return true
+   end
+
+   if obj.obj_n == 411 -- OBJ_SWITCH_BAR
+           or obj.obj_n == 458 -- OBJ_PANEL
+           or obj.obj_n == 314 -- OBJ_TRACKING_MOTOR
+           or obj.obj_n == 206 then -- OBJ_TIFFANY_LENS
+      if obj.quality % 2 == 0 then
+         printnl("WONT_BUDGE")
+         return false
+      end
+   end
+
+   Obj.moveToInv(obj, actor.actor_num)
+
 	return true
 end
 

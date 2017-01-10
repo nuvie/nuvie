@@ -1956,26 +1956,8 @@ CanDropOrMoveMsg MapWindow::can_drop_or_move_obj(uint16 x, uint16 y, Actor *acto
         return MSG_OUT_OF_RANGE;
 
     uint8 lt_flags;
-#if 0 // going to treat ungettable objects the same as others for now
-    sint16 rel_x, rel_y;
-// This can allow an extra tile of movement than it should but isn't a big enough deal to complicate pathfinding more
-    if(!in_inventory && !obj_manager->can_get_obj(obj)) { // don't treat as missile if we cannot pick it up
-        lt_flags = LT_HitUnpassable|LT_HitActors; // I don't think LT_HitMissileBoundary is still needed
-        rel_x = obj->x - actor_loc.x;
-        rel_y = obj->y - actor_loc.y;
-        rel_x = (rel_x == 0) ? 0 : (rel_x < 0) ? -1 : 1;
-        rel_y = (rel_y == 0) ? 0 : (rel_y < 0) ? -1 : 1;
-    } else {
-        lt_flags = LT_HitMissileBoundary;
-        rel_x = 0; rel_y = 0;
-    }
-
-
-    if(map->lineTest(actor_loc.x + rel_x, actor_loc.y + rel_y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
-#else
-	lt_flags = (game_type == NUVIE_GAME_U6) ? LT_HitMissileBoundary : 0; //FIXME this probably isn't quite right for MD/SE
-	if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
-#endif
+    lt_flags = (game_type == NUVIE_GAME_U6) ? LT_HitMissileBoundary : 0; //FIXME this probably isn't quite right for MD/SE
+    if(map->lineTest(actor_loc.x, actor_loc.y, x, y, actor_loc.z, lt_flags, lt, 0, obj))
     {
         MapCoord hit_loc = MapCoord(lt.hit_x, lt.hit_y, lt.hit_level);
         if(obj_loc.distance(target_loc) != 1 || hit_loc.distance(target_loc) != 1)

@@ -67,6 +67,15 @@ function actor_is_holding_obj(actor, obj_n)
    return false   
 end
 
+function actor_has_free_arm(actor)
+   if Actor.inv_get_readied_obj_n(actor, ARM) == -1
+           or Actor.inv_get_readied_obj_n(actor, ARM_2) == -1 then
+      return true
+   end
+
+   return false
+end
+
 function actor_find_max_xy_distance(actor, x, y)
    x, y = abs(actor.x - x), abs(actor.y - y)
    return (x > y) and x or y

@@ -1124,13 +1124,19 @@ uint8 Script::actor_get_max_magic_points(Actor *actor)
 	return (uint8)lua_tointeger(L,-1);
 }
 
-bool Script::call_actor_get_obj(Actor *actor, Obj *obj)
+bool Script::call_actor_get_obj(Actor *actor, Obj *obj, Obj *container)
 {
+   int num_args = 2;
    lua_getglobal(L, "actor_get_obj");
    nscript_new_actor_var(L, actor->get_actor_num());
    nscript_obj_new(L, obj);
 
-   if(call_function("actor_get_obj", 2, 1) == false)
+   if(container)
+   {
+      nscript_obj_new(L, container);
+      num_args++;
+   }
+   if(call_function("actor_get_obj", num_args, 1) == false)
 	   return false;
 
    return lua_toboolean(L,-1);
@@ -1356,6 +1362,16 @@ bool Script::call_is_avatar_dead()
 	if(call_function("is_avatar_dead", 0, 1) == false)
 		return false;
 	return lua_toboolean(L,-1);
+}
+
+bool Script::call_is_ranged_select(UseCodeType operation)
+{
+  lua_getglobal(L, "is_ranged_select");
+  lua_pushstring(L, useCodeTypeToString(operation));
+
+  if(call_function("is_ranged_select", 1, 1) == false)
+    return false;
+  return lua_toboolean(L,-1);
 }
 
 bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)

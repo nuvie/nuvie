@@ -122,7 +122,7 @@ class Script
    bool call_look_obj(Obj *obj);
    int call_obj_get_readiable_location(Obj *obj);
    uint8 actor_get_max_magic_points(Actor *actor);
-   bool call_actor_get_obj(Actor *actor, Obj *obj);
+   bool call_actor_get_obj(Actor *actor, Obj *obj, Obj *container=NULL);
    bool call_actor_subtract_movement_points(Actor *actor, uint8 points);
    bool call_actor_resurrect(Actor *actor);
    bool call_use_keg(Obj *obj); //we need this until we move all usecode into script.
@@ -141,6 +141,7 @@ class Script
    bool call_can_get_obj_override(Obj *obj);
    bool call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message);
    bool call_is_avatar_dead();
+   bool call_is_ranged_select(UseCodeType operation);
    bool call_set_g_show_stealing(bool stealing);
    uint8 call_get_combat_range(uint16 absx, uint16 absy);
    uint8 call_get_weapon_range(uint16 obj_n);

@@ -2367,7 +2367,10 @@ function actor_get_obj(actor, obj)
 	end
 	
 	obj.ok_to_take = true
-	
+
+   Obj.moveToInv(obj, actor.actor_num)
+   subtract_movement_pts(actor, 3)
+
 	return true
 end
 
