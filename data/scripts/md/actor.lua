@@ -1424,7 +1424,9 @@ function actor_radiation_check(actor, obj)
    end
 end
 
-function actor_get_obj(actor, obj) -- FIXME need to limit inventory slots
+function actor_get_obj(actor, obj, container) -- FIXME need to limit inventory slots
+
+   --FIXME handle getting into container.
 
 	if obj.getable == false then
 		printnl("THAT_IS_NOT_POSSIBLE")

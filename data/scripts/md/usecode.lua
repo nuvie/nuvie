@@ -1202,6 +1202,31 @@ function use_switch_bar(obj, actor)
    end
 end
 
+function use_reading_material(obj, actor)
+   if obj.quality == 0 then
+      local signatures = ""
+      if Actor.get_talk_flag(5, 3) == true then
+         signatures = signatures .. " Richard Sherman"
+      end
+      signatures = signatures .. "\n"
+
+      if Actor.get_talk_flag(0x19, 3) == true then
+         signatures = signatures .. "  Capt. Gregory Duprey"
+      end
+      signatures = signatures .. "\n"
+
+      if Actor.get_talk_flag(0x1a, 3) == true then
+         signatures = signatures .. "  Doctor David Yellin"
+      end
+      signatures = signatures .. "\n"
+
+      printfl("AFFIDAVIT", signatures)
+   else
+      print(load_text_from_lzc("mdtext.lzc", obj.quality - 1))
+   end
+   --FIXME display on scroll gump
+end
+
 function use_assembled_drill(obj, actor)
 
    play_md_sfx(0x10)
@@ -1420,6 +1445,10 @@ local usecode_table = {
 --on
    [192]=use_fixed_belt_on_bare_rollers,
 },
+--OBJ_BOOK
+[148]=use_reading_material,
+--OBJ_NOTE
+[151]=use_reading_material,
 --OBJ_DOOR 
 [152]=use_door,
 [181]=use_gate,
@@ -1435,7 +1464,9 @@ local usecode_table = {
    [130]=use_hammer_on_oxium_geode, --OBJ_OXIUM_GEODE
    [298]=use_gong, --OBJ_GONG
    --FIXME OBJ_BRASS_CHEST, OBJ_OBSIDIAN_BOX, OBJ_STEAMER_TRUNK, OBJ_OPEN_BRASS_TRUNK use_crate
-   },    
+   },
+--OBJ_SCROLL
+[243]=use_reading_material,
 --OBJ_MARTIAN_HOE
 [263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL

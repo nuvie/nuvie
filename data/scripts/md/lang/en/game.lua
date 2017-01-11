@@ -198,4 +198,5 @@ YOUR_HANDS_ARE_FULL="\nYour hands are full.\n",
 WONT_BUDGE="Won't budge !\n",
 THE_TOTAL_IS_TOO_HEAVY="\nThe total is too heavy.\n",
 THAT_IS_NOT_POSSIBLE="That is not possible.\n",
+AFFIDAVIT="--Affidavit--\n\nThe undersigned do hereby vouch for the trust-\nworthiness of $P, who bears this chit, commending same to the members of the Olympus Mons outpost.\n\n*Signed:\n%s\n*",
 }

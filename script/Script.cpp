@@ -53,6 +53,7 @@
 #include "TMXMap.h"
 
 #include <math.h>
+#include "U6Lib_n.h"
 
 #include "lua.hpp"
 
@@ -307,6 +308,8 @@ static int nscript_mapwindow_center_at_loc(lua_State *L);
 static int nscript_mapwindow_get_loc(lua_State *L);
 static int nscript_mapwindow_set_loc(lua_State *L);
 static int nscript_mapwindow_set_enable_blacking(lua_State *L);
+
+static int nscript_load_text_from_lzc(lua_State *L);
 
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
@@ -862,6 +865,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_mapwindow_set_enable_blacking);
    lua_setglobal(L, "mapwindow_set_enable_blacking");
+
+   lua_pushcfunction(L, nscript_load_text_from_lzc);
+   lua_setglobal(L, "load_text_from_lzc");
 
    seed_random();
 
@@ -4565,7 +4571,7 @@ static int nscript_mapwindow_set_loc(lua_State *L)
 }
 
 /***
-Toggle mapwindow 'blacking'. Blacking hides tiles that are not visiblt to the player because they are obscured
+Toggle mapwindow 'blacking'. Blacking hides tiles that are not visible to the player because they are obscured
 by a wall.
 @function mapwindow_set_enable_blacking
 @bool enable_blacking
@@ -4580,4 +4586,57 @@ static int nscript_mapwindow_set_enable_blacking(lua_State *L)
   map_window->set_enable_blacking(enable_blacking);
 
   return 0;
+}
+
+/***
+Loads text from a given LZC file.
+@function load_text_from_lzc
+@string filename the lzc file to extract the text from
+@int index offset in the lzc file to load the text from
+@treturn string the extracted text
+ */
+static int nscript_load_text_from_lzc(lua_State *L)
+{
+   unsigned char *buf = NULL;
+   std::string filename(lua_tostring(L, 1));
+   U6Lib_n lib_n;
+
+   std::string path;
+
+   config_get_path(Game::get_game()->get_config(), filename, path);
+
+   if(!lib_n.open(path, 4, NUVIE_GAME_MD))
+   {
+      return 0;
+   }
+   int idx = lua_tointeger(L, 2);
+   if(idx >= lib_n.get_num_items())
+   {
+      return 0;
+   }
+
+   buf = lib_n.get_item(idx, NULL);
+   if(!buf)
+   {
+      return 0;
+   }
+
+   int len = lib_n.get_item_size(idx);
+   lib_n.close();
+
+   if(len < 1 || buf[len-1] != 0)
+   {
+      free(buf);
+      return 0;
+   }
+
+   if( len >= 2 && buf[len-2] == 0xff)
+   {
+      buf[len-2] = 0x0;
+   }
+
+   lua_pushstring(L, (const char *)buf);
+   free(buf);
+
+   return 1;
 }
