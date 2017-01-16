@@ -1220,11 +1220,70 @@ function use_reading_material(obj, actor)
       end
       signatures = signatures .. "\n"
 
-      printfl("AFFIDAVIT", signatures)
+      display_text_in_scroll_gump(i18nf("AFFIDAVIT", player_get_name(), signatures))
    else
-      print(load_text_from_lzc("mdtext.lzc", obj.quality - 1))
+      local text = load_text_from_lzc("mdtext.lzc", obj.quality - 1)
+      if text ~= nil then
+         display_text_in_scroll_gump(text)
+      else
+         printl("YOU_CANT_READ_IT")
+      end
    end
-   --FIXME display on scroll gump
+
+end
+
+function use_pool_table(obj, actor)
+   if Actor.inv_get_readied_obj_n(actor, ARM) ~= 401 then --OBJ_POOL_CUE
+      printl("YOU_NEED_A_POOL_CUE")
+      return
+   end
+   local pool_table1 = map_get_obj(wrap_coord(obj.x - 1, obj.z), obj.y, obj.z, 400) -- OBJ_UNK_400
+   local rand = math.random
+   if pool_table1 == nil then
+      pool_table1 = Obj.new(400, rand(0, 6))
+      Obj.moveToMap(pool_table1, wrap_coord(obj.x - 1, obj.z), obj.y, obj.z)
+   end
+
+   local pool_table2 = map_get_obj(obj.x, obj.y, obj.z, 400) -- OBJ_UNK_400
+   if pool_table2 == nil then
+      pool_table2 = Obj.new(400, rand(0, 6))
+      Obj.moveToMap(pool_table2, wrap_coord(obj.x - 1, obj.z), obj.y, obj.z)
+   end
+
+   for i=1,10 do
+      if i~= 1 then
+         script_wait(rand(200,500))
+      end
+      play_md_sfx(0x1c + rand(0, 2))
+      script_wait(rand(10,200))
+      play_md_sfx(0x1c + rand(0, 2))
+
+      pool_table1.frame_n = rand(0, 6)
+      pool_table2.frame_n = rand(0, 6)
+
+      if rand(0, 40) >= actor_dex_adj(actor) then
+         break
+      end
+   end
+
+   if rand(0, 40) < actor_dex_adj(actor) then
+      printl("GOOD_SHOT_OLD_BEAN")
+   end
+end
+
+function use_ready_obj(obj, actor)
+   if not Actor.can_carry_obj(actor, obj) then
+      printl("YOU_ARE_CARRYING_TOO_MUCH_ALREADY")
+      return
+   end
+   if obj.readied == true then
+      return
+   end
+
+   Obj.removeFromEngine(obj)
+   Obj.moveToInv(obj, actor.actor_num)
+
+   Actor.inv_ready_obj(actor, obj)
 end
 
 function use_assembled_drill(obj, actor)
@@ -1389,6 +1448,8 @@ local use_shovel_on_tbl = {
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
+--OBJ_RUBBER_GLOVES
+[38]=use_ready_obj,
 --OBJ_SLEDGE_HAMMER
 [52]={
 --on
@@ -1440,6 +1501,8 @@ local usecode_table = {
    [440]=use_wrench_on_drill,
    [458]=use_wrench_on_panel
 },
+--OBJ_TONGS
+[136]=use_ready_obj,
 --OBJ_REPAIRED_BELT
 [144]={
 --on
@@ -1491,6 +1554,9 @@ local usecode_table = {
 [323]=use_misc_text,
 --OBJ_MARTIAN_PICK
 [327]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+[399]=use_pool_table,
+--OBJ_POOL_QUE
+[401]=use_ready_obj,
 [411]=use_switch_bar,
 --OBJ_CLOSED_HATCH
 [421]=use_door,

@@ -1,3 +1,8 @@
+2017-01-16  Eric Fry <efry at users.sourceforge.net>
+	* Added script function player_get_name()
+	* Added script function display_text_in_scroll_gump()
+	* Added MD usecode use_pool_table and use_ready_obj
+ 
 2017-01-11  Eric Fry <efry at users.sourceforge.net>
 	* Added reading material usecode logic.
 	* Added new script function load_text_from_lzc()

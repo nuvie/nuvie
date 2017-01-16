@@ -101,6 +101,14 @@ bool ScrollWidgetGump::can_fit_token_on_msgline(MsgLine *msg_line, MsgText *toke
   return true;
 }
 
+bool ScrollWidgetGump::parse_token(MsgText *token)
+{
+	if(token->s[0] == '*') // We don't want page breaks in the scroll widget.
+		return true;
+
+	return MsgScroll::parse_token(token);
+}
+
 void ScrollWidgetGump::display_string(std::string s)
 {
   MsgScroll::display_string(s);

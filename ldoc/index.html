@@ -177,6 +177,10 @@
 	<td class="name" nowrap><a href="#load_text_from_lzc">load_text_from_lzc (filename, index)</a></td>
 	<td class="summary">Loads text from a given LZC file.</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#display_text_in_scroll_gump">display_text_in_scroll_gump (text)</a></td>
+	<td class="summary">Display string in scroll gump if in new style.</td>
+	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
@@ -246,6 +250,10 @@
 </table>
 <h2><a href="#player">player</a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#player_get_name">player_get_name ()</a></td>
+	<td class="summary">Get the player name</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#player_get_gender">player_get_gender ()</a></td>
 	<td class="summary">Get the gender of the player</td>
@@ -1349,6 +1357,27 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
 
 </dd>
+    <dt>
+    <a name = "display_text_in_scroll_gump"></a>
+    <strong>display_text_in_scroll_gump (text)</strong>
+    </dt>
+    <dd>
+    Display string in scroll gump if in new style.  Otherwise display on regular message scroll.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         the text to display in the scroll
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
 </dl>
     <h2><a name="Tables"></a>Tables</h2>
     <dl class="function">
@@ -2109,6 +2138,25 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dl>
     <h2><a name="player"></a>player</h2>
     <dl class="function">
+    <dt>
+    <a name = "player_get_name"></a>
+    <strong>player_get_name ()</strong>
+    </dt>
+    <dd>
+    Get the player name
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string player name
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "player_get_gender"></a>
     <strong>player_get_gender ()</strong>

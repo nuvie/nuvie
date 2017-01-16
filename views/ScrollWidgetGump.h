@@ -72,6 +72,8 @@ class ScrollWidgetGump: public MsgScroll
  ScrollWidgetGump(Configuration *cfg, Screen *s);
  ~ScrollWidgetGump();
 
+ bool parse_token(MsgText *token);
+
  bool can_display_prompt() { return false; }
 
  void Display(bool full_redraw);

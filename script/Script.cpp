@@ -202,6 +202,7 @@ static int nscript_objlist_read2(lua_State *L);
 static int nscript_objlist_write2(lua_State *L);
 
 static int nscript_game_get_ui_style(lua_State *L);
+static int nscript_player_get_name(lua_State *L);
 static int nscript_player_get_gender(lua_State *L);
 static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
@@ -311,6 +312,7 @@ static int nscript_mapwindow_set_enable_blacking(lua_State *L);
 
 static int nscript_load_text_from_lzc(lua_State *L);
 
+static int nscript_display_text_in_scroll_gump(lua_State *L);
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_u6llist_iter_recursive(lua_State *L);
@@ -728,6 +730,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_game_get_ui_style);
    lua_setglobal(L, "game_get_ui_style");
 
+   lua_pushcfunction(L, nscript_player_get_name);
+   lua_setglobal(L, "player_get_name");
+
    lua_pushcfunction(L, nscript_player_get_gender);
    lua_setglobal(L, "player_get_gender");
 
@@ -868,6 +873,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_load_text_from_lzc);
    lua_setglobal(L, "load_text_from_lzc");
+
+   lua_pushcfunction(L, nscript_display_text_in_scroll_gump);
+   lua_setglobal(L, "display_text_in_scroll_gump");
 
    seed_random();
 
@@ -2548,6 +2556,24 @@ static int nscript_game_get_ui_style(lua_State *L)
 {
   lua_pushinteger(L, Game::get_game()->get_game_style());
   return 1;
+}
+
+/***
+Get the player name
+@function player_get_name
+@return string player name
+@within player
+ */
+static int nscript_player_get_name(lua_State *L)
+{
+   Player *player = Game::get_game()->get_player();
+   if(player)
+   {
+      lua_pushstring(L, player->get_name());
+      return 1;
+   }
+
+   return 0;
 }
 
 /***
@@ -4639,4 +4665,21 @@ static int nscript_load_text_from_lzc(lua_State *L)
    free(buf);
 
    return 1;
+}
+
+/***
+Display string in scroll gump if in new style. Otherwise display on regular message scroll.
+@function display_text_in_scroll_gump
+@string text the text to display in the scroll
+ */
+static int nscript_display_text_in_scroll_gump(lua_State *L)
+{
+   const char *text = lua_tostring(L, 1);
+   if(text) {
+      if (Game::get_game()->is_new_style())
+         Game::get_game()->get_view_manager()->open_scroll_gump(text, strlen(text));
+      else
+         Game::get_game()->get_scroll()->message(text);
+   }
+   return 0;
 }

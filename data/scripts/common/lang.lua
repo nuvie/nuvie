@@ -41,6 +41,10 @@ function i18n(code)
    return str;
 end
 
+function i18nf(code, ...)
+   return string.format(i18n(code), ...)
+end
+
 function printnl(code)
    print("\n"..i18n(code))
 end
@@ -50,5 +54,5 @@ function printl(code)
 end
 
 function printfl(code, ...)
-   print(string.format(i18n(code), ...))
+   print(i18nf(code, ...))
 end
