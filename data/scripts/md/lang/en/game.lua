@@ -202,4 +202,6 @@ AFFIDAVIT="--Affidavit--\n\nThe undersigned do hereby vouch for the trust-\nwort
 YOU_CANT_READ_IT="You can't read it.\n",
 YOU_NEED_A_POOL_CUE="You need a cue stick in your hands.\n",
 GOOD_SHOT_OLD_BEAN="Good shot, old bean!\n",
+THE_ROBOT_ALREADY_HAS_A_HEARTSTONE="The robot already has a heartstone.\n",
+THE_HEARTSTONE_IS_INSTALLED="The heartstone is installed.\n",
 }

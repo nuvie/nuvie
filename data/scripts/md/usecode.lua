@@ -1286,6 +1286,27 @@ function use_ready_obj(obj, actor)
    Actor.inv_ready_obj(actor, obj)
 end
 
+function use_heartstone_on_metal_woman(obj, target_obj, actor)
+   if target_obj.quality == 1 then
+      printl("THE_ROBOT_ALREADY_HAS_A_HEARTSTONE")
+   else
+      target_obj.quality = 1
+      Obj.removeFromEngine(obj)
+      play_md_sfx(0x1f)
+      printl("THE_HEARTSTONE_IS_INSTALLED")
+   end
+
+end
+
+function use_manuscript_on_mailbox(obj, target_obj, actor)
+   local twain = Actor.get(0x57)
+
+      Actor.set_talk_flag(twain, 6)
+      Actor.talk(twain)
+   --FIXME reset obelisk
+   --FIXME wake from dream
+end
+
 function use_assembled_drill(obj, actor)
 
    play_md_sfx(0x10)
@@ -1487,6 +1508,11 @@ local usecode_table = {
 [78]=use_misc_text, 
 [86]=use_container,
 [87]=use_container,
+--OBJ_MANUSCRIPT
+[88]={
+   --on
+   [84]=use_manuscript_on_mailbox, --OBJ_MAILBOX
+},
 [96]=use_sextant,
 [102]={[86]=use_crate,[427]=use_prybar_on_hatch},
 [104]=use_container,
@@ -1560,6 +1586,11 @@ local usecode_table = {
 [411]=use_switch_bar,
 --OBJ_CLOSED_HATCH
 [421]=use_door,
+--OBJ_HEART_STONE
+[426]={
+   --on
+   [287]= use_heartstone_on_metal_woman, --OBJ_METAL_WOMAN
+},
 [427]=use_misc_text,
 --OBJ_ASSEMBLED_DRILL
 [441]=use_assembled_drill,
