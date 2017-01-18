@@ -1539,6 +1539,15 @@ bool Script::call_is_container_obj(uint16 obj_n)
     return(lua_toboolean(L,-1));
 }
 
+uint8 Script::call_get_portrait_number(Actor *actor)
+{
+   lua_getglobal(L, "get_portrait_number");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   if(call_function("get_portrait_number", 1, 1) == false)
+      return 1;
+   return (uint8)lua_tointeger(L,-1);
+}
+
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
    ScriptThread *t = NULL;

@@ -1516,3 +1516,53 @@ function actor_hit(actor, damage)
       Actor.hit(actor, damage)
    end
 end
+
+function get_portrait_number(actor)
+   local NO_PORTRAIT = 255
+   local idx = actor.actor_num
+   if idx >= 0xa and idx <= 0xf then
+      idx = 0x51
+   end
+
+   if idx >= 0xbf then
+      return NO_PORTRAIT
+   end
+
+   if idx <= 1 then
+      if player_get_gender() == 1 then
+         idx = 0
+      else
+         idx = 1
+      end
+   elseif idx == 6 and Actor.get_talk_flag(actor, 1) then
+      idx = 0x16
+   elseif actor.obj_flag_0 then
+      if player_get_gender() == 1 then
+         idx = 0x73
+      else
+         idx = 0x72
+      end
+   elseif idx == 0x21 and not Actor.get_talk_flag(actor, 2) then
+      idx = 0x61
+   elseif idx == 0x15 or (idx >= 0x47 and idx <= 0x4a) or idx == 0x4e then
+      idx = 0x14
+   elseif idx >= 0x4b and idx <= 0x4d then
+      idx = 0x16
+   elseif idx == 0x1e then
+      idx = 0x18
+   elseif idx == 0x46 then
+      idx = 0x40
+   elseif idx >= 0x50 and idx <= 0x57 then
+      idx = idx - 0x26
+   elseif idx == 0x5e then
+      idx = 0x6
+   elseif idx == 0x68 or idx == 0x77 or idx == 0x78 then
+      idx = 0x67
+   elseif idx == 0x69 then
+      idx = 0x19
+   elseif idx == 0x6d then
+      idx = 0x2
+   end
+
+   return idx
+end
