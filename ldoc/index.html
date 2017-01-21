@@ -236,6 +236,10 @@
 	<td class="summary">Iterate through all objects of a specific type on a given map level.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#find_obj_from_area">find_obj_from_area (location, width, height)</a></td>
+	<td class="summary">Iterate through all objects within a given area.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#objs_at_loc">objs_at_loc (location)</a></td>
 	<td class="summary">Iterate through objects at a given map location</td>
 	</tr>
@@ -1694,6 +1698,10 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
           <em>readonly</em>
         </li>
+        <li><span class="parameter">obj_flag_0</span>
+            <span class="types"><span class="type">bool</span></span>
+         obj flag 0
+        </li>
         <li><span class="parameter">obj_n</span>
             <span class="types"><span class="type">int</span></span>
 
@@ -2045,6 +2053,35 @@ The object will be unlinked from the engine after this operation. It will be fre
     <span class="keyword">end</span>
   <span class="keyword">end</span></pre>
     </ul>
+
+</dd>
+    <dt>
+    <a name = "find_obj_from_area"></a>
+    <strong>find_obj_from_area (location, width, height)</strong>
+    </dt>
+    <dd>
+    Iterate through all objects within a given area.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         location for the effect to take place
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">int</span></span>
+         width of area to search
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">int</span></span>
+         height of area to search
+        </li>
+    </ul>
+
+
+
+
 
 </dd>
     <dt>

@@ -323,6 +323,7 @@ static int nscript_container(lua_State *L);
 int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 static int nscript_find_obj(lua_State *L);
+static int nscript_find_obj_from_area(lua_State *L);
 
 Script *Script::script = NULL;
 
@@ -627,7 +628,10 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_find_obj);
    lua_setglobal(L, "find_obj");
-   
+
+   lua_pushcfunction(L, nscript_find_obj_from_area);
+   lua_setglobal(L, "find_obj_from_area");
+
    lua_pushcfunction(L, nscript_timer_set);
    lua_setglobal(L, "timer_set");
 
@@ -3997,6 +4001,70 @@ int nscript_find_obj_iter(lua_State *L)
 	return 1;
 }
 
+Obj *nscript_get_next_obj_from_area(U6Link **link, uint16 x, uint16 y, uint8 z, uint16 w, uint16 h, uint16 *xOffset, uint16 *yOffset)
+{
+  if(*link != NULL) {
+    Obj *obj = (Obj *) (*link)->data;
+    *link = (*link)->next;
+    return obj;
+  }
+
+  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+  while(*yOffset < h) {
+    U6LList *list = obj_manager->get_obj_list(x + *xOffset, y + *yOffset, z);
+
+    (*xOffset)++;
+    if (*xOffset == w) {
+      (*yOffset)++;
+      *xOffset = 0;
+    }
+
+    if(list) {
+      *link = list->start();
+      if(*link) {
+         Obj *obj = (Obj *) (*link)->data;
+         *link = (*link)->next;
+         return obj;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+int nscript_find_obj_from_area_iter(lua_State *L)
+{
+   Obj *cur_obj = NULL;
+
+  U6Link **s_link = (U6Link **)luaL_checkudata(L, lua_upvalueindex(1), "nuvie.U6Link");
+
+  uint16 x = (uint16)lua_tointeger(L, lua_upvalueindex(2));
+  uint16 y = (uint16)lua_tointeger(L, lua_upvalueindex(3));
+  uint8 z = (uint8)lua_tointeger(L, lua_upvalueindex(4));
+  uint16 width = (uint16)lua_tointeger(L, lua_upvalueindex(5));
+  uint16 height = (uint16)lua_tointeger(L, lua_upvalueindex(6));
+  uint16 xOffset = (uint16)lua_tointeger(L, lua_upvalueindex(7));
+  uint16 yOffset = (uint16)lua_tointeger(L, lua_upvalueindex(8));
+
+  releaseU6Link(*s_link); // release old link object.
+
+  cur_obj = nscript_get_next_obj_from_area(s_link, x, y, z, width, height, &xOffset, &yOffset);
+
+  retainU6Link(*s_link);
+
+   if(cur_obj == NULL)
+      return 0;
+
+   lua_pushinteger(L, xOffset);
+   lua_replace(L, lua_upvalueindex(7));
+
+   lua_pushinteger(L, yOffset);
+   lua_replace(L, lua_upvalueindex(8));
+
+   nscript_new_obj_var(L, cur_obj);
+
+   return 1;
+}
 /***
 Iterate through all objects of a specific type on a given map level.
 @function find_obj
@@ -4052,6 +4120,47 @@ static int nscript_find_obj(lua_State *L)
 	lua_pushcclosure(L, &nscript_find_obj_iter, 4);
 
 	return 1;
+}
+
+/***
+Iterate through all objects within a given area.
+@function find_obj_from_area
+@tparam MapCoord|x,y,z location location for the effect to take place
+@int width width of area to search
+@int height height of area to search
+@within Object
+ */
+static int nscript_find_obj_from_area(lua_State *L)
+{
+   MapCoord loc;
+   int stackOffset = 4;
+   if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z) == false)
+      return 0;
+   if(lua_istable(L, 1))
+   {
+      stackOffset = 2;
+   }
+
+   uint16 width = (uint16)luaL_checkinteger(L, stackOffset++);
+   uint16 height = (uint16)luaL_checkinteger(L, stackOffset);
+
+   U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+   *p_link = NULL;
+
+   luaL_getmetatable(L, "nuvie.U6Link");
+   lua_setmetatable(L, -2);
+
+   lua_pushinteger(L, loc.x);
+   lua_pushinteger(L, loc.y);
+   lua_pushinteger(L, loc.z);
+   lua_pushinteger(L, width);
+   lua_pushinteger(L, height);
+   lua_pushinteger(L, 0); //cur x offset
+   lua_pushinteger(L, 0); //cur y offset
+
+   lua_pushcclosure(L, &nscript_find_obj_from_area_iter, 8);
+
+   return 1;
 }
 
 /***

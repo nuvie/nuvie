@@ -1,3 +1,8 @@
+2017-01-21  Eric Fry <efry at users.sourceforge.net>
+	* Added new script function find_obj_from_area. This allows you
+	  to iterate over all objects within a given area.
+	* Added more MD use entrance logic.
+
 2017-01-18  Eric Fry <efry at users.sourceforge.net>
 	* Fixed MD portrait number logic
 	* Added actor.obj_flag_0 var to script

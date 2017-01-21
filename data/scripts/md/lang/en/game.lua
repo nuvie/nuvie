@@ -204,4 +204,8 @@ YOU_NEED_A_POOL_CUE="You need a cue stick in your hands.\n",
 GOOD_SHOT_OLD_BEAN="Good shot, old bean!\n",
 THE_ROBOT_ALREADY_HAS_A_HEARTSTONE="The robot already has a heartstone.\n",
 THE_HEARTSTONE_IS_INSTALLED="The heartstone is installed.\n",
+THE_ALIEN_DEVICE_DOESNT_SEEM_TO_BE_FUNCTIONING="The alien device doesn't seem to be functioning.\n",
+NOTHING_APPEARS_TO_HAPPEN="Nothing appears to happen.\n",
+YOU_MUST_BE_IN_PARTY_MODE_TO_ENTER="You must be in party mode to enter.\n",
+YOU_MUST_BE_IN_PARTY_MODE_TO_LEAVE="You must be in party mode to leave.\n",
 }

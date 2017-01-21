@@ -225,15 +225,16 @@ local g_readiable_objs_tbl = {
 }
 
 function wrap_coord(coord, level)
-   if level > 0 and level < 6 then
-      return coord
+   local map_stride = 1024
+   if level ~= 0 then
+      map_stride = 256
    end
 
    if coord < 0 then
-      return 1024 + coord
+      return map_stride + coord
    end
-   
-   return coord % 1024   
+
+   return coord % map_stride
 end
 
 function can_move_obj(obj, rel_x, rel_y)
