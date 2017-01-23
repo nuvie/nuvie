@@ -269,6 +269,10 @@ function play_md_sfx(sfx_id)
    --FIXME
 end
 
+function play_door_sfx()
+   --FIXME
+end
+
 function create_object_needs_quan(obj_n)
 -- obj.stackable is already checked
 	if obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1

@@ -69,6 +69,7 @@ An in-game object
 @int x x position
 @int y y position
 @int z z position
+@tparam[readonly] MapCoord| xyz The object's Location in a MapCoord table.
 @int obj_n object number
 @int frame_n frame number
 @int quality
@@ -2100,6 +2101,23 @@ static int nscript_obj_get(lua_State *L)
      }
    }
 
+   if(!strcmp(key, "xyz"))
+   {
+      lua_newtable(L);
+      lua_pushstring(L, "x");
+      lua_pushinteger(L, obj->x);
+      lua_settable(L, -3);
+
+      lua_pushstring(L, "y");
+      lua_pushinteger(L, obj->y);
+      lua_settable(L, -3);
+
+      lua_pushstring(L, "z");
+      lua_pushinteger(L, obj->z);
+      lua_settable(L, -3);
+
+      return 1;
+   }
    return 0;
 }
 
@@ -3071,9 +3089,7 @@ static int nscript_map_can_put_obj(lua_State *L)
 /***
 Check map location for water
 @function map_is_water
-@int x
-@int y
-@int z
+@tparam MapCoord|x,y,z location
 @treturn bool true if the map at location is a water tile otherwise false
 @within map
  */
@@ -3094,9 +3110,7 @@ static int nscript_map_is_water(lua_State *L)
 /***
 Checks if the map location is currently on screen
 @function map_is_on_screen
-@int x
-@int y
-@int z
+@tparam MapCoord|x,y,z location
 @treturn bool true if the map location is currently on screen otherwise false
 @within map
  */

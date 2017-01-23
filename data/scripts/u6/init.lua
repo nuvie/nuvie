@@ -67,9 +67,6 @@ function is_avatar_dead()
 	return g_avatar_died
 end
 
-movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
-movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
-
 --used with triple crossbow and magic wind spells.
 g_projectile_offset_tbl = 
 {

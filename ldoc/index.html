@@ -369,11 +369,11 @@
 	<td class="summary">Can you put an object at a given map location</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_is_water">map_is_water (x, y, z)</a></td>
+	<td class="name" nowrap><a href="#map_is_water">map_is_water (location)</a></td>
 	<td class="summary">Check map location for water</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_is_on_screen">map_is_on_screen (x, y, z)</a></td>
+	<td class="name" nowrap><a href="#map_is_on_screen">map_is_on_screen (location)</a></td>
 	<td class="summary">Checks if the map location is currently on screen</td>
 	</tr>
 	<tr>
@@ -1414,6 +1414,11 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
         <li><span class="parameter">z</span>
             <span class="types"><span class="type">int</span></span>
          z position
+        </li>
+        <li><span class="parameter">xyz</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a></span>
+         The object&rsquo;s Location in a MapCoord table.
+          <em>readonly</em>
         </li>
         <li><span class="parameter">obj_n</span>
             <span class="types"><span class="type">int</span></span>
@@ -2765,7 +2770,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dd>
     <dt>
     <a name = "map_is_water"></a>
-    <strong>map_is_water (x, y, z)</strong>
+    <strong>map_is_water (location)</strong>
     </dt>
     <dd>
     Check map location for water
@@ -2773,18 +2778,8 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">z</span>
-            <span class="types"><span class="type">int</span></span>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
         </li>
@@ -2803,7 +2798,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dd>
     <dt>
     <a name = "map_is_on_screen"></a>
-    <strong>map_is_on_screen (x, y, z)</strong>
+    <strong>map_is_on_screen (location)</strong>
     </dt>
     <dd>
     Checks if the map location is currently on screen
@@ -2811,18 +2806,8 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">z</span>
-            <span class="types"><span class="type">int</span></span>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
         </li>

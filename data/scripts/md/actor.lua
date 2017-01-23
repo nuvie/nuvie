@@ -1246,7 +1246,7 @@ function advance_time(num_turns)
                            if rand(0, 1) == 0 then
                               if cold_status == 2 then
                                  printfl("IS_FREEZING", actor.name)
-                                 actor_hit(actor, rand(1, 2))                              
+                                 actor_hit(actor, rand(1, 2))
                               end
                            else
                               printfl("IS_FREEZING", actor.name)

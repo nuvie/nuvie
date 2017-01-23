@@ -69,10 +69,66 @@ function player_before_move_action(rel_x, rel_y)
 
     return true
 end
+
 function update_objects_around_party()
     local loc = player_get_location()
     for obj in find_obj_from_area(wrap_coord(loc.x - 5, loc.z), wrap_coord(loc.y - 5, loc.z), loc.z, 11, 11) do
---        print(obj.obj_n.." "..obj.name.."\n")
+        local obj_n = obj.obj_n
+        if (obj_n == 227 and Actor.get_talk_flag(0x73, 2)) or --OBJ_DOOR3
+                (obj_n == 179 and Actor.get_talk_flag(0x73, 4)) then --OBJ_CLOSED_DOOR
+            if bit32.band(obj.quality, 0x80) == 0 then -- check if the door is stuck
+                local base_frame = bit32.band(obj.frame_n, 2)
+                local actor = map_get_actor(obj.xyz)
+                if actor ~= nil then
+                    if map_is_on_screen(obj.xyz) then
+                        play_door_sfx()
+                    end
+                    obj.frame_n = base_frame + 9
+                else
+                    actor = map_get_actor(obj.x + movement_offset_x_tbl[base_frame + 1], obj.y + movement_offset_y_tbl[base_frame + 1], obj.z)
+                    if actor == nil then
+                        actor = map_get_actor(obj.x + movement_offset_x_tbl[base_frame + 4 + 1], obj.y + movement_offset_y_tbl[base_frame + 4 + 1], obj.z)
+                    end
+
+                    if actor ~= nil and map_is_on_screen(obj.xyz) then
+                        play_door_sfx()
+                        if obj.frame_n < 4 then
+                            obj.frame_n = (base_frame) + 5
+                        elseif obj.frame_n < 8 then
+                            obj.frame_n = (base_frame) + 1
+                        else
+                            obj.frame_n = (base_frame) + 5
+                        end
+                    else
+                        if obj.frame_n == 5 then
+                            obj.frame_n = 1
+                        elseif obj.frame_n == 7 then
+                            obj.frame_n = 3
+                        end
+
+                    end
+                end
+            end
+        elseif obj_n == 301 then --OBJ_REFLECTIVE_SURFACE
+            if obj.frame_n < 3 then
+                local actor = map_get_actor(obj.x, obj.y + 1, obj.z)
+                if actor ~= nil then
+                    local actor_num = actor.actor_num
+                    if actor_num >= 0x70 or actor_num == 0x5d or (actor_num >= 0x6a and actor_num <= 0x6c) then
+                        obj.frame_n = 0
+                    elseif (actor_num < 0x20 and actor_num ~= 6)
+                            or (actor_num >= 0x2a and actor_num <= 0x5c)
+                            or actor_num == 0x60 or actor_num == 0x69 or actor_num == 0x6d then
+                        obj.frame_n = 1
+                    else
+                        obj.frame_n = 2
+                    end
+                else
+                    obj.frame_n = 0
+                end
+            end
+        end
+
     end
 
 end

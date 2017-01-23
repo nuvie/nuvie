@@ -21,6 +21,9 @@ UI_STYLE_ORIG_PLUS_FULL_MAP   = 3
 
 STACK_OBJECT_QTY = true
 
+movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1}
+movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1 }
+
 if not setfenv then -- Lua 5.2
    -- based on http://lua-users.org/lists/lua-l/2010-06/msg00314.html
    -- this assumes f is a function
