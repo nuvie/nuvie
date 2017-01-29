@@ -1,3 +1,8 @@
+2017-01-29  Eric Fry <efry at users.sourceforge.net>
+	* Added MD oil usecode
+	* Added MD hand mirror usecode
+	* Fixed MD power line reconnection logic
+
 2017-01-23  Eric Fry <efry at users.sourceforge.net>
 	* Added support for MD auto doors, teleport pods and
 	  refective surfaces.

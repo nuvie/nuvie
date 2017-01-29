@@ -1147,8 +1147,16 @@ function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
       play_md_sfx(0x1f)
       Obj.removeFromEngine(target_obj)
       Actor.set_talk_flag(0x73, 4)
-      --FIXME add logic from midgame_cutscene_2() here.
       play_midgame_sequence(3)
+      for obj in find_obj_from_area(0x3d0, 0x1d0, 0, 32, 17) do
+         if obj.obj_n == 215 then -- OBJ_POWER_CABLE1
+            obj.obj_n = 214 -- OBJ_POWER_CABLE
+         end
+      end
+
+      for obj in find_obj(0, 315) do --OBJ_CHAMBER1
+         Obj.removeFromEngine(obj)
+      end
    end
    
 end
@@ -1466,6 +1474,58 @@ local use_shovel_on_tbl = {
    [0]=use_tool_on_ground, --hole in ice, hole
 }
 
+function use_oil_on_door(obj, target_obj, actor)
+   if obj.obj_n == 235 and obj.frame_n ~= 4 then
+      printl("IT_HAS_NO_EFFECT")
+      return
+   end
+
+   if target_obj ~= nil then
+      if bit32.band(target_obj.quality, 0x80) == 0 then
+         printl("THIS_DOOR_IS_NOT_RUSTED")
+      else
+         target_obj.quality = bit32.band(target_obj.quality, 0x7f) --unset bit 7
+         printl("THE_DOOR_IS_UNSTUCK")
+         play_md_sfx(4)
+         if obj.stackable then
+            if obj.qty == 1 then
+               Obj.removeFromEngine(obj)
+            else
+               obj.qty = obj.qty - 1
+            end
+         else
+            Obj.removeFromEngine(obj)
+         end
+      end
+   end
+end
+
+function use_oil_on_dream_door(obj, target_obj, actor, target_x, target_y, target_z)
+   if map_get_tile_num(target_x, target_y, target_z) == 8 then
+      local melies = Actor.get(0x51)
+      Actor.set_talk_flag(melies, 6)
+      Actor.talk(melies)
+      finish_dream_quest(melies)
+      wake_from_dream()
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
+function use_hand_mirror(obj, actor)
+   if actor.x >= 0x76 and actor.x <= 0x78 and actor.y >= 0xca and actor.y <= 0xcc and actor.z == 2 then
+      local lowell = Actor.get(0x50)
+
+      Actor.set_talk_flag(lowell, 6)
+      Actor.talk(lowell)
+      finish_dream_quest(lowell)
+      wake_from_dream()
+   else
+      printl("YOU_SEE_YOURSELF")
+   end
+
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -1518,6 +1578,23 @@ local usecode_table = {
 [104]=use_container,
 --OBJ_FOLDED_TENT
 [106]=use_tent,
+--OBJ_CAN_OF_LAMP_OIL
+[124]={
+   --on
+   --OBJ_CLOSED_DOOR
+   [179]=use_oil_on_door,
+   --OBJ_DOOR3
+   [227]=use_oil_on_door,
+   --OBJ_CLOSED_HATCH
+   [421]=use_oil_on_door,
+   --OBJ_DOOR
+   [152]=use_oil_on_door,
+   --OBJ_DOOR1
+   [219]=use_oil_on_door,
+   --OBJ_DOOR2
+   [222]=use_oil_on_door,
+   [0]=use_oil_on_dream_door,
+},
 --OBJ_BLOB_OF_OXIUM
 [131]=use_misc_text,
 --OBJ_WRENCH
@@ -1534,6 +1611,8 @@ local usecode_table = {
 --on
    [192]=use_fixed_belt_on_bare_rollers,
 },
+--OBJ_HAND_MIRROR
+[147]=use_hand_mirror,
 --OBJ_BOOK
 [148]=use_reading_material,
 --OBJ_NOTE
@@ -1554,6 +1633,23 @@ local usecode_table = {
    [298]=use_gong, --OBJ_GONG
    --FIXME OBJ_BRASS_CHEST, OBJ_OBSIDIAN_BOX, OBJ_STEAMER_TRUNK, OBJ_OPEN_BRASS_TRUNK use_crate
    },
+--OBJ_POTASH (this is actually oil when frame_n == 4)
+[235]={
+--on
+   --OBJ_CLOSED_DOOR
+   [179]=use_oil_on_door,
+   --OBJ_DOOR3
+   [227]=use_oil_on_door,
+   --OBJ_CLOSED_HATCH
+   [421]=use_oil_on_door,
+   --OBJ_DOOR
+   [152]=use_oil_on_door,
+   --OBJ_DOOR1
+   [219]=use_oil_on_door,
+   --OBJ_DOOR2
+   [222]=use_oil_on_door,
+   [0]=use_oil_on_dream_door,
+},
 --OBJ_SCROLL
 [243]=use_reading_material,
 --OBJ_MARTIAN_HOE
@@ -1861,7 +1957,9 @@ function use_obj(obj, actor)
 		end
 	else
 		use_obj_on(obj, actor, usecode_table[obj.obj_n])
-	end
+   end
+
+   update_objects_around_party()
 end
 
 function ready_obj(obj, actor)

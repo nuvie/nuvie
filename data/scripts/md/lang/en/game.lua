@@ -208,4 +208,7 @@ THE_ALIEN_DEVICE_DOESNT_SEEM_TO_BE_FUNCTIONING="The alien device doesn't seem to
 NOTHING_APPEARS_TO_HAPPEN="Nothing appears to happen.\n",
 YOU_MUST_BE_IN_PARTY_MODE_TO_ENTER="You must be in party mode to enter.\n",
 YOU_MUST_BE_IN_PARTY_MODE_TO_LEAVE="You must be in party mode to leave.\n",
+THIS_DOOR_IS_NOT_RUSTED="This door is not rusted.\n",
+THE_DOOR_IS_UNSTUCK="The door is unstuck.\n",
+YOU_SEE_YOURSELF="You see yourself.\n",
 }

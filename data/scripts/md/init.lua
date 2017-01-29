@@ -302,3 +302,5 @@ talk_init = nuvie_load("md/talk.lua"); talk_init();
 player_init = nuvie_load("md/player.lua"); player_init();
 
 worktype_init = nuvie_load("md/worktype.lua"); worktype_init();
+
+dreamworld_init = nuvie_load("md/dreamworld.lua"); dreamworld_init();
