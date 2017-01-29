@@ -775,7 +775,15 @@ bool Event::talk(Obj *obj)
     				|| obj->obj_n == OBJ_U6_STATUE_OF_MINAX
     				|| obj->obj_n == OBJ_U6_STATUE_OF_EXODUS)
     			return(talk(actor_manager->get_actor(obj->quality)));
-    	}
+    	} else {
+          endAction();
+          bool status = game->get_script()->call_talk_to_obj(obj);
+          if(status==false) {
+            scroll->display_string("\n");
+            scroll->display_prompt();
+          }
+          return status;
+        }
     }
     scroll->display_string("nothing!\n");
     endAction();

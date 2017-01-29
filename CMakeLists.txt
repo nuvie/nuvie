@@ -56,6 +56,7 @@ set(SOURCE_FILES
     data/scripts/md/lang/en/game.lua
     data/scripts/md/lang/it/game.lua
     data/scripts/md/actor.lua
+    data/scripts/md/dreamworld.lua
     data/scripts/md/ending.lua
     data/scripts/md/init.lua
     data/scripts/md/intro.lua

@@ -1,4 +1,10 @@
 2017-01-29  Eric Fry <efry at users.sourceforge.net>
+	* Added MD talk to object logic
+	* Made lua obj.status a read/write field
+	* Fixed null pointer when attempting to load portrait on startup
+	  in original mode
+
+2017-01-29  Eric Fry <efry at users.sourceforge.net>
 	* Added MD oil usecode
 	* Added MD hand mirror usecode
 	* Fixed MD power line reconnection logic

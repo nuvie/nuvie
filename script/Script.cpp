@@ -88,7 +88,7 @@ An in-game object
 @int[readonly] tile_num The tile number corresponding to the obj_n + frame_num values
 @bool[readonly] getable Is this object getable by the player?
 @bool ok_to_take Is it considered stealing if the player gets this object?
-@int[writeonly] status Object status *writeonly*
+@int status Object status
 @bool[writeonly] invisible Toggle object visibility *writeonly*
 @bool[writeonly] temporary Toggle temporary status *writeonly*
 
@@ -1536,12 +1536,23 @@ bool Script::call_talk_script(uint8 script_number)
   return true;
 }
 
+bool Script::call_talk_to_obj(Obj *obj) {
+   lua_getglobal(L, "talk_to_obj");
+
+   nscript_obj_new(L, obj);
+
+   if(call_function("talk_to_obj", 1, 1) == false)
+      return false;
+
+   return (bool)lua_toboolean(L,-1);
+}
+
 bool Script::call_is_container_obj(uint16 obj_n)
 {
     lua_getglobal(L, "is_container_obj");
     lua_pushnumber(L, (lua_Number)obj_n);
     call_function("is_container_object", 1, 1);
-    return(lua_toboolean(L,-1));
+    return (bool)lua_toboolean(L,-1);
 }
 
 uint8 Script::call_get_portrait_number(Actor *actor)
@@ -2045,6 +2056,11 @@ static int nscript_obj_get(lua_State *L)
    {
       ObjManager *obj_manager = Game::get_game()->get_obj_manager();
       lua_pushboolean(L, (int)obj_manager->is_stackable(obj)); return 1;
+   }
+
+   if(!strcmp(key, "status"))
+   {
+      lua_pushnumber(L, obj->status); return 1;
    }
 
    if(!strcmp(key, "weight"))

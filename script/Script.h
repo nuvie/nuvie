@@ -151,12 +151,13 @@ class Script
 
    uint8 call_play_midgame_sequence(uint16 seq_num);
    bool call_talk_script(uint8 script_number);
+   bool call_talk_to_obj(Obj *obj);
    bool call_is_container_obj(uint16 obj_n);
    uint8 call_get_portrait_number(Actor *actor);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);
- 
+
  protected:
    bool call_loadsave_game(const char *function, NuvieIO *objlist);
    void seed_random();

@@ -68,6 +68,9 @@ bool PortraitMD::load(NuvieIO *objlist)
 
 uint8 PortraitMD::get_portrait_num(Actor *actor)
 {
+  if(actor == NULL)
+    return NO_PORTRAIT_FOUND;
+
   uint8 num = Game::get_game()->get_script()->call_get_portrait_number(actor);
   if(num != NO_PORTRAIT_FOUND)
     num++;

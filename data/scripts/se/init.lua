@@ -141,6 +141,11 @@ function create_object_needs_quan(obj_n)
 	return false
 end
 
+function talk_to_obj(obj)
+   printl("NOTHING")
+   return false
+end
+
 --load actor functions
 local actor_load = nuvie_load("se/actor.lua");
 if type(actor_load) == "function" then
