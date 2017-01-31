@@ -1526,6 +1526,61 @@ function use_hand_mirror(obj, actor)
 
 end
 
+function use_radium(obj, target_obj, actor)
+   actor_radiation_check(actor, obj)
+   if obj.obj_n == 448 then --OBJ_BLOCK_OF_RADIUM
+      if target_obj.obj_n == 448 and target_obj.on_map then
+         local power_unit = map_get_obj(obj.x, obj.y, obj.z, 290) --OBJ_POWER_UNIT
+         if power_unit ~= nil then
+            target_obj = power_unit
+         end
+      end
+
+      if target_obj.obj_n == 290 then --OBJ_POWER_UNIT
+         if target_obj.frame_n == 1 then
+            printl("RADIUM_HAS_ALREADY_BEEN_INSTALLED")
+         else
+            Obj.removeFromEngine(obj)
+            play_md_sfx(4)
+            printl("THE_RADIUM_HAS_BEEN_INSTALLED")
+            target_obj.frame_n = 1
+            Actor.set_talk_flag(0x74, 2)
+            if Actor.get_talk_flag(0x74, 0) then
+               Actor.set_talk_flag(0x60, 2)
+            end
+         end
+
+      else
+         printl("IT_HAS_NO_EFFECT")
+      end
+
+   elseif obj.obj_n == 449 then --OBJ_CHIP_OF_RADIUM
+      if target_obj.qty < 0xf0 then
+         local qty = input_select_obj_qty(obj)
+         if qty == 0 then
+            return
+         end
+
+         if target_obj.qty + qty > 0xf0 then
+            qty = 0xf0 - target_obj.qty
+            printfl("THE_OBJ_ONLY_NEEDED_N_RADIUM_BLOCKS", target_obj.name, qty)
+            printfl("THE_OBJ_IS_FULLY_CHARGED", target_obj.name)
+         end
+
+         target_obj.qty = target_obj.qty + qty
+         if obj.qty == qty then
+            Obj.removeFromEngine(obj)
+         else
+            obj.qty = obj.qty - qty
+         end
+      else
+         printfl("THE_OBJ_IS_FULLY_CHARGED", target_obj.name)
+      end
+
+   end
+
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -1696,6 +1751,12 @@ local usecode_table = {
 [443]=use_misc_text,
 --OBJ_PILE_OF_COAL
 [444]=use_misc_text,
+--OBJ_BLOCK_OF_RADIUM
+[448]={
+   --on
+   [290]=use_radium, --OBJ_POWER_UNIT
+   [448]=use_radium, --OBJ_BLOCK_OF_RADIUM
+},
 }
 
 function ready_winged_shoes(obj, actor)

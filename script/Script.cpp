@@ -3001,14 +3001,17 @@ static int nscript_map_get_obj(lua_State *L)
    if(nscript_get_location_from_args(L, &x, &y, &z) == false)
       return 0;
 
+   int top = lua_gettop(L);
+   bool loc_is_table = lua_istable(L, 1);
+   int stack_offset = loc_is_table ? 2 : 4;
 
-   if(lua_gettop(L) > 3)
+   if((loc_is_table && top > 1) || top > 3)
    {
-	   uint16 obj_n = lua_tointeger(L, 4);
+	   uint16 obj_n = lua_tointeger(L, stack_offset);
 	   bool include_multi_tile_objs = false;
-	   if(lua_gettop(L) > 4)
+	   if(lua_gettop(L) > stack_offset)
 	   {
-	     include_multi_tile_objs = lua_toboolean(L, 5);
+	     include_multi_tile_objs = lua_toboolean(L, stack_offset + 1);
 	   }
 	   if(include_multi_tile_objs)
 	   {

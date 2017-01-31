@@ -16,14 +16,45 @@ function open_gates_at_olympus_mons()
    
 end
 
+function open_dream_machine_door()
+   local door = map_get_obj(0x2c7, 0x1dc, 0, 152) --OBJ_DOOR
+   if door ~= nil then
+      door.frame_n = 7
+   end
+end
+
+function talk_script_fix_panels()
+   local numPanels = 0
+   for actor in party_members() do
+      for obj in actor_inventory(actor) do
+         if obj.obj_n == 458 then --OBJ_PANEL
+            numPanels = numPanels + 1
+            play_md_sfx(4)
+            obj.quality = bit32.band(obj.quality, 0xfd)
+            obj.qty = 4
+         end
+      end
+   end
+
+   if numPanels <= 1 then
+      Actor.clear_talk_flag(0x39, 3)
+   else
+      Actor.set_talk_flag(0x39, 3)
+   end
+
+end
 
 local talk_script_tbl = {
+   [1]=talk_script_fix_panels,
    [6]=open_gates_at_olympus_mons,
+   [7]=open_dream_machine_door,
 }
 
 function talk_script(script_number)
    if talk_script_tbl[script_number] ~= nil then
       talk_script_tbl[script_number]()
+   else
+      print("Attempting to run talk script #"..script_number.."\n")
    end
 end
 

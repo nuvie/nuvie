@@ -253,6 +253,7 @@ end
 function update_lamp_posts()
    --Turn lamps on/off if we have power and it is dark.
    local frame_n = 3
+   local hour = clock_get_hour()
    if Actor.get_talk_flag(0x73, 4) and (hour < 6 or hour > 17) then
       frame_n = 7
    end
@@ -280,6 +281,19 @@ function create_object_needs_quan(obj_n)
 	else
 		return false
 	end
+end
+
+function input_select_obj_qty(obj)
+   if not obj.stackable then
+      return 1
+   end
+
+   printl("HOW_MANY")
+   local qty = input_select_integer("0123456789", true)
+   if qty > obj.qty then
+      return obj.qty
+   end
+   return qty
 end
 
 --load actor functions
