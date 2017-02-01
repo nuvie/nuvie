@@ -1581,6 +1581,117 @@ function use_radium(obj, target_obj, actor)
 
 end
 
+function use_head_gear(obj, target_obj, actor)
+   local machine
+   if target_obj.obj_n == 289 then --OBJ_DREAM_MACHINE2
+      local machine = map_get_obj(target_obj.x, target_obj.y, target_obj.z, 288)
+      if machine == nil then
+         printl("IT_HAS_NO_EFFECT")
+         return
+      end
+   else
+      machine = target_obj
+   end
+
+   local loc = machine.xyz
+
+   machine = Obj.new(100)
+   machine.frame_n = 1
+   Obj.moveToMap(machine, loc)
+
+   printl("THE_HEADGEAR_IS_INSTALLED")
+
+   Actor.set_talk_flag(0x74, 4)
+   if Actor.get_talk_flag(0x74, 0) then
+      Actor.set_talk_flag(0x60, 2)
+   end
+
+end
+
+function use_dream_machine(panel_obj)
+   if Actor.get_talk_flag(0x46, 3) then
+      printl("THE_DREAM_MACHINES_SEEM_TO_HAVE_CEASED_FUNCTIONING")
+      return
+   end
+
+   local power_unit
+   local dream_quality
+   local headgear_installed = false
+   local seat_x, seat_y
+   for obj in find_obj_from_area(panel_obj.x - 5, panel_obj.y - 5, panel_obj.z, 11, 11) do
+      local obj_n = obj.obj_n
+      if obj_n == 290 and obj.frame_n == 1 then --OBJ_POWER_UNIT
+         power_unit = obj
+      elseif obj_n == 100 then --OBJ_DREAM_MACHINE
+         headgear_installed = true
+      elseif obj_n == 289 then --OBJ_DREAM_MACHINE2
+         seat_x = obj.x
+         seat_y = obj.y
+      elseif obj_n == 288 then --OBJ_DREAM_MACHINE2
+         dream_quality = obj.quality
+      end
+   end
+
+   local actor_in_seat = map_get_actor(seat_x, seat_y, panel_obj.z)
+
+   if power_unit == nil or dream_quality == nil or not headgear_installed then
+      printl("THE_MACHINE_DOES_NOT_WORK")
+      return
+   end
+
+   local martian = map_get_obj(seat_x, seat_y, panel_obj.z, 291) --OBJ_UNCONSCIOUS_MARTIAN
+   if martian ~= nil then
+      --FIXME
+   end
+
+end
+
+function use_sprayer_system(panel_obj)
+end
+
+function use_lens_controls(panel_obj)
+end
+
+function use_pump_controls(panel_obj)
+end
+
+local use_panel_tbl = {
+   [0]=function() printl("YOU_ARE_COMPLETELY_UNSURE_WHAT_YOU_JUST_DID") end,
+   [1]=function() printl("YOU_ACTUATE_THE_MECHANISM_TO_NO_APPARENT_EFFECT") end,
+   [2]=function() printl("STATUS_LIGHTS_CHANGE_BUT_YOU_SEE_NO_OTHER_EFFECT") end,
+   [3]=function() printl("LIGHTS_FLASH_AND_CHANGE_COLOR_BUT_NOTHING_ELSE_HAPPENS") end,
+   [4]=use_dream_machine,
+   [5]=use_sprayer_system,
+   [6]=use_lens_controls,
+   [7]=use_pump_controls,
+}
+
+function use_panel(obj, actor)
+   if bit32.band(obj.quality, 2) ~= 0 then
+      printl("THE_PANEL_IS_BROKEN")
+      return
+   end
+   if bit32.band(obj.quality, 1) ~= 0 then
+      printl("THE_PANEL_IS_NOT_INSTALLED")
+      return
+   end
+
+   local cabinet = map_get_obj(obj.x, obj.y, obj.z, 457) --OBJ_CABINET
+   if cabinet == nil then
+      printl("PANELS_ARE_ONLY_INSTALLED_ONTO_CABINETS")
+      return
+   end
+
+   local quality = cabinet.quality
+   if use_panel_tbl[quality] ~= nil then
+      use_panel_tbl[quality](obj)
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
+
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -1727,6 +1838,12 @@ local usecode_table = {
 [288]=use_misc_text,
 --OBJ_MARTIAN_CLOCK
 [293]=use_misc_text,
+--OBJ_HEADGEAR
+[296]={
+   --on
+   [288]=use_head_gear, --OBJ_DREAM_MACHINE1
+   [289]=use_head_gear, --OBJ_DREAM_MACHINE2
+},
 --OBJ_OXYGENATED_AIR_MACHINE
 [323]=use_misc_text,
 --OBJ_MARTIAN_PICK
@@ -1757,6 +1874,8 @@ local usecode_table = {
    [290]=use_radium, --OBJ_POWER_UNIT
    [448]=use_radium, --OBJ_BLOCK_OF_RADIUM
 },
+--OBJ_PANEL
+[458]=use_panel,
 }
 
 function ready_winged_shoes(obj, actor)
