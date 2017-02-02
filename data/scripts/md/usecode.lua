@@ -1614,11 +1614,12 @@ function use_dream_machine(panel_obj)
       return
    end
 
+   local z = panel_obj.z
    local power_unit
    local dream_quality
    local headgear_installed = false
    local seat_x, seat_y
-   for obj in find_obj_from_area(panel_obj.x - 5, panel_obj.y - 5, panel_obj.z, 11, 11) do
+   for obj in find_obj_from_area(panel_obj.x - 5, panel_obj.y - 5, z, 11, 11) do
       local obj_n = obj.obj_n
       if obj_n == 290 and obj.frame_n == 1 then --OBJ_POWER_UNIT
          power_unit = obj
@@ -1632,16 +1633,59 @@ function use_dream_machine(panel_obj)
       end
    end
 
-   local actor_in_seat = map_get_actor(seat_x, seat_y, panel_obj.z)
+   local actor_in_seat = map_get_actor(seat_x, seat_y, z)
 
    if power_unit == nil or dream_quality == nil or not headgear_installed then
       printl("THE_MACHINE_DOES_NOT_WORK")
       return
    end
 
-   local martian = map_get_obj(seat_x, seat_y, panel_obj.z, 291) --OBJ_UNCONSCIOUS_MARTIAN
-   if martian ~= nil then
-      --FIXME
+   local martian_obj = map_get_obj(seat_x, seat_y, z, 291) --OBJ_UNCONSCIOUS_MARTIAN
+   if martian_obj ~= nil then
+      if Actor.get_talk_flag(0x21, 2) or not Actor.get_talk_flag(0x61, 4) then
+         printl("IT_HAS_NO_EFFECT")
+      else
+         play_midgame_sequence(5)
+         local martian = Actor.get(0x21)
+         Actor.talk(martian)
+         Actor.set_talk_flag(martian, 2)
+         martian.x = seat_x
+         martian.y = seat_y + 1
+         martian.z = panel_obj.z
+         kill_actor(martian)
+         Obj.removeFromEngine(martian_obj)
+      end
+
+      return
+   end
+
+   local metal_woman_obj = map_get_obj(seat_x, seat_y, z, 287) --OBJ_METAL_WOMAN
+   if metal_woman_obj ~= nil then
+      if metal_woman_obj.quality == 0 then
+         printl("IT_HAS_NO_EFFECT")
+      else
+         --FIXME implement metal woman activation logic
+      end
+   elseif actor_in_seat ~= nil then
+      if z ~= 0 then
+         wake_from_dream()
+      else
+         if dream_quality < 2 then
+            Actor.set_talk_flag(0x60, 3)
+         end
+         if dream_quality == 3 then
+            if Actor.get_talk_flag(0x46, 0) then
+               --FIXME call sub_3F624
+            else
+               printl("THE_MACHINE_DOES_NOT_WORK")
+            end
+         else
+            actor_use_dream_machine(actor_in_seat, dream_quality)
+         end
+
+      end
+   else
+      printl("THERE_IS_NOBODY_SITTING_IN_THE_MACHINE")
    end
 
 end

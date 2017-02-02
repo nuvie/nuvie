@@ -233,4 +233,5 @@ STATUS_LIGHTS_CHANGE_BUT_YOU_SEE_NO_OTHER_EFFECT="Status lights change but you s
 YOU_ACTUATE_THE_MECHANISM_TO_NO_APPARENT_EFFECT="You actuate the mechanism to no apparent effect.\n",
 THE_DREAM_MACHINES_SEEM_TO_HAVE_CEASED_FUNCTIONING="The dream machines seem to have ceased functioning.\n",
 THE_MACHINE_DOES_NOT_WORK="The machine does not work.\n",
+THERE_IS_NOBODY_SITTING_IN_THE_MACHINE="There is nobody sitting in the machine.\n",
 }

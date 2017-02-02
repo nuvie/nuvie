@@ -1517,6 +1517,15 @@ function actor_hit(actor, damage)
    end
 end
 
+function kill_actor(actor)
+   actor.hp=0
+   actor_dead(actor)
+end
+
+function actor_dead(actor)
+   --FIXME
+end
+
 function get_portrait_number(actor)
    local NO_PORTRAIT = 255
    local idx = actor.actor_num
