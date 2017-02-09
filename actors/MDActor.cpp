@@ -50,6 +50,11 @@ bool MDActor::will_not_talk()
 	return false;
 }
 
+bool MDActor::is_immobile()
+{
+  return (obj_n == 318 || obj_n == 319); //avatar wall walking objects
+}
+
 bool MDActor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 {
  if(ethereal)

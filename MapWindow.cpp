@@ -2939,3 +2939,10 @@ void MapWindow::loadRoofTiles()
 		SDL_SetColorKey(roof_tiles, SDL_TRUE, SDL_MapRGB(roof_tiles->format, 0, 0x70, 0xfc));
 	}
 }
+
+bool MapWindow::in_dungeon_level() {
+  if (game_type == NUVIE_GAME_MD) {
+    return (cur_level == 1 || cur_level > 3); //FIXME this should probably be moved into script.
+  }
+  return(cur_level != 0 && cur_level != 5);
+}

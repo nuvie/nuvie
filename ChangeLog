@@ -1,4 +1,8 @@
 2017-02-09  Eric Fry <efry at users.sourceforge.net>
+	* Added MD walk on walls logic.
+	* Removed darkness from MD dream levels.
+
+2017-02-09  Eric Fry <efry at users.sourceforge.net>
 	* Don't delete MD dream teleporter objects even though
 	  they are marked as temporary.
 	* Added party_set_in_vehicle() script function

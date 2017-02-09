@@ -195,7 +195,21 @@ function player_post_move_action(did_move)
                     end
 
                 end
-
+            elseif obj_n == 462 then --OBJ_DREAM_TELEPORTER1 Walk on walls object
+                local dream_actor = Actor.get(0)
+                if obj.quality == 0 then
+                    dream_actor.frame_n = dream_actor.old_frame_n
+                    dream_actor.obj_n = dream_actor.base_obj_n
+                else
+                    dream_actor.frame_n = 0
+                    if player_get_gender() == 0 then
+                        dream_actor.obj_n = 318
+                    else
+                        dream_actor.obj_n = 319
+                    end
+                end
+            elseif obj_n == 465 then --direction control modifier
+                --FIXME
             end
         end
     else
