@@ -128,8 +128,11 @@ uint8 Weather::load_wind(NuvieIO *objlist)
 
 void Weather::clear_wind()
 {
-	if(wind_timer)
+	if(wind_timer) {
 		wind_timer->stop_timer();
+		wind_timer = NULL;
+	}
+
 	
 	wind_dir = NUVIE_DIR_NONE;
 	

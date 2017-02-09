@@ -17,7 +17,7 @@ local map_entrance_tbl = {
     {x=0x34C, y=0x25A, z=0x0},
     {x=0x7C,  y=0x28,  z=0x4},
     {x=0x13E, y=0x118, z=0x0},
-    {x=0x0A,  y=0x60,  z=0x5},
+    {x=0x0A,  y=0x61,  z=0x5},
     {x=0x3B7, y=0x1C4, z=0x0},
     {x=0x5C,  y=0x0B1, z=0x5},
     {x=0x3DC, y=0x1DD, z=0x0},
@@ -181,6 +181,21 @@ function player_post_move_action(did_move)
                 party_use_entrance(player_loc.x, player_loc.y, player_loc.z, map_entrance_tbl[obj.quality])
             elseif obj_n == 461 then --OBJ_DREAM_TELEPORTER
                 --FIXME add logic here.
+                local obelisk = map_get_obj(player_loc.x, player_loc.y - 1, player_loc.z, 292, true)
+                if obelisk ~= nil then
+                    --FIXME fade here.
+                end
+                local dream_actor = Actor.get(0)
+                if bit32.band(obj.status, 0xe5) ~= 0xa5 or dream_actor.hp > 4 then
+                    if bit32.band(obj.status, 0xe5) == 0 then
+                        player_move(obj.quality, obj.qty, player_loc.z)
+                        advance_time(0)
+                    else
+                        dreamworld_cleanup_state(obj)
+                    end
+
+                end
+
             end
         end
     else

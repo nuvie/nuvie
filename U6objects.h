@@ -472,6 +472,7 @@
 #define OBJ_MD_DREAMSTUFF            331
 #define OBJ_MD_DEAD_BODY             341
 #define OBJ_MD_CHIP_OF_RADIUM        449
+#define OBJ_MD_DREAM_TELEPORTER      461
 
 
 #endif /* __U6objects_h__ */

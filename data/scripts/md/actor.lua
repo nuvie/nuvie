@@ -223,6 +223,12 @@ function actor_set_blue_berry_counter(new_value)
    timer_set(16*3, new_value)
 end
 
+function actor_clear_berry_counters(actor_num)
+   timer_set(actor_num*3, 0)
+   timer_set(actor_num*3+1, 0)
+   timer_set(actor_num*3+2, 0)
+end
+
 --
 -- actor_init(actor)
 --

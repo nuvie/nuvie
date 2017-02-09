@@ -234,4 +234,5 @@ YOU_ACTUATE_THE_MECHANISM_TO_NO_APPARENT_EFFECT="You actuate the mechanism to no
 THE_DREAM_MACHINES_SEEM_TO_HAVE_CEASED_FUNCTIONING="The dream machines seem to have ceased functioning.\n",
 THE_MACHINE_DOES_NOT_WORK="The machine does not work.\n",
 THERE_IS_NOBODY_SITTING_IN_THE_MACHINE="There is nobody sitting in the machine.\n",
+ACTOR_DREAMS_UNTIL_DAWN_WHILE_THE_PARTY_WAITS="%s dreams until dawn while the party waits.\n",
 }

@@ -586,6 +586,12 @@ static int nscript_actor_clone(lua_State *L)
    if(nscript_get_location_from_args(L, &x, &y, &z, 2) == false)
 	  return 0;
 
+  int stack_offset = lua_istable(L, 2) ? 3 : 5;
+
+  if(lua_gettop(L) >= stack_offset)
+  {
+    //FIXME clone into existing actor here.
+  }
 	if(Game::get_game()->get_actor_manager()->clone_actor(actor, &new_actor, MapCoord(x,y,z)))
 	{
 	  if(nscript_new_actor_var(L, actor->get_actor_num()) == true)

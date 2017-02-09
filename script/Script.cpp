@@ -223,6 +223,7 @@ static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
 static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_party_exit_vehicle(lua_State *L);
+static int nscript_party_set_in_vehicle(lua_State *L);
 static int nscript_party_dismount_from_horses(lua_State *L);
 static int nscript_party_show_all(lua_State *L);
 static int nscript_party_hide_all(lua_State *L);
@@ -347,10 +348,10 @@ static int lua_error_handler(lua_State *L)
 	return 1;
 }
 
-static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field)
+static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field, int table_stack_offset = -2)
 {
    lua_pushstring(L, index);
-   lua_gettable(L, -2);
+   lua_gettable(L, table_stack_offset);
 
    if(!lua_isnumber(L, -1))
       return false;
@@ -360,10 +361,10 @@ static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field)
    return true;
 }
 
-static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint16 *field, uint8 map_level)
+static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint16 *field, uint8 map_level, int table_stack_offset = -2)
 {
   sint16 coord;
-  if(get_tbl_field_sint16(L,index,&coord) == false)
+  if(get_tbl_field_sint16(L,index,&coord, table_stack_offset) == false)
   {
     return false;
   }
@@ -373,10 +374,10 @@ static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint
   return true;
 }
 
-static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
+static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field, int table_stack_offset = -2)
 {
    lua_pushstring(L, index);
-   lua_gettable(L, -2);
+   lua_gettable(L, table_stack_offset);
 
    if(!lua_isnumber(L, -1))
       return false;
@@ -386,10 +387,10 @@ static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
    return true;
 }
 
-static bool get_tbl_field_uint8(lua_State *L, const char *index, uint8 *field)
+static bool get_tbl_field_uint8(lua_State *L, const char *index, uint8 *field, int table_stack_offset = -2)
 {
    lua_pushstring(L, index);
-   lua_gettable(L, -2);
+   lua_gettable(L, table_stack_offset);
 
    if(!lua_isnumber(L, -1))
       return false;
@@ -791,6 +792,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_party_exit_vehicle);
    lua_setglobal(L, "party_exit_vehicle");
+
+   lua_pushcfunction(L, nscript_party_set_in_vehicle);
+   lua_setglobal(L, "party_set_in_vehicle");
 
    lua_pushcfunction(L, nscript_party_dismount_from_horses);
    lua_setglobal(L, "party_dismount_from_horses");
@@ -1597,13 +1601,13 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
 {
    if(lua_istable(L, lua_stack_offset))
    {
-      if(!get_tbl_field_uint8(L, "z", z)) return false;
-      if(!get_tbl_field_as_wrapped_coord(L, "x", x, *z)) return false;
-      if(!get_tbl_field_as_wrapped_coord(L, "y", y, *z)) return false;
+      if(!get_tbl_field_uint8(L, "z", z, lua_stack_offset)) return false;
+      if(!get_tbl_field_as_wrapped_coord(L, "x", x, *z, lua_stack_offset)) return false;
+      if(!get_tbl_field_as_wrapped_coord(L, "y", y, *z, lua_stack_offset)) return false;
    }
    else
    {
-	  if(lua_isnil(L, lua_stack_offset)) return false;
+      if(lua_isnil(L, lua_stack_offset)) return false;
       *z = (uint8)luaL_checkinteger(L,  lua_stack_offset + 2);
       *x = wrap_signed_coord((sint16)luaL_checkinteger(L, lua_stack_offset), *z);
       *y = wrap_signed_coord((sint16)luaL_checkinteger(L, lua_stack_offset + 1), *z);
@@ -2955,6 +2959,19 @@ static int nscript_party_dismount_from_horses(lua_State *L)
 	Party *party = Game::get_game()->get_party();
 	party->dismount_from_horses();
 	return 0;
+}
+
+/***
+Toggle party vehicle mode
+@function party_set_in_vehicle
+@bool value
+@within party
+ */
+static int nscript_party_set_in_vehicle(lua_State *L)
+{
+   Party *party = Game::get_game()->get_party();
+   party->set_in_vehicle((bool) lua_toboolean(L, 1));
+   return 0;
 }
 
 /***

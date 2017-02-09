@@ -1,3 +1,11 @@
+2017-02-09  Eric Fry <efry at users.sourceforge.net>
+	* Don't delete MD dream teleporter objects even though
+	  they are marked as temporary.
+	* Added party_set_in_vehicle() script function
+	* Fixed bug with location table argument handling in lua C logic
+	* Fixed bug with Weather class in MD mode.
+	* More work on MD dream logic
+
 2017-02-02  Eric Fry <efry at users.sourceforge.net>
 	* Started work on using dream machine
 
