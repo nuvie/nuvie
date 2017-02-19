@@ -67,6 +67,9 @@ unpack_conv.exe: $(UNPACKCONV_OBJS)
 UNPACKFONT_CPPs = $(filter %.cpp,$(unpack_font_SOURCES))
 UNPACKFONT_OBJS = $(UNPACKFONT_CPPs:%.cpp=tools/%.o)
 
+unpack_font.exe: $(UNPACKFONT_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
 PACKFONT_CPPs = $(filter %.cpp,$(pack_font_SOURCES))
 PACKFONT_OBJS = $(PACKFONT_CPPs:%.cpp=tools/%.o)
 
