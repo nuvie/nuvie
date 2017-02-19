@@ -11,7 +11,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrevInst,  LPSTR lpCmdLine, int iShowCmd) {
-	SDL_SetModuleHandle(GetModuleHandle(NULL));
+	//SDL_SetModuleHandle(GetModuleHandle(NULL));
 	return main(__argc, __argv);
 }
 #endif
@@ -30,12 +30,12 @@ int main(int argc, char **argv)
 
  std::string path(argv[1]);
 
-   if(library.open(path, 4, NUVIE_GAME_SE) == false)
+   if(!library.open(path, 4, NUVIE_GAME_SE))
      exit(1);
 
  for(int i=0;i<library.get_num_items();i++)
 {
-   fprintf(stderr,"size: %ld\n",library.get_item_size(i));
+   fprintf(stderr,"size: %d\n",library.get_item_size(i));
    data = library.get_item(i, NULL);
    snprintf(outfile, 8, "%d.dat", i);
    FILE * filed = fopen(outfile,"w");

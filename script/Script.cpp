@@ -1551,6 +1551,17 @@ bool Script::call_talk_to_obj(Obj *obj) {
    return (bool)lua_toboolean(L,-1);
 }
 
+bool Script::call_talk_to_actor(Actor *actor) {
+   lua_getglobal(L, "talk_to_actor");
+
+   nscript_new_actor_var(L, actor->get_actor_num());
+
+   if(call_function("talk_to_actor", 1, 1) == false)
+      return false;
+
+   return (bool)lua_toboolean(L, -1);
+}
+
 bool Script::call_is_container_obj(uint16 obj_n)
 {
     lua_getglobal(L, "is_container_obj");

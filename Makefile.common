@@ -173,6 +173,8 @@ nuvie_SOURCES = \
 	menus/VideoDialog.h \
 \
 	misc/CallBack.h \
+	misc/SDLUtils.cpp \
+	misc/SDLUtils.h \
 	misc/U6LineWalker.cpp \
 	misc/U6LineWalker.h \
 	misc/U6LList.cpp \

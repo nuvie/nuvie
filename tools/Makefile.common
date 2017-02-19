@@ -128,7 +128,9 @@ unpack_portraits_SOURCES = \
 	../files/U6Shape.cpp \
 \
 	../misc/U6misc.h \
-	../misc/U6misc.cpp
+	../misc/U6misc.cpp \
+	../misc/SDLUtils.h \
+	../misc/SDLUtils.cpp
 
 unpack_talk_SOURCES = \
 	unpack_talk.cpp \
@@ -153,3 +155,56 @@ unpack_talk_SOURCES = \
 \
 	../misc/U6misc.h \
 	../misc/U6misc.cpp
+
+
+pack_font_SOURCES = \
+	pack_font.cpp \
+\
+	../Debug.cpp \
+	../conf/Configuration.cpp \
+	../conf/Configuration.h \
+	../conf/XMLNode.cpp \
+	../conf/XMLNode.h \
+	../conf/XMLTree.cpp \
+	../conf/XMLTree.h \
+	../conf/ConfigNode.h \
+\
+	../files/NuvieIO.cpp \
+	../files/NuvieIO.h \
+	../files/NuvieIOFile.cpp \
+	../files/NuvieIOFile.h \
+	../files/NuvieBmpFile.cpp \
+	../files/NuvieBmpFIle.h \
+	../files/U6Lib_n.cpp \
+	../files/U6Lib_n.h \
+	../files/U6Lzw.cpp \
+	../files/U6Lzw.h \
+\
+	../misc/U6misc.h \
+	../misc/U6misc.cpp
+
+pack_lzc_SOURCES = \
+	pack_lzc.cpp \
+\
+	../Debug.cpp \
+	../conf/Configuration.cpp \
+	../conf/Configuration.h \
+	../conf/XMLNode.cpp \
+	../conf/XMLNode.h \
+	../conf/XMLTree.cpp \
+	../conf/XMLTree.h \
+	../conf/ConfigNode.h \
+\
+	../files/NuvieIO.cpp \
+	../files/NuvieIO.h \
+	../files/NuvieIOFile.cpp \
+	../files/NuvieIOFile.h \
+	../files/U6Lib_n.cpp \
+	../files/U6Lib_n.h \
+	../files/U6Lzw.cpp \
+	../files/U6Lzw.h \
+\
+	../misc/U6misc.h \
+	../misc/U6misc.cpp
+
+

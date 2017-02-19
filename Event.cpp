@@ -659,6 +659,10 @@ bool Event::perform_talk(Actor *actor)
     Actor *pc = player->get_actor();
     uint8 id = actor->get_actor_num();
 
+    if(game->get_game_type() != NUVIE_GAME_U6) {
+      return game->get_script()->call_talk_to_actor(actor);
+    }
+
     if(actor->is_in_vehicle())
     {
     	 scroll->display_string("Not in vehicle.\n");

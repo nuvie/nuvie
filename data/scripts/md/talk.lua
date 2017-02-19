@@ -48,6 +48,8 @@ local talk_script_tbl = {
    [1]=talk_script_fix_panels,
    [6]=open_gates_at_olympus_mons,
    [7]=open_dream_machine_door,
+   [9]=function() talk_script_status = 9 end,
+   [0xA]=function() talk_script_status = 0xA end,
 }
 
 function talk_script(script_number)
@@ -58,23 +60,70 @@ function talk_script(script_number)
    end
 end
 
-function talk_to_actor(actor_num)
-   local actor = Actor.get(actor_num)
+local talk_script_status = -1
+
+local talk_script_post_action_tbl = {
+   [0x9]=function() play_end_sequence() end,
+   [0xA]=function() end,
+   [0x34]=wake_from_dream,
+   [0x36]=wake_from_dream,
+   [0x38]=function() end,
+   [0x65]=function() end,
+   [0x66]=function() end,
+   [0x67]=function() end,
+   [0x68]=function() end,
+   [0x69]=function() end,
+}
+
+function talk_to_actor(actor)
+   local actor_num = actor.actor_num
+
+   if actor_num < 2 then
+      if g_in_dream_mode then
+         printl("YOU_TRY_TO_WAKE_YOURSELF_UP")
+         local player_loc = player_get_location()
+         if player_loc.z ~= 3 then
+            wake_from_dream()
+         end
+      elseif player_is_in_solo_mode() then
+         printl("NOT_WHILE_IN_SOLO_MODE")
+      else
+         printl("YOU_ARENT_YET_THAT_INSANE")
+      end
+      return true
+   end
+
+   if actor.obj_n == 391 then --your mother
+      if player_get_gender() == 0 then
+         printl("NO_BACKTALK_FROM_YOU_YOUNG_MAN")
+      else
+         printl("NO_BACKTALK_FROM_YOU_YOUNG_WOMAN")
+      end
+      return true
+   end
+
    print(actor.name.."\n")
    Actor.talk(actor_num)
    print("\n")
+
+   if talk_script_post_action_tbl[talk_script_status] ~= nil then
+      talk_script_post_action_tbl[talk_script_status]()
+   end
+   talk_script_status = -1
+
+   return true
 end
 
 function talk_conveyor()
-   talk_to_actor(0x72)
+   talk_to_actor(Actor.get(0x72))
 end
 
 function talk_tower()
-   talk_to_actor(0x73)
+   talk_to_actor(Actor.get(0x73))
 end
 
 function talk_dream_machine()
-   talk_to_actor(0x74)
+   talk_to_actor(Actor.get(0x74))
 end
 
 local talk_obj_tbl = {

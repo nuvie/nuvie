@@ -2,10 +2,8 @@
 #include <stdlib.h>
 #include <cmath>
 #include <misc/U6misc.h>
+#include <misc/SDLUtils.h>
 
-#include "SDL.h"
-
-#include "nuvieDefs.h"
 #include "GUI_font.h"
 #include "GUI_loadimage.h"
 

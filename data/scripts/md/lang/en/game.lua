@@ -235,4 +235,9 @@ THE_DREAM_MACHINES_SEEM_TO_HAVE_CEASED_FUNCTIONING="The dream machines seem to h
 THE_MACHINE_DOES_NOT_WORK="The machine does not work.\n",
 THERE_IS_NOBODY_SITTING_IN_THE_MACHINE="There is nobody sitting in the machine.\n",
 ACTOR_DREAMS_UNTIL_DAWN_WHILE_THE_PARTY_WAITS="%s dreams until dawn while the party waits.\n",
+YOU_TRY_TO_WAKE_YOURSELF_UP="You try to wake yourself up.\n",
+YOU_WAKE_UP="You wake up.\n",
+YOU_ARENT_YET_THAT_INSANE="You aren't yet that insane.\n",
+NO_BACKTALK_FROM_YOU_YOUNG_MAN="No backtalk from you, young man!\n",
+NO_BACKTALK_FROM_YOU_YOUNG_WOMAN="No backtalk from you, young man!\n",
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../nuvieDefs.h"
 #include "../misc/U6misc.h"
+#include "../misc/SDLUtils.h"
 #include "../files/U6Lzw.h"
 #include "../files/U6Lib_n.h"
 #include "../files/U6Shape.h"

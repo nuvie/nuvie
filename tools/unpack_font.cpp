@@ -88,10 +88,10 @@ int main(int argc, char **argv)
         default :
             name = "system.lzc";
 
-            if (library.open(name, 4, NUVIE_GAME_SE) == false)
+            if (!library.open(name, 4, NUVIE_GAME_SE))
                 exit(1);
 
-            fprintf(stderr, "size: %ld\n", library.get_item_size(3));
+            fprintf(stderr, "size: %d\n", library.get_item_size(3));
             data = library.get_item(3, NULL);
             saveFontAsBmp(data, string(gametype) + "_font.bmp");
             library.close();

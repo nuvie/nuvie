@@ -454,7 +454,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 		{
 			party->follow(rel_x, rel_y);
 		}
-		else if(actor->id_n == 0) // using vehicle; drag party along
+		else if(actor->id_n == 0 && game_type != NUVIE_GAME_MD) // using vehicle; drag party along
 		{
 			MapCoord new_xyz = actor->get_location();
 			party->move(new_xyz.x, new_xyz.y, new_xyz.z);

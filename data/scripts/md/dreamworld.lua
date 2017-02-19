@@ -2,6 +2,41 @@ function finish_dream_quest(actor)
 end
 
 function wake_from_dream()
+   --FIXME dreamworld_cleanup_state() The original calls this with actor zero as an argument.
+   g_objlist_1d22_unk = 0
+   local minutes = 60 - clock_get_minute()
+   local current_hour = clock_get_hour()
+   current_hour = current_hour + 1
+   if current_hour >= 8 then
+      minutes = minutes + (24 - current_hour + 8) * 60
+   else
+      minutes = minutes + (8 - current_hour) * 60
+   end
+   clock_inc(minutes)
+   --FIXME reset walk_direction_modifier
+
+   for actor in party_members() do
+      actor_clear_berry_counters(actor.actor_num)
+      if actor.poisoned then
+         if actor.hp <= 30 then
+            if actor.hp <= 10 then
+               actor.hp = 1
+            else
+               actor.hp = math.random(1, 10)
+            end
+         else
+            actor.hp = math.random(24, 30)
+         end
+      end
+   end
+   local dream_actor = Actor.get(0)
+   party_set_in_vehicle(false)
+   dream_actor.visible = false
+   party_show_all()
+   party_update_leader()
+   g_in_dream_mode = false
+   printl("YOU_WAKE_UP")
+
 end
 
 

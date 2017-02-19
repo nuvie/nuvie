@@ -1,3 +1,9 @@
+2017-02-19  Eric Fry <efry at users.sourceforge.net>
+	* Added new pack_lzc tool.
+	* Removed the SDL requirement from some tools
+	* More work on MD dreamworld logic
+	* Don't drag actors around with vehicle in MD
+
 2017-02-09  Eric Fry <efry at users.sourceforge.net>
 	* Added MD walk on walls logic.
 	* Removed darkness from MD dream levels.

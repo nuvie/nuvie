@@ -327,6 +327,8 @@ set(SOURCE_FILES
     misc/U6LList.h
     misc/U6misc.cpp
     misc/U6misc.h
+    misc/SDLUtils.cpp
+    misc/SDLUtils.h
     pathfinder/ActorPathFinder.cpp
     pathfinder/ActorPathFinder.h
     pathfinder/AStarPath.cpp
