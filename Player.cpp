@@ -502,6 +502,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     if(game_type != NUVIE_GAME_U6)
     {
       Game::get_game()->get_script()->call_player_post_move_action(can_move);
+      actor->get_location(&x, &y, &z); //update location in case we have moved.
     }
 
     // update world around player

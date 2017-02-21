@@ -240,4 +240,5 @@ YOU_WAKE_UP="You wake up.\n",
 YOU_ARENT_YET_THAT_INSANE="You aren't yet that insane.\n",
 NO_BACKTALK_FROM_YOU_YOUNG_MAN="No backtalk from you, young man!\n",
 NO_BACKTALK_FROM_YOU_YOUNG_WOMAN="No backtalk from you, young man!\n",
+YOU_FALL_OFF_THE_CLIFF="You fall off the cliff!\n",
 }

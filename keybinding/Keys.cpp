@@ -417,7 +417,7 @@ ActionKeyType KeyBinder::GetActionKeyType(ActionType a)
 
 bool KeyBinder::DoAction(ActionType const& a) const
 {
-	if (!a.action->allow_in_vehicle && Game::get_game()->get_player()->is_in_vehicle())
+	if (!a.action->allow_in_vehicle && Game::get_game()->get_player()->is_in_vehicle() && Game::get_game()->get_game_type() != NUVIE_GAME_MD)
 	{
 		Game::get_game()->get_event()->display_not_aboard_vehicle();
 		return true;

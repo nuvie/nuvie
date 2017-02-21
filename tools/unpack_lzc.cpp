@@ -33,12 +33,12 @@ int main(int argc, char **argv)
    if(!library.open(path, 4, NUVIE_GAME_SE))
      exit(1);
 
- for(int i=0;i<library.get_num_items();i++)
+ for(uint32 i=0;i<library.get_num_items();i++)
 {
    fprintf(stderr,"size: %d\n",library.get_item_size(i));
    data = library.get_item(i, NULL);
    snprintf(outfile, 8, "%d.dat", i);
-   FILE * filed = fopen(outfile,"w");
+   FILE * filed = fopen(outfile,"wb");
    fwrite(data,1,library.get_item_size(i), filed);
    fclose(filed);
    free(data);

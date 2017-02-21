@@ -90,9 +90,20 @@ local dreamworld_cleanup_tbl = {
    [0xa0]=function() end,
 }
 
+function fall_from_cliff()
+   printl("YOU_FALL_OFF_THE_CLIFF")
+   local dream_actor = Actor.get(0)
+   if player_get_gender() == 0 then
+      dream_actor.obj_n = 0x126
+   else
+      dream_actor.obj_n = 0x127
+   end
+   dream_actor.frame_n = 0
+end
+
 local dreamworld_unk_tbl = {
    [0x4]=function() end,
-   [0x40]=function() end,
+   [0x40]=fall_from_cliff,
    [0x85]=function() end,
    [0xA1]=function() end,
    [0xA4]=function() end,
@@ -103,10 +114,20 @@ local dreamworld_unk_tbl = {
    [0xE0]=function() end,
 }
 
+function spawn_your_mother()
+   local player_loc = player_get_location()
+   local mother = Actor.new(391, player_loc.x, player_loc.y-1,player_loc.z)
+   actor_init(mother)
+   mother.wt = 0x15
+   mother.combat_mode = 0x15
+   mother.visible = true
+   Actor.move(mother, player_loc.x, player_loc.y-1,player_loc.z)
+end
+
 local dreamworld_init_tbl = {
    [0x5]=function() end,
    [0x20]=function() end,
-   [0x25]=function() end,
+   [0x25]=spawn_your_mother,
    [0x44]=function() end,
    [0x60]=function() end,
    [0xA5]=function() end,

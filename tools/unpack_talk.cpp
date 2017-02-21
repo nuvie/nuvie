@@ -58,7 +58,7 @@ int main(int argc, char **argv)
 
   sprintf(script_file, "%03u.dat", i);
   FILE * scr;
-  scr=fopen(script_file,"w"); 
+  scr=fopen(script_file,"wb");
   if (scr) {
     fwrite(scripts.get_item(i, NULL),1,len,scr);
     fclose(scr);
