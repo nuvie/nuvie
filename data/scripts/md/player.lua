@@ -137,6 +137,7 @@ function player_post_move_action(did_move)
     local player_loc = player_get_location()
 
     if did_move then
+        --FIXME add falling "faster..." logic here.
         update_conveyor_belt(true)
         update_objects_around_party()
 

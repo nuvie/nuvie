@@ -9,6 +9,7 @@ WT_PLAYER                 = 0x2  --player mode
 
 WT_SLEEP                  = 0x91
 
+ACTOR_STAT_DMG = 7
 --Actor stats table
 --[obj_num] = {str,dex,int,hp,alignment,,damage??,,,,,,,,,,,,,,,,}
 actor_tbl = {

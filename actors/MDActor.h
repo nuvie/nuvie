@@ -45,6 +45,8 @@ class MDActor: public WOUActor
 
  bool check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags=0);
  virtual uint16 get_downward_facing_tile_num();
+ void set_direction(uint8 d);
+ bool is_passable();
 
 };
 

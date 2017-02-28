@@ -52,7 +52,7 @@ bool MDActor::will_not_talk()
 
 bool MDActor::is_immobile()
 {
-  return (obj_n == 318 || obj_n == 319); //avatar wall walking objects
+  return (obj_n == 294 || obj_n == 295 || obj_n == 318 || obj_n == 319); //avatar wall walking objects
 }
 
 bool MDActor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
@@ -128,3 +128,21 @@ uint8 MDActor::get_dex_text_color()
 
   return color;
 }
+
+void MDActor::set_direction(uint8 d) {
+  if (obj_n == 391) { //FIXME hack for mother.
+    if(d < 4)
+      direction = d;
+    return;
+  }
+
+  Actor::set_direction(d);
+}
+
+bool MDActor::is_passable() {
+  if (obj_n == 391) { //FIXME hack for mother.
+    return false;
+  }
+  return Actor::is_passable();
+}
+

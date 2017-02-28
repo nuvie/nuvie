@@ -295,7 +295,7 @@ class Actor
  bool is_nearby(uint8 actor_num);
  bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
- bool is_passable();
+ virtual bool is_passable();
  bool is_temp() { return temp_actor; }
 
  //for lack of a better name:

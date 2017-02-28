@@ -99,6 +99,14 @@ function fall_from_cliff()
       dream_actor.obj_n = 0x127
    end
    dream_actor.frame_n = 0
+
+   for y=dream_actor.y-8,dream_actor.y-4 do
+      local actor = map_get_actor(dream_actor.x, y, dream_actor.z)
+      if actor ~= nil and actor.obj_n == 391 then --OBJ_YOUR_MOTHER
+         Actor.kill(actor, false)
+      end
+   end
+
 end
 
 local dreamworld_unk_tbl = {

@@ -1,3 +1,47 @@
+function select_target_actor(src_actor)
+   local var_10 = 0x7fff
+   local target_actor
+   for i=0,0xff do
+      local actor = Actor.get(i)
+      local actor_align = actor.align
+      local actor_obj_n = actor.obj_n
+      local src_actor_align = src_actor.align
+      local src_actor_obj_n = src_actor.obj_n
+      if actor_obj_n ~= 0 and actor.alive and actor.visible and actor.actor_num ~= src_actor.actor_num and actor_obj_n ~= 381 then --OBJ_DUST_DEVIL
+         if src_actor_align ~= ALIGNMENT_NEUTRAL or actor_align ~= ALIGNMENT_NEUTRAL then
+            if src_actor_align ~= ALIGNMENT_CHAOTIC or (src_actor_obj_n ~= actor_obj_n
+                    and (src_actor_obj_n ~= 372 or (actor_obj_n ~= 370 and actor_obj_n ~= 371))
+                    and ((src_actor_obj_n ~= 362 and src_actor_obj_n ~= 373 and src_actor_obj_n ~= 254)
+                        or (actor_obj_n ~= 362 and actor_obj_n ~= 373 and actor_obj_n ~= 254)))
+                    and (src_actor_align ~= ALIGNMENT_GOOD or actor_align == ALIGNMENT_EVIL or actor_align == ALIGNMENT_CHAOTIC)
+                    and (src_actor_align ~= ALIGNMENT_EVIL or actor_align == ALIGNMENT_GOOD or actor_align == ALIGNMENT_CHAOTIC)
+                    and actor_find_max_wrapped_xy_distance(src_actor, actor.x, actor.y) <= 0xb
+                    and (actor.wt ~= 7 or actor_find_max_wrapped_xy_distance(Actor.get_player_actor(), actor.x, actor.y) <= 5)
+             then
+               local var_C = get_wrapped_dist(actor.x, src_actor.x)^2 + get_wrapped_dist(actor.y, src_actor.y)^2
+               if var_C < var_10
+                       or (var_C == var_10 and actor_tbl[actor][ACTOR_STAT_DMG] > actor_tbl[target_actor][ACTOR_STAT_DMG]) then
+                  var_10 = var_C
+                  target_actor = actor
+               end
+            end
+         end
+      end
+   end
+   return target_actor
+end
+
+function worktype_15_your_mother(actor)
+   if actor_move(actor, DIR_SOUTH) == false then
+      local target_actor = select_target_actor(actor)
+      if target_actor ~= nil then
+         --FIXME do combat range check. sub_1B305
+         actor_hit(target_actor, 6, actor, 0)
+      end
+   end
+   subtract_movement_pts(actor, 3)
+end
+
 function worktype_99_coker_move_to_coal_vein(actor)
    if actor_move(actor, DIR_NORTH) == false then
       local vein = map_get_obj(actor.x, actor.y-1, actor.z, 446) --OBJ_VEIN_OF_COAL FIXME should be -2 not -1 need to fix actor_move for coker.
@@ -117,6 +161,7 @@ function worktype_9C_stoker_return_to_conveyor_belt(actor)
 end
 
 local worktype_tbl = {
+   [0x15]=worktype_15_your_mother,
    [0x99]=worktype_99_coker_move_to_coal_vein,
    [0x9a]=worktype_9A_coker_drop_coal,
    [0x9b]=worktype_9B_coker_wait_for_coal_to_move_away,
