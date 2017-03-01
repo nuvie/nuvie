@@ -77,7 +77,9 @@ function actor_use_dream_machine(actor, dream_quality)
       party_set_in_vehicle(true)
       party_hide_all()
       g_in_dream_mode = true
-
+      g_prev_player_x = 0
+      g_prev_player_y = 0
+      g_current_dream_stage = 0
 
    end
 end

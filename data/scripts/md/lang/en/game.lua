@@ -241,4 +241,6 @@ YOU_ARENT_YET_THAT_INSANE="You aren't yet that insane.\n",
 NO_BACKTALK_FROM_YOU_YOUNG_MAN="No backtalk from you, young man!\n",
 NO_BACKTALK_FROM_YOU_YOUNG_WOMAN="No backtalk from you, young man!\n",
 YOU_FALL_OFF_THE_CLIFF="You fall off the cliff!\n",
+YOU_SHAKE_YOURSELF_AWAKE_FROM_THE_NIGHTMARE="You shake yourself awake from the nightmare.\n",
+YOU_FEEL_YOUR_DREAM_CONSCIOUSNESS_RETURNING="You feel your dream consciousness returning.\n",
 }

@@ -664,7 +664,44 @@ end
 function party_update()
    local avatar = Actor.get(1)
    if avatar.hp == 0 or (g_in_dream_mode == true and Actor.get(0).alive == false) then
-      revive_avatar()
+      if g_in_dream_mode == true then
+         g_objlist_1d22_unk = 0
+         if g_prev_player_x == 0 then
+            printl("YOU_SHAKE_YOURSELF_AWAKE_FROM_THE_NIGHTMARE")
+            wake_from_dream()
+         else
+            local avatar = Actor.get(1)
+            local dream_actor = Actor.get(0)
+            dream_actor.hp = avatar.max_hp
+            dream_actor.poisoned = false
+            Actor.move(dream_actor, g_prev_player_x, g_prev_player_y, dream_actor.z)
+            party_set_combat_mode(false)
+            printl("YOU_FEEL_YOUR_DREAM_CONSCIOUSNESS_RETURNING")
+            if g_current_dream_stage == 0xc0 then
+               if not Actor.get_talk_flag(0x66, 2)
+                  and Actor.get_talk_flag(0x66, 3)
+                  and Actor.get_talk_flag(0x66, 4)
+                  and not Actor.get_talk_flag(0x66, 5)
+               then
+                  for i=0,0xff do
+                     local maw = Actor.get(i)
+                     if maw.obj_n == 373 and maw.wt == 0x12 and maw.x == 0x87 and maw.y == 0x17 then
+                        Actor.kill(maw, false)
+                     end
+                  end
+                  if map_get_obj(0x7f, 0x18, dream_actor.z, 224) == nil then --OBJ_BRIDGE
+                     local bridge = Obj.new(224, 3)
+                     Obj.moveToMap(bridge, 0x7f, 0x18, dream_actor.z)
+                  end
+               end
+               Actor.set_talk_flag(0x66, 7)
+               local raxachk = Actor.get(0x66)
+               Actor.talk(raxachk)
+            end
+         end
+      else
+         revive_avatar()
+      end
    end
    
 end

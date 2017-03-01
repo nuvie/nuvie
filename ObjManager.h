@@ -217,6 +217,8 @@ class ObjManager
  void temp_obj_list_clean_level(uint8 z);
  void temp_obj_list_clean_area(uint16 x, uint16 y);
 
+ void remove_temp_obj(Obj *tmp_obj);
+
  inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, bool match_quality, uint8 frame_n, bool match_frame_n, Obj **prev_obj, iAVLTree *obj_tree);
  inline void start_obj_usecode(iAVLTree *obj_tree);
  inline void print_egg_tree(iAVLTree *obj_tree);

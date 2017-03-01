@@ -4,6 +4,8 @@ local lua_file = nil
 lua_file = nuvie_load("common/common.lua"); lua_file();
 
 OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING  = 0x1cf2
+OBJLIST_OFFSET_PREV_PLAYER_X            = 0x1d03
+OBJLIST_OFFSET_PREV_PLAYER_Y            = 0x1d04
 OBJLIST_OFFSET_1D22_UNK                 = 0x1d22
 OBJLIST_OFFSET_DREAM_MODE_FLAG          = 0x1d29
 
@@ -35,6 +37,12 @@ function load_game()
    objlist_seek(OBJLIST_OFFSET_DREAM_STAGE)
    g_current_dream_stage = objlist_read2()
 
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_X)
+   g_prev_player_x = objlist_read1()
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_Y)
+   g_prev_player_y = objlist_read1()
+
    objlist_seek(OBJLIST_OFFSET_1D22_UNK)
    g_objlist_1d22_unk = objlist_read1()
 
@@ -57,6 +65,12 @@ function save_game()
 
    objlist_seek(OBJLIST_OFFSET_DREAM_STAGE)
    objlist_write2(g_current_dream_stage)
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_X)
+   objlist_write1(g_prev_player_x)
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_Y)
+   objlist_write1(g_prev_player_y)
 
    objlist_seek(OBJLIST_OFFSET_1D22_UNK)
    objlist_write1(g_objlist_1d22_unk)

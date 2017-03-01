@@ -1868,6 +1868,18 @@ bool ObjManager::temp_obj_list_remove(Obj *obj)
  return true;
 }
 
+void ObjManager::remove_temp_obj(Obj *tmp_obj) {
+  //FIXME MD has special temp object flag override logic. This should be implemented in lua script.
+  if(game_type != NUVIE_GAME_MD || (tmp_obj->obj_n != OBJ_MD_DREAM_TELEPORTER && tmp_obj->frame_n != 0)) {
+    DEBUG(0,
+          LEVEL_DEBUGGING,
+          "Removing obj %s.\n",
+          tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n) + (tmp_obj)->frame_n, 0, false));
+    remove_obj_from_map(tmp_obj);
+    delete_obj(tmp_obj);
+  }
+}
+
 // clean objects from a whole level.
 void ObjManager::temp_obj_list_clean_level(uint8 z)
 {
@@ -1879,9 +1891,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
     if((*obj)->z == z)
       {
        tmp_obj = *obj++;
-       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));
-       remove_obj_from_map(tmp_obj); // this calls temp_obj_list_remove()
-       delete_obj(tmp_obj);
+       remove_temp_obj(tmp_obj);
       }
     else
       obj++;
@@ -1906,14 +1916,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
     if(dist_x > 19 || dist_y > 19)
       {
        tmp_obj = *obj++;
-        if(game_type != NUVIE_GAME_MD || (tmp_obj->obj_n != OBJ_MD_DREAM_TELEPORTER && tmp_obj->frame_n != 0)) { //FIXME MD has special temp object flag override logic. This should be implemented in lua script.
-          DEBUG(0,
-                LEVEL_DEBUGGING,
-                "Removing obj %s.\n",
-                tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n) + (tmp_obj)->frame_n, 0, false));
-          remove_obj_from_map(tmp_obj);
-          delete_obj(tmp_obj);
-        }
+       remove_temp_obj(tmp_obj);
       }
     else
       obj++;
