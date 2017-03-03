@@ -13,6 +13,12 @@
 
 class Configuration;
 
+typedef enum {
+  BLOCKED,
+  CAN_MOVE,
+  FORCE_MOVE
+} MovementStatus;
+
 std::string config_get_game_key(Configuration *config);
 const char *get_game_tag(int game_type);
 void config_get_path(Configuration *config, std::string filename, std::string &path);

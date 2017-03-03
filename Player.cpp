@@ -335,7 +335,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 	const uint8 ship_cost[8] = {0xA, 5, 3, 4, 5, 4, 3, 5};
 	const uint8 skiff_cost[8] = {3, 4, 5, 7, 0xA, 7, 5, 4};
 
-	bool can_move = true;
+    MovementStatus movementStatus = CAN_MOVE;
 	bool can_change_rel_dir = true;
 	uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     uint16 x, y;
@@ -403,7 +403,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 		// don't allow diagonal move between blocked tiles (player only)
 		if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, move_flags)
 		   && !actor->check_move(x + 0, y + rel_y, z, move_flags))
-			can_move = false;
+			movementStatus = BLOCKED;
     }
     else if(game_type == NUVIE_GAME_MD)
     {
@@ -417,28 +417,29 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     }
 
     if(actor->is_immobile() && actor->id_n != 0)
-        can_move = false;
+        movementStatus = BLOCKED;
 
-    if(can_move && game_type != NUVIE_GAME_U6)
+    if(movementStatus != BLOCKED && game_type != NUVIE_GAME_U6)
     {
-      can_move = Game::get_game()->get_script()->call_player_before_move_action(rel_x, rel_y);
+      movementStatus = Game::get_game()->get_script()->call_player_before_move_action(&rel_x, &rel_y);
     }
 
-    if(can_move)
+    if(movementStatus != BLOCKED)
     {
-
-		if(!check_moveRelative(rel_x, rel_y)) {
-				can_move = false;
+      if(movementStatus == FORCE_MOVE) {
+        actor->moveRelative(rel_x, rel_y, ACTOR_FORCE_MOVE);
+      } else if(!check_moveRelative(rel_x, rel_y)) {
+          movementStatus = BLOCKED;
 				if(mouse_movement && rel_x != 0 && rel_y != 0 && can_change_rel_dir) {
 					if(check_moveRelative(rel_x, 0)) { // try x movement only
 						rel_y = 0;
-						can_move = true;
+                      movementStatus = CAN_MOVE;
 					} else if(check_moveRelative(0, rel_y)) { // try y movement only
 						rel_x = 0;
-						can_move = true;
+                      movementStatus = CAN_MOVE;
 					}
 				}
-				if(can_move == false) {
+				if(movementStatus == BLOCKED) {
 					Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
 					if(actor->id_n == 0) //vehicle actor.
 						actor->set_moves_left(0); //zero movement points here so U6 can change wind direction by advancing game time.
@@ -448,7 +449,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 	actor->set_direction(rel_x, rel_y);
 
     // post-move
-    if(can_move)
+    if(movementStatus != BLOCKED)
     {
 		if(party_mode && party->is_leader(actor)) // lead party
 		{
@@ -501,7 +502,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 
     if(game_type != NUVIE_GAME_U6)
     {
-      Game::get_game()->get_script()->call_player_post_move_action(can_move);
+      Game::get_game()->get_script()->call_player_post_move_action(movementStatus != BLOCKED);
       actor->get_location(&x, &y, &z); //update location in case we have moved.
     }
 

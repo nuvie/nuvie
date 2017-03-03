@@ -28,6 +28,7 @@
 #include <list>
 #include "GUI.h"
 
+#include "U6misc.h"
 #include "UseCode.h"
 
 #include "lua.hpp"
@@ -107,7 +108,7 @@ class Script
    bool call_save_game(NuvieIO *objlist);
 
    bool play_cutscene(const char *script_file);
-   bool call_player_before_move_action(sint16 rel_x, sint16 rel_y);
+   MovementStatus call_player_before_move_action(sint16 *rel_x, sint16 *rel_y);
    bool call_player_post_move_action(bool didMove);
    bool call_player_pass();
    bool call_actor_update_all();

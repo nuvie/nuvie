@@ -975,18 +975,29 @@ bool Script::play_cutscene(const char *script_file)
 	return run_lua_file(script_file_path.c_str());
 }
 
-bool Script::call_player_before_move_action(sint16 rel_x, sint16 rel_y)
+MovementStatus Script::call_player_before_move_action(sint16 *rel_x, sint16 *rel_y)
 {
   lua_getglobal(L, "player_before_move_action");
-  lua_pushinteger(L, rel_x);
-  lua_pushinteger(L, rel_y);
+  lua_pushinteger(L, *rel_x);
+  lua_pushinteger(L, *rel_y);
 
-  if(call_function("player_before_move_action", 2, 1) == false)
+  if(call_function("player_before_move_action", 2, 3))
   {
-    return false;
-  }
+     if(!lua_isnil(L, -2)) {
+        *rel_x = (sint16)lua_tointeger(L, -2);
+     }
+     if(!lua_isnil(L, -1)) {
+        *rel_y = (sint16)lua_tointeger(L, -1);
+     }
 
-  return lua_toboolean(L,-1);
+     switch(lua_tointeger(L,-3)) {
+        case 0 : return CAN_MOVE;
+        case 1 : return BLOCKED;
+        case 2 : return FORCE_MOVE;
+        default : break;
+     }
+  }
+   return CAN_MOVE;
 }
 
 

@@ -1,3 +1,8 @@
+2017-03-03  Eric Fry <efry at users.sourceforge.net>
+	* Changed player_before_move_action() to return movement status.
+	  CAN_MOVE, BLOCKED or FORCE_MOVE
+	* More work on MD cliff fall logic.
+
 2017-03-01  Eric Fry <efry at users.sourceforge.net>
 	* Work player death in dreamworld
 	* Refactored temp object cleanup logic

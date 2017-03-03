@@ -84,10 +84,17 @@ function actor_use_dream_machine(actor, dream_quality)
    end
 end
 
+function cleanup_cliff_fall()
+   local dream_actor = Actor.get(0)
+   local avatar = Actor.get(1)
+   dream_actor.obj_n = avatar.base_obj_n
+   dream_actor.frame_n = 9
+end
+
 local dreamworld_cleanup_tbl = {
    [5]=function() end,
    [0x20]=function() end,
-   [0x40]=function() end,
+   [0x40]=cleanup_cliff_fall,
    [0x44]=function() end,
    [0xa0]=function() end,
 }
@@ -102,7 +109,7 @@ function fall_from_cliff()
    end
    dream_actor.frame_n = 0
 
-   for y=dream_actor.y-8,dream_actor.y-4 do
+   for y=dream_actor.y-8,dream_actor.y do
       local actor = map_get_actor(dream_actor.x, y, dream_actor.z)
       if actor ~= nil and actor.obj_n == 391 then --OBJ_YOUR_MOTHER
          Actor.kill(actor, false)
@@ -134,11 +141,57 @@ function spawn_your_mother()
    Actor.move(mother, player_loc.x, player_loc.y-1,player_loc.z)
 end
 
+function create_pitcher(x, y, z)
+   local obj = Obj.new(217, math.floor(math.random(0, 5) / 2))
+   Obj.moveToMap(obj, x, y, z)
+end
+
+function setup_tiffany_stage()
+   local tiffany = Actor.get(0x54)
+
+   Actor.clear_talk_flag(tiffany, 0)
+   Actor.clear_talk_flag(tiffany, 6)
+
+   local player_loc = player_get_location()
+   local z = player_loc.z
+   for obj in find_obj_from_area(0x21, 0x33, z, 0x1c, 0x10) do
+      local obj_n = obj.obj_n
+      --OBJ_RED_THROW_RUG, OBJ_RED_CAPE, OBJ_GLASS_PITCHER, OBJ_BROKEN_CRYSTAL, OBJ_MINOTAUR
+      if obj_n == 161 or obj_n == 162 or obj_n == 217 or obj_n == 218 or obj_n == 398 then
+         Obj.removeFromEngine(obj)
+      end
+   end
+   local rug = Obj.new(161) --OBJ_RED_THROW_RUG
+   Obj.moveToMap(rug, 0x24, 0x36, z)
+
+   for i=57,65 do
+      if i ~= 0x3e then
+         create_pitcher(0x37, i, z)
+      end
+      if i > 0x3a and i ~= 0x40 then
+         create_pitcher(0x39, i, z)
+      end
+      create_pitcher(0x3b, i, z)
+   end
+
+   create_pitcher(0x38, 0x39, z)
+   create_pitcher(0x38, 0x41, z)
+   create_pitcher(0x3a, 0x39, z)
+   create_pitcher(0x3a, 0x41, z)
+
+   local minotaur = Actor.new(398, 0x3b, 0x41, z)
+
+   actor_init(minotaur)
+   Actor.move(minotaur, 0x3b, 0x41, z)
+   minotaur.wt = 0x16
+
+end
+
 local dreamworld_init_tbl = {
    [0x5]=function() end,
    [0x20]=function() end,
    [0x25]=spawn_your_mother,
-   [0x44]=function() end,
+   [0x44]=setup_tiffany_stage,
    [0x60]=function() end,
    [0xA5]=function() end,
    [0xC0]=function() end,
@@ -155,6 +208,8 @@ function dreamworld_cleanup_state(obj)
       end
 
    end
+
+--   print("new stage="..new_stage.."\n")
 
    if new_stage == 1 then
       g_current_dream_stage = 0

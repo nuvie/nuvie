@@ -499,12 +499,12 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 // assert(new_z < 6); // shouldn't need to check anymore
 
  //const uint8 move_cost = 5; // base cost to move
- bool force_move = flags & ACTOR_FORCE_MOVE;
- bool open_doors = flags & ACTOR_OPEN_DOORS;
- bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
- bool ignore_danger = (flags & ACTOR_IGNORE_DANGER);
+ bool force_move = (bool)(flags & ACTOR_FORCE_MOVE);
+ bool open_doors = (bool)(flags & ACTOR_OPEN_DOORS);
+ bool ignore_actors = (bool)(flags & ACTOR_IGNORE_OTHERS);
+ bool ignore_danger = (bool)(flags & ACTOR_IGNORE_DANGER);
 // bool ignore_danger = true;
- bool ignore_moves = flags & ACTOR_IGNORE_MOVES;
+ bool ignore_moves = (bool)(flags & ACTOR_IGNORE_MOVES);
  Obj *obj = NULL;
  MapCoord oldpos(x, y, z);
 

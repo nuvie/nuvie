@@ -1,3 +1,7 @@
+local PLAYER_CAN_MOVE = 0
+local PLAYER_BLOCKED = 1
+local PLAYER_FORCE_MOVE = 2
+
 local map_entrance_tbl = {
     {x=0x43,  y=0x51,  z=0x1},
     {x=0x80,  y=0x8D,  z=0x0},
@@ -40,10 +44,19 @@ end
 --returns true if the player can move to rel_x, rel_y
 function player_before_move_action(rel_x, rel_y)
     if rel_x ~= 0 and rel_y ~= 0 then
-        return true
+        return PLAYER_CAN_MOVE
     end
 
     local player_loc = player_get_location()
+
+    if rel_x == 0 and rel_y == 1 then
+        local tile_num = map_get_tile_num(player_loc)
+        -- Fall off cliff logic
+        if tile_num >= 384 and tile_num <= 387 then
+            return PLAYER_FORCE_MOVE
+        end
+    end
+
     local z = player_loc.z
     local x = wrap_coord(player_loc.x+rel_x,z)
     local y = wrap_coord(player_loc.y+rel_y,z)
@@ -67,7 +80,7 @@ function player_before_move_action(rel_x, rel_y)
         end
     end
 
-    return true
+    return PLAYER_CAN_MOVE
 end
 
 function update_objects_around_party()
