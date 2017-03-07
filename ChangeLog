@@ -1,3 +1,9 @@
+2017-03-07  Eric Fry <efry at users.sourceforge.net>
+	* Added map_enable_temp_actor_cleaning() script function to
+	  disable temp actor cleaning. Needed for some MD dream sequences
+	  which spawn temp actors more than 19 tiles away from the player.
+	* Started on MD use switch logic
+
 2017-03-03  Eric Fry <efry at users.sourceforge.net>
 	* Changed player_before_move_action() to return movement status.
 	  CAN_MOVE, BLOCKED or FORCE_MOVE

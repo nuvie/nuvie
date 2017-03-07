@@ -1734,7 +1734,92 @@ function use_panel(obj, actor)
    end
 end
 
+function use_switch(obj, actor)
+   local switch_qty = obj.qty
+   local switch_quality = obj.quality
+   local target_obj
 
+   local num_switches = 0
+   local switches = {}
+
+   for obj in find_obj_from_area(obj.x - 32, obj.y - 32, obj.z, 64, 64) do
+      if obj.obj_n == 179 or obj.obj_n == 227 then --OBJ_CLOSED_DOOR, OBJ_DOOR3
+         if bit32.band(obj.quality, 0x7f) == switch_qty then
+            target_obj = obj
+         end
+      elseif (obj.obj_n == 311 or obj.obj_n == 312 or obj.obj_n == 196) then --and obj.quality < 2 then
+         if num_switches < 4 then
+            num_switches = num_switches + 1
+            switches[num_switches] = obj
+         end
+      end
+   end
+
+   if target_obj == nil then
+      printl("STRANGELY_NOTHING_HAPPENS")
+      return
+   end
+
+   if num_switches == 0 then
+      printl("STRANGELY_IT_DOESNT_MOVE")
+      return
+   end
+
+   local frame_n = 0
+   if switch_quality == 1 then
+      if bit32.band(target_obj.quality, 0x80) == 0 then
+         target_obj.quality = bit32.bor(target_obj.quality, 0x80)
+      else
+         target_obj.quality = bit32.band(target_obj.quality, 0x7f)
+         frame_n = 1
+      end
+   else
+      local old_frame_n = target_obj.frame_n
+      target_obj.frame_n = bit32.band(old_frame_n, 2) + 5
+      play_door_sfx()
+      if old_frame_n < 4 then
+         target_obj.frame_n = bit32.band(old_frame_n, 2) + 9
+         frame_n = 1
+      else
+         target_obj.frame_n = bit32.band(old_frame_n, 2) + 1
+         --FIXME check for minotaur out of area and finish dream sequence.
+      end
+      play_door_sfx()
+   end
+
+   for i=1,num_switches do
+      switches[i].frame_n = frame_n
+   end
+   play_md_sfx(0x11)
+end
+
+function use_drawbridge_lever(obj, actor)
+   --FIXME
+end
+
+function use_cheat_lever(obj, actor)
+   --FIXME
+end
+
+function use_cheat_lever2(obj, actor)
+   --FIXME
+end
+
+local switch_qual_tbl = {
+   [1] = use_switch,
+   [2] = use_switch,
+   [10] = use_drawbridge_lever,
+   [20] = use_cheat_lever,
+   [21] = use_cheat_lever2,
+}
+
+function use_switch_device(obj, actor)
+   if switch_qual_tbl[obj.quality] ~= nil then
+      switch_qual_tbl[obj.quality](obj, actor)
+   else
+      printl("WHAT_AN_ODD_LEVER")
+   end
+end
 
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
@@ -1832,6 +1917,8 @@ local usecode_table = {
 [181]=use_gate,
 --OBJ_CAMERA
 [184]=use_misc_text,
+--OBJ_LEVER
+[196]=use_switch_device,
 --OBJ_CABLE_SPOOL
 [199]=use_misc_text,
 [212]=use_oxium_bin,
@@ -1888,6 +1975,10 @@ local usecode_table = {
    [288]=use_head_gear, --OBJ_DREAM_MACHINE1
    [289]=use_head_gear, --OBJ_DREAM_MACHINE2
 },
+--OBJ_SWITCH
+[311]=use_switch_device,
+--OBJ_SWITCH1
+[312]=use_switch_device,
 --OBJ_OXYGENATED_AIR_MACHINE
 [323]=use_misc_text,
 --OBJ_MARTIAN_PICK

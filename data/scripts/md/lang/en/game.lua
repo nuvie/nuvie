@@ -243,4 +243,7 @@ NO_BACKTALK_FROM_YOU_YOUNG_WOMAN="No backtalk from you, young man!\n",
 YOU_FALL_OFF_THE_CLIFF="You fall off the cliff!\n",
 YOU_SHAKE_YOURSELF_AWAKE_FROM_THE_NIGHTMARE="You shake yourself awake from the nightmare.\n",
 YOU_FEEL_YOUR_DREAM_CONSCIOUSNESS_RETURNING="You feel your dream consciousness returning.\n",
+WHAT_AN_ODD_LEVER="What an odd lever!\n",
+STRANGELY_NOTHING_HAPPENS="Strangely, nothing happens.\n",
+STRANGELY_IT_DOESNT_MOVE="Strangely, it doesn't move.\n",
 }

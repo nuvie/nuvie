@@ -260,6 +260,7 @@ static int nscript_map_line_hit_check(lua_State *L);
 
 static int nscript_map_can_put_actor(lua_State *L);
 static int nscript_map_can_put_obj(lua_State *L);
+static int nscript_map_enable_temp_actor_cleaning(lua_State *L);
 
 static int nscript_map_export_tmx_files(lua_State *L);
 
@@ -723,6 +724,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_map_can_put_obj);
    lua_setglobal(L, "map_can_put_obj");
+
+   lua_pushcfunction(L, nscript_map_enable_temp_actor_cleaning);
+   lua_setglobal(L, "map_enable_temp_actor_cleaning");
 
    lua_pushcfunction(L, nscript_map_line_test);
    lua_setglobal(L, "map_can_reach_point");
@@ -3142,6 +3146,19 @@ static int nscript_map_can_put_obj(lua_State *L)
    lua_pushboolean(L, map->can_put_obj(x,y,z));
 
    return 1;
+}
+
+/***
+Toggle automatic cleaning of out of area temporary actors.
+@function map_enable_temp_actor_cleaning
+@tparam bool value
+@within map
+ */
+static int nscript_map_enable_temp_actor_cleaning(lua_State *L)
+{
+   ActorManager *actorManager = Game::get_game()->get_actor_manager();
+   actorManager->enable_temp_actor_cleaning((bool)lua_toboolean(L, 1));
+   return 0;
 }
 
 /***

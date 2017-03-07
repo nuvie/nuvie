@@ -33,6 +33,7 @@ function load_game()
    
    objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
    g_in_dream_mode = bit32.btest(objlist_read2(), 0x10)
+   map_enable_temp_actor_cleaning(not g_in_dream_mode)
 
    objlist_seek(OBJLIST_OFFSET_DREAM_STAGE)
    g_current_dream_stage = objlist_read2()

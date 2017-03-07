@@ -35,6 +35,7 @@ function wake_from_dream()
    party_show_all()
    party_update_leader()
    g_in_dream_mode = false
+   map_enable_temp_actor_cleaning(true)
    printl("YOU_WAKE_UP")
 
 end
@@ -77,6 +78,7 @@ function actor_use_dream_machine(actor, dream_quality)
       party_set_in_vehicle(true)
       party_hide_all()
       g_in_dream_mode = true
+      map_enable_temp_actor_cleaning(false)
       g_prev_player_x = 0
       g_prev_player_y = 0
       g_current_dream_stage = 0

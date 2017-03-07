@@ -85,6 +85,7 @@ void ActorManager::init()
  update = true;
  wait_for_player = true;
  combat_movement = false;
+ should_clean_temp_actors = true;
 
  return;
 }
@@ -959,6 +960,9 @@ void ActorManager::clean_temp_actors_from_area(uint16 x, uint16 y)
 {
  uint16 i;
  uint16 dist_x, dist_y;
+
+ if(!should_clean_temp_actors)
+   return;
 
  for(i=temp_actor_offset;i<ACTORMANAGER_MAX_ACTORS;i++)
    {
