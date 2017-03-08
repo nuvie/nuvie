@@ -193,6 +193,10 @@
 	<td class="summary">A map coordinate</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#Schedule">Schedule</a></td>
+	<td class="summary">An actor schedule entry</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#Actor">Actor</a></td>
 	<td class="summary">An Actor object</td>
 	</tr>
@@ -691,6 +695,14 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<tr>
 	<td class="name" nowrap><a href="#Actor.clear_talk_flag">Actor.clear_talk_flag (actor, flag)</a></td>
 	<td class="summary">Clear one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_number_of_schedules">Actor.get_number_of_schedules (actor)</a></td>
+	<td class="summary">Get the number of schedule entries</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_schedule">Actor.get_schedule (actor, index)</a></td>
+	<td class="summary">Get an Actor schedule entry</td>
 	</tr>
 </table>
 
@@ -1542,6 +1554,48 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
         <li><span class="parameter">z</span>
             <span class="types"><span class="type">int</span></span>
          0 for the 1024x1024 surface level, 1..5 for the dungeon levels
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Schedule"></a>
+    <strong>Schedule</strong>
+    </dt>
+    <dd>
+    An actor schedule entry
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">day_of_week</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">worktype</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
         </li>
     </ul>
 
@@ -5056,6 +5110,68 @@ Schedules change on the hour.
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_number_of_schedules"></a>
+    <strong>Actor.get_number_of_schedules (actor)</strong>
+    </dt>
+    <dd>
+    Get the number of schedule entries
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_schedule"></a>
+    <strong>Actor.get_schedule (actor, index)</strong>
+    </dt>
+    <dd>
+    Get an Actor schedule entry
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">int</span></span>
+         The index of the schedule to retrieve
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Schedule">Schedule</a></span>
+
+
+    </ol>
 
 
 

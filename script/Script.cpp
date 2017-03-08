@@ -101,6 +101,17 @@ A map coordinate
 @int y
 @int z 0 for the 1024x1024 surface level, 1..5 for the dungeon levels
  */
+
+/***
+An actor schedule entry
+@table Schedule
+@int day_of_week
+@int worktype
+@int x
+@int y
+@int z
+ */
+
 extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 struct ScriptObjRef

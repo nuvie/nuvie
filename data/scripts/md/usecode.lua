@@ -1309,10 +1309,10 @@ end
 function use_manuscript_on_mailbox(obj, target_obj, actor)
    local twain = Actor.get(0x57)
 
-      Actor.set_talk_flag(twain, 6)
-      Actor.talk(twain)
-   --FIXME reset obelisk
-   --FIXME wake from dream
+   finish_dream_quest(twain)
+   Actor.set_talk_flag(twain, 6)
+   Actor.talk(twain)
+   wake_from_dream()
 end
 
 function use_assembled_drill(obj, actor)
@@ -1734,6 +1734,19 @@ function use_panel(obj, actor)
    end
 end
 
+function has_minotaur_left_the_shop(cur_z)
+   for i=1,0xff do
+      local actor = Actor.get(i)
+      if actor.obj_n == 398 then --OBJ_MINOTAUR
+         if actor.z == cur_z and not Actor.get_talk_flag(0x54, 6)
+                 and actor.x >= 0x37 and actor.y <= 0x37 then
+            return true
+         end
+      end
+   end
+   return false
+end
+
 function use_switch(obj, actor)
    local switch_qty = obj.qty
    local switch_quality = obj.quality
@@ -1782,7 +1795,15 @@ function use_switch(obj, actor)
          frame_n = 1
       else
          target_obj.frame_n = bit32.band(old_frame_n, 2) + 1
-         --FIXME check for minotaur out of area and finish dream sequence.
+
+         if g_in_dream_mode and g_current_dream_stage == 0x44 and has_minotaur_left_the_shop(target_obj.z) then
+            local tiffany = Actor.get(0x54)
+            finish_dream_quest(tiffany)
+            Actor.set_talk_flag(tiffany, 1)
+            Actor.talk(tiffany)
+            wake_from_dream()
+            return
+         end
       end
       play_door_sfx()
    end

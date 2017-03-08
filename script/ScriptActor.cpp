@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <actors/Actor.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 
@@ -150,6 +151,8 @@ static int nscript_actor_use(lua_State *L);
 static int nscript_actor_get_talk_flag(lua_State *L);
 static int nscript_actor_set_talk_flag(lua_State *L);
 static int nscript_actor_clear_talk_flag(lua_State *L);
+static int nscript_actor_get_number_of_schedules(lua_State *L);
+static int nscript_actor_get_schedule(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -185,6 +188,8 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "get_talk_flag", nscript_actor_get_talk_flag },
    { "set_talk_flag", nscript_actor_set_talk_flag },
    { "clear_talk_flag", nscript_actor_clear_talk_flag },
+   { "get_number_of_schedules", nscript_actor_get_number_of_schedules },
+   { "get_schedule", nscript_actor_get_schedule },
 
    { NULL, NULL }
 };
@@ -1878,4 +1883,61 @@ static int nscript_actor_clear_talk_flag(lua_State *L)
     return 0;
   actor->clear_flag((uint8)lua_tointeger(L, 2));
   return 0;
+}
+
+/***
+Get the number of schedule entries
+@function Actor.get_number_of_schedules
+@tparam Actor actor
+@treturn int
+@within Actor
+ */
+static int nscript_actor_get_number_of_schedules(lua_State *L)
+{
+   Actor *actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+
+   lua_pushinteger(L, actor->get_number_of_schedules());
+   return 1;
+}
+
+/***
+Get an Actor schedule entry
+@function Actor.get_schedule
+@tparam Actor actor
+@int index The index of the schedule to retrieve
+@treturn Schedule
+@within Actor
+ */
+static int nscript_actor_get_schedule(lua_State *L)
+{
+   Actor *actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+
+   Schedule *schedule = actor->get_schedule((uint8)lua_tointeger(L, 2));
+
+   lua_newtable(L);
+   lua_pushstring(L, "day_of_week");
+   lua_pushinteger(L, schedule->day_of_week);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "worktype");
+   lua_pushinteger(L, schedule->worktype);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "x");
+   lua_pushinteger(L, schedule->x);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "y");
+   lua_pushinteger(L, schedule->y);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "z");
+   lua_pushinteger(L, schedule->z);
+   lua_settable(L, -3);
+
+   return 1;
 }

@@ -1,4 +1,32 @@
 function finish_dream_quest(actor)
+   local schedule = Actor.get_schedule(actor, 0)
+
+   Actor.move(actor, schedule.x, schedule.y, schedule.z)
+
+   local obj = map_get_obj(schedule.x, schedule.y, schedule.z, 461) --OBJ_DREAM_TELEPORTER
+   Obj.removeFromEngine(obj)
+   obj = map_get_obj(schedule.x, schedule.y-1, schedule.z, 292) --OBJ_OBELISK
+   Obj.removeFromEngine(obj)
+   Actor.set_talk_flag(actor, 7)
+
+   if Actor.get_talk_flag(0x56, 7)
+           and Actor.get_talk_flag(0x54, 7)
+           and Actor.get_talk_flag(0x52, 7)
+           and Actor.get_talk_flag(0x55, 7) then
+      Actor.set_talk_flag(0x60, 4)
+   end
+
+   if Actor.get_talk_flag(0x50, 7)
+           and Actor.get_talk_flag(0x51, 7)
+           and Actor.get_talk_flag(0x52, 7)
+           and Actor.get_talk_flag(0x53, 7)
+           and Actor.get_talk_flag(0x54, 7)
+           and Actor.get_talk_flag(0x55, 7)
+           and Actor.get_talk_flag(0x56, 7)
+           and Actor.get_talk_flag(0x57, 7) then
+      Actor.set_talk_flag(0x20, 4)
+   end
+
 end
 
 function wake_from_dream()

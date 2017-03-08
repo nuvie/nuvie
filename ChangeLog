@@ -1,3 +1,10 @@
+2017-03-08  Eric Fry <efry at users.sourceforge.net>
+	* Fixed end of buffer bug with NuvieIO class
+	* Added lua functions for querying an Actor's Schedule
+	  Actor.get_number_of_schedules() and Actor.get_schedule()
+	* Added dream quest finish logic
+	* Finished MD switch usecode logic
+
 2017-03-07  Eric Fry <efry at users.sourceforge.net>
 	* Added map_enable_temp_actor_cleaning() script function to
 	  disable temp actor cleaning. Needed for some MD dream sequences

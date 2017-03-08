@@ -68,7 +68,8 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  worktype = 0;
  sched_pos = 0;
  move_time = 0;
- 
+ num_schedules = 0;
+
  alignment = ACTOR_ALIGNMENT_NEUTRAL;
  
  memset(readied_objects,0,sizeof(readied_objects));
@@ -1365,7 +1366,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  unsigned char *sched_data_ptr;
 
  sched = (Schedule**)malloc(sizeof(Schedule*) * (num+1));
-
+ num_schedules = num;
  sched_data_ptr = sched_data;
 
  for(i=0;i<num;i++)
@@ -2176,6 +2177,13 @@ bool Actor::is_at_scheduled_location()
 	   return true;
 
    return false;
+}
+
+Schedule *Actor::get_schedule(uint8 index) {
+  if(index >= num_schedules)
+    return NULL;
+
+  return sched[index];
 }
 
 void Actor::cure()

@@ -131,7 +131,7 @@ uint16 NuvieIOBuffer::read2()
 {
  uint16 val;
 
-  if(pos >= size-2)
+  if(pos > size-2)
    return 0;
 
  val = data[pos] + (data[pos+1]<<8);
@@ -144,7 +144,7 @@ uint32 NuvieIOBuffer::read4()
 {
  uint32 val;
 
- if(pos >= size-4)
+ if(pos > size-4)
    return 0;
 
  val = (data[pos] + (data[pos+1]<<8) + (data[pos+2]<<16) + (data[pos+3]<<24));
@@ -179,7 +179,7 @@ bool NuvieIOBuffer::write1(uint8 src)
 
 bool NuvieIOBuffer::write2(uint16 src)
 {
- if(pos >= size-2)
+ if(pos > size-2)
    return false;
 
  data[pos] = src & 0xff;
@@ -192,7 +192,7 @@ bool NuvieIOBuffer::write2(uint16 src)
 bool NuvieIOBuffer::write4(uint32 src)
 {
  unsigned char *ptr;
- if(pos >= size-4)
+ if(pos > size-4)
    return false;
 
  ptr = &data[pos];
