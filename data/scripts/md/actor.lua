@@ -355,7 +355,7 @@ function actor_handle_damage(defender)
       elseif hp_level == 2 then
          damage_type = i18n("LIGHTLY")
       elseif hp_level == 3 then
-         damage_type = i18n("BEARLY")
+         damage_type = i18n("BARELY")
       end
       printfl("ACTOR_HIT_MESSAGE", defender.name, damage_type, suffix)
 
@@ -390,7 +390,7 @@ function actor_take_hit(attacker, defender, max_dmg, damage_mode)
          party_set_combat_mode(true)
       end
 
-      attacker.exp = attacker.exp + actor_hit(defender, max_dmg, attacker, damage_mode)
+      attacker.exp = attacker.exp + actor_hit(defender, max_dmg, damage_mode)
    else
       --FIXME call either sub_19088 or sub_18F7D
       printfl("ACTOR_GRAZED", defender.name)
@@ -420,7 +420,7 @@ end
 function actor_immune_to_dmg(actor)
    local actor_num = actor.actor_num
    local obj_n = actor.obj_n
-   if obj_n == 381 or obj_n == 391 or obj_n == 358 or obj_n == 382 then
+   if obj_n == 381 or obj_n == 390 or obj_n == 391 or obj_n == 358 or obj_n == 382 then
       return true
    end
 
@@ -454,9 +454,10 @@ function actor_print_custom_hit_message(actor)
    end
 end
 
-function actor_hit(defender, max_dmg, attacker, damage_mode)
+-- Hit an actor or object
+function actor_hit(defender, max_dmg, damage_mode)
 
-   print("actor_hit("..actor.actor_num..")\n")
+
    local defender_obj_n = defender.obj_n
    local exp_gained = 0
    local player_loc = player_get_location()
@@ -466,6 +467,7 @@ function actor_hit(defender, max_dmg, attacker, damage_mode)
    end
 
    if defender.luatype == "actor" then
+      print("actor_hit("..defender.actor_num..")\n")
       --attacking an object
       --FIXME
       --      if defender.actor_num == 0 and defender.hp <= max_dmg then -- and word_41184 == 0E0h
@@ -524,6 +526,7 @@ function actor_hit(defender, max_dmg, attacker, damage_mode)
    else
       --FIXME
       --Hit object here.
+      print("HIT OBJ\n")
    end
 
    return exp_gained
@@ -552,6 +555,38 @@ function actor_move(actor, direction, flag)
    end
    
    return did_move
+end
+
+function actor_move_diagonal(actor, x_direction, y_direction)
+   local x,y,z = actor.x, actor.y, actor.z
+   local direction
+
+   if y_direction == DIR_NORTH then
+      y = y - 1
+      direction = x_direction == DIR_EAST and DIR_NORTHEAST or DIR_NORTHWEST
+   end
+   if y_direction == DIR_SOUTH then
+      y = y + 1
+      direction = x_direction == DIR_EAST and DIR_SOUTHEAST or DIR_SOUTHWEST
+   end
+   if x_direction == DIR_EAST then
+      x = x + 1
+      direction = y_direction == DIR_NORTH and DIR_NORTHEAST or DIR_SOUTHEAST
+   end
+   if x_direction == DIR_WEST then
+      x = x - 1
+      direction = y_direction == DIR_NORTH and DIR_NORTHWEST or DIR_SOUTHWEST
+   end
+
+   ----dgb("actor_move_diagonal("..actor.name..", "..direction_string(direction)..")\n");
+   actor.direction = y_direction
+   local did_move = Actor.move(actor, x, y, z)
+
+   if did_move then
+      subtract_map_movement_pts(actor)
+   end
+
+   return did_move and 1 or 0
 end
 
 function actor_update_frame(actor, direction)
@@ -947,6 +982,7 @@ function actor_get_ac(actor)
          end
       end
    end
+   return ac
 end
 
 function out_of_ammo(attacker, weapon, print_message) -- untested function
@@ -1551,15 +1587,15 @@ end
 
 
 
-function actor_hit(actor, damage)
-   local hp = actor.hp
-   if damage >= hp and actor.actor_num == 1 then
-      hit_anim(actor.x, actor.y)
-      actor.hp = 0
-   else
-      Actor.hit(actor, damage)
-   end
-end
+--function actor_take_hit(actor, damage)
+--   local hp = actor.hp
+--   if damage >= hp and actor.actor_num == 1 then
+--      hit_anim(actor.x, actor.y)
+--      actor.hp = 0
+--   else
+--      Actor.hit(actor, damage)
+--   end
+--end
 
 function kill_actor(actor)
    actor.hp=0

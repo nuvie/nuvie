@@ -294,7 +294,7 @@ function update_lamp_posts()
    end
 end
 
-function play_md_sfx(sfx_id)
+function play_md_sfx(sfx_id, play_async)
    --FIXME
 end
 

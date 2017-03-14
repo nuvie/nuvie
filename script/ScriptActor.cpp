@@ -100,6 +100,12 @@ An Actor object
 @int[readonly] tile_num The tile number based on the obj_n + frame_n combination.
 @bool visible Is the actor currently visible?
 @int wt worktype
+@field[readonly] xyz table containing location
+
+ table format
+```
+{["x"]=x, ["y"]=y, ["z"]=z}
+```
 @int x
 @int y
 @int z
@@ -283,6 +289,7 @@ static const char *actor_get_vars[] =
    "visible",
    "wt",
    "x",
+   "xyz",
    "y",
    "z"
 };
@@ -400,6 +407,7 @@ static int nscript_actor_get_tile_num(Actor *actor, lua_State *L);
 static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_x(Actor *actor, lua_State *L);
+static int nscript_actor_get_xyz(Actor *actor, lua_State *L);
 static int nscript_actor_get_y(Actor *actor, lua_State *L);
 static int nscript_actor_get_z(Actor *actor, lua_State *L);
 
@@ -447,6 +455,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_visible_flag,
    nscript_actor_get_worktype,
    nscript_actor_get_x,
+   nscript_actor_get_xyz,
    nscript_actor_get_y,
    nscript_actor_get_z
 };
@@ -1114,6 +1123,24 @@ static int nscript_actor_get_worktype(Actor *actor, lua_State *L)
 static int nscript_actor_get_x(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_x()); return 1;
+}
+
+static int nscript_actor_get_xyz(Actor *actor, lua_State *L)
+{
+   lua_newtable(L);
+   lua_pushstring(L, "x");
+   lua_pushinteger(L, actor->get_x());
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "y");
+   lua_pushinteger(L, actor->get_y());
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "z");
+   lua_pushinteger(L, actor->get_z());
+   lua_settable(L, -3);
+
+   return 1;
 }
 
 static int nscript_actor_get_y(Actor *actor, lua_State *L)

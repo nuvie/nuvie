@@ -24,10 +24,11 @@
 #include "MDActor.h"
 #include "Game.h"
 #include "GameClock.h"
-#include "U6misc.h"
 #include "DirFinder.h"
 
 #define MD_DOWNWARD_FACING_FRAME_N 9
+
+extern uint8 walk_frame_tbl[4];
 
 MDActor::MDActor(Map *m, ObjManager *om, GameClock *c): WOUActor(m,om,c)
 {
@@ -130,13 +131,26 @@ uint8 MDActor::get_dex_text_color()
 }
 
 void MDActor::set_direction(uint8 d) {
-  if (obj_n == 391) { //FIXME hack for mother.
-    if(d < 4)
-      direction = d;
+  if(is_alive() == false || is_immobile())
+    return;
+
+  if(d < 4)
+    direction = d;
+
+  if (obj_n == 391) { //mother only has two (downward facing) tiles
+    frame_n = (uint16)(frame_n ? 0 : 1);
     return;
   }
 
-  Actor::set_direction(d);
+  uint8 num_walk_frames = 2;
+
+  if (obj_n >= 342 && obj_n <= 358) {
+    num_walk_frames = 4;
+  }
+
+  walk_frame = (uint8)((walk_frame + 1) % num_walk_frames);
+
+  frame_n = direction * num_walk_frames + walk_frame_tbl[walk_frame];
 }
 
 bool MDActor::is_passable() {

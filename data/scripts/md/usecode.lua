@@ -1797,11 +1797,7 @@ function use_switch(obj, actor)
          target_obj.frame_n = bit32.band(old_frame_n, 2) + 1
 
          if g_in_dream_mode and g_current_dream_stage == 0x44 and has_minotaur_left_the_shop(target_obj.z) then
-            local tiffany = Actor.get(0x54)
-            finish_dream_quest(tiffany)
-            Actor.set_talk_flag(tiffany, 1)
-            Actor.talk(tiffany)
-            wake_from_dream()
+            complete_tiffany_stage()
             return
          end
       end

@@ -217,6 +217,14 @@ function setup_tiffany_stage()
 
 end
 
+function complete_tiffany_stage()
+   local tiffany = Actor.get(0x54)
+   finish_dream_quest(tiffany)
+   Actor.set_talk_flag(tiffany, 1)
+   Actor.talk(tiffany)
+   wake_from_dream()
+end
+
 local dreamworld_init_tbl = {
    [0x5]=function() end,
    [0x20]=function() end,

@@ -43,7 +43,7 @@
 #include "Event.h"
 #include "U6Actor.h"
 
-static uint8 walk_frame_tbl[4] = {0,1,2,1};
+uint8 walk_frame_tbl[4] = {0,1,2,1};
 
 class ActorManager;
 

@@ -1,3 +1,8 @@
+2017-03-14  Eric Fry <efry at users.sourceforge.net>
+	* Added lua actor.xyz field
+	* Moved some u6 actor functions into common lua
+	* Work on Minotaur worktype
+
 2017-03-08  Eric Fry <efry at users.sourceforge.net>
 	* Fixed end of buffer bug with NuvieIO class
 	* Added lua functions for querying an Actor's Schedule

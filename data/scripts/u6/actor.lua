@@ -257,13 +257,6 @@ function subtract_movement_pts(actor, pts)
    end
 end
 
-function subtract_map_movement_pts(actor)
-	local points = map_get_impedence(actor.x, actor.y, actor.z, false) + 5
-	subtract_movement_pts(actor, points)
-end
-
-
-
 function actor_move(actor, direction, flag)
    ----dgb("actor_move("..actor.name..", "..direction_string(direction)..", "..flag..") actor("..actor.x..","..actor.y..")\n");
    local x,y,z = actor.x, actor.y, actor.z
@@ -320,85 +313,6 @@ function actor_move_diagonal(actor, x_direction, y_direction)
    end
    
    return did_move and 1 or 0
-end
-
-function actor_move_towards_loc(actor, map_x, map_y)
-   --dgb("move actor "..actor.name.." from ("..actor.x..","..actor.y..") towards ("..map_x..","..map_y..") ")
-   local var_2 = (word_30A6B == 1) and 0 or 1
-   local var_6 = 1
-   local diff_x = map_x - actor.x
-   local diff_y = map_y - actor.y 
-
-   if (diff_x == 0 and diff_y == 0) or actor.wt == WT_STATIONARY then subtract_movement_pts(actor, 5) return 0 end
-
-   local x_direction, y_direction
-   
-   if diff_x ~= 0 then
-      x_direction = (diff_x >= 0) and DIR_EAST or DIR_WEST
-   else
-      x_direction = (math.random(0, 1) == 0) and DIR_WEST or DIR_EAST
-   end
-
-   if diff_y ~= 0 then
-      y_direction = (diff_y >= 0) and DIR_SOUTH or DIR_NORTH
-   else
-      y_direction = (math.random(0, 1) == 0) and DIR_SOUTH or DIR_NORTH
-   end
-
-   unk_30A72 = 0
-
-   local var_4
-   
-   if abs(diff_x) >= 4 or abs(diff_y) >= 4 then
-      var_4 = (math.random(1, abs(diff_x) + abs(diff_y)) <= abs(diff_x)) and 1 or 0
-   else
-      if abs(diff_x) > abs(diff_y) then
-         var_4 = 0
-      else
-         if abs(diff_x) < abs(diff_y) then
-            var_4 = 1
-         else
-            var_4 = math.random(0, 1)
-         end
-      end
-      
-      --var_4 = (abs(diff_x) >= abs(diff_y) or abs(diff_x) ~= abs(diff_y) or math.random(0, 1) == 0) and 0 or 1
-   end
-----dgb("var_4 = "..var_4.."\n")
-   if var_4 == 0 then
-      if actor_move(actor, x_direction, var_2) == 0 then
-      	if actor_move_diagonal(actor, x_direction, y_direction) == 0 then
-      		if actor_move(actor, y_direction, var_2) == 0 then
-      			if math.random(0, 1) ~= 0 or actor_move(actor, (y_direction == DIR_NORTH) and DIR_SOUTH or DIR_NORTH, 1) == 0 then
-      
-         			subtract_map_movement_pts(actor)
-         			var_6 = 0 --didn't move anywhere
-         		end
-         	end
-         end
-      end
-
-   else
-
-      if actor_move(actor, y_direction, var_2) == 0 then
-      	if actor_move_diagonal(actor, x_direction, y_direction) == 0 then
-      		if actor_move(actor, x_direction, var_2) == 0 then
-      			if math.random(0, 1) ~= 0 or actor_move(actor, (x_direction == DIR_EAST) and DIR_WEST or DIR_EAST, 1) == 0 then
-      
-         			subtract_map_movement_pts(actor)
-         			var_6 = 0 --didn't move anywhere
-         		end
-         	end
-         end
-      end
-
-   end
-
-   unk_30A72 = 1
-----dgb("var_6 = "..var_6)
---dgb(" now at ("..actor.x..","..actor.y..") dir="..actor.direction.."\n")
-   return var_6
-
 end
 
 function toss_actor(actor, from_x, from_y, from_z, arg_0)
