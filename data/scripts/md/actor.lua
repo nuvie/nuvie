@@ -524,12 +524,56 @@ function actor_hit(defender, max_dmg, damage_mode)
          end
       end
    else
-      --FIXME
-      --Hit object here.
-      print("HIT OBJ\n")
+      actor_hit_obj(defender, max_dmg, damage_mode)
    end
 
    return exp_gained
+end
+
+function actor_hit_obj(obj, dmg, damage_mode)
+   if obj.qty == 0 or not is_obj_attackable(obj) then
+      --FIXME bucket logic here
+      return
+   end
+
+   if damage_mode == 0 or damage_mode == 3 or is_plant_obj(obj) then
+      --FIXME might be hit anim here?
+      if damage_mode == 1 then
+
+      else
+         hit_anim(obj.x, obj.y)
+      end
+
+      if damage_mode == 3 and is_obj_burnable(obj) then
+         dmg = obj.qty
+      end
+
+      if obj.qty <= dmg then
+         if obj.obj_n == 217 then --OBJ_GLASS_PITCHER
+            play_md_sfx(0x1a)
+            obj.obj_n = 218 --OBJ_BROKEN_CRYSTAL
+            obj.frame_n = 0
+            if g_in_dream_mode and g_current_dream_stage == 0x44 then
+               local pitcher
+               for tmp_obj in find_obj_from_area(0x21, 0x33, 2, 0x1c, 0x10) do
+                  if tmp_obj.obj_n == 217 then --OBJ_GLASS_PITCHER
+                     pitcher = tmp_obj
+                  end
+               end
+               if pitcher == nil then
+                  Actor.set_talk_flag(0x54, 6)
+               end
+            end
+         else
+            play_md_sfx(0)
+            Obj.removeFromEngine(obj)
+         end
+      else
+         --FIXME
+      end
+
+   end
+
 end
 
 function actor_move(actor, direction, flag)

@@ -173,6 +173,7 @@ end
 
 function create_pitcher(x, y, z)
    local obj = Obj.new(217, math.floor(math.random(0, 5) / 2))
+   obj.qty = 3
    Obj.moveToMap(obj, x, y, z)
 end
 

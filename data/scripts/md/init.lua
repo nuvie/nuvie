@@ -102,6 +102,62 @@ function is_container_obj(obj_num)
    return false
 end
 
+--OBJ_CLOSED_DOOR, OBJ_GLOW_WORM, OBJ_DEVIL_POD, OBJ_DEVIL_PLANT, OBJ_GLASS_PITCHER
+local attackable_obj_tbl = {
+   [0xB3]=1,
+   [0x184]=1,
+   [0x133]=1,
+   [0x12C]=1,
+   [0xD9]=1,
+}
+
+function is_obj_attackable(obj)
+   return attackable_obj_tbl[obj.obj_n] ~= nil
+end
+
+--OBJ_VINE, OBJ_TREE, OBJ_PORCUPOD, OBJ_FLOWER, OBJ_HARD_SHELLED_PLANT
+--OBJ_DEVIL_PLANT, OBJ_DEVIL_POD, OBJ_HEDGE
+local plant_obj_tbl = {
+   [0xCD]=1,
+   [0x198]=1,
+   [0xA8]=1,
+   [0xAA]=1,
+   [0xAB]=1,
+   [0x12C]=1,
+   [0x133]=1,
+   [0x12B]=1,
+}
+
+function is_plant_obj(obj)
+   return plant_obj_tbl[obj.obj_n] ~= nil
+end
+
+--OBJ_DOLLAR, OBJ_RUBLE, OBJ_PHOTOGRAPH, OBJ_THREAD, OBJ_BOX_OF_CIGARS
+--OBJ_MATCH, OBJ_BOOK, OBJ_MAP, OBJ_NOTE, OBJ_WORMSBANE_SEED
+--OBJ_SCROLL, OBJ_LIVE_MARTIAN_SEED, OBJ_PILE_OF_COAL
+--OBJ_HUGE_LUMP_OF_COAL, OBJ_CHUNK_OF_ICE
+local burnable_obj_tbl = {
+   [0x18]=1,
+   [0x84]=1,
+   [0x0B9]=1,
+   [0x3E]=1,
+   [0x65]=1,
+   [0x6B]=1,
+   [0x94]=1,
+   [0x96]=1,
+   [0x97]=1,
+   [0x9E]=1,
+   [0x0F3]=1,
+   [0x0FC]=1,
+   [0x1BC]=1,
+   [0x1BF]=1,
+   [0x100]=1,
+}
+
+function is_obj_burnable(obj)
+   return burnable_obj_tbl[obj.obj_n] ~= nil
+end
+
 function search(obj)
    if obj.on_map == false then
       return
