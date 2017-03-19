@@ -246,4 +246,7 @@ YOU_FEEL_YOUR_DREAM_CONSCIOUSNESS_RETURNING="You feel your dream consciousness r
 WHAT_AN_ODD_LEVER="What an odd lever!\n",
 STRANGELY_NOTHING_HAPPENS="Strangely, nothing happens.\n",
 STRANGELY_IT_DOESNT_MOVE="Strangely, it doesn't move.\n",
+THE_POD_SPLITS_OPEN="The pod splits open!\n",
+THE_ICE_THAWS="The ice thaws.\n",
+THE_WATER_FREEZES="The water freezes.\n",
 }

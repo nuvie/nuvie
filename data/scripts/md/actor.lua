@@ -454,6 +454,33 @@ function actor_print_custom_hit_message(actor)
    end
 end
 
+local RED_HIT_TILE = 257
+local BLUE_HIT_TILE = 258
+
+function hit_target(target, hit_tile)
+   if map_is_on_screen(target.xyz) then
+      if target.luatype == "actor" and target.in_party then
+         play_md_sfx(1, PLAY_ASYNC)
+      else
+         play_md_sfx(2, PLAY_ASYNC)
+      end
+      hit_anim(target.x, target.y) --FIXME need to apply hit colour tile param here.
+   end
+
+   if target.luatype == "actor" then
+      --FIXME
+--      les     bx, objlist_unk_1af1_ptr
+--      mov     al, es:[bx+si]
+--      or      al, 8
+--      mov     es:[bx+si], al
+
+      if target.asleep then
+         target.asleep = false
+      end
+   end
+
+end
+
 -- Hit an actor or object
 function actor_hit(defender, max_dmg, damage_mode)
 
@@ -468,13 +495,16 @@ function actor_hit(defender, max_dmg, damage_mode)
 
    if defender.luatype == "actor" then
       print("actor_hit("..defender.actor_num..")\n")
-      --attacking an object
-      --FIXME
-      --      if defender.actor_num == 0 and defender.hp <= max_dmg then -- and word_41184 == 0E0h
-      --        max_dmg = defender.hp - 1
-      --      end
 
-      --FIXME do sub_19B37 or sub_18F7D depending on damage_mode
+      if defender.actor_num == 0 and defender.hp <= max_dmg and g_current_dream_stage == 0xe0 then
+        max_dmg = defender.hp - 1
+      end
+
+      if damage_mode == 1 then
+         hit_target(defender, BLUE_HIT_TILE)
+      else
+         hit_target(defender, RED_HIT_TILE)
+      end
 
       if actor_immune_to_dmg(defender) then
          actor_print_custom_hit_message(defender)
@@ -492,7 +522,8 @@ function actor_hit(defender, max_dmg, damage_mode)
             actor_take_hit(defender, Actor.get(0), 45, 0)
          elseif defender.actor_num == 0x6d or defender.actor_num == 0x67 then
             Actor.set_talk_flag(Actor.get(0x6b), 3)
-            --FIXME teleport actor back to old_player coords
+            local dream_actor = Actor.get(0)
+            Actor.move(dream_actor, g_prev_player_x, g_prev_player_y, dream_actor.z)
          elseif defender.actor_num == 0x40 then --Rasputin
             --FIXME attack_rasputin()
          end
@@ -501,7 +532,11 @@ function actor_hit(defender, max_dmg, damage_mode)
             printl("IT_HAS_NO_EFFECT")
             return 0
          end
-         if damage_mode == 0 and actor_num ~= 0 then --or word_41184 ~= 0xe0
+         if is_actor_stat_bit_set(defender_obj_n, 4) then
+            max_dmg = max_dmg * 2
+         end
+
+         if (damage_mode == 0 and actor_num ~= 0) or g_current_dream_stage ~= 0xe0 then --or word_41184 ~= 0xe0
             if math.random(6, 0x64) <= max_dmg then
                --FIXME actor_add_blood()
             end
@@ -530,18 +565,30 @@ function actor_hit(defender, max_dmg, damage_mode)
    return exp_gained
 end
 
+function attack_bucket(bucket, damage_mode)
+   if damage_mode == 3 and bucket.frame_n == 2 then
+      printl("THE_ICE_THAWS")
+      bucket.frame_n = 1
+   elseif damage_mode == 1 and bucket.frame_n == 1 then
+      printl("THE_WATER_FREEZES")
+      bucket.frame_n = 2
+   end
+end
+
 function actor_hit_obj(obj, dmg, damage_mode)
    if obj.qty == 0 or not is_obj_attackable(obj) then
-      --FIXME bucket logic here
+      if obj.obj_n == 160 then --OBJ_BUCKET
+         attack_bucket(obj, damage_mode)
+      end
       return
    end
 
    if damage_mode == 0 or damage_mode == 3 or is_plant_obj(obj) then
-      --FIXME might be hit anim here?
-      if damage_mode == 1 then
 
+      if damage_mode == 1 then
+         hit_target(obj, BLUE_HIT_TILE)
       else
-         hit_anim(obj.x, obj.y)
+         hit_target(obj, RED_HIT_TILE)
       end
 
       if damage_mode == 3 and is_obj_burnable(obj) then
@@ -569,7 +616,22 @@ function actor_hit_obj(obj, dmg, damage_mode)
             Obj.removeFromEngine(obj)
          end
       else
-         --FIXME
+         if obj.obj_n == 307 then --OBJ_DEVIL_POD
+            printl("THE_POD_SPLITS_OPEN")
+            local pod_devil = Actor.new(384, obj.x, obj.y, obj.z)
+
+            actor_init(pod_devil)
+            Actor.move(pod_devil, obj.x, obj.y, obj.z)
+            Obj.removeFromEngine(obj)
+         else
+            if obj.obj_n == 388 then --OBJ_GLOW_WORM
+               obj.frame_n = 0
+               obj.quality = math.random(0xb, 0x12)
+               play_md_sfx(0x22)
+            end
+            obj.qty = obj.qty - dmg
+         end
+
       end
 
    end

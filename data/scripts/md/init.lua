@@ -13,7 +13,7 @@ OBJLIST_OFFSET_BERRY_COUNTERS           = 0x1d2f
 OBJLIST_OFFSET_DREAM_STAGE              = 0x1d53
 
 function dbg(msg_string)
-	io.stderr:write(msg_string)
+   io.stderr:write(msg_string)
 end
 
 g_hours_till_next_healing = 0
@@ -327,11 +327,11 @@ function can_move_obj(obj, rel_x, rel_y)
 end
 
 function obj_get_readiable_location(obj)
-	if g_readiable_objs_tbl[obj.tile_num] ~= nil then
-		return g_readiable_objs_tbl[obj.tile_num]
-	end
+   if g_readiable_objs_tbl[obj.tile_num] ~= nil then
+      return g_readiable_objs_tbl[obj.tile_num]
+   end
 
-	return -1	
+   return -1
 end
 
 function update_lamp_posts()
@@ -350,6 +350,7 @@ function update_lamp_posts()
    end
 end
 
+local PLAY_ASYNC = true
 function play_md_sfx(sfx_id, play_async)
    --FIXME
 end
@@ -360,11 +361,11 @@ end
 
 function create_object_needs_quan(obj_n)
 -- obj.stackable is already checked
-	if obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1
-		return true
-	else
-		return false
-	end
+   if obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1
+      return true
+   else
+      return false
+   end
 end
 
 function input_select_obj_qty(obj)
@@ -383,11 +384,11 @@ end
 --load actor functions
 local actor_load = nuvie_load("md/actor.lua");
 if type(actor_load) == "function" then
-	actor_load()
+   actor_load()
 else
-	if type(actor_load) == "string" then
-		io.stderr:write(actor_load);
-	end
+   if type(actor_load) == "string" then
+      io.stderr:write(actor_load);
+   end
 end
 
 look_init = nuvie_load("md/look.lua"); look_init();
