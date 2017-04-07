@@ -1491,7 +1491,7 @@ function advance_time(num_turns)
                      end
                   else
                      Obj.removeFromEngine(oxium)
-                     if Actor.inv_get_obj_n(131) ~= nil then
+                     if Actor.inv_get_obj_n(actor, 131) ~= nil then
                         if actor.hypoxia then
                            actor.hypoxia = false
                            printfl("BREATHES_EASIER", actor.name)
@@ -1506,7 +1506,7 @@ function advance_time(num_turns)
                else
                   if actor.hypoxia == false then
                      actor.hypoxia = true
-                     printfl("GASPS_FOR_AIR", actor.name)                     
+                     printfl("GASPS_FOR_AIR", actor.name)
                   end
                end
             end
