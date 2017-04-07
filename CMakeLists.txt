@@ -56,18 +56,24 @@ set(SOURCE_FILES
     data/scripts/md/lang/en/game.lua
     data/scripts/md/lang/it/game.lua
     data/scripts/md/actor.lua
+    data/scripts/md/combat.lua
     data/scripts/md/dreamworld.lua
     data/scripts/md/ending.lua
     data/scripts/md/init.lua
     data/scripts/md/intro.lua
     data/scripts/md/look.lua
+    data/scripts/md/player.lua
     data/scripts/md/talk.lua
     data/scripts/md/usecode.lua
+    data/scripts/md/worktype.lua
+    data/scripts/se/lang/en/game.lua
     data/scripts/se/actor.lua
     data/scripts/se/init.lua
     data/scripts/se/intro.lua
     data/scripts/se/look.lua
+    data/scripts/se/player.lua
     data/scripts/se/usecode.lua
+    data/scripts/u6/lang/en/game.lua
     data/scripts/u6/magic/circle_01/create_food.lua
     data/scripts/u6/magic/circle_01/detect_magic.lua
     data/scripts/u6/magic/circle_01/detect_trap.lua
@@ -154,6 +160,7 @@ set(SOURCE_FILES
     data/scripts/u6/init.lua
     data/scripts/u6/intro.lua
     data/scripts/u6/magic.lua
+    data/scripts/u6/player.lua
     data/scripts/u6/usecode.lua
     data/BorderU6_1.bmp
     data/BorderU6_2.bmp
@@ -606,6 +613,8 @@ include_directories(sound/adplug)
 include_directories(sound/mixer)
 include_directories(usecode)
 include_directories(views)
+
+link_directories(/usr/local/lib)
 
 add_executable(nuvie ${SOURCE_FILES})
 

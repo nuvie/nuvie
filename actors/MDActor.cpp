@@ -76,7 +76,7 @@ bool MDActor::check_move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags
 
 uint16 MDActor::get_downward_facing_tile_num()
 {
- return get_tile_num(obj_n) + MD_DOWNWARD_FACING_FRAME_N;
+ return get_tile_num(base_obj_n) + (uint16)MD_DOWNWARD_FACING_FRAME_N;
 }
 
 uint8 MDActor::get_hp_text_color()
@@ -131,7 +131,7 @@ uint8 MDActor::get_dex_text_color()
 }
 
 void MDActor::set_direction(uint8 d) {
-  if(is_alive() == false || is_immobile())
+  if(!is_alive() || is_immobile())
     return;
 
   if(d < 4)

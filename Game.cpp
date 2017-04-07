@@ -379,7 +379,6 @@ bool Game::loadGame(Script *s)
 
    map_window->Show();
    scroll->Show();
-   view_manager->set_party_mode();
    view_manager->update();
 
    if(cursor)

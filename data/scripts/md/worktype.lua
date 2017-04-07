@@ -20,7 +20,7 @@ function select_target_actor(src_actor)
              then
                local var_C = get_wrapped_dist(actor.x, src_actor.x)^2 + get_wrapped_dist(actor.y, src_actor.y)^2
                if var_C < var_10
-                       or (var_C == var_10 and actor_tbl[actor][ACTOR_STAT_DMG] > actor_tbl[target_actor][ACTOR_STAT_DMG]) then
+                       or (var_C == var_10 and actor_get_damage(actor) > actor_get_damage(target_actor)) then
                   var_10 = var_C
                   target_actor = actor
                end
@@ -63,7 +63,7 @@ end
 
 function worktype_16_minotaur(actor)
    if g_current_dream_stage == 0x60 then
-      Actor.kil(actor)
+      Actor.kill(actor)
       return
    end
 
@@ -88,18 +88,24 @@ function worktype_16_minotaur(actor)
       if target.luatype == "actor" then
          --FIXME sub_1A6F2
          subtract_movement_pts(actor, 0xa)
+         return
       end
-      --FIXME hit cape object
+
+      hit_target(target, RED_HIT_TILE)
       if not Actor.get_talk_flag(0x54, 6) and target.x >= 0x37 and target.y <= 0x37 then
          complete_tiffany_stage()
          return
       end
-
-      actor_move_towards_loc(actor, target.x, target.y)
-      play_md_sfx(0, true)
-      quake_start(1,50)
-      subtract_movement_pts(actor, 5)
    end
+
+   actor_move_towards_loc(actor, target.x, target.y)
+   play_md_sfx(0, true)
+   quake_start(1,50)
+   for obj in objs_at_loc(actor.xyz) do
+      actor_hit(obj, math.random(1, 0xa) + math.random(1, 0xa), 0)
+   end
+   subtract_movement_pts(actor, 5)
+
 end
 
 

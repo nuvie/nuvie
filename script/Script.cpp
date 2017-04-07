@@ -38,6 +38,7 @@
 #include "ActorManager.h"
 #include "TileManager.h"
 #include "ViewManager.h"
+#include "InventoryView.h"
 #include "SaveManager.h"
 #include "Actor.h"
 #include "Weather.h"
@@ -327,6 +328,10 @@ static int nscript_mapwindow_set_enable_blacking(lua_State *L);
 static int nscript_load_text_from_lzc(lua_State *L);
 
 static int nscript_display_text_in_scroll_gump(lua_State *L);
+
+static int nscript_lock_inventory_view(lua_State *L);
+static int nscript_unlock_inventory_view(lua_State *L);
+
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_u6llist_iter_recursive(lua_State *L);
@@ -900,6 +905,12 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_display_text_in_scroll_gump);
    lua_setglobal(L, "display_text_in_scroll_gump");
+
+   lua_pushcfunction(L, nscript_lock_inventory_view);
+   lua_setglobal(L, "lock_inventory_view");
+
+   lua_pushcfunction(L, nscript_unlock_inventory_view);
+   lua_setglobal(L, "unlock_inventory_view");
 
    seed_random();
 
@@ -1603,6 +1614,13 @@ uint8 Script::call_get_portrait_number(Actor *actor)
    if(call_function("get_portrait_number", 1, 1) == false)
       return 1;
    return (uint8)lua_tointeger(L,-1);
+}
+
+bool Script::call_player_attack()
+{
+   lua_getglobal(L, "player_attack");
+
+   return call_function("player_attack", 0, 0);
 }
 
 ScriptThread *Script::new_thread(const char *scriptfile)
@@ -4889,6 +4907,7 @@ static int nscript_load_text_from_lzc(lua_State *L)
 Display string in scroll gump if in new style. Otherwise display on regular message scroll.
 @function display_text_in_scroll_gump
 @string text the text to display in the scroll
+@within UI
  */
 static int nscript_display_text_in_scroll_gump(lua_State *L)
 {
@@ -4899,5 +4918,33 @@ static int nscript_display_text_in_scroll_gump(lua_State *L)
       else
          Game::get_game()->get_scroll()->message(text);
    }
+   return 0;
+}
+
+/***
+Lock the inventory view to a specific Actor.
+@function lock_inventory_view
+@tparam Actor actor
+@within UI
+ */
+static int nscript_lock_inventory_view(lua_State *L)
+{
+   Actor *actor = nscript_get_actor_from_args(L, 1);
+   Game::get_game()->get_view_manager()->get_inventory_view()->set_actor(actor, true);
+   Game::get_game()->get_view_manager()->get_inventory_view()->lock_to_actor(true);
+   Game::get_game()->get_view_manager()->set_inventory_mode();
+   return 0;
+}
+
+/***
+Unlock the inventory view
+@function unlock_inventory_view
+@within UI
+ */
+static int nscript_unlock_inventory_view(lua_State *L)
+{
+   Game::get_game()->get_view_manager()->get_inventory_view()->lock_to_actor(false);
+   Game::get_game()->get_view_manager()->get_inventory_view()->set_party_member(0);
+   Game::get_game()->get_view_manager()->set_inventory_mode();
    return 0;
 }

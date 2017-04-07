@@ -254,3 +254,32 @@ function can_move_drill(drill, rel_x, rel_y)
 
     return true
 end
+
+local player_readied_weapons
+function weapon_select()
+    player_readied_weapons = {}
+    local player = Actor.get_player_actor()
+    for obj in actor_inventory(player) do
+        if obj.readied and get_weapon_damage(obj) > 0 then
+            player_readied_weapons[#player_readied_weapons+1] = obj
+        end
+    end
+
+    if #player_readied_weapons == 0 then
+        printl("ATTACK_WITH_BARE_HANDS")
+        return player
+    else
+        local weapon = player_readied_weapons[1]
+        table.remove(player_readied_weapons, 1)
+        printfl("ATTACK_WITH", weapon.name)
+        return weapon
+    end
+end
+
+function select_next_weapon()
+end
+
+function player_attack()
+    local weapon = weapon_select()
+    get_target()
+end

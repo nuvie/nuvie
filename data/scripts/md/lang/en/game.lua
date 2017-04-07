@@ -249,4 +249,6 @@ STRANGELY_IT_DOESNT_MOVE="Strangely, it doesn't move.\n",
 THE_POD_SPLITS_OPEN="The pod splits open!\n",
 THE_ICE_THAWS="The ice thaws.\n",
 THE_WATER_FREEZES="The water freezes.\n",
+ATTACK_WITH_BARE_HANDS="Attack with bare hands-",
+ATTACK_WITH="Attack with %s-",
 }

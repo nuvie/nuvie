@@ -156,6 +156,7 @@ class Script
    bool call_talk_to_actor(Actor *actor);
    bool call_is_container_obj(uint16 obj_n);
    uint8 call_get_portrait_number(Actor *actor);
+   bool call_player_attack();
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);
@@ -163,8 +164,6 @@ class Script
  protected:
    bool call_loadsave_game(const char *function, NuvieIO *objlist);
    void seed_random();
-
-
 };
 
 

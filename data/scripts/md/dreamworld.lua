@@ -62,9 +62,11 @@ function wake_from_dream()
    dream_actor.visible = false
    party_show_all()
    party_update_leader()
+   party_set_combat_mode(false)
    g_in_dream_mode = false
    map_enable_temp_actor_cleaning(true)
    printl("YOU_WAKE_UP")
+   unlock_inventory_view()
 
 end
 
@@ -110,7 +112,7 @@ function actor_use_dream_machine(actor, dream_quality)
       g_prev_player_x = 0
       g_prev_player_y = 0
       g_current_dream_stage = 0
-
+      lock_inventory_view(Actor.get(0))
    end
 end
 

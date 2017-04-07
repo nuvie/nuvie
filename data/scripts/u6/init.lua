@@ -135,13 +135,6 @@ function advance_game_time(nturns)
  coroutine.yield("adv_game_time", nturns);
 end
 
-function get_target()
- local loc = {}
- loc = coroutine.yield("target")
-
- return loc
-end
-
 function get_obj_from_inventory(actor)
 	local obj = coroutine.yield("inv_obj", actor)
 	return obj

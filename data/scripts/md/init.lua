@@ -19,6 +19,9 @@ end
 g_hours_till_next_healing = 0
 g_in_dream_mode = false
 
+local g_selected_obj
+local g_attack_target
+
 function update_watch_tile()
    local anim_index = get_anim_index_for_tile(616) --616 = watch tile
    if anim_index ~= nil then
@@ -28,12 +31,19 @@ function update_watch_tile()
 end
 
 function load_game()
+   g_selected_obj = nil
+   g_attack_target = nil
+
    objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
    g_hours_till_next_healing = objlist_read1()
    
    objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
    g_in_dream_mode = bit32.btest(objlist_read2(), 0x10)
    map_enable_temp_actor_cleaning(not g_in_dream_mode)
+
+   if g_in_dream_mode then
+      lock_inventory_view(Actor.get(0))
+   end
 
    objlist_seek(OBJLIST_OFFSET_DREAM_STAGE)
    g_current_dream_stage = objlist_read2()
@@ -392,6 +402,8 @@ else
 end
 
 look_init = nuvie_load("md/look.lua"); look_init();
+
+combat_init = nuvie_load("md/combat.lua"); combat_init();
 
 -- init usecode
 usecode_init = nuvie_load("md/usecode.lua"); usecode_init();

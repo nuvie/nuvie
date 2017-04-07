@@ -44,6 +44,12 @@ if not setfenv then -- Lua 5.2
    end
 end
 
+function get_target()
+   local loc = coroutine.yield("target")
+
+   return loc
+end
+
 function get_direction(prompt)
 
 	if prompt ~= nil then

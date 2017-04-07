@@ -174,7 +174,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "get_player_actor", nscript_get_player_actor },
    { "inv_add_obj", nscript_actor_inv_add_obj },
    { "inv_remove_obj", nscript_actor_inv_remove_obj },
-   { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
+   { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },
    { "inv_get_readied_obj_n", nscript_actor_inv_get_readied_obj_n },
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_unready_obj", nscript_actor_inv_unready_obj },

@@ -3900,7 +3900,11 @@ if(mode == ATTACK_MODE && new_mode == ATTACK_MODE)
 				endAction(true);
 				return false;
 			}
-
+            if(game->get_game_type() != NUVIE_GAME_U6) {
+              game->get_script()->call_player_attack();
+              endAction();
+              return false;
+            }
 			player->attack_select_init();
 			map_window->set_show_cursor(true);
 			break;

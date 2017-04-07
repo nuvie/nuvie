@@ -230,6 +230,15 @@ function actor_clear_berry_counters(actor_num)
    timer_set(actor_num*3+2, 0)
 end
 
+function actor_get_damage(actor)
+   local stat = actor_tbl[actor]
+   if stat ~= nil then
+      return stat[ACTOR_STAT_DMG]
+   end
+
+   return nil
+end
+
 --
 -- actor_init(actor)
 --
@@ -944,23 +953,7 @@ function actor_update_all()
    display_prompt(true)
 end
 
--- [objectnum] = range
-   g_range_weapon_tbl = {
-      [40] = 6,  --Cupid's bow and arrows
-      [41] = 4, --derringer
-      [42] = 5, --revolver
-      [43] = 4, --shotgun
-      [44] = 7, --rifle (whole screen)
-      [45] = 7, --combine (whole screen)
-      [46] = 7, --elephant gun (whole screen)
-      [47] = 4, -- sling
-      [48] = 5, -- bow
-      [129] = 2, --weed sprayer
-      [240] = 6, --heat ray gun
-      [241] = 6, --freeze ray gun
-      [261] = 2, --spray gun
-      [313] = 7, --M60 machine gun (not sure, I think this is a scripted event?)
-   }
+
 
 local projectile_weapon_tbl = --FIXME weed sprayer and spray gun
 {
@@ -979,59 +972,6 @@ local projectile_weapon_tbl = --FIXME weed sprayer and spray gun
 [242] = {335, 90,4, 0}, -- freeze ray gun --FIXME: rot, speed, amount (has 3 modes)
 [313] = {267, 90,4, 0}, -- M60 machine gun --FIXME: rot, speed, amount (if even used)
 
-}
-
-weapon_dmg_tbl = {
-[16] = 30, --bloody saber
-[40] = 1, --Cupid's bow and arrows (charms)
-[41] = 15, --derringer
-[42] = 18, --revolver
-[43] = 20, --shotgun
-[44] = 30, --rifle
-[45] = 30, --Belgian combine
-[46] = 45, --elephant gun
-[47] = 8, --sling
-[48] = 12, --bow
-[49] = 15, --hatchet
-[50] = 20, --axe
-[51] = 10, --ball-peen hammer
-[52] = 25, --sledge hammer
-[54] = 10, --knife
-[55] = 20, --machete
-[56] = 25, --saber
-[65] = 15, --pick
-[66] = 8, --shovel
-[67] = 10, --hoe
-[68] = 10, --rake
-[69] = 15, --pitchfork
-[70] = 12, --cultivator
-[71] = 20, --scythe
-[72] = 10, --saw
-[102] = 12, --pry bar
---[109] = 1, --torch
---[110] = 1, --lit torch
---[111] = 1, --candlestick
---[112] = 1, --lit candle
---[113] = 1, --candelabra
---[114] = 1, --lit andelabra
---[115] = 1, --oil lamp
---[116] = 1, --lit oil lamp
---[117] = 1, --lantern
---[118] = 1, --lit lantern
-[129] = 60, --weed sprayer -- FIXME: no damage normally. Only effects plants?
---[136] = 1, --tongs
-[241] = 20, --heat ray gun
-[242] = 10, --freeze ray gun
---[243] = 1, --martian ritual pod knife
-[261] = 60, --spray gun -- FIXME: no damage normally. Only effects plants?
-[263] = 10, --martian hoe (couldn't be equipped in original)
-[264] = 20, --martian scythe (couldn't be equipped in original)
-[265] = 15, --martian pitchfork (couldn't be equipped in original)
-[266] = 10, --martian rake (couldn't be equipped in original)
-[267] = 8, --martian shovel (couldn't be equipped in original)
-[313] = 254, --M60 machine gun (scripted to only attack and kill the big bad)
-[327] = 15, --martian pick (couldn't be equipped in original)
-[401] = 12, --pool cue
 }
 
 armour_tbl =
@@ -1760,4 +1700,17 @@ function get_portrait_number(actor)
    end
 
    return idx
+end
+
+function find_rockworm_actor(obj)
+   if obj ~= nil then
+      if obj.obj_n == 371 or obj.obj_n == 370 then --OBJ_ROCKWORM1, OBJ_ROCKWORM_BASE
+         local actor = Actor.get(obj.quality)
+         if actor.alive then
+            return actor
+         end
+      end
+   end
+
+   return obj
 end

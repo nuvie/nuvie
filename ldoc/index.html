@@ -39,6 +39,7 @@
 <li><a href="#time">time</a></li>
 <li><a href="#io">io</a></li>
 <li><a href="#mapwindow">mapwindow</a></li>
+<li><a href="#UI">UI</a></li>
 <li><a href="#Actor">Actor</a></li>
 </ul>
 
@@ -176,10 +177,6 @@
 	<tr>
 	<td class="name" nowrap><a href="#load_text_from_lzc">load_text_from_lzc (filename, index)</a></td>
 	<td class="summary">Loads text from a given LZC file.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#display_text_in_scroll_gump">display_text_in_scroll_gump (text)</a></td>
-	<td class="summary">Display string in scroll gump if in new style.</td>
 	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
@@ -552,6 +549,21 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<tr>
 	<td class="name" nowrap><a href="#mapwindow_set_enable_blacking">mapwindow_set_enable_blacking (enable_blacking)</a></td>
 	<td class="summary">Toggle mapwindow &lsquo;blacking&rsquo;.</td>
+	</tr>
+</table>
+<h2><a href="#UI">UI</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#display_text_in_scroll_gump">display_text_in_scroll_gump (text)</a></td>
+	<td class="summary">Display string in scroll gump if in new style.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lock_inventory_view">lock_inventory_view (actor)</a></td>
+	<td class="summary">Lock the inventory view to a specific Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlock_inventory_view">unlock_inventory_view ()</a></td>
+	<td class="summary">Unlock the inventory view</td>
 	</tr>
 </table>
 <h2><a href="#Actor">Actor</a></h2>
@@ -1376,27 +1388,6 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
         the extracted text
     </ol>
-
-
-
-
-</dd>
-    <dt>
-    <a name = "display_text_in_scroll_gump"></a>
-    <strong>display_text_in_scroll_gump (text)</strong>
-    </dt>
-    <dd>
-    Display string in scroll gump if in new style.  Otherwise display on regular message scroll.
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">text</span>
-            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
-         the text to display in the scroll
-        </li>
-    </ul>
-
 
 
 
@@ -4050,6 +4041,66 @@ by a wall.
 
         </li>
     </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="UI"></a>UI</h2>
+    <dl class="function">
+    <dt>
+    <a name = "display_text_in_scroll_gump"></a>
+    <strong>display_text_in_scroll_gump (text)</strong>
+    </dt>
+    <dd>
+    Display string in scroll gump if in new style.  Otherwise display on regular message scroll.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         the text to display in the scroll
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "lock_inventory_view"></a>
+    <strong>lock_inventory_view (actor)</strong>
+    </dt>
+    <dd>
+    Lock the inventory view to a specific Actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlock_inventory_view"></a>
+    <strong>unlock_inventory_view ()</strong>
+    </dt>
+    <dd>
+    Unlock the inventory view
+
+
 
 
 
