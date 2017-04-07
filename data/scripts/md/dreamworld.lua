@@ -67,6 +67,10 @@ function wake_from_dream()
    map_enable_temp_actor_cleaning(true)
    printl("YOU_WAKE_UP")
    unlock_inventory_view()
+   --remove dream actor's inventory
+   for obj in actor_inventory(dream_actor, true) do
+      Obj.removeFromEngine(obj)
+   end
 
 end
 
