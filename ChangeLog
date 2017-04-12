@@ -4,6 +4,9 @@
 	* Added new combat.lua file for MD combat logic
 	* Added new lua script functions to lock/unlock the InventoryView
 	  This is used to lock the view in dream mode.
+	* Added new SCRIPT_MODE to Event. This will be used
+	  to offload event logic into lua script.
+	* Started to implement the player attack event in lua script
 
 2017-03-18  Eric Fry <efry at users.sourceforge.net>
 	* Work on MD attack object logic.
