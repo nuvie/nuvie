@@ -354,6 +354,14 @@ function handle_alt_code(altcode)
    end
 end
 
+function get_actor_or_obj_from_loc(location)
+   local target = map_get_actor(location)
+   if target == nil then
+      target = map_get_obj(location)
+   end
+   return target
+end
+
 --load other common functions
 
 local lua_file = nil

@@ -271,15 +271,75 @@ function weapon_select()
     else
         local weapon = player_readied_weapons[1]
         table.remove(player_readied_weapons, 1)
-        printfl("ATTACK_WITH", weapon.name)
+        printfl("ATTACK_WITH_WEAPON", weapon.name)
         return weapon
     end
 end
 
 function select_next_weapon()
+    if #player_readied_weapons == 0 then
+        return nil
+    end
+
+    local weapon = player_readied_weapons[1]
+    table.remove(player_readied_weapons, 1)
+    if weapon ~= nil then
+        print("\n")
+        printfl("ATTACK_WITH_WEAPON", weapon.name)
+    end
+    return weapon
+end
+
+function select_attack_target()
+    local target_loc = get_target()
+    g_selected_obj = get_actor_or_obj_from_loc(target_loc)
+
+    local name
+    if g_selected_obj ~= nil then
+        name = g_selected_obj.name
+    else
+        name = tile_get_description(map_get_tile_num(target_loc))
+    end
+    print(name..".\n")
+
+    return target_loc
 end
 
 function player_attack()
     local weapon = weapon_select()
-    get_target()
+
+    repeat
+        local target_loc = select_attack_target()
+        if target_loc == nil then
+            printl("WHAT")
+            return
+        end
+
+        player_attack_with_weapon(weapon, target_loc)
+        weapon = select_next_weapon()
+    until weapon == nil
+end
+
+function player_attack_with_weapon(weapon, target_loc)
+    local player = Actor.get_player_actor()
+    local obj_n = weapon.obj_n
+
+    if out_of_ammo(player, weapon, true) then
+        return
+    end
+
+    if obj_n == 313 then --OBJ_M60_MACHINE_GUN
+        --FIXME MACHINE GUN LOGIC HERE
+    else
+        local result = attack_target_with_weapon(player, target_loc.x, target_loc.y, weapon)
+        if result == 2 then
+            printl("OUT_OF_RANGE")
+            play_md_sfx(5)
+        elseif result == 3 then
+            printl("THAT_IS_NOT_POSSIBLE")
+            play_md_sfx(5)
+        end
+
+    end
+
 end

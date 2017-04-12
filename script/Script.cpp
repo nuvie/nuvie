@@ -1464,6 +1464,22 @@ bool Script::call_function(const char *func_name, int num_args, int num_return, 
 	return (result != 0) ? false : true;
 }
 
+ScriptThread *Script::call_function_in_thread(const char *function_name)
+{
+   ScriptThread *t = NULL;
+   lua_State *s;
+
+   s = lua_newthread(L);
+
+   lua_getglobal(s, function_name);
+
+   //FIXME wrap stacktrace dumping logic here as per call_function method.
+
+   t = new ScriptThread(s, 0);
+
+   return t;
+}
+
 bool Script::run_lua_file(const char *filename)
 {
 	std::string dir, path;

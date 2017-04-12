@@ -121,7 +121,7 @@ void ActorView::Display(bool full_redraw)
    update_display = false;
    if(MD)
    {
-     fill_md_background(area);
+     fill_md_background(bg_color, area);
      screen->blit(area.x+1,area.y+16,portrait_data,8,portrait->get_portrait_width(),portrait->get_portrait_height(),portrait->get_portrait_width(), true);
    }
    else

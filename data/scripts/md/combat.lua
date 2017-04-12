@@ -102,7 +102,7 @@ function attack_dex_saving_throw(attacker, defender, weapon)
    end
 
    local attacker_value
-   if weapon.luatype == "actor" and is_actor_stat_bit_set(actor.obj_n, 5) then
+   if weapon.luatype == "actor" and is_actor_stat_bit_set(weapon.obj_n, 5) then
       attacker_value = actor_str_adj(attacker)
    else
       attacker_value = actor_dex_adj(attacker)
@@ -111,6 +111,37 @@ function attack_dex_saving_throw(attacker, defender, weapon)
    local defender_value = actor_dex_adj(defender)
 
    if math.random(1, 30) >= math.floor((defender_value + 30 - attacker_value) / 2) then
+      return true
+   end
+
+   return false
+end
+
+function out_of_ammo(attacker, weapon, print_message) -- untested function
+
+   local weapon_obj_n = weapon.obj_n
+
+   if ((weapon_obj_n == 41 or weapon_obj_n == 42) and Actor.inv_has_obj_n(attacker, 57) == false) --derringer, revolver, pistol rounds
+           or (weapon_obj_n == 43 and Actor.inv_has_obj_n(attacker, 58) == false) --shotgun, shotgun shell
+           or (weapon_obj_n == 44 and Actor.inv_has_obj_n(attacker, 59) == false) --rifle, rifle round
+           or (weapon_obj_n == 45 and weapon.quality == 0 and (Actor.inv_has_obj_n(attacker, 58) == false or Actor.inv_has_obj_n(attacker, 59) == false)) --belgian combine (combine), shotgun shell, rifle round
+           or (weapon_obj_n == 45 and weapon.quality == 1 and Actor.inv_has_obj_n(attacker, 59) == false) --belgian combine (rifle), rifle round
+           or (weapon_obj_n == 45 and weapon.quality == 2 and Actor.inv_has_obj_n(attacker, 58) == false) --belgian combine (shotgun), shotgun shell
+           or (weapon_obj_n == 46 and Actor.inv_has_obj_n(attacker, 60) == false) --elephant gun, elephant gun round
+           or (weapon_obj_n == 47 and Actor.inv_has_obj_n(attacker, 63) == false) --sling, sling stone
+           or ((weapon_obj_n == 240 or weapon_obj_n == 241 or weapon_obj_n == 129 or weapon_obj_n == 261) and obj.qty == 0) then --heat ray gun, freeze ray gun, weed sprayer, spray gun
+      if(print_message) then
+         printl("OUT_OF_AMMUNITION")
+         play_md_sfx(5)
+      end
+      return true
+   end
+
+   if weapon_obj_n == 48 and Actor.inv_has_obj_n(attacker, 64) == false then --bow, arrows
+      if(print_message) then
+         printl("OUT_OF_ARROWS")
+         play_md_sfx(5)
+      end
       return true
    end
 
@@ -250,4 +281,5 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
       does_damage = attack_dex_saving_throw(actor, rockworm_actor, weapon)
    end
 
+   return 0
 end

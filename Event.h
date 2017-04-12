@@ -27,6 +27,7 @@
 #include <string>
 
 #include <SDL.h>
+#include <script/Script.h>
 
 #include "ObjManager.h"
 //#include "GUI_CallBack.h"
@@ -51,6 +52,7 @@ class GUI_Dialog;
 class Magic;
 class KeyBinder;
 class FpsCounter;
+class ScriptThread;
 
 #define NUVIE_INTERVAL    50
 #define PUSH_FROM_PLAYER false
@@ -73,7 +75,8 @@ typedef enum {
  WAIT_MODE, /* waiting for something, optionally display prompt when finished */
  INPUT_MODE,
  MULTIUSE_MODE,
- KEYINPUT_MODE
+ KEYINPUT_MODE,
+ SCRIPT_MODE
 } EventMode;
 
 extern uint32 nuvieGameCounter;
@@ -160,6 +163,7 @@ friend class Magic; // FIXME
  Uint32 fps_timestamp;
  uint16 fps_counter;
  FpsCounter *fps_counter_widget;
+ ScriptThread *scriptThread;
 
  public:
  Event(Configuration *cfg);

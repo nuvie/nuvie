@@ -1031,37 +1031,6 @@ function actor_get_ac(actor)
    return ac
 end
 
-function out_of_ammo(attacker, weapon, print_message) -- untested function
-
-	local weapon_obj_n = weapon.obj_n
-
-	if ((weapon_obj_n == 41 or weapon_obj_n == 42) and Actor.inv_has_obj_n(attacker, 57) == false) --derringer, revolver, pistol rounds
-	    or (weapon_obj_n == 43 and Actor.inv_has_obj_n(attacker, 58) == false) --shotgun, shotgun shell
-	    or (weapon_obj_n == 44 and Actor.inv_has_obj_n(attacker, 59) == false) --rifle, rifle round
-	    or (weapon_obj_n == 45 and weapon.quality == 0 and (Actor.inv_has_obj_n(attacker, 58) == false or Actor.inv_has_obj_n(attacker, 59) == false)) --belgian combine (combine), shotgun shell, rifle round
-	    or (weapon_obj_n == 45 and weapon.quality == 1 and Actor.inv_has_obj_n(attacker, 59) == false) --belgian combine (rifle), rifle round
-	    or (weapon_obj_n == 45 and weapon.quality == 2 and Actor.inv_has_obj_n(attacker, 58) == false) --belgian combine (shotgun), shotgun shell
-	    or (weapon_obj_n == 46 and Actor.inv_has_obj_n(attacker, 60) == false) --elephant gun, elephant gun round
-	    or (weapon_obj_n == 47 and Actor.inv_has_obj_n(attacker, 63) == false) --sling, sling stone
-	    or ((weapon_obj_n == 240 or weapon_obj_n == 241 or weapon_obj_n == 129 or weapon_obj_n == 261) and obj.qty == 0) then --heat ray gun, freeze ray gun, weed sprayer, spray gun
-		if(print_message) then
-			printl("OUT_OF_AMMUNITION")
-			--FIXME add sfx here
-		end
-		return true
-	end
-
-	if weapon_obj_n == 48 and Actor.inv_has_obj_n(attacker, 64) == false then --bow, arrows
-		if(print_message) then
-			printl("OUT_OF_ARROWS")
-			--FIXME add sfx here
-		end
-		return true
-	end
-
-	return false
-end
-
 local clothing_warmth_tbl = {
 [1] =    1, -- OBJ_CAP
 [2] =    2, -- OBJ_COWBOY_HAT
