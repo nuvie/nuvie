@@ -281,5 +281,48 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
       does_damage = attack_dex_saving_throw(actor, rockworm_actor, weapon)
    end
 
+   if is_ranged_attack then
+      fire_range_based_weapon(actor, target_x, target_y, weapon)
+   end
+
    return 0
+end
+
+local projectile_tbl = {
+   [41]={tile_num=0x103, sfx_id=7, ammo_obj_n=57},
+   [42]={tile_num=0x103, sfx_id=7, ammo_obj_n=57},
+   [44]={tile_num=0x103, sfx_id=8, ammo_obj_n=59},
+   [45]={tile_num=0x103, sfx_id=8, ammo_obj_n=59},
+   [46]={tile_num=0x103, sfx_id=8, ammo_obj_n=60},
+   [47]={tile_num=0x23E, sfx_id=6, ammo_obj_n=63},
+   [48]={tile_num=0x23F, sfx_id=6, ammo_obj_n=64},
+   [40]={tile_num=0x23F, sfx_id=6, ammo_obj_n=-3},
+   [240]={tile_num=0x16B, sfx_id=10, ammo_obj_n=-2},
+   [241]={tile_num=0x16B, sfx_id=10, ammo_obj_n=-2},
+   [129]={tile_num=0x10A, sfx_id=6, ammo_obj_n=-2},
+   [261]={tile_num=0x10A, sfx_id=6, ammo_obj_n=-2},
+   [313]={tile_num=0x10B, sfx_id=50, ammo_obj_n=-3},
+   [366]={tile_num=0x16F, sfx_id=34, ammo_obj_n=-3},
+   [386]={tile_num=0x16C, sfx_id=34, ammo_obj_n=-3},
+   [364]={tile_num=0x16D, sfx_id=6, ammo_obj_n=-3},
+   [384]={tile_num=0x16E, sfx_id=6, ammo_obj_n=-3},
+}
+
+function fire_range_based_weapon(attacker, target_x, target_y, weapon)
+   local projectile_info = projectile_tbl[weapon.obj_n]
+   if projectile_info == nil then
+      projectile_info = {tile_num=weapon.tile_num, sfx_id=0, ammo_obj_n=-1 }
+   end
+
+   play_md_sfx(projectile_info.sfx_id)
+
+   projectile_anim(projectile_info.tile_num, attacker.x, attacker.y, target_x, target_y, 4, false, 0)
+
+   if projectile_info.ammo_obj_n > 0 then
+      Actor.inv_remove_obj_qty(attacker, projectile_info.ammo_obj_n, 1)
+   elseif projectile_info.ammo_obj_n == -2 then
+      weapon.qty = weapon.qty - 1
+   elseif projectile_info.ammo_obj_n == -1 and actor_get_combat_range(attacker, target_x, target_y) > 1 then
+      --FIXME throw object here.
+   end
 end
