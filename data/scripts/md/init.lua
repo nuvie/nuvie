@@ -168,6 +168,29 @@ function is_obj_burnable(obj)
    return burnable_obj_tbl[obj.obj_n] ~= nil
 end
 
+function is_open_water_at_loc(x, y, z)
+   local tile_num = map_get_tile_num(x, y, z)
+   local is_water = tile_get_flag(tile_num, 1, 0)
+   if not is_water then
+      return false
+   end
+
+   if not tile_get_flag(tile_num, 1, 1) then -- not blocked
+      return false
+   end
+
+   for obj in objs_at_loc(location) do
+      tile_num = obj.tile_num
+      --FIXME original does this too
+      -- sub     ax, word_40FA2
+      if tile_get_flag(tile_num, 3, 1) or tile_get_flag(tile_num, 3, 2) then --SUPPORT_OBJECT or FORCE_PASSABLE
+         return false
+      end
+   end
+
+   return true
+end
+
 function search(obj)
    if obj.on_map == false then
       return

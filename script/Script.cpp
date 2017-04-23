@@ -3281,9 +3281,7 @@ static int nscript_map_get_impedence(lua_State *L)
 /***
 get the map tile number for a given map location
 @function map_get_tile_num
-@int x
-@int y
-@int z
+@tparam MapCoord|x,y,z location
 @treturn int|nil
 @within map
  */

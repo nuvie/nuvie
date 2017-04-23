@@ -285,6 +285,41 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
       fire_range_based_weapon(actor, target_x, target_y, weapon)
    end
 
+   rockworm_actor = find_rockworm_actor(g_attack_target)
+
+   if not is_ranged_attack and map_is_on_screen(actor.xyz) then
+      play_md_sfx(0)
+   end
+
+   if does_damage == nil then
+      does_damage = true
+      if rockworm_actor ~= nil
+              and rockworm_actor.luatype == "actor"
+              and obj_n ~= 129 --OBJ_WEED_SPRAYER
+              and obj_n ~= 261 then --OBJ_SPRAY_GUN
+         does_damage = attack_dex_saving_throw(actor, rockworm_actor, weapon)
+      end
+   end
+
+   if not does_damage then
+      play_md_sfx(3)
+   end
+
+   if does_damage
+      and rockworm_actor ~= nil
+      and (rockworm_actor.luatype == "obj" or rockworm_actor.actor_num ~= actor.actor_num) then
+      if obj_n == 241 then --OBJ_FREEZE_RAY_GUN
+         --FIXME
+      elseif obj_n == 129 or obj_n == 261 then --OBJ_WEED_SPRAYER, OBJ_SPRAY_GUN
+         --FIXME
+      elseif obj_n == 40 then --OBJ_CUPIDS_BOW_AND_ARROWS
+         --FIXME
+      else
+         actor_take_hit(actor, rockworm_actor, damage, damage_mode)
+      end
+
+   end
+
    return 0
 end
 
@@ -323,6 +358,11 @@ function fire_range_based_weapon(attacker, target_x, target_y, weapon)
    elseif projectile_info.ammo_obj_n == -2 then
       weapon.qty = weapon.qty - 1
    elseif projectile_info.ammo_obj_n == -1 and actor_get_combat_range(attacker, target_x, target_y) > 1 then
-      --FIXME throw object here.
+      if is_open_water_at_loc(target_x, target_y, attacker.z) then
+         Obj.removeFromEngine(weapon)
+      else
+         Obj.moveToMap(weapon, target_x, target_y, attacker.z)
+      end
+      --FIXME original updated readied weapons here. We might also need to do that.
    end
 end
