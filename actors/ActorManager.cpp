@@ -313,7 +313,7 @@ bool ActorManager::load(NuvieIO *objlist)
     actors[i]->talk_flags = objlist->read1();
    }
 
- objlist->seek(0x19f1);
+ objlist->seek(game_type == NUVIE_GAME_MD ? OBJLIST_OFFSET_MD_MOVEMENT_FLAGS : OBJLIST_OFFSET_U6_MOVEMENT_FLAGS);
 
  for(i=0;i < ACTORMANAGER_MAX_ACTORS; i++) //movement flags.
    {

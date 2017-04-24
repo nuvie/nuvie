@@ -90,7 +90,7 @@ An in-game object
 @bool[readonly] getable Is this object getable by the player?
 @bool ok_to_take Is it considered stealing if the player gets this object?
 @int status Object status
-@bool[writeonly] invisible Toggle object visibility *writeonly*
+@bool invisible Toggle object visibility
 @bool[writeonly] temporary Toggle temporary status *writeonly*
 
  */
@@ -2209,6 +2209,12 @@ static int nscript_obj_get(lua_State *L)
 
       return 1;
    }
+
+   if(!strcmp(key, "invisible"))
+   {
+      lua_pushboolean(L, (int)obj->is_invisible()); return 1;
+   }
+
    return 0;
 }
 

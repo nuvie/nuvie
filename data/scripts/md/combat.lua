@@ -240,7 +240,7 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
    g_attack_target = g_selected_obj
 
    if var_10 == 0 then
-      --FIXME do end logic here.
+      spread_weapon_damage(actor, target_x, target_y, weapon)
       return 0
    end
 
@@ -273,19 +273,19 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
 
    local does_damage
 
-   local rockworm_actor =  find_rockworm_actor(g_attack_target)
-   if rockworm_actor ~= nil
-           and rockworm_actor.luatype == "actor"
+   local target =  find_rockworm_actor(g_attack_target)
+   if target ~= nil
+           and target.luatype == "actor"
            and obj_n ~= 129 --OBJ_WEED_SPRAYER
            and obj_n ~= 261 then --OBJ_SPRAY_GUN
-      does_damage = attack_dex_saving_throw(actor, rockworm_actor, weapon)
+      does_damage = attack_dex_saving_throw(actor, target, weapon)
    end
 
    if is_ranged_attack then
       fire_range_based_weapon(actor, target_x, target_y, weapon)
    end
 
-   rockworm_actor = find_rockworm_actor(g_attack_target)
+   target = find_rockworm_actor(g_attack_target)
 
    if not is_ranged_attack and map_is_on_screen(actor.xyz) then
       play_md_sfx(0)
@@ -293,11 +293,11 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
 
    if does_damage == nil then
       does_damage = true
-      if rockworm_actor ~= nil
-              and rockworm_actor.luatype == "actor"
+      if target ~= nil
+              and target.luatype == "actor"
               and obj_n ~= 129 --OBJ_WEED_SPRAYER
               and obj_n ~= 261 then --OBJ_SPRAY_GUN
-         does_damage = attack_dex_saving_throw(actor, rockworm_actor, weapon)
+         does_damage = attack_dex_saving_throw(actor, target, weapon)
       end
    end
 
@@ -306,21 +306,80 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
    end
 
    if does_damage
-      and rockworm_actor ~= nil
-      and (rockworm_actor.luatype == "obj" or rockworm_actor.actor_num ~= actor.actor_num) then
+      and target ~= nil
+      and (target.luatype == "obj" or target.actor_num ~= actor.actor_num) then
       if obj_n == 241 then --OBJ_FREEZE_RAY_GUN
-         --FIXME
+         if target.obj_n == 160 and target.frame_n == 1 then
+            printl("THE_WATER_FREEZES")
+            target.frame_n = 2
+         else
+            if target.luatype == "actor"
+                    and actor_tbl[target.obj_n] ~= nil
+                    and (is_actor_stat_bit_set(target.obj_n, 14) or is_actor_stat_bit_set(target.obj_n, 7))
+            then
+               target.paralyzed = true
+               printfl("ACTOR_PARALYZED", target.name)
+               if not is_actor_stat_bit_set(target.obj_n, 7)
+                  or is_actor_stat_bit_set(target.obj_n, 14) then
+                  hit_target(target, BLUE_HIT_TILE)
+               else
+                  actor_take_hit(actor, target, damage, 1)
+               end
+            else
+               printl("IT_HAS_NO_EFFECT")
+            end
+         end
       elseif obj_n == 129 or obj_n == 261 then --OBJ_WEED_SPRAYER, OBJ_SPRAY_GUN
-         --FIXME
+         if weapon.quality ~= 0 then
+            if target.luatype == "actor" and target.obj_n == 145 then --OBJ_MONSTER_FOOTPRINTS
+               target.obj_n = 364 --OBJ_PROTO_MARTIAN
+               printfl("BECOMES_VISIBLE", target.name)
+            elseif target.luatype == "obj" and target.invisible then
+               target.invisible = false
+               printfl("BECOMES_VISIBLE", target.name)
+            else
+               printl("IT_HAS_NO_EFFECT")
+            end
+         else
+            if actor_tbl[target.obj_n] ~= nil
+               and not is_actor_stat_bit_set(target.obj_n, 14)
+               and is_actor_stat_bit_set(target.obj_n, 7) then
+                  actor_take_hit(actor, target, damage, 2)
+            else
+               printl("IT_HAS_NO_EFFECT")
+            end
+         end
       elseif obj_n == 40 then --OBJ_CUPIDS_BOW_AND_ARROWS
-         --FIXME
+         if target.luatype == "actor" and target.align ~= ALIGNMENT_GOOD then
+            target.old_align = target.align
+            target.align = ALIGNMENT_GOOD
+            target.charmed = true
+            printfl("ACTOR_CHARMED", target.name)
+         end
       else
-         actor_take_hit(actor, rockworm_actor, damage, damage_mode)
+         actor_take_hit(actor, target, damage, damage_mode)
       end
 
    end
 
+   if var_12 ~= 0 then
+      spread_weapon_damage(actor, target_x, target_y, weapon)
+   end
+
    return 0
+end
+
+function spread_weapon_damage(actor, target_x, target_y, weapon)
+   --FIXME spread weapon anim here.
+   if weapon.obj_n == 43 or weapon.obj_n == 45 then --OBJ_SHOTGUN, OBJ_BELGIAN_COMBINE
+      Actor.inv_remove_obj_qty(actor, 58, 1) --OBJ_SHOTGUN_SHELL
+   else
+      weapon.qty = weapon.qty - 4
+      if weapon.qty < 0 then
+         weapon.qty = 0
+      end
+   end
+
 end
 
 local projectile_tbl = {

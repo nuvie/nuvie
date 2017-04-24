@@ -390,7 +390,7 @@
 	<td class="summary">Get the impedance of a map location</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (x, y, z)</a></td>
+	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (location)</a></td>
 	<td class="summary">get the map tile number for a given map location</td>
 	</tr>
 	<tr>
@@ -1509,7 +1509,7 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
         </li>
         <li><span class="parameter">invisible</span>
             <span class="types"><span class="type">bool</span></span>
-         Toggle object visibility <em>writeonly</em>
+         Toggle object visibility
         </li>
         <li><span class="parameter">temporary</span>
             <span class="types"><span class="type">bool</span></span>
@@ -2975,7 +2975,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dd>
     <dt>
     <a name = "map_get_tile_num"></a>
-    <strong>map_get_tile_num (x, y, z)</strong>
+    <strong>map_get_tile_num (location)</strong>
     </dt>
     <dd>
     get the map tile number for a given map location
@@ -2983,18 +2983,8 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">z</span>
-            <span class="types"><span class="type">int</span></span>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
         </li>
