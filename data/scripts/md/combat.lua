@@ -129,7 +129,7 @@ function out_of_ammo(attacker, weapon, print_message) -- untested function
            or (weapon_obj_n == 45 and weapon.quality == 2 and Actor.inv_has_obj_n(attacker, 58) == false) --belgian combine (shotgun), shotgun shell
            or (weapon_obj_n == 46 and Actor.inv_has_obj_n(attacker, 60) == false) --elephant gun, elephant gun round
            or (weapon_obj_n == 47 and Actor.inv_has_obj_n(attacker, 63) == false) --sling, sling stone
-           or ((weapon_obj_n == 240 or weapon_obj_n == 241 or weapon_obj_n == 129 or weapon_obj_n == 261) and obj.qty == 0) then --heat ray gun, freeze ray gun, weed sprayer, spray gun
+           or ((weapon_obj_n == 240 or weapon_obj_n == 241 or weapon_obj_n == 129 or weapon_obj_n == 261) and weapon.qty == 0) then --heat ray gun, freeze ray gun, weed sprayer, spray gun
       if(print_message) then
          printl("OUT_OF_AMMUNITION")
          play_md_sfx(5)
@@ -392,7 +392,7 @@ local projectile_tbl = {
    [48]={tile_num=0x23F, sfx_id=6, ammo_obj_n=64},
    [40]={tile_num=0x23F, sfx_id=6, ammo_obj_n=-3},
    [240]={tile_num=0x16B, sfx_id=10, ammo_obj_n=-2},
-   [241]={tile_num=0x16B, sfx_id=10, ammo_obj_n=-2},
+   [241]={tile_num=0x16A, sfx_id=10, ammo_obj_n=-2},
    [129]={tile_num=0x10A, sfx_id=6, ammo_obj_n=-2},
    [261]={tile_num=0x10A, sfx_id=6, ammo_obj_n=-2},
    [313]={tile_num=0x10B, sfx_id=50, ammo_obj_n=-3},

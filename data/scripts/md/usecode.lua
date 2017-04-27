@@ -2026,6 +2026,12 @@ local usecode_table = {
    [290]=use_radium, --OBJ_POWER_UNIT
    [448]=use_radium, --OBJ_BLOCK_OF_RADIUM
 },
+--OBJ_CHIP_OF_RADIUM
+[449]={
+   --on
+   [240]=use_radium, --OBJ_HEAT_RAY_GUN
+   [241]=use_radium, --OBJ_FREEZE_RAY_GUN
+},
 --OBJ_PANEL
 [458]=use_panel,
 }
