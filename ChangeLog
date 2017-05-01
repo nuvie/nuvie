@@ -1,3 +1,7 @@
+2017-05-01  Eric Fry <efry at users.sourceforge.net>
+	* Added more MD spread weapon logic
+	* Fixed use radium on ray gun usecode
+
 2017-04-27  Eric Fry <efry at users.sourceforge.net>
 	* Use chips of Radium on ray guns
 	* Fixed freeze ray gun projectile anim tile

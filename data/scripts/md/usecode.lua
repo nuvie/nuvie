@@ -1561,13 +1561,16 @@ function use_radium(obj, target_obj, actor)
             return
          end
 
-         if target_obj.qty + qty > 0xf0 then
-            qty = 0xf0 - target_obj.qty
+         if target_obj.qty + qty * 30 > 0xf0 then
+            qty = math.ceil((0xf0 - target_obj.qty) / 30)
             printfl("THE_OBJ_ONLY_NEEDED_N_RADIUM_BLOCKS", target_obj.name, qty)
             printfl("THE_OBJ_IS_FULLY_CHARGED", target_obj.name)
+            target_obj.qty = 0xf0
+         else
+            target_obj.qty = target_obj.qty + qty * 30
          end
 
-         target_obj.qty = target_obj.qty + qty
+
          if obj.qty == qty then
             Obj.removeFromEngine(obj)
          else

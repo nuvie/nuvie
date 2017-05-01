@@ -148,6 +148,22 @@ function out_of_ammo(attacker, weapon, print_message) -- untested function
    return false
 end
 
+function attack_with_freezeray(actor, target_actor, damage)
+   if actor_tbl[target_actor.obj_n] ~= nil
+           and (is_actor_stat_bit_set(target_actor.obj_n, 14) or is_actor_stat_bit_set(target_actor.obj_n, 7)) then
+      target_actor.paralyzed = true
+      printfl("ACTOR_PARALYZED", target_actor.name)
+      if not is_actor_stat_bit_set(target_actor.obj_n, 7)
+              or is_actor_stat_bit_set(target_actor.obj_n, 14) then
+         hit_target(target_actor, BLUE_HIT_TILE)
+      else
+         actor_take_hit(actor, target_actor, damage, 1)
+      end
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
 function attack_target_with_weapon(actor, target_x, target_y, weapon)
    local target_range = actor_get_combat_range(actor, target_x, target_y)
    local weapon_range = get_weapon_range(weapon)
@@ -313,20 +329,8 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
             printl("THE_WATER_FREEZES")
             target.frame_n = 2
          else
-            if target.luatype == "actor"
-                    and actor_tbl[target.obj_n] ~= nil
-                    and (is_actor_stat_bit_set(target.obj_n, 14) or is_actor_stat_bit_set(target.obj_n, 7))
-            then
-               target.paralyzed = true
-               printfl("ACTOR_PARALYZED", target.name)
-               if not is_actor_stat_bit_set(target.obj_n, 7)
-                  or is_actor_stat_bit_set(target.obj_n, 14) then
-                  hit_target(target, BLUE_HIT_TILE)
-               else
-                  actor_take_hit(actor, target, damage, 1)
-               end
-            else
-               printl("IT_HAS_NO_EFFECT")
+            if target.luatype == "actor" then
+               attack_with_freezeray(actor, target, damage)
             end
          end
       elseif obj_n == 129 or obj_n == 261 then --OBJ_WEED_SPRAYER, OBJ_SPRAY_GUN
@@ -369,8 +373,59 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
    return 0
 end
 
+local spread_weapon_sfx_tbl = {
+   [0x2b]=8,
+   [0x2d]=8,
+   [0xf0]=0xa,
+   [0xf1]=0xa,
+}
+local spread_weapon_tile_num_tbl = {
+   [0x2b]=0x106,
+   [0x2d]=0x106,
+   [0xf0]=0x14e,
+   [0xf1]=0x14f,
+}
+local spread_weapon_damage_tbl = {
+   [0x2b]=0x14,
+   [0x2d]=0x14,
+   [0xf0]=0x19,
+   [0xf1]=0xa,
+}
+
 function spread_weapon_damage(actor, target_x, target_y, weapon)
+   if spread_weapon_sfx_tbl[weapon.obj_n] ~= nil then
+      play_md_sfx(spread_weapon_sfx_tbl[weapon.obj_n])
+   end
+
    --FIXME spread weapon anim here.
+   local hit_items = projectile_anim_multi (spread_weapon_tile_num_tbl[weapon.obj_n], actor.x, actor.y, {{x=target_x, y=target_y, z=actor.z}, {x=target_x+1, y=target_y-1, z=actor.z}}, 2, 1, 0)
+
+   local k, v
+   for k,v in pairs(hit_items) do
+      if weapon.obj_n == 241 then --OBJ_FREEZE_RAY_GUN
+         if v.obj_n == 160 and v.frame_n == 1 then --OBJ_EMPTY_BUCKET
+            printl("THE_WATER_FREEZES")
+            v.frame_n = 2
+         elseif v.luatype == "actor" then
+            if math.random(1, 0x2d) > actor_dex_adj(v) then
+               attack_with_freezeray(actor, v, 10)
+            else
+               printfl("ACTOR_DODGES", v.name)
+               play_md_sfx(3)
+            end
+         end
+      elseif v.luatype == "obj" or math.random(1, 0x2d) > actor_dex_adj(v) then
+         local dmg_mode = 0
+         if weapon.obj_n == 240 then --OBJ_HEAT_RAY_GUN
+            dmg_mode = 3
+         end
+         actor_take_hit(actor, v, spread_weapon_damage_tbl[weapon.obj_n], dmg_mode)
+      else
+         printfl("ACTOR_DODGES", v.name)
+         play_md_sfx(3)
+      end
+   end
+
    if weapon.obj_n == 43 or weapon.obj_n == 45 then --OBJ_SHOTGUN, OBJ_BELGIAN_COMBINE
       Actor.inv_remove_obj_qty(actor, 58, 1) --OBJ_SHOTGUN_SHELL
    else
