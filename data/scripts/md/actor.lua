@@ -901,7 +901,7 @@ function actor_update_all()
                            actor.wt = actor.sched_wt
                         end
 
-                        local dex_adjusted = actor_dex_adj(actor) 
+                        local dex_adjusted = actor_dex_adj(actor)
                         local dx = (actor.mpts * dex_6) - dex_adjusted * di
                         if actor.mpts >= dex_adjusted or dx > 0 or dx == 0 and dex_adjusted > dex_6 then
                            selected_actor = actor
@@ -1428,7 +1428,7 @@ function advance_time(num_turns)
    end
    
    local minute = clock_get_minute()
-   
+
    clock_inc(num_turns)
 
    if minute + num_turns >= 60 then

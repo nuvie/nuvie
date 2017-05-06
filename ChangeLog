@@ -1,3 +1,8 @@
+2017-05-06  Eric Fry <efry at users.sourceforge.net>
+	* Fixed MD minotaur attack logic
+	* Don't draw MD debug tiles on map when show eggs is disabled
+	* Fixed some issues when avatar returns from dreamworld.
+
 2017-05-01  Eric Fry <efry at users.sourceforge.net>
 	* Added more MD spread weapon logic
 	* Fixed use radium on ray gun usecode

@@ -164,14 +164,7 @@ function attack_with_freezeray(actor, target_actor, damage)
    end
 end
 
-function attack_target_with_weapon(actor, target_x, target_y, weapon)
-   local target_range = actor_get_combat_range(actor, target_x, target_y)
-   local weapon_range = get_weapon_range(weapon)
-
-   if target_range > weapon_range then
-      return 2 --out of range
-   end
-
+function check_ammo(actor, weapon)
    local obj_n = weapon.obj_n
    if obj_n == 47 and not Actor.inv_has_obj_n(actor, 63) then --OBJ_SLING, OBJ_SLING_STONE
       return 1
@@ -196,6 +189,25 @@ function attack_target_with_weapon(actor, target_x, target_y, weapon)
    if (obj_n == 129 or obj_n == 261) and weapon.qty ~= 0 then --OBJ_WEED_SPRAYER, OBJ_SPRAY_GUN
       return 1
    end
+
+   return 0
+end
+
+function attack_target_with_weapon(actor, target_x, target_y, weapon)
+   local target_range = actor_get_combat_range(actor, target_x, target_y)
+   local weapon_range = get_weapon_range(weapon)
+
+   if target_range > weapon_range then
+      return 2 --out of range
+   end
+
+   local ret = check_ammo(actor, weapon)
+   if ret ~= 0 then
+      return ret
+   end
+
+   local obj_n = weapon.obj_n
+
 
    local var_10 = 0
    local var_12 = 0

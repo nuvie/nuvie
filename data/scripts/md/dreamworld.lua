@@ -71,7 +71,9 @@ function wake_from_dream()
    for obj in actor_inventory(dream_actor, true) do
       Obj.removeFromEngine(obj)
    end
-
+   local avatar = Actor.get(1)
+   avatar.mpts = avatar.dex
+   avatar.wt = WT_PLAYER
 end
 
 

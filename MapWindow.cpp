@@ -1267,6 +1267,13 @@ inline void MapWindow::drawTile(Tile *tile, uint16 x, uint16 y, bool toptile,
  uint16 tile_num;
 
  tile_num = tile->tile_num;
+
+  //don't show special marker tiles in MD unless "show eggs" is turned on.
+  if(game_type == NUVIE_GAME_MD
+      && tile_num > 2040 && tile_num < 2048
+      && !obj_manager->is_showing_eggs())
+    return;
+
 /* shouldn't be needed for in_town check
  if(window_updated)
    {

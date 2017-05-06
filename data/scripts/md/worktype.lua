@@ -71,6 +71,7 @@ function worktype_16_minotaur(actor)
    local target
    if Actor.inv_has_obj_n(dream_actor, 162) then --OBJ_RED_CAPE
       target = dream_actor
+      g_selected_obj = target
    else
       for obj in find_obj_from_area(0x21, 0x33, 2, 0x1c, 0x10) do
          if obj.obj_n == 162 then --OBJ_RED_CAPE
@@ -86,7 +87,7 @@ function worktype_16_minotaur(actor)
 
    if actor_get_combat_range(actor, target.x, target.y) <= 1 then
       if target.luatype == "actor" then
-         --FIXME sub_1A6F2
+         attack_target_with_weapon(actor, target.x, target.y, actor)
          subtract_movement_pts(actor, 0xa)
          return
       end
