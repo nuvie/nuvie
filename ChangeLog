@@ -1,4 +1,7 @@
 2017-05-07  Eric Fry <efry at users.sourceforge.net>
+	* Moved technical docs from subversion into the main Nuvie git repo.
+
+2017-05-07  Eric Fry <efry at users.sourceforge.net>
 	* Changed map_get_tile_num() to optionally return the original tile_num.
 	  This is useful when dealing with animating tiles
 	* Print "...faster!" when falling in the MD dreamworld

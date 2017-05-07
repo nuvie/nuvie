@@ -1,0 +1,1027 @@
+obj_n: description.
+
+0000: Nothing
+0001: leather helm
+0002: chain coif
+0003: iron helm
+0004: spiked helm
+0005: winged helm
+0006: brass helm
+0007: Gargoyle Helm
+0008: magic helm
+0009: wooden shield
+0010: curved heater
+0011: winged shield
+0012: kite shield
+0013: spiked shield
+0014: black shield
+0015: door shield
+0016: magic shield
+0017: cloth armour
+0018: leather armor
+0019: ring mail
+0020: scale mail
+0021: chain mail
+0022: plate mail
+0023: magic armour
+0024: spiked collar
+0025: guild belt
+0026: Gargoyle Belt
+0027: leather boots
+0028: swamp boots
+0029: earth
+0030: floor
+0031: floor
+0032: floor
+0033: sling
+0034: club
+0035: main gauche
+0036: spear
+0037: throwing axe
+0038: dagger
+0039: mace
+0040: morning star
+0041: bow
+0042: crossbow
+0043: sword
+0044: two-handed hammer
+0045: two-handed axe
+0046: two-handed sword
+0047: halberd
+0048: glass sword
+0049: boomerang
+0050: triple crossbow
+0051: force field
+0052: wizard eye
+0053: web
+0054: magic bow
+0055: arrow
+0056: bolt
+0057: spellbook
+0058: spell
+0059: Codex
+0060: Book of Prophecies
+0061: Book of Circles
+0062: Vortex Cube
+0063: lock pick
+0064: key
+0065: black pearl
+0066: bit of blood moss
+0067: bulb of garlic
+0068: ginseng root
+0069: mandrake root
+0070: nightshade mushroom
+0071: strand of spidersilk
+0072: bit of sulfurous ash
+0073: moonstone
+0074: ankh amulet
+0075: snake amulet
+0076: Amulet of Submission
+0077: gem
+0078: staff
+0079: lightning wand
+0080: fire wand
+0081: storm cloak
+0082: ring
+0083: flask of oil
+0084: red gate
+0085: moongate
+0086: gavel
+0087: Orb of the Moons
+0088: gold coin
+0089: gold nugget
+0090: torch
+0091: Zu Ylem
+0092: silver snake venom
+0093: sextant
+0094: spinning wheel
+0095: bunch of grapes
+0096: butter
+0097: Gargish vocabulary
+0098: open chest
+0099: backpack
+0100: scythe
+0101: pitchfork
+0102: rake
+0103: pick
+0104: shovel
+0105: hoe
+0106: wooden ladder
+0107: yoke
+0108: oven spatula
+0109: rolling pin
+0110: spatula
+0111: ladle
+0112: cooking sheet
+0113: cleaver
+0114: knife
+0115: wine
+0116: mead
+0117: ale
+0118: wine glass
+0119: plate
+0120: mug
+0121: silverware
+0122: candle
+0123: mirror
+0124: tunic
+0125: hanger
+0126: dress
+0127: skillet
+0128: loaf of bread
+0129: portion of meat
+0130: rolls
+0131: cake
+0132: cheese
+0133: ham
+0134: horse carcass
+0135: horse chops
+0136: skewer
+0137: pants
+0138: plant
+0139: flowers
+0140: wall mount
+0141: decorative sword
+0142: decorative shield
+0143: picture
+0144: tapestry
+0145: candelabra
+0146: person sleeping
+0147: cauldron
+0148: cauldron
+0149: ship deed
+0150: inkwell
+0151: book
+0152: scroll
+0153: panpipes
+0154: telescope
+0155: crystal ball
+0156: harpsichord
+0157: harp
+0158: lute
+0159: clock
+0160: endtable
+0161: water vase
+0162: stove
+0163: bed
+0164: fireplace
+0165: stalagmite
+0166: sack of grain
+0167: sack of flour
+0168: remains
+0169: rubber ducky
+0170: Urn of Ashes
+0171: fumarole
+0172: spikes
+0173: trap
+0174: switch
+0175: electric field
+0176: chest of drawers
+0177: desk
+0178: bucket
+0179: bucket of water
+0180: bucket of milk
+0181: churn
+0182: beehive
+0183: honey jar
+0184: jar of honey
+0185: cloth
+0186: open barrel
+0187: jug
+0188: bag
+0189: cask
+0190: bale of wool
+0191: basket
+0192: open crate
+0193: small jug
+0194: milk bottle
+0195: wheat
+0196: vat
+0197: wine cask
+0198: cutting table
+0199: loom
+0200: hood
+0201: fire
+0202: horseshoes
+0203: pliers
+0204: hammer
+0205: water trough
+0206: brazier
+0207: rod
+0208: hook
+0209: meat
+0210: ribs
+0211: dead animal
+0212: fan
+0213: mouse hole
+0214: wine press
+0215: stable
+0216: bookshelf
+0217: anvil
+0218: bellows
+0219: oven
+0220: flag
+0221: cannon
+0222: cannon balls
+0223: powder keg
+0224: foot rail
+0225: spool of thread
+0226: spool of silk
+0227: pennant
+0228: table
+0229: shadow
+0230: table
+0231: shadow
+0232: spittoon
+0233: well
+0234: fountain
+0235: sundial
+0236: bell
+0237: table
+0238: shadow
+0239: table
+0240: shadow
+0241: silk cloth
+0242: Rune of Honesty
+0243: Rune of Compassion
+0244: Rune of Valor
+0245: Rune of Justice
+0246: Rune of Sacrifice
+0247: Rune of Honor
+0248: Rune of Spirituality
+0249: Rune of Humility
+0250: table
+0251: shadow
+0252: chair
+0253: campfire
+0254: cross
+0255: tombstone
+0256: protection ring
+0257: regeneration ring
+0258: invisibility ring
+0259: table leg
+0260: shadow
+0261: table leg
+0262: shadow
+0263: stocks
+0264: fishing pole
+0265: fish
+0266: grave
+0267: guillotine
+0268: lever
+0269: drawbridge
+0270: balloon plans
+0271: doorsill
+0272: steps
+0273: tile
+0274: yew log
+0275: blue potion
+0276: steps
+0277: yew board
+0278: passthrough
+0279: table
+0280: passthrough
+0281: fence
+0282: bars
+0283: anchor
+0284: rope
+0285: pole
+0286: walkway
+0287: water wheel
+0288: crank
+0289: log saw
+0290: mill stone
+0291: shaft
+0292: gearwork
+0293: chain
+0294: lightsource
+0295: heatsource
+0296: xylophone
+0297: oaken door
+0298: windowed door
+0299: cedar door
+0300: steel door
+0301: doorway
+0302: archway
+0303: carpet
+0304: cookfire
+0305: ladder
+0306: trellis
+0307: volcano
+0308: hole
+0309: bones
+0310: portcullis
+0311: stone table
+0312: stone lion
+0313: silver horn
+0314: floor
+0315: stone
+0316: lamppost
+0317: fire field
+0318: poison field
+0319: protection field
+0320: sleep field
+0321: statue
+0322: pool
+0323: monolith
+0324: pillar
+0325: book stand
+0326: mine shaft
+0327: throne
+0328: altar
+0329: Altar of singularity
+0330: mat
+0331: government sign
+0332: sign
+0333: gargoyle sign
+0334: secret door
+0335: egg
+0336: charge
+0337: effect
+0338: blood
+0339: dead body
+0340: dead cyclops
+0341: dead gargoyle
+0342: giant rat
+0343: insects
+0344: giant bat
+0345: giant squid
+0346: sea serpent
+0347: reaper
+0348: sheep
+0349: dog
+0350: deer
+0351: wolf
+0352: ghost
+0353: gremlin
+0354: mouse
+0355: gazer
+0356: bird
+0357: corpser
+0358: snake
+0359: rabbit
+0360: rot worms
+0361: giant spider
+0362: gargoyle
+0363: gargoyle
+0364: acid slug
+0365: tangle vine
+0366: tangle vine
+0367: daemon
+0368: skeleton
+0369: drake
+0370: headless
+0371: troll
+0372: mongbat
+0373: wisp
+0374: hydra
+0375: slime
+0376: fighter
+0377: swashbuckler
+0378: mage
+0379: villager
+0380: merchant
+0381: child
+0382: guard
+0383: jester
+0384: peasant
+0385: farmer
+0386: musician
+0387: woman
+0388: cat
+0389: silver tablet
+0390: silver fragment
+0391: farmer
+0392: musician
+0393: shrine
+0394: Britannian Lens
+0395: broken lens
+0396: Gargoyle Lens
+0397: Statue of Mondain
+0398: Statue of Minax
+0399: Statue of Exodus
+0400: part of a map
+0401: part of a map
+0402: part of a map
+0403: part of a map
+0404: part of a map
+0405: part of a map
+0406: part of a map
+0407: part of a map
+0408: part of a map
+0409: Lord British
+0410: Avatar
+0411: dragon
+0412: ship
+0413: silver serpent
+0414: skiff
+0415: raft
+0416: nothing
+0417: dragon egg
+0418: hatched dragon egg
+0419: pull chain
+0420: balloon
+0421: mammoth silk bag
+0422: balloon basket
+0423: balloon
+0424: cyclops
+0425: hydra
+0426: giant scorpion
+0427: giant ant
+0428: cow
+0429: alligator
+0430: horse
+0431: horse with rider
+0432: horse with rider
+0433: horse with rider
+0434: horse with rider
+0435: horse with rider
+0436: horse with rider
+0437: horse with rider
+0438: horse with rider
+0439: horse with rider
+0440: horse with rider
+0441: horse with rider
+0442: horse with rider
+0443: horse with rider
+0444: horse with rider
+0445: horse with rider
+0446: horse with rider
+0447: horse with rider
+0448: horse with rider
+0449: horse with rider
+0450: horse with rider
+0451: horse with rider
+0452: horse with rider
+0453: horse with rider
+0454: horse with rider
+0455: horse with rider
+0456: horse with rider
+0457: horse with rider
+0458: horse with rider
+0459: horse with rider
+0460: horse with rider
+0461: horse with rider
+0462: horse with rider
+0463: horse with rider
+0464: horse with rider
+0465: horse with rider
+0466: horse with rider
+0467: horse with rider
+0468: horse with rider
+0469: horse with rider
+0470: horse with rider
+0471: horse with rider
+0472: horse with rider
+0473: horse with rider
+0474: horse with rider
+0475: horse with rider
+0476: horse with rider
+0477: horse with rider
+0478: horse with rider
+0479: horse with rider
+0480: horse with rider
+0481: horse with rider
+0482: horse with rider
+0483: horse with rider
+0484: horse with rider
+0485: horse with rider
+0486: horse with rider
+0487: horse with rider
+0488: horse with rider
+0489: horse with rider
+0490: horse with rider
+0491: Nothing
+0492: Nothing
+0493: Nothing
+0494: Nothing
+0495: Nothing
+0496: Nothing
+0497: Nothing
+0498: Nothing
+0499: Nothing
+0500: Nothing
+0501: Nothing
+0502: Nothing
+0503: Nothing
+0504: Nothing
+0505: Nothing
+0506: Nothing
+0507: Nothing
+0508: Nothing
+0509: Nothing
+0510: Nothing
+0511: Nothing
+0512: Nothing
+0513: Nothing
+0514: Nothing
+0515: Nothing
+0516: Nothing
+0517: Nothing
+0518: Nothing
+0519: Nothing
+0520: Nothing
+0521: Nothing
+0522: Nothing
+0523: Nothing
+0524: Nothing
+0525: Nothing
+0526: Nothing
+0527: Nothing
+0528: Nothing
+0529: Nothing
+0530: Nothing
+0531: Nothing
+0532: Nothing
+0533: Nothing
+0534: Nothing
+0535: Nothing
+0536: Nothing
+0537: Nothing
+0538: Nothing
+0539: Nothing
+0540: Nothing
+0541: Nothing
+0542: Nothing
+0543: Nothing
+0544: Nothing
+0545: Nothing
+0546: Nothing
+0547: Nothing
+0548: Nothing
+0549: Nothing
+0550: Nothing
+0551: Nothing
+0552: Nothing
+0553: Nothing
+0554: Nothing
+0555: Nothing
+0556: Nothing
+0557: Nothing
+0558: Nothing
+0559: Nothing
+0560: Nothing
+0561: Nothing
+0562: Nothing
+0563: Nothing
+0564: Nothing
+0565: Nothing
+0566: Nothing
+0567: Nothing
+0568: Nothing
+0569: Nothing
+0570: Nothing
+0571: Nothing
+0572: Nothing
+0573: Nothing
+0574: Nothing
+0575: Nothing
+0576: Nothing
+0577: Nothing
+0578: Nothing
+0579: Nothing
+0580: Nothing
+0581: Nothing
+0582: Nothing
+0583: Nothing
+0584: Nothing
+0585: Nothing
+0586: Nothing
+0587: Nothing
+0588: Nothing
+0589: Nothing
+0590: Nothing
+0591: Nothing
+0592: Nothing
+0593: Nothing
+0594: Nothing
+0595: Nothing
+0596: Nothing
+0597: Nothing
+0598: Nothing
+0599: Nothing
+0600: Nothing
+0601: Nothing
+0602: Nothing
+0603: Nothing
+0604: Nothing
+0605: Nothing
+0606: Nothing
+0607: Nothing
+0608: Nothing
+0609: Nothing
+0610: Nothing
+0611: Nothing
+0612: Nothing
+0613: Nothing
+0614: Nothing
+0615: Nothing
+0616: Nothing
+0617: Nothing
+0618: Nothing
+0619: Nothing
+0620: Nothing
+0621: Nothing
+0622: Nothing
+0623: Nothing
+0624: Nothing
+0625: Nothing
+0626: Nothing
+0627: Nothing
+0628: Nothing
+0629: Nothing
+0630: Nothing
+0631: Nothing
+0632: Nothing
+0633: Nothing
+0634: Nothing
+0635: Nothing
+0636: Nothing
+0637: Nothing
+0638: Nothing
+0639: Nothing
+0640: Nothing
+0641: Nothing
+0642: Nothing
+0643: Nothing
+0644: Nothing
+0645: Nothing
+0646: Nothing
+0647: Nothing
+0648: Nothing
+0649: Nothing
+0650: Nothing
+0651: Nothing
+0652: Nothing
+0653: Nothing
+0654: Nothing
+0655: Nothing
+0656: Nothing
+0657: Nothing
+0658: Nothing
+0659: Nothing
+0660: Nothing
+0661: Nothing
+0662: Nothing
+0663: Nothing
+0664: Nothing
+0665: Nothing
+0666: Nothing
+0667: Nothing
+0668: Nothing
+0669: Nothing
+0670: Nothing
+0671: Nothing
+0672: Nothing
+0673: Nothing
+0674: Nothing
+0675: Nothing
+0676: Nothing
+0677: Nothing
+0678: Nothing
+0679: Nothing
+0680: Nothing
+0681: Nothing
+0682: Nothing
+0683: Nothing
+0684: Nothing
+0685: Nothing
+0686: Nothing
+0687: Nothing
+0688: Nothing
+0689: Nothing
+0690: Nothing
+0691: Nothing
+0692: Nothing
+0693: Nothing
+0694: Nothing
+0695: Nothing
+0696: Nothing
+0697: Nothing
+0698: Nothing
+0699: Nothing
+0700: Nothing
+0701: Nothing
+0702: Nothing
+0703: Nothing
+0704: Nothing
+0705: Nothing
+0706: Nothing
+0707: Nothing
+0708: Nothing
+0709: Nothing
+0710: Nothing
+0711: Nothing
+0712: Nothing
+0713: Nothing
+0714: Nothing
+0715: Nothing
+0716: Nothing
+0717: Nothing
+0718: Nothing
+0719: Nothing
+0720: Nothing
+0721: Nothing
+0722: Nothing
+0723: Nothing
+0724: Nothing
+0725: Nothing
+0726: Nothing
+0727: Nothing
+0728: Nothing
+0729: Nothing
+0730: Nothing
+0731: Nothing
+0732: Nothing
+0733: Nothing
+0734: Nothing
+0735: Nothing
+0736: Nothing
+0737: Nothing
+0738: Nothing
+0739: Nothing
+0740: Nothing
+0741: Nothing
+0742: Nothing
+0743: Nothing
+0744: Nothing
+0745: Nothing
+0746: Nothing
+0747: Nothing
+0748: Nothing
+0749: Nothing
+0750: Nothing
+0751: Nothing
+0752: Nothing
+0753: Nothing
+0754: Nothing
+0755: Nothing
+0756: Nothing
+0757: Nothing
+0758: Nothing
+0759: Nothing
+0760: Nothing
+0761: Nothing
+0762: Nothing
+0763: Nothing
+0764: Nothing
+0765: Nothing
+0766: Nothing
+0767: Nothing
+0768: Nothing
+0769: Nothing
+0770: Nothing
+0771: Nothing
+0772: Nothing
+0773: Nothing
+0774: Nothing
+0775: Nothing
+0776: Nothing
+0777: Nothing
+0778: Nothing
+0779: Nothing
+0780: Nothing
+0781: Nothing
+0782: Nothing
+0783: Nothing
+0784: Nothing
+0785: Nothing
+0786: Nothing
+0787: Nothing
+0788: Nothing
+0789: Nothing
+0790: Nothing
+0791: Nothing
+0792: Nothing
+0793: Nothing
+0794: Nothing
+0795: Nothing
+0796: Nothing
+0797: Nothing
+0798: Nothing
+0799: Nothing
+0800: Nothing
+0801: Nothing
+0802: Nothing
+0803: Nothing
+0804: Nothing
+0805: Nothing
+0806: Nothing
+0807: Nothing
+0808: Nothing
+0809: Nothing
+0810: Nothing
+0811: Nothing
+0812: Nothing
+0813: Nothing
+0814: Nothing
+0815: Nothing
+0816: Nothing
+0817: Nothing
+0818: Nothing
+0819: Nothing
+0820: Nothing
+0821: Nothing
+0822: Nothing
+0823: Nothing
+0824: Nothing
+0825: Nothing
+0826: Nothing
+0827: Nothing
+0828: Nothing
+0829: Nothing
+0830: Nothing
+0831: Nothing
+0832: Nothing
+0833: Nothing
+0834: Nothing
+0835: Nothing
+0836: Nothing
+0837: Nothing
+0838: Nothing
+0839: Nothing
+0840: Nothing
+0841: Nothing
+0842: Nothing
+0843: Nothing
+0844: Nothing
+0845: Nothing
+0846: Nothing
+0847: Nothing
+0848: Nothing
+0849: Nothing
+0850: Nothing
+0851: Nothing
+0852: Nothing
+0853: Nothing
+0854: Nothing
+0855: Nothing
+0856: Nothing
+0857: Nothing
+0858: Nothing
+0859: Nothing
+0860: Nothing
+0861: Nothing
+0862: Nothing
+0863: Nothing
+0864: Nothing
+0865: Nothing
+0866: Nothing
+0867: Nothing
+0868: Nothing
+0869: Nothing
+0870: Nothing
+0871: Nothing
+0872: Nothing
+0873: Nothing
+0874: Nothing
+0875: Nothing
+0876: Nothing
+0877: Nothing
+0878: Nothing
+0879: Nothing
+0880: Nothing
+0881: Nothing
+0882: Nothing
+0883: Nothing
+0884: Nothing
+0885: Nothing
+0886: Nothing
+0887: Nothing
+0888: Nothing
+0889: Nothing
+0890: Nothing
+0891: Nothing
+0892: Nothing
+0893: Nothing
+0894: Nothing
+0895: Nothing
+0896: Nothing
+0897: Nothing
+0898: Nothing
+0899: Nothing
+0900: Nothing
+0901: Nothing
+0902: Nothing
+0903: Nothing
+0904: Nothing
+0905: Nothing
+0906: Nothing
+0907: Nothing
+0908: Nothing
+0909: Nothing
+0910: Nothing
+0911: Nothing
+0912: Nothing
+0913: Nothing
+0914: Nothing
+0915: Nothing
+0916: Nothing
+0917: Nothing
+0918: Nothing
+0919: Nothing
+0920: Nothing
+0921: Nothing
+0922: Nothing
+0923: Nothing
+0924: Nothing
+0925: Nothing
+0926: Nothing
+0927: Nothing
+0928: Nothing
+0929: Nothing
+0930: Nothing
+0931: Nothing
+0932: Nothing
+0933: Nothing
+0934: Nothing
+0935: Nothing
+0936: Nothing
+0937: Nothing
+0938: Nothing
+0939: Nothing
+0940: Nothing
+0941: Nothing
+0942: Nothing
+0943: Nothing
+0944: Nothing
+0945: Nothing
+0946: Nothing
+0947: Nothing
+0948: Nothing
+0949: Nothing
+0950: Nothing
+0951: Nothing
+0952: Nothing
+0953: Nothing
+0954: Nothing
+0955: Nothing
+0956: Nothing
+0957: Nothing
+0958: Nothing
+0959: Nothing
+0960: Nothing
+0961: Nothing
+0962: Nothing
+0963: Nothing
+0964: Nothing
+0965: Nothing
+0966: Nothing
+0967: Nothing
+0968: Nothing
+0969: Nothing
+0970: Nothing
+0971: Nothing
+0972: Nothing
+0973: Nothing
+0974: Nothing
+0975: Nothing
+0976: Nothing
+0977: Nothing
+0978: Nothing
+0979: Nothing
+0980: Nothing
+0981: Nothing
+0982: Nothing
+0983: Nothing
+0984: Nothing
+0985: Nothing
+0986: Nothing
+0987: Nothing
+0988: Nothing
+0989: Nothing
+0990: Nothing
+0991: Nothing
+0992: Nothing
+0993: Nothing
+0994: Nothing
+0995: Nothing
+0996: Nothing
+0997: Nothing
+0998: Nothing
+0999: Nothing
+1000: Nothing
+1001: Nothing
+1002: Nothing
+1003: Nothing
+1004: Nothing
+1005: Nothing
+1006: Nothing
+1007: Nothing
+1008: Nothing
+1009: Nothing
+1010: Nothing
+1011: Nothing
+1012: Nothing
+1013: Nothing
+1014: Nothing
+1015: Nothing
+1016: Nothing
+1017: Nothing
+1018: Nothing
+1019: Nothing
+1020: Nothing
+1021: Nothing
+1022: Nothing
+1023: Nothing
+

@@ -1,0 +1,11 @@
+0x1d6c Command bar selected action.
+       0x81 = move
+       0x82 = get
+       0x83 = drop
+       0x84 = use
+       0x85 = talk
+       0x86 = look
+       0x87 = attack
+       0x88 = rest
+       0x89 = combat
+       0xFF = none

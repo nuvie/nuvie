@@ -1,0 +1,77 @@
+Eggs.
+
+The egg container.
+
+status:
+x,y,z: The position of the egg on the map.
+quantity: The probability that the egg will spawn.
+quality: ??unknown. Seen values up to 24
+
+The spawned items.
+
+status:
+y,z: ??unknown??
+quantity: The maximum number of items spawned.
+quality: The worktype of the actor. 
+
+
+samples
+-------
+
+gargolyes at shrine
+
+in fight, on screen.
+
+egg at 1f7, 169, 0
+frame_n: 0
+Tile: 1256
+Status: 01000010
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  frame_n: 0
+  Tile: 1440
+  Status: 00001000
+  y = 768, z = 10
+  Quantity: 2
+  Quality: 3
+
+  gargoyle 
+  frame_n: 0
+  Tile: 1392
+  Status: 00001000
+  y = 768, z = 10
+  Quantity: 1
+  Quality: 4
+---------
+
+
+The same egg in its unvisited state.
+
+egg at 1f7, 169, 0
+frame_n: 0
+Tile: 1256
+Status: 00000000
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  frame_n: 0
+  Tile: 1440
+  Status: 00001000
+  y = 0, z = 0
+  Quantity: 2
+  Quality: 3
+
+  gargoyle 
+  frame_n: 0
+  Tile: 1392
+  Status: 00001000
+  y = 0, z = 0
+  Quantity: 1
+  Quality: 4
+---------
+

@@ -1,0 +1,159 @@
+This file contains Actor/NPC related data.
+
+0x000
+
+Object flags (common for all objects)
+bit 0 Owned
+bit 1 Invisible
+bit 2 Charmed
+bit 3 -+- Meaning of obj position (0=map 1=container 2=inventory 3=readied)
+bit 4 /
+bit 5 Disposable
+bit 6 Hypoxia
+bit 7 Battle frenzy 
+
+0x100 
+
+256 NPC positions in 3 byte x,y,z notation.
+
+0x400
+
+256 NPC object number + frame number combinations. 2 byte.
+
+0x600
+
+Actor Qty. 2 byte.
+
+0x800
+
+NPC flags
+
+bit 0 Cold 
+bit 1 Paralysed
+bit 2 Asleep
+bit 3 Poisoned
+bit 4 Dead
+bit 5 -+- Alignment 0 = neutral, 1 = evil, 2 = good, 3 = chaotic
+bit 6 /
+bit 7 In Party
+
+0x900
+
+NPC strength
+
+0xa00
+
+NPC dexterity
+
+0xb00
+
+NPC inteligence
+
+0xc00
+
+Experience. 2 bytes each
+
+0xe00
+
+NPC Health Points
+
+0xf00
+
+16 Party  Names. Each name can be a max of 13 chars long. strings are null 
+terminated.
+
+0xfe0
+
+Party Roster order of command. 1 byte per member. Actor ID
+
+0xff0 (1 byte) Number of party members 
+
+0xff1
+
+NPC Level. 1 byte each
+
+0x10f1
+
+NPCs current schedule
+
+0x11f1
+
+NPCs current worktype.
+
+0x12f1
+
+unknown?? looks like worktype codes.
+
+0x13f1
+
+Combat mode
+
+  0x2 = command
+  0x3 = front
+  0x4 = rear
+  0x5 = flank
+  0x6 = berserk
+  0x7 = retreat
+  0x8 = assault
+
+  ?? Temp NPC's have different values.
+
+0x14f1
+
+maybe Movement points. 1 byte each
+
+0x15f1
+
+maybe Movement points. 1 byte each
+
+0x16f1
+
+last NPC object number and frame.
+same format as at 0x400. This is used when an NPC goes to sleep or dies.
+
+0x18f1 
+
+Talk flags
+
+0x1cf2 hours till the party can heal again while resting. decremented each hour.
+0x1cf3 minute
+0x1cf4 hour
+
+0x1cfa ambient light level 
+
+0x1d03 prev player x
+0x1d04 prev player y
+0x1d05 blue berry effect counter
+0x1d06 sound on/off flag. 1 = on, 0 = off
+0x1d07 ethereal movement (walk through obstacles) 1 = non-blocking movement 0, normal blocking movement.
+
+0x1d22 unk set in dream world. 1 byte
+0x1d23 combat mode 1 = combat mode on, 0 = combat mode off
+0x1d24 solo mode 0 - 9 or 0xff when in party mode
+
+0x1d26 Command bar selected action.
+       0x81 = attack
+       0x82 = talk
+       0x83 = look
+       0x84 = get
+       0x85 = drop
+       0x86 = move
+       0x87 = use
+       0x88 = combat (It will work in the original when you hex edit it, but you cannot select it normally.)
+       0xFF = none
+
+0x1d27 Player Gender. 0 male, 1 female
+0x1d28 Has the player character been created. 0 no, 1 yes. 
+0x1d29 bit 4 0x10 set to indicate that the player is in the dreamworld
+
+0x1d2b walk direction modifier. This value rotates player walk direction. It
+is activated by stepping on an object obj_n=0x1d1 
+
+0x1d2f Berry counters 16 x 3 counters over 2 bytes
+byte 1 low nibble purple berry counter (relationship with things around you)
+byte 1 high nibble green berry counter (sensitivity to the feelings of objects)
+byte 2 low nibble brown berry counter (sense of your spatial location)
+
+0x1d34 unk? set to 1 by character creation sequence.
+
+0x1d53 current dream stage. 2 bytes

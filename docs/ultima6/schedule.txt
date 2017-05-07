@@ -1,0 +1,117 @@
+Ultima VI schedule file:
+------------------------
+
+## Nuvie <http://nuvie.sourceforge.net>
+## Doc Written By: Eric Fry <efry @t users sourceforge net>
+
+
+This file contains the schedules for the 256 NPCs in Ultima6. It takes the 
+following format.
+
+The first 0x200 bytes comprise the 256 offsets (uint16) to the start of each 
+NPC's schedule info. Offsets relative to the address 0x202.
+
+The two bytes starting at 0x200 are the total number of schedule entries in the 
+file.
+
+The rest of the file from 0x202 onwards contains the actual schedule entries.
+Each entry is 5 bytes long and has the following structure.
+
+struct schedule_entry {
+uint8 start_hour,
+uint8 worktype,
+uint8 position1,
+uint8 position2,
+uint8 position3
+};
+
+start_hour:  In 24 hour format, this indicates when the current entry should 
+             start. Schedule entries are in assending order based on 
+             start_hour.
+
+worktype: This value controls what actions are preformed by the NPC for the
+          current schedule entry. A list of possible worktype codes is provided
+          below.
+
+position1..3: The 3 position bytes describe the NPCs position in packed x,y,z
+              notation.
+
+              x [10 bits]
+              y [10 bits]
+              z [4 bits]
+ 
+
+Known worktype codes:
+---------------------
+
+temp worktypes
+--------------
+0x0  do nothing
+
+0x1  follow avatar (in party)
+
+0x2  player mode
+
+0x3  combat front
+0x4  combat rear
+0x5  combat flank
+0x6  combat berserk
+0x7  combat retreat
+0x8  combat assault
+0x9  combat flee (run away from party)
+
+0xa  unknown. If < 3 tiles away from any party member then 50% chance to move
+     to avg party position. Otherwise 50% chance to move in random direction.
+
+0xb  unknown. If < 3 tiles away from any party member then 1 in 8 chance to
+     turn worktype to combat assault 0x8 and attack. Otherwise 50% chance to
+     move in random direction.
+
+0xc  animal wander
+0xd  tangle vine
+0xe  stationary attack
+0xf  guard walk east west
+0x10 guard walk north south
+
+0x11 not used.
+
+0x12 guard chasing player
+
+0x13 unkown. Shares worktype function with retreat and flee worktypes.
+
+0x80 not near player do nothing.
+
+0x81 waiting for pathfinder to give path to scheduled location.
+0x82 recalculate path via perform worktype. ??
+0x83 walk path to scheduled location
+0x84 path blocked. wt changed to 0x84 try again next turn.
+0x85 path blocked. wt changed to 0x86 try again next turn.
+
+0x86 path blocked need to recalculate path.
+
+permanent worktype codes
+------------------------
+0x87 stand still facing north
+0x88 stand still facing east
+0x89 ?? stand still facing south
+0x8a stand still facing west
+0x8b Walk in a straight line North, South. When set a NPC will constantly 
+     march up and down. They will only change direction when blocked.
+     ... they change direction when hitting the schedule location
+0x8c The same as 0x8b except walking East West.
+0x8d Walk South, North
+0x8e Walk West, East
+0x8f wander around.
+0x90 work (wander around)
+0x91 Sleep
+0x92 work (stay still)
+0x93 eating
+0x94 tend crops
+0x95 playing lute
+0x96 begging talk to player
+0x97 begging steal gold from player. (this worktype is commented out of U6 exe)
+0x98 bell ringer.
+0x99 fighting
+0x9a mouse activities (sherry)
+0x9b Stop Thief! Actor attacks and runs after the party
+=======

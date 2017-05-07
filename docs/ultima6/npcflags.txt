@@ -1,0 +1,8 @@
+This is a list of when NPC flags are set.
+Flag  NPC                Condition
+5     Lord British(5)    after you ask about the moon orb
+7     Lord British       after you pass the Compendium quiz and he tells you
+                         the state of Britannia
+      Nystul             when you speak to him the first time; if set he will
+                         not speak to you until you show book to Mariah?
+6     Ariana(13)         when she gives you the Rune of Compassion
