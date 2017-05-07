@@ -390,7 +390,7 @@
 	<td class="summary">Get the impedance of a map location</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (location)</a></td>
+	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (location[, get_original_tile_num=false])</a></td>
 	<td class="summary">get the map tile number for a given map location</td>
 	</tr>
 	<tr>
@@ -2975,7 +2975,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dd>
     <dt>
     <a name = "map_get_tile_num"></a>
-    <strong>map_get_tile_num (location)</strong>
+    <strong>map_get_tile_num (location[, get_original_tile_num=false])</strong>
     </dt>
     <dd>
     get the map tile number for a given map location
@@ -2987,6 +2987,11 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
             <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
+        </li>
+        <li><span class="parameter">get_original_tile_num</span>
+            <span class="types"><span class="type">bool</span></span>
+         return the original tile_num.
+         (<em>default</em> false)
         </li>
     </ul>
 

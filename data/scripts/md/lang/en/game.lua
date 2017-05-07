@@ -254,4 +254,5 @@ THE_ICE_THAWS="The ice thaws.\n",
 THE_WATER_FREEZES="The water freezes.\n",
 ATTACK_WITH_BARE_HANDS="Attack with bare hands-",
 ATTACK_WITH_WEAPON="Attack with %s-",
+FASTER="...faster!\n",
 }

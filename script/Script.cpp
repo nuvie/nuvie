@@ -3288,11 +3288,13 @@ static int nscript_map_get_impedence(lua_State *L)
 get the map tile number for a given map location
 @function map_get_tile_num
 @tparam MapCoord|x,y,z location
+@bool[opt=false] get_original_tile_num return the original tile_num.
 @treturn int|nil
 @within map
  */
 static int nscript_map_get_tile_num(lua_State *L)
 {
+  bool original_tile = false;
   Map *map = Game::get_game()->get_game_map();
 
   uint16 x, y;
@@ -3300,7 +3302,15 @@ static int nscript_map_get_tile_num(lua_State *L)
   if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
    return 0;
 
-  Tile *t = map->get_tile(x, y, z);
+   if(lua_istable(L, 1)) {
+      if(lua_gettop(L) >= 2)
+         original_tile = (bool) lua_toboolean(L, 2);
+   } else {
+      if (lua_gettop(L) >= 4)
+         original_tile = (bool) lua_toboolean(L, 4);
+   }
+
+  Tile *t = map->get_tile(x, y, z, original_tile);
   if(t != NULL)
   {
     lua_pushinteger(L, t->tile_num);

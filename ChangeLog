@@ -1,3 +1,8 @@
+2017-05-07  Eric Fry <efry at users.sourceforge.net>
+	* Changed map_get_tile_num() to optionally return the original tile_num.
+	  This is useful when dealing with animating tiles
+	* Print "...faster!" when falling in the MD dreamworld
+
 2017-05-06  Eric Fry <efry at users.sourceforge.net>
 	* Fixed MD minotaur attack logic
 	* Don't draw MD debug tiles on map when show eggs is disabled
