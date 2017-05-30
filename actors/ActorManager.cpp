@@ -1212,17 +1212,27 @@ bool ActorManager::loadCustomTiles(nuvie_game_t game_type)
 
   build_path(datadir, "images", path);
   datadir = path;
-  build_path(datadir, "actors", path);
+  build_path(datadir, "tiles", path);
   datadir = path;
   build_path(datadir, get_game_tag(game_type), path);
   datadir = path;
 
   tile_manager->freeCustomTiles(); //FIXME this might need to change if we start using custom tiles outside of ActorManager. eg custom map/object tilesets
 
+  loadCustomBaseTiles(datadir);
   loadAvatarTiles(datadir);
   loadNPCTiles(datadir);
 
   return true;
+}
+
+void ActorManager::loadCustomBaseTiles(std::string datadir)
+{
+  std::string imagefile;
+  build_path(datadir, "custom_tiles.bmp", imagefile);
+
+  //attempt to load custom base tiles if the file exists.
+  tile_manager->loadCustomTiles(imagefile,true,true,0);
 }
 
 void ActorManager::loadAvatarTiles(std::string datadir)

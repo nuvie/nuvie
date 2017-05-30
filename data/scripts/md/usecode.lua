@@ -1841,6 +1841,101 @@ function use_switch_device(obj, actor)
    end
 end
 
+function use_dreamstuff(obj, actor)
+   printl("YOU_IMAGINE")
+
+   for item in container_objs(obj) do
+      if item.obj_n < 342 then -- OBJ_POOR_MONK
+         --object
+         print(item.look_string.."\n")
+         if obj.on_map then
+            Obj.moveToMap(item, obj.xyz)
+         else
+            local parent = obj.parent
+            if parent.luatype == "actor" then
+               Obj.moveToInv(item, parent.actor_num)
+            else
+               Obj.moveToCont(item, parent)
+            end
+         end
+      else
+         --actor
+         print(item.name.."\n")
+         local spawned_actor = Actor.new(item.obj_n, actor.x, actor.y, actor.z)
+
+         actor_init(spawned_actor, obj.quality + 1) -- alignment
+         toss_actor(spawned_actor, actor.x, actor.y, actor.z)
+         spawned_actor.wt = item.quality
+      end
+      Obj.removeFromEngine(obj)
+      return
+   end
+
+   printl("NOTHING")
+end
+
+function use_obj_on_spray_gun(obj, target_obj, actor)
+   if obj.obj_n == 119 and target_obj.quality == 0 then --OBJ_BOTTLE_OF_GREEN_PAINT
+      target_obj.quality = 1
+      target_obj.qty = 20
+      printl("SPRAY_GUN_GREEN_PAINT")
+   elseif obj.obj_n == 128 and target_obj.quality ~= 0 then --OBJ_WEED_KILLER
+      target_obj.quality = 0
+      target_obj.qty = 10
+      printl("SPRAY_GUN_WEED_KILLER")
+   else
+      local spray_gun_qty = target_obj.qty + 10
+      if spray_gun_qty > 0x1e then
+         spray_gun_qty = 0x1e
+      end
+      target_obj.qty = spray_gun_qty
+      printl("SPRAY_GUN_10_MORE_CHARGES")
+   end
+
+   Obj.removeFromEngine(obj)
+end
+
+function use_spray_gun(obj, target_obj, actor)
+   if obj.qty == 0 then
+      printl("THERE_IS_NOTHING_IN_THE_GUN")
+      return
+   end
+
+   if obj.quality ~= 0 then
+      obj.qty = obj.qty - 1
+      if target_obj.luatype == "actor" and target_obj.obj_n == 145 then --OBJ_MONSTER_FOOTPRINTS
+         target_obj.obj_n = 364 --OBJ_PROTO_MARTIAN
+         printfl("BECOMES_VISIBLE", target_obj.name)
+      else
+         if target_obj.luatype == "actor" and not target_obj.visible then
+            target_obj.visible = true
+            printfl("BECOMES_VISIBLE", target_obj.name)
+         elseif target_obj.luatype == "obj" and target_obj.invisible then
+            target_obj.invisible = false
+            printfl("BECOMES_VISIBLE", target_obj.name)
+         else
+            printl("IT_HAS_NO_EFFECT")
+         end
+      end
+   elseif target_obj.luatype == "actor" then
+      attack_target_with_weapon(actor, target_obj.x, target_obj.y, obj)
+   elseif is_plant_obj(target_obj) then
+      hit_target(target_obj, RED_HIT_TILE)
+      printl("YOU_KILLED_THE_PLANT")
+      if target_obj.obj_n == 205 then --OBJ_VINE
+         Actor.set_talk_flag(0x30, 7)
+         Obj.removeFromEngine(target_obj)
+      elseif target_obj.obj_n == 408 then --OBJ_TREE
+         target_obj.obj_n = 166 --OBJ_DEAD_TREE
+      else
+         Obj.removeFromEngine(target_obj)
+      end
+   else
+      obj.qty = obj.qty - 1
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
@@ -1893,6 +1988,14 @@ local usecode_table = {
 [104]=use_container,
 --OBJ_FOLDED_TENT
 [106]=use_tent,
+--OBJ_BOTTLE_OF_GREEN_PAINT
+[119]={
+   --on
+   --OBJ_WEED_SPRAYER
+   [129]=use_obj_on_spray_gun,
+   --OBJ_SPRAY_GUN
+   [261]=use_obj_on_spray_gun,
+},
 --OBJ_CAN_OF_LAMP_OIL
 [124]={
    --on
@@ -1909,6 +2012,19 @@ local usecode_table = {
    --OBJ_DOOR2
    [222]=use_oil_on_door,
    [0]=use_oil_on_dream_door,
+},
+--OBJ_WEED_KILLER
+[128]={
+   --on
+   --OBJ_WEED_SPRAYER
+   [129]=use_obj_on_spray_gun,
+   --OBJ_SPRAY_GUN
+   [261]=use_obj_on_spray_gun,
+},
+--OBJ_WEED_SPRAYER
+[129]={
+   --on
+   [0]=use_spray_gun
 },
 --OBJ_BLOB_OF_OXIUM
 [131]=use_misc_text,
@@ -1969,6 +2085,11 @@ local usecode_table = {
 },
 --OBJ_SCROLL
 [243]=use_reading_material,
+--OBJ_SPRAY_GUN
+[261]={
+   --on
+   [0]=use_spray_gun
+},
 --OBJ_MARTIAN_HOE
 [263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL
@@ -2003,6 +2124,7 @@ local usecode_table = {
 [323]=use_misc_text,
 --OBJ_MARTIAN_PICK
 [327]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+[331]=use_dreamstuff,
 [399]=use_pool_table,
 --OBJ_POOL_QUE
 [401]=use_ready_obj,
@@ -2237,23 +2359,26 @@ function use_obj_on(obj, actor, use_on_tbl)
 	end
 
 	local target_x, target_y = direction_get_loc(dir, actor.x, actor.y)
+
+   local target_entity = map_get_actor(target_x, target_y, actor.z)
+   if target_entity == nil then
+      target_entity = map_get_obj(target_x, target_y, actor.z)
+   end
 	
-	local target_obj = map_get_obj(target_x, target_y, actor.z)
-	
-	if target_obj ~= nil then
-		print(target_obj.name.."\n\n")
-		local on = use_on_tbl[target_obj.obj_n]
+	if target_entity ~= nil then
+		print(target_entity.name.."\n\n")
+		local on = use_on_tbl[target_entity.obj_n]
 		if on ~= nil then
 			if type(on) == "function" then
 				local func = on
-				func(obj, target_obj, actor)
+				func(obj, target_entity, actor)
 			else
-				use_obj_on_to(obj, target_obj, actor, on)
+				use_obj_on_to(obj, target_entity, actor, on)
 			end
 		else
 			local func = use_on_tbl[0]
 			if func ~= nil then
-				func(obj, target_obj, actor)
+				func(obj, target_entity, actor)
 			else
 				printl("NO_EFFECT")
 			end

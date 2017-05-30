@@ -315,28 +315,6 @@ function actor_move_diagonal(actor, x_direction, y_direction)
    return did_move and 1 or 0
 end
 
-function toss_actor(actor, from_x, from_y, from_z, arg_0)
-
-   local random = math.random
-   local player_loc = player_get_location()
-
-   local i
-   for i=1,8 do
-
-      local new_x = random(1, 4) + random(1, 4) + from_x - 5
-      local new_y = random(1, 4) + random(1, 4) + from_y - 5
-      
-      if arg_0 == 0 
-         or player_loc.x - 5 > new_x or player_loc.x + 5 < new_x or player_loc.y - 5 > new_y or player_loc.y + 5 < new_y then
-         
-         if Actor.move(actor, new_x, new_y, from_z) == true then return true end
-         
-      end
-   end
-   
-   return false
-end
-
 function actor_map_dmg(actor, map_x, map_y, map_z)
 	local obj_n = actor.obj_n
 	local actor_type = actor_tbl[obj_n]

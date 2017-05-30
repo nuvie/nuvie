@@ -96,6 +96,41 @@ function get_weapon_damage(weapon)
    return dmg
 end
 
+function sub_1B432(attacker, target)
+
+end
+
+function actor_get_weapon(attacker, target)
+   local int_test = false
+   local selected_weapon = attacker
+   if not actor_has_bad_alignment(attacker) then
+      if math.random(1, 0x1e) <= actor_int_adj(attacker) then
+         int_test = true
+      end
+   end
+   local range = actor_get_combat_range(attacker, target.x, target.y)
+
+   for obj in actor_inventory(actor) do
+      if get_weapon_damage(obj) > 0 and get_weapon_range(obj) >= range then
+         if (obj.obj_n ~= 129 and obj.obj_n ~= 261) --OBJ_WEED_SPRAYER, OBJ_SPRAY_GUN
+                 or (obj.quality ~= 0 and obj.invisible)
+                 or (obj.quality == 0 and (is_plant_obj(target) or (target.luatype=="actor" and (is_actor_stat_bit_set(target.obj_n, 7) and not is_actor_stat_bit_set(target.obj_n, 14))))) then
+
+            local weapon_requires_int = false
+            if obj.obj_n == 240 --OBJ_HEAT_RAY_GUN
+               or obj.obj_n == 241 --OBJ_FREEZE_RAY_GUN
+               or obj.obj_n == 45 then
+               weapon_requires_int = true
+            end
+
+            --if int_test == true and weapon_requires_int == true or obj.obj_n == 43 and not sub_1B432(attacker, target) then --OBJ_SHOTGUN
+         end
+
+      end
+   end
+
+end
+
 function attack_dex_saving_throw(attacker, defender, weapon)
    if defender == nil or defender.luatype == "obj" then
       return true

@@ -44,12 +44,26 @@ function talk_script_fix_panels()
 
 end
 
+function talk_script_spawn_monster_footprints()
+   g_objlist_1d22_unk = 0
+   local player_loc = player_get_location()
+   for i=0,5 do
+      local monster = Actor.new(145, player_loc.x, player_loc.y, player_loc.z) --OBJ_MONSTER_FOOTPRINTS
+
+      actor_init(monster)
+      toss_actor(monster, player_loc.x, player_loc.y, player_loc.z, 0)
+      monster.wt = 0x8
+      g_objlist_1d22_unk = g_objlist_1d22_unk + 1
+   end
+end
+
 local talk_script_tbl = {
    [1]=talk_script_fix_panels,
    [6]=open_gates_at_olympus_mons,
    [7]=open_dream_machine_door,
    [9]=function() talk_script_status = 9 end,
    [0xA]=function() talk_script_status = 0xA end,
+   [0x35]=talk_script_spawn_monster_footprints,
 }
 
 function talk_script(script_number)

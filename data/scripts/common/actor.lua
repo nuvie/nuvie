@@ -175,3 +175,28 @@ function actor_move_towards_loc(actor, map_x, map_y)
    return var_6
 
 end
+
+function toss_actor(actor, from_x, from_y, from_z, arg_0)
+
+   local random = math.random
+   local player_loc = player_get_location()
+
+   for i=1,8 do
+
+      local new_x = random(1, 4) + random(1, 4) + from_x - 5
+      local new_y = random(1, 4) + random(1, 4) + from_y - 5
+
+      if arg_0 == 0
+              or player_loc.x - 5 > new_x or player_loc.x + 5 < new_x or player_loc.y - 5 > new_y or player_loc.y + 5 < new_y then
+
+         if Actor.move(actor, new_x, new_y, from_z) == true then return true end
+
+      end
+   end
+
+   return false
+end
+
+function actor_has_bad_alignment(actor)
+   return actor.wt == ALIGNMENT_EVIL or actor.wt == ALIGNMENT_CHAOTIC
+end

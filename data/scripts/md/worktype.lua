@@ -31,6 +31,11 @@ function select_target_actor(src_actor)
    return target_actor
 end
 
+function worktype_8_combat_attack(actor)
+   g_selected_obj = select_target_actor(actor)
+
+end
+
 function worktype_15_your_mother(actor)
    if actor_move(actor, DIR_SOUTH) == false then
       local target_actor = select_target_actor(actor)

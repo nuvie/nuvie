@@ -1,3 +1,11 @@
+2017-05-30  Eric Fry <efry at users.sourceforge.net>
+	* moved custom actor tiles from data/images/actors/U6 to
+	  data/images/tiles/U6
+	* Added support for replacing all tiles. Just put a bmp file called
+	  custom_tiles.bmp into data/images/tiles/U6/
+	* More work on MD dreamworld. Use dreamstuff. use spray gun.
+	* Allow MD usecode to target actors.
+
 2017-05-07  Eric Fry <efry at users.sourceforge.net>
 	* Moved technical docs from subversion into the main Nuvie git repo.
 

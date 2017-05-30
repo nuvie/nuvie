@@ -132,6 +132,7 @@ class ActorManager
  bool loadCustomTiles(nuvie_game_t game_type);
  void loadNPCTiles(std::string datadir);
  void loadAvatarTiles(std::string datadir);
+ void loadCustomBaseTiles(std::string datadir);
 };
 
 #endif /* __ActorManager_h__ */
