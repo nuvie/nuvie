@@ -119,6 +119,10 @@
 	<td class="summary">export map to Tiled TMX files.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#tileset_export">tileset_export (filename)</a></td>
+	<td class="summary">export tileset to a bmp file in the current savegame directory.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#tile_get_flag">tile_get_flag (tile_number, flag_set, bit_number)</a></td>
 	<td class="summary">get a tile flag for a given tile number</td>
 	</tr>
@@ -1026,6 +1030,28 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
            <span class="types"><span class="type">bool</span></span>
         returns true if the tmx files were created successfully. false on error
     </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tileset_export"></a>
+    <strong>tileset_export (filename)</strong>
+    </dt>
+    <dd>
+    export tileset to a bmp file in the current savegame directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+
+
+        </li>
+    </ul>
+
 
 
 

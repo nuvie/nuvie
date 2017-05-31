@@ -276,6 +276,8 @@ static int nscript_map_enable_temp_actor_cleaning(lua_State *L);
 
 static int nscript_map_export_tmx_files(lua_State *L);
 
+static int nscript_tileset_export(lua_State *L);
+
 static int nscript_tile_get_flag(lua_State *L);
 static int nscript_tile_get_description(lua_State *L);
 
@@ -752,6 +754,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_map_export_tmx_files);
    lua_setglobal(L, "map_export_tmx_files");
+
+   lua_pushcfunction(L, nscript_tileset_export);
+   lua_setglobal(L, "tileset_export");
 
    lua_pushcfunction(L, nscript_game_get_ui_style);
    lua_setglobal(L, "game_get_ui_style");
@@ -3437,6 +3442,21 @@ static int nscript_map_export_tmx_files(lua_State *L)
   return 1;
 }
 
+/***
+export tileset to a bmp file in the current savegame directory.
+@function tileset_export
+@string filename
+ */
+static int nscript_tileset_export(lua_State *L)
+{
+   Game *game = Game::get_game();
+   std::string filename(lua_tostring(L, 1));
+   std::string path;
+   build_path(game->get_save_manager()->get_savegame_directory(), filename, path);
+   game->get_tile_manager()->exportTilesetToBmpFile(path, false);
+
+   return 0;
+}
 /***
 get a tile flag for a given tile number
 @function tile_get_flag

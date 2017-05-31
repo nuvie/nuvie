@@ -1,3 +1,7 @@
+2017-05-31  Eric Fry <efry at users.sourceforge.net>
+	* Added new altcode alt-914 This dumps out the current tileset
+	  to a file called 'custom_tiles.bmp' in the savegame directory.
+
 2017-05-30  Eric Fry <efry at users.sourceforge.net>
 	* moved custom actor tiles from data/images/actors/U6 to
 	  data/images/tiles/U6

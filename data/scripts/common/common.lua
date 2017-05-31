@@ -307,6 +307,12 @@ function altcode_913_export_tmx_map_files()
    end
 end
 
+function altcode_914_export_tileset()
+   print("Exporting tileset to \"custom_tiles.bmp\" in the savegame directory.\n")
+   tileset_export("custom_tiles.bmp")
+   print("done.\n\n")
+end
+
 function altcode_999_find_objs_on_map()
    print("Find Object\nObj_n: ")
    local input = input_select(nil, true)
@@ -344,6 +350,7 @@ local altcode_tbl = {
    [242]=altcode_242_set_actor_talk_flag,
    [250]=altcode_250_create_object,
    [913]=altcode_913_export_tmx_map_files,
+   [914]=altcode_914_export_tileset,
    [999]=altcode_999_find_objs_on_map,
 }
 

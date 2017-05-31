@@ -192,7 +192,7 @@ class TileManager
 
    Tile *loadCustomTiles(const std::string filename, bool overwrite_tiles, bool copy_tileflags, uint16 tile_num_start_offset);
    void freeCustomTiles();
-   void exportTilesetToBmpFile(std::string filename);
+   void exportTilesetToBmpFile(std::string filename, bool fixupU6Shoreline=true);
  protected:
 
    bool loadAnimData();
