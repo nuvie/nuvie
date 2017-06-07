@@ -373,6 +373,8 @@ Source: "data\sekeys.txt"; DestDir: "{app}\data\"; Flags: ignoreversion
 Source: "data\mdkeys.txt"; DestDir: "{app}\data\"; Flags: ignoreversion
 Source: "data\images\tiles\U6\avatar_001_0410.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
 Source: "data\images\tiles\U6\avatar_001_0339.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
+Source: "data\images\tiles\U6\avatar_006_0410.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
+Source: "data\images\tiles\U6\avatar_006_0339.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
 Source: "data\images\tiles\U6\avatar_010_0410.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
 Source: "data\images\tiles\U6\avatar_010_0339.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
 Source: "data\images\tiles\U6\actor_002_0339.bmp"; DestDir: "{app}\data\images\tiles\U6"; Flags: ignoreversion
