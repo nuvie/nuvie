@@ -3443,20 +3443,42 @@ static int nscript_map_export_tmx_files(lua_State *L)
 }
 
 /***
-export tileset to a bmp file in the current savegame directory.
+export tileset to a bmp file 'data/images/tiles/nn/custom_tiles.bmp' in the current savegame directory.
 @function tileset_export
-@string filename
+@bool[opt=false] overWriteFile specifies if the output file should be overwritten if it already exists.
+@treturn bool returns true if the was written to disk. false otherwise
  */
 static int nscript_tileset_export(lua_State *L)
 {
    Game *game = Game::get_game();
-   std::string filename(lua_tostring(L, 1));
-   std::string path;
-   build_path(game->get_save_manager()->get_savegame_directory(), filename, path);
-   game->get_tile_manager()->exportTilesetToBmpFile(path, false);
+   bool overwriteFile = false;
 
-   return 0;
+  if(lua_gettop(L) >= 1) {
+    overwriteFile = (bool)lua_toboolean(L, 1);
+  }
+
+   std::string path;
+   build_path(game->get_save_manager()->get_savegame_directory(), "data", path);
+   build_path(path, "images", path);
+   build_path(path, "tiles", path);
+   build_path(path, get_game_tag(game->get_game_type()), path);
+
+   if(!directory_exists(path.c_str())) {
+     mkdir_recursive(path.c_str(), 0700);
+   }
+
+  build_path(path, "custom_tiles.bmp", path);
+
+  if(!overwriteFile && file_exists(path.c_str())) {
+    lua_pushboolean(L, false);
+  } else {
+    game->get_tile_manager()->exportTilesetToBmpFile(path, false);
+    lua_pushboolean(L, true);
+  }
+
+   return 1;
 }
+
 /***
 get a tile flag for a given tile number
 @function tile_get_flag

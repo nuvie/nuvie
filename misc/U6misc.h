@@ -26,6 +26,7 @@ uint8 get_game_type(const char *string);
 nuvie_game_t get_game_type(Configuration *config);
 void build_path(std::string path, std::string filename, std::string &full_path);
 bool directory_exists(const char *directory);
+bool file_exists(const char *path);
 void print_b(DebugLevelType level,uint8 num);
 void print_b16(DebugLevelType level,uint16 num);
 void print_indent(DebugLevelType level,uint8 indent);

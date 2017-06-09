@@ -186,7 +186,7 @@ int mkdir_recursive(std::string path, int mode)
       
       tmp_path += dir;
       tmp_path += U6PATH_DELIMITER;
-      if(directory_exists(tmp_path.c_str()) == false)
+      if(!directory_exists(tmp_path.c_str()))
       {
 #if defined(WIN32)
          int ret = mkdir(tmp_path.c_str());
@@ -259,6 +259,16 @@ bool directory_exists(const char *directory)
    return false;
 
  return true;
+}
+
+bool file_exists(const char *path)
+{
+  FILE *f = fopen(path, "rb");
+  if(f == NULL)
+    return false;
+
+  fclose(f);
+  return true;
 }
 
 void print_b(DebugLevelType level,uint8 num)

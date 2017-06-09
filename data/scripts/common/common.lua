@@ -126,6 +126,17 @@ function abs(val)
    return val
 end
 
+--collect Yes/No input from user and return true if Yes selected. false otherwise.
+function input_should_proceed()
+   local input = input_select("yn", true)
+   print("\n")
+   if input == nil or input == "N" or input == "n" then
+      return false
+   end
+
+   return true
+end
+
 function play_midgame_sequence(seq_num)
    local ui_style = game_get_ui_style()
    
@@ -293,11 +304,11 @@ end
 
 function altcode_913_export_tmx_map_files()
    print("\nExport maps to savedir? ")
-   input = input_select("yn", true)
-   print("\n")
-   if input == nil or input == "N" or input == "n" then
+
+   if not input_should_proceed() then
       return
    end
+
    print("saving.\n")
    script_wait(1)
    if map_export_tmx_files() == true then
@@ -308,8 +319,14 @@ function altcode_913_export_tmx_map_files()
 end
 
 function altcode_914_export_tileset()
-   print("Exporting tileset to \"custom_tiles.bmp\" in the savegame directory.\n")
-   tileset_export("custom_tiles.bmp")
+   print("Exporting tileset to \"data/images/tiles/"..config_get_game_type().."/custom_tiles.bmp\" in the savegame directory.\n")
+   if not tileset_export() then
+      print("file already exists. Overwrite? ")
+      if not input_should_proceed() then
+         return
+      end
+      tileset_export(true)
+   end
    print("done.\n\n")
 end
 

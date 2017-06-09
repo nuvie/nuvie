@@ -1,3 +1,8 @@
+2017-06-09  Eric Fry <efry at users.sourceforge.net>
+	* Moved tileset export file to data/images/tiles/nn/custom_tiles.bmp
+	  in the current savegame directory.
+	* Don't automatically overwrite custom_tiles.bmp if it already exists
+
 2017-06-07  Eric Fry <efry at users.sourceforge.net>
 	* Added Blonde hair avatar sprites created by Kenneth Kully.
 
