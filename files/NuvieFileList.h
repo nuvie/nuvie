@@ -25,6 +25,7 @@
 #include <sys/types.h>
 #include <string>
 #include <list>
+#include <set>
 
 using std::list;
 using std::string;
@@ -69,6 +70,8 @@ class NuvieFileList
    std::string *next();
    std::string *get_latest();
    uint32 get_num_files();
+
+   std::set<std::string> get_filenames();
 
    void close();
 

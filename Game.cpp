@@ -758,3 +758,17 @@ void Game::update_once_display()
     sound_manager->update();
     event->wait();
 }
+
+/* return the fullpath to the datafile. First look for it in the savegame directory.
+ * Then in the app data directory.
+ */
+std::string Game::get_data_file_path(std::string datafile) {
+  std::string path;
+  build_path("data", datafile, path);
+  build_path(save_manager->get_savegame_directory(), path, path);
+  if(!file_exists(path.c_str())) {
+    build_path(gui->get_data_dir(), datafile, path);
+  }
+
+  return path;
+}

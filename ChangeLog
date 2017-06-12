@@ -1,3 +1,7 @@
+2017-06-12  Eric Fry <efry at users.sourceforge.net>
+	* Attempt to load custom tiles from a data directory in the savegame directory.
+	  If that doesn't exist then load them from the App data dir.
+
 2017-06-09  Eric Fry <efry at users.sourceforge.net>
 	* Moved tileset export file to data/images/tiles/nn/custom_tiles.bmp
 	  in the current savegame directory.

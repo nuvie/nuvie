@@ -25,6 +25,7 @@
  */
 
 #include <string>
+#include <set>
 #include "ObjManager.h"
 #include "ActorList.h"
 
@@ -133,6 +134,7 @@ class ActorManager
  void loadNPCTiles(std::string datadir);
  void loadAvatarTiles(std::string datadir);
  void loadCustomBaseTiles(std::string datadir);
+ std::set<std::string> getCustomTileFilenames(std::string datadir, std::string filenamePrefix);
 };
 
 #endif /* __ActorManager_h__ */
