@@ -24,6 +24,7 @@
  *
  */
 #include <vector>
+#include <string>
 
 class Configuration;
 class Script;
