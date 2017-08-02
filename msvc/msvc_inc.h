@@ -1,11 +1,12 @@
-#ifndef	__vc7inc_h__
-#define __vc7inc_h__
+#ifndef __msvc_inc_h__
+#define __msvc_inc_h__
 
 /*
- *  vc7inc.h
+ *  msvc_inc.h
  *  Nuvie
  *
  *  Created by Nelno the Amoeba on Fri Nov 14 13 2003.
+ *  Modified by Michael Fink for Visual Studio 2017 compatibility.
  *  Copyright (c) 2003. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -24,9 +25,7 @@
  *
  */
 
-#define snprintf	_snprintf
 #define strcasecmp	_stricmp
-#define strdup		_strdup
 
 #include <locale>
 #include <direct.h>
@@ -55,10 +54,6 @@
 __inline float roundf (float val) { return fmod( val, 1.0f ) >= 0.5f ? ceilf (val) : floorf (val); }
 #define nearbyint roundf
 
-#define mkdir _mkdir
-
 #define __func__ __FUNCTION__
 
-#define M_PI	3.1415926535897932384626433832795
-
-#endif	/* __vc7inc_h__ */
+#endif	/* __msvc_inc_h__ */

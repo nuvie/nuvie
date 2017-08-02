@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -10,9 +10,7 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <VCTargetsPath Condition="'$(VCTargetsPath11)' != '' and '$(VSVersion)' == '' and '$(VisualStudioVersion)' == ''">$(VCTargetsPath11)</VCTargetsPath>
-  </PropertyGroup>
+  <PropertyGroup Label="Globals" />
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
@@ -21,13 +19,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -63,20 +61,14 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StringPooling>true</StringPooling>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../lua;../sound;../sound/adplug;../sound/mixer;../save;../fonts;../visualc7;../script;../weather;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;../actors;../conf;../files;../gui;../menus;../misc;../pathfinder;../portraits;../screen;../views;../usecode;../lua;../sound;../sound/adplug;../sound/mixer;../save;../fonts;../script;../weather;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AssemblerListingLocation>.\Release\intermediate\</AssemblerListingLocation>
-      <PrecompiledHeaderOutputFile>.\Release\intermediate\nuvie.pch</PrecompiledHeaderOutputFile>
-      <ObjectFileName>.\Release\intermediate\</ObjectFileName>
-      <ProgramDataBaseFileName>.\Release\intermediate\</ProgramDataBaseFileName>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\nuvie.tlb</TypeLibraryName>
@@ -92,26 +84,18 @@
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>sdl.lib;sdlmain.lib;sdl_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
       <MinimalRebuild>true</MinimalRebuild>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;../actors;../conf;../files;../gui;../misc;../pathfinder;../screen;../views;../usecode;../lua;../sound;../sound/adplug;../sound/mixer;../save;../fonts;../visualc7;../script;../weather;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..;../actors;../conf;../files;../gui;../menus;../misc;../pathfinder;../portraits;../screen;../views;../usecode;../lua;../sound;../sound/adplug;../sound/mixer;../save;../fonts;../script;../weather;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;_STLP_DEBUG;_STLP_USE_NEWALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AssemblerListingLocation>.\Debug\intermediate\</AssemblerListingLocation>
-      <PrecompiledHeaderOutputFile>.\Debug\intermediate\nuvie.pch</PrecompiledHeaderOutputFile>
-      <ObjectFileName>.\Debug\intermediate\</ObjectFileName>
-      <ProgramDataBaseFileName>.\Debug\intermediate\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Midl>
@@ -130,12 +114,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>msvcrt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalDependencies>sdl.lib;sdlmain.lib;sdl_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CustomBuild Include="..\ChangeLog" />
-    <CustomBuild Include="..\nuvie.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\actors\Actor.cpp" />
@@ -143,16 +126,19 @@
     <ClCompile Include="..\actors\MDActor.cpp" />
     <ClCompile Include="..\actors\SEActor.cpp" />
     <ClCompile Include="..\actors\U6Actor.cpp" />
+    <ClCompile Include="..\actors\WOUActor.cpp" />
     <ClCompile Include="..\AnimManager.cpp" />
     <ClCompile Include="..\Background.cpp" />
     <ClCompile Include="..\Book.cpp" />
     <ClCompile Include="..\CommandBar.cpp" />
+    <ClCompile Include="..\CommandBarNewUI.cpp" />
     <ClCompile Include="..\conf\Configuration.cpp" />
     <ClCompile Include="..\conf\XMLNode.cpp" />
     <ClCompile Include="..\conf\XMLTree.cpp" />
     <ClCompile Include="..\Console.cpp" />
     <ClCompile Include="..\Converse.cpp" />
     <ClCompile Include="..\ConverseGump.cpp" />
+    <ClCompile Include="..\ConverseGumpWOU.cpp" />
     <ClCompile Include="..\ConverseInterpret.cpp" />
     <ClCompile Include="..\ConverseSpeech.cpp" />
     <ClCompile Include="..\Cursor.cpp" />
@@ -161,17 +147,22 @@
     <ClCompile Include="..\EffectManager.cpp" />
     <ClCompile Include="..\EggManager.cpp" />
     <ClCompile Include="..\Event.cpp" />
+    <ClCompile Include="..\files\NuvieBmpFile.cpp" />
     <ClCompile Include="..\files\NuvieFileList.cpp" />
     <ClCompile Include="..\files\NuvieIO.cpp" />
     <ClCompile Include="..\files\NuvieIOFile.cpp" />
+    <ClCompile Include="..\files\TMXMap.cpp" />
     <ClCompile Include="..\files\U6Bmp.cpp" />
     <ClCompile Include="..\files\U6Lib_n.cpp" />
     <ClCompile Include="..\files\U6Lzw.cpp" />
     <ClCompile Include="..\files\U6Shape.cpp" />
+    <ClCompile Include="..\fonts\BMPFont.cpp" />
     <ClCompile Include="..\fonts\ConvFont.cpp" />
     <ClCompile Include="..\fonts\Font.cpp" />
     <ClCompile Include="..\fonts\FontManager.cpp" />
     <ClCompile Include="..\fonts\U6Font.cpp" />
+    <ClCompile Include="..\fonts\WOUFont.cpp" />
+    <ClCompile Include="..\FpsCounter.cpp" />
     <ClCompile Include="..\Game.cpp" />
     <ClCompile Include="..\GameClock.cpp" />
     <ClCompile Include="..\GameSelect.cpp" />
@@ -187,6 +178,7 @@
     <ClCompile Include="..\GUI\GUI_Scroller.cpp" />
     <ClCompile Include="..\GUI\GUI_text.cpp" />
     <ClCompile Include="..\GUI\GUI_TextInput.cpp" />
+    <ClCompile Include="..\GUI\GUI_TextToggleButton.cpp" />
     <ClCompile Include="..\GUI\GUI_widget.cpp" />
     <ClCompile Include="..\GUI\GUI_YesNoDialog.cpp" />
     <ClCompile Include="..\keybinding\KeyActions.cpp" />
@@ -196,7 +188,10 @@
     <ClCompile Include="..\lua\lapi.c" />
     <ClCompile Include="..\lua\lauxlib.c" />
     <ClCompile Include="..\lua\lbaselib.c" />
+    <ClCompile Include="..\lua\lbitlib.c" />
     <ClCompile Include="..\lua\lcode.c" />
+    <ClCompile Include="..\lua\lcorolib.c" />
+    <ClCompile Include="..\lua\lctype.c" />
     <ClCompile Include="..\lua\ldblib.c" />
     <ClCompile Include="..\lua\ldebug.c" />
     <ClCompile Include="..\lua\ldo.c" />
@@ -226,11 +221,20 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\Map.cpp" />
     <ClCompile Include="..\MapWindow.cpp" />
+    <ClCompile Include="..\menus\AudioDialog.cpp" />
+    <ClCompile Include="..\menus\CheatsDialog.cpp" />
+    <ClCompile Include="..\menus\GameMenuDialog.cpp" />
+    <ClCompile Include="..\menus\GameplayDialog.cpp" />
+    <ClCompile Include="..\menus\InputDialog.cpp" />
+    <ClCompile Include="..\menus\JoystickDialog.cpp" />
+    <ClCompile Include="..\menus\VideoDialog.cpp" />
     <ClCompile Include="..\misc\iAVLTree.cpp" />
+    <ClCompile Include="..\misc\SDLUtils.cpp" />
     <ClCompile Include="..\misc\U6LineWalker.cpp" />
     <ClCompile Include="..\misc\U6LList.cpp" />
     <ClCompile Include="..\misc\U6misc.cpp" />
     <ClCompile Include="..\MsgScroll.cpp" />
+    <ClCompile Include="..\MsgScrollNewUI.cpp" />
     <ClCompile Include="..\nuvie.cpp" />
     <ClCompile Include="..\Obj.cpp" />
     <ClCompile Include="..\ObjManager.cpp" />
@@ -246,7 +250,10 @@
     <ClCompile Include="..\pathfinder\SeekPath.cpp" />
     <ClCompile Include="..\pathfinder\U6AStarPath.cpp" />
     <ClCompile Include="..\Player.cpp" />
-    <ClCompile Include="..\Portrait.cpp" />
+    <ClCompile Include="..\portraits\Portrait.cpp" />
+    <ClCompile Include="..\portraits\PortraitMD.cpp" />
+    <ClCompile Include="..\portraits\PortraitSE.cpp" />
+    <ClCompile Include="..\portraits\PortraitU6.cpp" />
     <ClCompile Include="..\save\SaveDialog.cpp" />
     <ClCompile Include="..\save\SaveGame.cpp" />
     <ClCompile Include="..\save\SaveManager.cpp" />
@@ -259,12 +266,16 @@
     <ClCompile Include="..\script\Script.cpp" />
     <ClCompile Include="..\script\ScriptActor.cpp" />
     <ClCompile Include="..\script\ScriptCutscene.cpp" />
+    <ClCompile Include="..\sound\AdLibSfxManager.cpp" />
     <ClCompile Include="..\sound\adplug\adplug_player.cpp" />
     <ClCompile Include="..\sound\adplug\emuopl.cpp" />
     <ClCompile Include="..\sound\adplug\fmopl.c" />
+    <ClCompile Include="..\sound\adplug\mid.cpp" />
+    <ClCompile Include="..\sound\adplug\OplClass.cpp" />
     <ClCompile Include="..\sound\adplug\u6m.cpp" />
     <ClCompile Include="..\sound\CustomSfxManager.cpp" />
     <ClCompile Include="..\sound\mixer\audiostream.cpp" />
+    <ClCompile Include="..\sound\mixer\decoder\AdLibSfxStream.cpp" />
     <ClCompile Include="..\sound\mixer\decoder\FMtownsDecoderStream.cpp" />
     <ClCompile Include="..\sound\mixer\decoder\PCSpeaker.cpp" />
     <ClCompile Include="..\sound\mixer\decoder\PCSpeakerStream.cpp" />
@@ -280,6 +291,7 @@
     <ClCompile Include="..\sound\mixer\rate.cpp" />
     <ClCompile Include="..\sound\mixer\sdl-mixer.cpp" />
     <ClCompile Include="..\sound\mixer\timestamp.cpp" />
+    <ClCompile Include="..\sound\OriginFXAdLibDriver.cpp" />
     <ClCompile Include="..\sound\PCSpeakerSfxManager.cpp" />
     <ClCompile Include="..\sound\Song.cpp" />
     <ClCompile Include="..\sound\SongAdPlug.cpp" />
@@ -288,8 +300,6 @@
     <ClCompile Include="..\Text.cpp" />
     <ClCompile Include="..\TileManager.cpp" />
     <ClCompile Include="..\TimedEvent.cpp" />
-    <ClCompile Include="..\usecode\MDUseCode.cpp" />
-    <ClCompile Include="..\usecode\SEUseCode.cpp" />
     <ClCompile Include="..\usecode\U6UseCode.cpp" />
     <ClCompile Include="..\usecode\UseCode.cpp" />
     <ClCompile Include="..\views\ActorView.cpp" />
@@ -302,15 +312,21 @@
     <ClCompile Include="..\views\InventoryView.cpp" />
     <ClCompile Include="..\views\InventoryWidget.cpp" />
     <ClCompile Include="..\views\MapEditorView.cpp" />
+    <ClCompile Include="..\views\MDSkyStripWidget.cpp" />
     <ClCompile Include="..\views\PartyView.cpp" />
     <ClCompile Include="..\views\PortraitView.cpp" />
     <ClCompile Include="..\views\PortraitViewGump.cpp" />
+    <ClCompile Include="..\views\ScrollViewGump.cpp" />
+    <ClCompile Include="..\views\ScrollWidgetGump.cpp" />
+    <ClCompile Include="..\views\SignViewGump.cpp" />
     <ClCompile Include="..\views\SpellView.cpp" />
     <ClCompile Include="..\views\SpellViewGump.cpp" />
+    <ClCompile Include="..\views\SunMoonRibbon.cpp" />
+    <ClCompile Include="..\views\SunMoonStripWidget.cpp" />
     <ClCompile Include="..\views\View.cpp" />
     <ClCompile Include="..\views\ViewManager.cpp" />
-    <ClCompile Include="..\visualc7\dirent.cpp" />
     <ClCompile Include="..\Weather.cpp" />
+    <ClCompile Include="dirent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\actors\Actor.h" />
@@ -320,10 +336,12 @@
     <ClInclude Include="..\actors\U6Actor.h" />
     <ClInclude Include="..\actors\U6ActorTypes.h" />
     <ClInclude Include="..\actors\U6WorkTypes.h" />
+    <ClInclude Include="..\actors\WOUActor.h" />
     <ClInclude Include="..\AnimManager.h" />
     <ClInclude Include="..\Background.h" />
     <ClInclude Include="..\Book.h" />
     <ClInclude Include="..\CommandBar.h" />
+    <ClInclude Include="..\CommandBarNewUI.h" />
     <ClInclude Include="..\conf\ConfigNode.h" />
     <ClInclude Include="..\conf\Configuration.h" />
     <ClInclude Include="..\conf\misc.h" />
@@ -332,6 +350,7 @@
     <ClInclude Include="..\Console.h" />
     <ClInclude Include="..\Converse.h" />
     <ClInclude Include="..\ConverseGump.h" />
+    <ClInclude Include="..\ConverseGumpWOU.h" />
     <ClInclude Include="..\ConverseInterpret.h" />
     <ClInclude Include="..\ConverseSpeech.h" />
     <ClInclude Include="..\Cursor.h" />
@@ -339,17 +358,22 @@
     <ClInclude Include="..\EffectManager.h" />
     <ClInclude Include="..\EggManager.h" />
     <ClInclude Include="..\Event.h" />
+    <ClInclude Include="..\files\NuvieBmpFile.h" />
     <ClInclude Include="..\files\NuvieFileList.h" />
     <ClInclude Include="..\files\NuvieIO.h" />
     <ClInclude Include="..\files\NuvieIOFile.h" />
+    <ClInclude Include="..\files\TMXMap.h" />
     <ClInclude Include="..\files\U6Bmp.h" />
     <ClInclude Include="..\files\U6Lib_n.h" />
     <ClInclude Include="..\files\U6Lzw.h" />
     <ClInclude Include="..\files\U6Shape.h" />
+    <ClInclude Include="..\fonts\BMPFont.h" />
     <ClInclude Include="..\fonts\ConvFont.h" />
     <ClInclude Include="..\fonts\Font.h" />
     <ClInclude Include="..\fonts\FontManager.h" />
     <ClInclude Include="..\fonts\U6Font.h" />
+    <ClInclude Include="..\fonts\WOUFont.h" />
+    <ClInclude Include="..\FpsCounter.h" />
     <ClInclude Include="..\Game.h" />
     <ClInclude Include="..\GameClock.h" />
     <ClInclude Include="..\GameSelect.h" />
@@ -368,6 +392,7 @@
     <ClInclude Include="..\GUI\GUI_status.h" />
     <ClInclude Include="..\GUI\GUI_text.h" />
     <ClInclude Include="..\GUI\GUI_TextInput.h" />
+    <ClInclude Include="..\GUI\GUI_TextToggleButton.h" />
     <ClInclude Include="..\GUI\GUI_types.h" />
     <ClInclude Include="..\GUI\GUI_widget.h" />
     <ClInclude Include="..\GUI\GUI_YesNoDialog.h" />
@@ -379,6 +404,7 @@
     <ClInclude Include="..\lua\lapi.h" />
     <ClInclude Include="..\lua\lauxlib.h" />
     <ClInclude Include="..\lua\lcode.h" />
+    <ClInclude Include="..\lua\lctype.h" />
     <ClInclude Include="..\lua\ldebug.h" />
     <ClInclude Include="..\lua\ldo.h" />
     <ClInclude Include="..\lua\lfunc.h" />
@@ -403,14 +429,24 @@
     <ClInclude Include="..\main.h" />
     <ClInclude Include="..\Map.h" />
     <ClInclude Include="..\MapWindow.h" />
+    <ClInclude Include="..\menus\AudioDialog.h" />
+    <ClInclude Include="..\menus\CheatsDialog.h" />
+    <ClInclude Include="..\menus\GameMenuDialog.h" />
+    <ClInclude Include="..\menus\GameplayDialog.h" />
+    <ClInclude Include="..\menus\InputDialog.h" />
+    <ClInclude Include="..\menus\JoystickDialog.h" />
+    <ClInclude Include="..\menus\VideoDialog.h" />
     <ClInclude Include="..\misc\ActorList.h" />
     <ClInclude Include="..\misc\CallBack.h" />
     <ClInclude Include="..\misc\iAVLTree.h" />
     <ClInclude Include="..\misc\MapEntity.h" />
+    <ClInclude Include="..\misc\SDLUtils.h" />
+    <ClInclude Include="..\misc\SDL_compat.h" />
     <ClInclude Include="..\misc\U6LineWalker.h" />
     <ClInclude Include="..\misc\U6LList.h" />
     <ClInclude Include="..\misc\U6misc.h" />
     <ClInclude Include="..\MsgScroll.h" />
+    <ClInclude Include="..\MsgScrollNewUI.h" />
     <ClInclude Include="..\nuvie.h" />
     <ClInclude Include="..\nuvieDefs.h" />
     <ClInclude Include="..\Obj.h" />
@@ -427,7 +463,10 @@
     <ClInclude Include="..\pathfinder\SeekPath.h" />
     <ClInclude Include="..\pathfinder\U6AStarPath.h" />
     <ClInclude Include="..\Player.h" />
-    <ClInclude Include="..\Portrait.h" />
+    <ClInclude Include="..\portraits\Portrait.h" />
+    <ClInclude Include="..\portraits\PortraitMD.h" />
+    <ClInclude Include="..\portraits\PortraitSE.h" />
+    <ClInclude Include="..\portraits\PortraitU6.h" />
     <ClInclude Include="..\save\Objlist.h" />
     <ClInclude Include="..\save\SaveDialog.h" />
     <ClInclude Include="..\save\SaveGame.h" />
@@ -441,14 +480,18 @@
     <ClInclude Include="..\script\Script.h" />
     <ClInclude Include="..\script\ScriptActor.h" />
     <ClInclude Include="..\script\ScriptCutscene.h" />
+    <ClInclude Include="..\sound\AdLibSfxManager.h" />
     <ClInclude Include="..\sound\adplug\adplug_player.h" />
     <ClInclude Include="..\sound\adplug\emuopl.h" />
     <ClInclude Include="..\sound\adplug\fmopl.h" />
+    <ClInclude Include="..\sound\adplug\mid.h" />
     <ClInclude Include="..\sound\adplug\opl.h" />
+    <ClInclude Include="..\sound\adplug\OplClass.h" />
     <ClInclude Include="..\sound\adplug\silentopl.h" />
     <ClInclude Include="..\sound\adplug\u6m.h" />
     <ClInclude Include="..\sound\CustomSfxManager.h" />
     <ClInclude Include="..\sound\mixer\audiostream.h" />
+    <ClInclude Include="..\sound\mixer\decoder\AdLibSfxStream.h" />
     <ClInclude Include="..\sound\mixer\decoder\FMtownsDecoderStream.h" />
     <ClInclude Include="..\sound\mixer\decoder\PCSpeaker.h" />
     <ClInclude Include="..\sound\mixer\decoder\PCSpeakerStream.h" />
@@ -471,6 +514,7 @@
     <ClInclude Include="..\sound\mixer\sdl-mixer.h" />
     <ClInclude Include="..\sound\mixer\timestamp.h" />
     <ClInclude Include="..\sound\mixer\types.h" />
+    <ClInclude Include="..\sound\OriginFXAdLibDriver.h" />
     <ClInclude Include="..\sound\PCSpeakerSfxManager.h" />
     <ClInclude Include="..\sound\sfx.h" />
     <ClInclude Include="..\sound\SfxManager.h" />
@@ -483,8 +527,6 @@
     <ClInclude Include="..\TileManager.h" />
     <ClInclude Include="..\TimedEvent.h" />
     <ClInclude Include="..\U6objects.h" />
-    <ClInclude Include="..\usecode\MDUseCode.h" />
-    <ClInclude Include="..\usecode\SEUseCode.h" />
     <ClInclude Include="..\usecode\U6ObjectTypes.h" />
     <ClInclude Include="..\usecode\U6UseCode.h" />
     <ClInclude Include="..\usecode\UseCode.h" />
@@ -500,22 +542,42 @@
     <ClInclude Include="..\views\InventoryView.h" />
     <ClInclude Include="..\views\InventoryWidget.h" />
     <ClInclude Include="..\views\MapEditorView.h" />
+    <ClInclude Include="..\views\MDSkyStripWidget.h" />
     <ClInclude Include="..\views\PartyView.h" />
     <ClInclude Include="..\views\PortraitView.h" />
     <ClInclude Include="..\views\PortraitViewGump.h" />
+    <ClInclude Include="..\views\ScrollViewGump.h" />
+    <ClInclude Include="..\views\ScrollWidgetGump.h" />
+    <ClInclude Include="..\views\SignViewGump.h" />
     <ClInclude Include="..\views\SpellView.h" />
     <ClInclude Include="..\views\SpellViewGump.h" />
+    <ClInclude Include="..\views\SunMoonRibbon.h" />
+    <ClInclude Include="..\views\SunMoonStripWidget.h" />
     <ClInclude Include="..\views\View.h" />
     <ClInclude Include="..\views\ViewManager.h" />
-    <ClInclude Include="..\visualc7\dirent.h" />
-    <ClInclude Include="..\visualc7\vc7inc.h" />
     <ClInclude Include="..\Weather.h" />
+    <ClInclude Include="dirent.h" />
+    <ClInclude Include="msvc_inc.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\nuvie.cfg.sample" />
     <None Include="..\screen\Scale.inl" />
     <None Include="..\sound\adplug\README" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="msvc_build_notes.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets" Condition="Exists('packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets')" />
+    <Import Project="packages\sdl2.2.0.5\build\native\sdl2.targets" Condition="Exists('packages\sdl2.2.0.5\build\native\sdl2.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets'))" />
+    <Error Condition="!Exists('packages\sdl2.2.0.5\build\native\sdl2.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\sdl2.2.0.5\build\native\sdl2.targets'))" />
+  </Target>
 </Project>
