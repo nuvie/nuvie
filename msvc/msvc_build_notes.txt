@@ -1,0 +1,44 @@
+Notes on getting Nuvie to build in Visual Studio 2017
+-----------------------------------------------------
+
+These instructions are specific to Visual Studio 2017. I'm using the Community
+version, but any version will do.
+
+Libraries
+---------
+
+Nuvie uses the Simple Direct Media Layer (SDL) libraries, but you no longer
+have to download and install them. SDL is included as a NuGet package, and it
+will automatically download from https://nuget.org/ if you don't already have
+it.
+
+
+Executing from Visual Studio
+----------------------------
+
+Open up Visual Studio 2017 and open the .sln file in this folder. Set the
+configuration to "Debug" or "Release". In the project settings, choose
+"Debugging" in the left pane. It should already say "$(TargetPath)" in the
+right hand pane in the Command field. In the "Working Directory" field, add
+"$(TargetDir)" (without the quotes, of course).
+
+Create a nuvie.cfg (using the sample config from Git) and place this in your
+Debug and Release directories (this tells Nuvie where to find Ultima 6, so it
+is very important). You also need the "data" folder, just copy it to the
+Debug and Release folders, too.
+
+Use "Build > Build Solution" to build the project. You can also use
+"Debug > Start Debugging" or use the green arrow to build and debug Nuvie.
+
+
+SDL debug version
+-----------------
+
+You can also use the debug version of SDL, in order to troubleshoot problems.
+For this to work, you have to build SDL2 from source in debug configuration.
+How to do this is outside of the scope of this document.
+
+Then open the NuGet package manager for the nuvie project and remove the
+sdl2 and sdl2.redist packages. In the project settings, choose "C/C++ > General"
+and add the include folder for SDL2. In "Linker > Input" add the SDL2.lib
+and SDL2main.lib, and place the SDL2.dll in the nuvie output folder.
