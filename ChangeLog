@@ -1,3 +1,6 @@
+2017-09-26  Eric Fry <efry at users.sourceforge.net>
+	* Fixed wall reshaping bugs. issue #68
+ 
 2017-08-02  Michael Fink <vividos at users.sourceforge.net>
 	* Updated the Visual Studio project and source files to compile under
 	  Visual Studio 2017.

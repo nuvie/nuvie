@@ -1750,9 +1750,9 @@ void MapWindow::reshapeBoundary()
  uint8 flag, original_flag;
  Tile *tile;
 
- for(y=1;y <= win_height;y++)
+ for(y=1;y < tmp_map_height-1;y++)
    {
-    for(x=1;x <= win_width;x++)
+    for(x=1;x < tmp_map_width-1;x++)
       {
        if(tmpBufTileIsBoundary(x,y))
          {
@@ -1897,7 +1897,7 @@ bool MapWindow::tmpBufTileIsWall(uint16 x, uint16 y, uint8 direction)
 // if(obj_manager->is_boundary(cur_x-1+x, cur_y-1+y, cur_level))
 //  return true;
 
- tile = obj_manager->get_obj_tile(WRAPPED_COORD(cur_x+x-1, cur_level), WRAPPED_COORD(cur_y+y-1, cur_level), cur_level, false);
+ tile = obj_manager->get_obj_tile(WRAPPED_COORD(cur_x-TMP_MAP_BORDER+x, cur_level), WRAPPED_COORD(cur_y-TMP_MAP_BORDER+y, cur_level), cur_level, false);
  if(tile != NULL)
    {
     if(tile->flags2 & TILEFLAG_BOUNDARY)
