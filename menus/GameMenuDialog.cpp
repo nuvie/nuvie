@@ -41,9 +41,9 @@
 #ifdef HAVE_JOYSTICK_SUPPORT
 #include "JoystickDialog.h"
 
-#define GMD_HEIGHT 122 // 13 bigger
+#define GMD_HEIGHT 135 // 13 bigger
 #else
-#define GMD_HEIGHT 109
+#define GMD_HEIGHT 122
 #endif
 
 GameMenuDialog::GameMenuDialog(GUI_CallBack *callback)
@@ -88,6 +88,9 @@ bool GameMenuDialog::init() {
 	cheats_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Cheats", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(cheats_button);
 	button_index[last_index+=1] = cheats_button;
+	continue_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Back to Game", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
+	AddWidget(continue_button);
+	button_index[last_index += 1] = cheats_button;
 	quit_button = new GUI_Button(this, buttonX, buttonY += row_h, width, height, "Quit", gui->get_font(), BUTTON_TEXTALIGN_CENTER, 0, this, 0);
 	AddWidget(quit_button);
 	button_index[last_index+=1] = quit_button;
@@ -171,11 +174,15 @@ GUI_status GameMenuDialog::callback(uint16 msg, GUI_CallBack *caller, void *data
 		gameplay_dialog = (GUI_Widget *) new GameplayDialog((GUI_CallBack *)this);
 		GUI::get_gui()->AddWidget(gameplay_dialog);
 		gui->lock_input(gameplay_dialog);
-	} else if(caller == (GUI_CallBack *)cheats_button) {
+	}
+	else if (caller == (GUI_CallBack *)cheats_button) {
 		GUI_Widget *cheats_dialog;
 		cheats_dialog = (GUI_Widget *) new CheatsDialog((GUI_CallBack *)this);
 		GUI::get_gui()->AddWidget(cheats_dialog);
 		gui->lock_input(cheats_dialog);
+	}
+	else if (caller == (GUI_CallBack *)continue_button) {
+		return close_dialog();
 	} else if(caller == (GUI_CallBack *)quit_button) {
 		Game::get_game()->get_event()->quitDialog();
 	} else {
