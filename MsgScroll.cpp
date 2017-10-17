@@ -493,10 +493,7 @@ bool MsgScroll::can_fit_token_on_msgline(MsgLine *msg_line, MsgText *token)
 
 bool MsgScroll::parse_token(MsgText *token)
 {
- MsgLine *msg_line = NULL;
-
- if(msg_buf.size() >0)
-	 msg_line = msg_buf.back(); // retrieve the last line from the scroll buffer.
+ MsgLine *msg_line;
 
  switch(token->s[0])
    {
