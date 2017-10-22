@@ -10,8 +10,15 @@ Libraries
 Nuvie uses the Simple Direct Media Layer (SDL) libraries, but you no longer
 have to download and install them. SDL is included as a NuGet package, and it
 will automatically download from https://nuget.org/ if you don't already have
-it.
-
+it. If you've installed Visual Studio without NuGet, you may see the following
+error when building:
+	"This project references NuGet package(s) that are missing on this
+	computer. Use NuGet Package Restore to download them.  For more
+	information, see http://go.microsoft.com/fwlink/?LinkID=322105. The
+	missing file is packages\sdl2.redist.2.0.5\build\native\sdl2.redist.targets."
+In that case install NuGet by opening the Visual Studio installer
+	(Tools > Get tools and features...), go to the "Individual components" tab,
+	and check "NuGet package manager" in the "Code tools" section.
 
 Executing from Visual Studio
 ----------------------------

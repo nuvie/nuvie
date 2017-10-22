@@ -140,6 +140,7 @@ class ObjManager
  bool has_reduced_weight(Obj *obj) { return has_reduced_weight(obj->obj_n); }
  bool has_toptile(Obj *obj);
  bool obj_is_damaging(Obj *obj, Actor *actor = NULL); // if actor, it will damage and display text
+ bool is_door(uint16 x, uint16 y, uint8 level);
 
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
 
