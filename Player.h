@@ -27,6 +27,8 @@
 #include "ObjManager.h"
 #include "Actor.h"
 
+#define MOVE_COST_USE 5
+
 class Configuration;
 class GameClock;
 class Actor;
@@ -106,6 +108,7 @@ class Player
 
  bool check_moveRelative(sint16 rel_x, sint16 rel_y);
  void moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement = false);
+ void try_open_door(uint16 x, uint16 y, uint8 z);
  void move(sint16 new_x, sint16 new_y, uint8 new_level, bool teleport);
  void moveLeft();
  void moveRight();

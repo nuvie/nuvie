@@ -945,7 +945,7 @@ bool Event::use(Obj *obj) {
   } else // Usable
   {
     display_prompt = usecode->use_obj(obj, player->get_actor());
-    player->subtract_movement_points(5);
+    player->subtract_movement_points(MOVE_COST_USE);
   }
 
   if (mode == USE_MODE && usecode->get_running_script() == NULL) // check mode because UseCode may have changed it

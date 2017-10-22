@@ -344,7 +344,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 
     if(game_type == NUVIE_GAME_U6)
     {
-    	if(actor->id_n == 0)
+		if(actor->id_n == 0)
     	{
     		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON &&
     		   (!Game::get_game()->has_free_balloon_movement() || !party->has_obj(OBJ_U6_FAN, 0, false)))
@@ -399,12 +399,20 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     			Game::get_game()->get_scroll()->display_string("Hic!\n");
     		}
     	}
+
 		ActorMoveFlags move_flags = ACTOR_IGNORE_DANGER | ACTOR_IGNORE_PARTY_MEMBERS;
 		// don't allow diagonal move between blocked tiles (player only)
 		if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, move_flags)
-		   && !actor->check_move(x + 0, y + rel_y, z, move_flags))
+		   && !actor->check_move(x + 0, y + rel_y, z, move_flags)) {
 			movementStatus = BLOCKED;
-    }
+		}
+		// Try opening a door FIXME: shouldn't be U6 specific
+		if(movementStatus == BLOCKED || !actor->check_move(x + rel_x, y + rel_y, z, move_flags)) {
+			if (obj_manager->is_door(x+rel_x, y+rel_y, z))
+				try_open_door(x+rel_x, y+rel_y, z);
+			movementStatus = BLOCKED;
+		}
+	}
     else if(game_type == NUVIE_GAME_MD)
     {
       if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_MD_BLUE_BERRY) != 0 && NUVIE_RAND()%2 == 0)
@@ -511,6 +519,17 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     obj_manager->update(x, y, z); // remove temporary objs, hatch eggs
     clock->inc_move_counter(); // doesn't update time
     actor_manager->startActors(); // end player turn
+}
+
+void Player::try_open_door(uint16 x, uint16 y, uint8 z)
+{
+	UseCode *usecode = Game::get_game()->get_usecode();
+	Obj *obj = obj_manager->get_obj(x, y, z);
+	if (!usecode->is_door(obj))
+		return;
+	usecode->use_obj(obj, get_actor());
+	subtract_movement_points(MOVE_COST_USE);
+	map_window->updateBlacking();
 }
 
 // teleport-type move

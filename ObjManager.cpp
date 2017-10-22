@@ -627,6 +627,24 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
  return false;
 }
 
+bool ObjManager::is_door(uint16 x, uint16 y, uint8 level)
+{
+	U6LList *obj_list = get_obj_list(x, y, level);
+	U6Link *link;
+	Obj *obj;
+
+	if (obj_list)
+	{
+		for (link = obj_list->start(); link != NULL; link = link->next)
+		{
+			obj = (Obj *)link->data;
+			if (usecode->is_door(obj))
+				return true;
+		}
+	}
+	return false;
+}
+
 bool ObjManager::is_damaging(uint16 x, uint16 y, uint8 level)
 {
  U6LList *obj_list;
