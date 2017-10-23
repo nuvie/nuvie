@@ -342,9 +342,9 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     uint8 z;
     actor->get_location(&x, &y, &z);
 
-    if(game_type == NUVIE_GAME_U6)
-    {
-		if(actor->id_n == 0)
+	if(game_type == NUVIE_GAME_U6)
+	{
+		if(actor->id_n == 0) // vehicle actor
     	{
     		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON &&
     		   (!Game::get_game()->has_free_balloon_movement() || !party->has_obj(OBJ_U6_FAN, 0, false)))
@@ -389,7 +389,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     			}
     		}
     	}
-    	else
+    	else // normal actor
     	{
     		if(alcohol > 3 && NUVIE_RAND()%4 != 0)
     		{
