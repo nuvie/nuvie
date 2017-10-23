@@ -406,12 +406,6 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 		   && !actor->check_move(x + 0, y + rel_y, z, move_flags)) {
 			movementStatus = BLOCKED;
 		}
-		// Try opening a door FIXME: shouldn't be U6 specific
-		if(movementStatus == BLOCKED || !actor->check_move(x + rel_x, y + rel_y, z, move_flags)) {
-			if (obj_manager->is_door(x+rel_x, y+rel_y, z))
-				try_open_door(x+rel_x, y+rel_y, z);
-			movementStatus = BLOCKED;
-		}
 	}
     else if(game_type == NUVIE_GAME_MD)
     {
@@ -446,6 +440,11 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 						rel_x = 0;
                       movementStatus = CAN_MOVE;
 					}
+				}
+				// Try opening a door FIXME: shouldn't be U6 specific
+				if (movementStatus == BLOCKED) {
+					if (obj_manager->is_door(x + rel_x, y + rel_y, z))
+						try_open_door(x + rel_x, y + rel_y, z);
 				}
 				if(movementStatus == BLOCKED) {
 					Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
