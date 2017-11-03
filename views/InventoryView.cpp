@@ -21,7 +21,6 @@
  *
  */
 #include <cassert>
-#include <math.h>
 #include "nuvieDefs.h"
 
 #include "Screen.h"
@@ -266,8 +265,8 @@ void InventoryView::add_command_icons(Screen *tmp_screen, void *view_manager)
 void InventoryView::display_inventory_weights()
 {
  uint8 strength;
- float inv_weight;
- float equip_weight;
+ unsigned int inv_weight;
+ unsigned int equip_weight;
  Actor *actor;
  if(is_party_member)
 	actor = party->get_actor(cur_party_member);
@@ -279,13 +278,14 @@ void InventoryView::display_inventory_weights()
 
  strength = actor->get_strength();
 
- inv_weight = ceilf(actor->get_inventory_weight());
- equip_weight = ceilf(actor->get_inventory_equip_weight());
+ ViewManager *vm = Game::get_game()->get_view_manager();
+ inv_weight = vm->get_display_weight(actor->get_inventory_weight());
+ equip_weight = vm->get_display_weight(actor->get_inventory_equip_weight());
 
- snprintf(string,9,"E:%d/%ds",(int)equip_weight,strength);
+ snprintf(string,9,"E:%u/%us", equip_weight,strength);
  font->drawString(screen, string, area.x, area.y+72);
 
- snprintf(string,9,"I:%d/%ds",(int)inv_weight,strength*2);
+ snprintf(string,9,"I:%u/%us", inv_weight,strength*2);
  if(Game::get_game()->get_game_type() == NUVIE_GAME_U6)
 	font->drawString(screen, string, area.x+4*16+8, area.y+72);
  else

@@ -131,6 +131,7 @@ class ViewManager
 
  bool set_current_view(View *view);
  void double_click_obj(Obj *obj);
+ unsigned int get_display_weight(float weight);
 
 // custom doll functions shared between DollWidget and DollViewGump
  std::string getDollDataDirString();

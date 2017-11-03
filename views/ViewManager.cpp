@@ -20,7 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
+#include <math.h>
 #include "nuvieDefs.h"
 #include "Configuration.h"
 #include "U6misc.h"
@@ -592,6 +592,16 @@ void ViewManager::double_click_obj(Obj *obj)
     }
     else if(event->newAction(USE_MODE))
         event->select_obj(obj);
+}
+
+unsigned int ViewManager::get_display_weight(float weight)
+{
+	if(weight > 1)
+		return static_cast<unsigned int>(roundf(weight));
+	else if(weight > 0)
+		return 1;
+	else // weight == 0 (or somehow negative)
+		return 0;
 }
 
 // beginning of custom doll functions shared between DollWidget and DollViewGump
