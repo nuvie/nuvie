@@ -127,7 +127,7 @@ class ObjManager
  EggManager *get_egg_manager() { return(egg_manager); }
 
  //U6LList *get_obj_superchunk(uint16 x, uint16 y, uint8 level);
- bool is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type=TILEFLAG_BOUNDARY);
+ bool is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type=TILEFLAG_BOUNDARY, Obj *excluded_obj = NULL);
  //bool is_door(Obj * obj);
  bool is_damaging(uint16 x, uint16 y, uint8 level);
  uint8 is_passable(uint16 x, uint16 y, uint8 level);
@@ -140,6 +140,7 @@ class ObjManager
  bool has_reduced_weight(Obj *obj) { return has_reduced_weight(obj->obj_n); }
  bool has_toptile(Obj *obj);
  bool obj_is_damaging(Obj *obj, Actor *actor = NULL); // if actor, it will damage and display text
+ bool is_door(uint16 x, uint16 y, uint8 level);
 
  U6LList *get_obj_list(uint16 x, uint16 y, uint8 level);
 
@@ -216,6 +217,8 @@ class ObjManager
  bool temp_obj_list_remove(Obj *obj);
  void temp_obj_list_clean_level(uint8 z);
  void temp_obj_list_clean_area(uint16 x, uint16 y);
+
+ void remove_temp_obj(Obj *tmp_obj);
 
  inline Obj *find_obj_in_tree(uint16 obj_n, uint8 quality, bool match_quality, uint8 frame_n, bool match_frame_n, Obj **prev_obj, iAVLTree *obj_tree);
  inline void start_obj_usecode(iAVLTree *obj_tree);

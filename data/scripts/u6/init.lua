@@ -67,9 +67,6 @@ function is_avatar_dead()
 	return g_avatar_died
 end
 
-movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1} 
-movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1}
-
 --used with triple crossbow and magic wind spells.
 g_projectile_offset_tbl = 
 {
@@ -136,13 +133,6 @@ function advance_game_time(nturns)
  if nturns == 0 then return end
 
  coroutine.yield("adv_game_time", nturns);
-end
-
-function get_target()
- local loc = {}
- loc = coroutine.yield("target")
-
- return loc
 end
 
 function get_obj_from_inventory(actor)

@@ -1,0 +1,56 @@
+This document describes the shape image file format used by
+"Ultima VI: The False Prophet" by Origin Systems.
+
+Nuvie Project (a game engine for Ultima 6)
+<http://nuvie.sourceforge.net>
+
+
+Structure of shape file:
+========================
+
+      -> means input from file
+      <- means storing pixel data
+
+.shp files are lzw compressed. After decompressing the file represents
+following structure: -> file size (dword)
+                     -> set of offsets (each word)
+                     -> set of shapes
+
+File size should be quite clear.
+
+Offsets are stored as unsigned words. The first offset in file is the
+offset of the first object (simple, huh?). The number of offsets (objects)
+in the file can be calculated as follows:
+                     num_objects = (1st offset - 4) / 4.
+
+ Frame structure:    -> num of pixels right from hot spot, X1 (word)
+                     -> num of pixels left from hot spot, X2 (word)
+                     -> num of pixels above hot spot, Y1 (word)
+                     -> num of pixels below hot spot, Y2 (word)
+                     -> set of pixel blocks
+
+The width of the shape can be calculated by adding X1 and X2 together and
+height by adding Y1 and Y2 together. Coordinates for hot spot are X2 and Y1.
+
+Now the data it self is stored in pixel blocks which are quite complex:
+                     -> number of pixels or repeats, num1 (word)
+                     if (num1 and 1)
+                         repeat num1 >> 1 times
+                            -> temp value (unsigned byte)
+                            if (temp value and 1)
+                               -> pixel (byte)
+                               <- store pixel temp value >> 1 times
+                            else
+                               <- read temp value >> 1 bytes
+                         end
+                     else
+                         <- read num >> 1 bytes
+
+Color number 255 seems to be transperent.
+
+I hope this clears things up a bit.
+
+--
+Document updated May 26th, 2003
+Author/Contact: Markus Niemistö / niemisto@users.sourceforge.net
+                                / markus.niemisto@iki.fi

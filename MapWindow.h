@@ -221,7 +221,7 @@ class MapWindow: public GUI_Widget
  void get_windowSize(uint16 *width, uint16 *height);
 
  bool in_window(uint16 x, uint16 y, uint8 z);
- bool in_dungeon_level() { return(cur_level != 0 && cur_level != 5); }
+ bool in_dungeon_level();
  bool in_town();
  // can put object at world location x,y?
  CanDropOrMoveMsg can_drop_or_move_obj(uint16 x, uint16 y, Actor *actor, Obj *obj);
@@ -312,6 +312,8 @@ protected:
 private:
  void createLightOverlay();
 
+  void AddMapTileToVisibleList(uint16 tile_num, uint16 x, uint16 y);
+  bool can_display_obj(uint16 x, uint16 y, Obj *obj);
 };
 
 #endif /* __MapWindow_h__ */

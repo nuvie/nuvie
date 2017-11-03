@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+#include <actors/Actor.h>
 #include "nuvieDefs.h"
 #include "U6misc.h"
 
@@ -85,6 +86,7 @@ An Actor object
 @int[readonly] max_hp
 @int mpts movement points
 @string[readonly] name
+@bool obj_flag_0 obj flag 0
 @int obj_n
 @int old_align Old alignment
 @int[readonly] old_frame_n
@@ -98,6 +100,12 @@ An Actor object
 @int[readonly] tile_num The tile number based on the obj_n + frame_n combination.
 @bool visible Is the actor currently visible?
 @int wt worktype
+@field[readonly] xyz table containing location
+
+ table format
+```
+{["x"]=x, ["y"]=y, ["z"]=z}
+```
 @int x
 @int y
 @int z
@@ -149,6 +157,8 @@ static int nscript_actor_use(lua_State *L);
 static int nscript_actor_get_talk_flag(lua_State *L);
 static int nscript_actor_set_talk_flag(lua_State *L);
 static int nscript_actor_clear_talk_flag(lua_State *L);
+static int nscript_actor_get_number_of_schedules(lua_State *L);
+static int nscript_actor_get_schedule(lua_State *L);
 
 static const struct luaL_Reg nscript_actorlib_f[] =
 {
@@ -164,7 +174,7 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "get_player_actor", nscript_get_player_actor },
    { "inv_add_obj", nscript_actor_inv_add_obj },
    { "inv_remove_obj", nscript_actor_inv_remove_obj },
-   { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },   
+   { "inv_remove_obj_qty", nscript_actor_inv_remove_obj_qty },
    { "inv_get_readied_obj_n", nscript_actor_inv_get_readied_obj_n },
    { "inv_ready_obj", nscript_actor_inv_ready_obj },
    { "inv_unready_obj", nscript_actor_inv_unready_obj },
@@ -184,6 +194,8 @@ static const struct luaL_Reg nscript_actorlib_f[] =
    { "get_talk_flag", nscript_actor_get_talk_flag },
    { "set_talk_flag", nscript_actor_set_talk_flag },
    { "clear_talk_flag", nscript_actor_clear_talk_flag },
+   { "get_number_of_schedules", nscript_actor_get_number_of_schedules },
+   { "get_schedule", nscript_actor_get_schedule },
 
    { NULL, NULL }
 };
@@ -218,6 +230,7 @@ static const char *actor_set_vars[] =
    "level",
    "magic",
    "mpts",
+   "obj_flag_0",
    "obj_n",
    "old_align",
    "paralyzed",
@@ -261,6 +274,7 @@ static const char *actor_get_vars[] =
    "max_hp",
    "mpts",
    "name",
+   "obj_flag_0",
    "obj_n",
    "old_align",
    "old_frame_n",
@@ -275,6 +289,7 @@ static const char *actor_get_vars[] =
    "visible",
    "wt",
    "x",
+   "xyz",
    "y",
    "z"
 };
@@ -300,6 +315,7 @@ static int nscript_actor_set_intelligence(Actor *actor, lua_State *L);
 static int nscript_actor_set_level(Actor *actor, lua_State *L);
 static int nscript_actor_set_magic(Actor *actor, lua_State *L);
 static int nscript_actor_set_movement_pts(Actor *actor, lua_State *L);
+static int nscript_actor_set_obj_flag_0(Actor *actor, lua_State *L);
 static int nscript_actor_set_obj_n(Actor *actor, lua_State *L);
 static int nscript_actor_set_old_align(Actor *actor, lua_State *L);
 static int nscript_actor_set_paralyzed_flag(Actor *actor, lua_State *L);
@@ -334,6 +350,7 @@ int (*actor_set_func[])(Actor *, lua_State *) =
    nscript_actor_set_level,
    nscript_actor_set_magic,
    nscript_actor_set_movement_pts,
+   nscript_actor_set_obj_flag_0,
    nscript_actor_set_obj_n,
    nscript_actor_set_old_align,
    nscript_actor_set_paralyzed_flag,
@@ -375,6 +392,7 @@ static int nscript_actor_get_magic(Actor *actor, lua_State *L);
 static int nscript_actor_get_max_hp(Actor *actor, lua_State *L);
 static int nscript_actor_get_movement_pts(Actor *actor, lua_State *L);
 static int nscript_actor_get_name(Actor *actor, lua_State *L);
+static int nscript_actor_get_obj_flag_0(Actor *actor, lua_State *L);
 static int nscript_actor_get_obj_n(Actor *actor, lua_State *L);
 static int nscript_actor_get_old_align(Actor *actor, lua_State *L);
 static int nscript_actor_get_old_frame_n(Actor *actor, lua_State *L);
@@ -389,6 +407,7 @@ static int nscript_actor_get_tile_num(Actor *actor, lua_State *L);
 static int nscript_actor_get_visible_flag(Actor *actor, lua_State *L);
 static int nscript_actor_get_worktype(Actor *actor, lua_State *L);
 static int nscript_actor_get_x(Actor *actor, lua_State *L);
+static int nscript_actor_get_xyz(Actor *actor, lua_State *L);
 static int nscript_actor_get_y(Actor *actor, lua_State *L);
 static int nscript_actor_get_z(Actor *actor, lua_State *L);
 
@@ -421,6 +440,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_max_hp,
    nscript_actor_get_movement_pts,
    nscript_actor_get_name,
+   nscript_actor_get_obj_flag_0,
    nscript_actor_get_obj_n,
    nscript_actor_get_old_align,
    nscript_actor_get_old_frame_n,
@@ -435,6 +455,7 @@ int (*actor_get_func[])(Actor *, lua_State *) =
    nscript_actor_get_visible_flag,
    nscript_actor_get_worktype,
    nscript_actor_get_x,
+   nscript_actor_get_xyz,
    nscript_actor_get_y,
    nscript_actor_get_z
 };
@@ -579,6 +600,12 @@ static int nscript_actor_clone(lua_State *L)
    if(nscript_get_location_from_args(L, &x, &y, &z, 2) == false)
 	  return 0;
 
+  int stack_offset = lua_istable(L, 2) ? 3 : 5;
+
+  if(lua_gettop(L) >= stack_offset)
+  {
+    //FIXME clone into existing actor here.
+  }
 	if(Game::get_game()->get_actor_manager()->clone_actor(actor, &new_actor, MapCoord(x,y,z)))
 	{
 	  if(nscript_new_actor_var(L, actor->get_actor_num()) == true)
@@ -772,6 +799,12 @@ static int nscript_actor_set_movement_pts(Actor *actor, lua_State *L)
    return 0;
 }
 
+static int nscript_actor_set_obj_flag_0(Actor *actor, lua_State *L)
+{
+   actor->set_obj_flag(0, (bool)lua_toboolean(L, 3));
+   return 0;
+}
+
 static int nscript_actor_set_obj_n(Actor *actor, lua_State *L)
 {
    actor->set_obj_n((uint16)lua_tointeger(L, 3));
@@ -792,7 +825,7 @@ static int nscript_actor_set_base_obj_n(Actor *actor, lua_State *L)
 
 static int nscript_actor_set_paralyzed_flag(Actor *actor, lua_State *L)
 {
-	actor->set_paralyzed(lua_toboolean(L, 3));
+	actor->set_paralyzed((bool)lua_toboolean(L, 3));
 	return 0;
 }
 
@@ -997,6 +1030,11 @@ static int nscript_actor_get_name(Actor *actor, lua_State *L)
    lua_pushstring(L, actor->get_name()); return 1;
 }
 
+static int nscript_actor_get_obj_flag_0(Actor *actor, lua_State *L)
+{
+   lua_pushboolean(L, actor->get_obj_flag(0)); return 1;
+}
+
 static int nscript_actor_get_obj_n(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_obj_n()); return 1;
@@ -1085,6 +1123,24 @@ static int nscript_actor_get_worktype(Actor *actor, lua_State *L)
 static int nscript_actor_get_x(Actor *actor, lua_State *L)
 {
    lua_pushinteger(L, actor->get_x()); return 1;
+}
+
+static int nscript_actor_get_xyz(Actor *actor, lua_State *L)
+{
+   lua_newtable(L);
+   lua_pushstring(L, "x");
+   lua_pushinteger(L, actor->get_x());
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "y");
+   lua_pushinteger(L, actor->get_y());
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "z");
+   lua_pushinteger(L, actor->get_z());
+   lua_settable(L, -3);
+
+   return 1;
 }
 
 static int nscript_actor_get_y(Actor *actor, lua_State *L)
@@ -1854,4 +1910,61 @@ static int nscript_actor_clear_talk_flag(lua_State *L)
     return 0;
   actor->clear_flag((uint8)lua_tointeger(L, 2));
   return 0;
+}
+
+/***
+Get the number of schedule entries
+@function Actor.get_number_of_schedules
+@tparam Actor actor
+@treturn int
+@within Actor
+ */
+static int nscript_actor_get_number_of_schedules(lua_State *L)
+{
+   Actor *actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+
+   lua_pushinteger(L, actor->get_number_of_schedules());
+   return 1;
+}
+
+/***
+Get an Actor schedule entry
+@function Actor.get_schedule
+@tparam Actor actor
+@int index The index of the schedule to retrieve
+@treturn Schedule
+@within Actor
+ */
+static int nscript_actor_get_schedule(lua_State *L)
+{
+   Actor *actor = nscript_get_actor_from_args(L);
+   if(actor == NULL)
+      return 0;
+
+   Schedule *schedule = actor->get_schedule((uint8)lua_tointeger(L, 2));
+
+   lua_newtable(L);
+   lua_pushstring(L, "day_of_week");
+   lua_pushinteger(L, schedule->day_of_week);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "worktype");
+   lua_pushinteger(L, schedule->worktype);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "x");
+   lua_pushinteger(L, schedule->x);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "y");
+   lua_pushinteger(L, schedule->y);
+   lua_settable(L, -3);
+
+   lua_pushstring(L, "z");
+   lua_pushinteger(L, schedule->z);
+   lua_settable(L, -3);
+
+   return 1;
 }

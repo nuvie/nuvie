@@ -474,7 +474,7 @@ U6LList *ObjManager::get_obj_superchunk(uint16 x, uint16 y, uint8 level)
 }
 */
 
-bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type)
+bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_type, Obj *excluded_obj)
 {
  U6Link *link;
  U6LList *obj_list;
@@ -501,6 +501,8 @@ bool ObjManager::is_boundary(uint16 x, uint16 y, uint8 level, uint8 boundary_typ
           for(check_tile = false;link != NULL;link = link->prev)
             {
              obj = (Obj *)link->data;
+             if(obj == excluded_obj)
+                continue;
              tile_num = get_obj_tile_num(obj->obj_n)+obj->frame_n;
              tile = tile_manager->get_original_tile(tile_num);
 
@@ -623,6 +625,24 @@ bool ObjManager::is_forced_passable(uint16 x, uint16 y, uint8 level)
   }
 
  return false;
+}
+
+bool ObjManager::is_door(uint16 x, uint16 y, uint8 level)
+{
+	U6LList *obj_list = get_obj_list(x, y, level);
+	U6Link *link;
+	Obj *obj;
+
+	if (obj_list)
+	{
+		for (link = obj_list->start(); link != NULL; link = link->next)
+		{
+			obj = (Obj *)link->data;
+			if (usecode->is_door(obj))
+				return true;
+		}
+	}
+	return false;
 }
 
 bool ObjManager::is_damaging(uint16 x, uint16 y, uint8 level)
@@ -1866,6 +1886,18 @@ bool ObjManager::temp_obj_list_remove(Obj *obj)
  return true;
 }
 
+void ObjManager::remove_temp_obj(Obj *tmp_obj) {
+  //FIXME MD has special temp object flag override logic. This should be implemented in lua script.
+  if(game_type != NUVIE_GAME_MD || (tmp_obj->obj_n != OBJ_MD_DREAM_TELEPORTER && tmp_obj->frame_n != 0)) {
+    DEBUG(0,
+          LEVEL_DEBUGGING,
+          "Removing obj %s.\n",
+          tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n) + (tmp_obj)->frame_n, 0, false));
+    remove_obj_from_map(tmp_obj);
+    delete_obj(tmp_obj);
+  }
+}
+
 // clean objects from a whole level.
 void ObjManager::temp_obj_list_clean_level(uint8 z)
 {
@@ -1877,9 +1909,7 @@ void ObjManager::temp_obj_list_clean_level(uint8 z)
     if((*obj)->z == z)
       {
        tmp_obj = *obj++;
-       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));
-       remove_obj_from_map(tmp_obj); // this calls temp_obj_list_remove()
-       delete_obj(tmp_obj);
+       remove_temp_obj(tmp_obj);
       }
     else
       obj++;
@@ -1904,9 +1934,7 @@ void ObjManager::temp_obj_list_clean_area(uint16 x, uint16 y)
     if(dist_x > 19 || dist_y > 19)
       {
        tmp_obj = *obj++;
-       DEBUG(0,LEVEL_DEBUGGING,"Removing obj %s.\n", tile_manager->lookAtTile(get_obj_tile_num((tmp_obj)->obj_n)+(tmp_obj)->frame_n,0,false));
-       remove_obj_from_map(tmp_obj);
-       delete_obj(tmp_obj);
+       remove_temp_obj(tmp_obj);
       }
     else
       obj++;

@@ -159,6 +159,7 @@ void ViewManager::reload()
 {
  if(!Game::get_game()->is_new_style())
    actor_view->set_party_member(0);
+ inventory_view->lock_to_actor(false);
  inventory_view->set_party_member(0);
 
  set_party_mode();

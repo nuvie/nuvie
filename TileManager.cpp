@@ -975,7 +975,7 @@ void TileManager::freeCustomTiles()
   }
 }
 
-void TileManager::exportTilesetToBmpFile(std::string filename)
+void TileManager::exportTilesetToBmpFile(std::string filename, bool fixupU6Shoreline)
 {
   NuvieBmpFile bmp;
 
@@ -996,7 +996,7 @@ void TileManager::exportTilesetToBmpFile(std::string filename)
   {
     for(uint8 j=0;j<32;j++)
     {
-      if(game_type == NUVIE_GAME_U6 && (i*32+j) >= 16 && (i*32+j) < 48) //lay down the base tile for shoreline tiles
+      if(fixupU6Shoreline && game_type == NUVIE_GAME_U6 && (i*32+j) >= 16 && (i*32+j) < 48) //lay down the base tile for shoreline tiles
         {
           writeBmpTileData(&data[i*16*512 + j*16], get_anim_base_tile(i*32+j), false);
           writeBmpTileData(&data[i*16*512 + j*16], &tile[tileindex[i*32+j]], true);

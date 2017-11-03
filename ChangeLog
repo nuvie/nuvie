@@ -1,5 +1,197 @@
-2016-09-10 Malignant Manor <malignantmanor@users.sourceforge.net>
+2017-11-01 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Use proper rounding for displayed inventory and equipped weight.
+
+2017-09-26  Eric Fry <efry at users.sourceforge.net>
+	* Fixed wall reshaping bugs. issue #68
+ 
+2017-08-02  Michael Fink <vividos at users.sourceforge.net>
+	* Updated the Visual Studio project and source files to compile under
+	  Visual Studio 2017.
+
+2017-06-12  Eric Fry <efry at users.sourceforge.net>
+	* Attempt to load custom tiles from a data directory in the savegame directory.
+	  If that doesn't exist then load them from the App data dir.
+
+2017-06-09  Eric Fry <efry at users.sourceforge.net>
+	* Moved tileset export file to data/images/tiles/nn/custom_tiles.bmp
+	  in the current savegame directory.
+	* Don't automatically overwrite custom_tiles.bmp if it already exists
+
+2017-06-07  Eric Fry <efry at users.sourceforge.net>
+	* Added Blonde hair avatar sprites created by Kenneth Kully.
+
+2017-05-31  Eric Fry <efry at users.sourceforge.net>
+	* Added new altcode alt-914 This dumps out the current tileset
+	  to a file called 'custom_tiles.bmp' in the savegame directory.
+
+2017-05-30  Eric Fry <efry at users.sourceforge.net>
+	* moved custom actor tiles from data/images/actors/U6 to
+	  data/images/tiles/U6
+	* Added support for replacing all tiles. Just put a bmp file called
+	  custom_tiles.bmp into data/images/tiles/U6/
+	* More work on MD dreamworld. Use dreamstuff. use spray gun.
+	* Allow MD usecode to target actors.
+
+2017-05-07  Eric Fry <efry at users.sourceforge.net>
+	* Moved technical docs from subversion into the main Nuvie git repo.
+
+2017-05-07  Eric Fry <efry at users.sourceforge.net>
+	* Changed map_get_tile_num() to optionally return the original tile_num.
+	  This is useful when dealing with animating tiles
+	* Print "...faster!" when falling in the MD dreamworld
+
+2017-05-06  Eric Fry <efry at users.sourceforge.net>
+	* Fixed MD minotaur attack logic
+	* Don't draw MD debug tiles on map when show eggs is disabled
+	* Fixed some issues when avatar returns from dreamworld.
+
+2017-05-01  Eric Fry <efry at users.sourceforge.net>
+	* Added more MD spread weapon logic
+	* Fixed use radium on ray gun usecode
+
+2017-04-27  Eric Fry <efry at users.sourceforge.net>
+	* Use chips of Radium on ray guns
+	* Fixed freeze ray gun projectile anim tile
+
+2017-04-24  Eric Fry <efry at users.sourceforge.net>
+	* More work on MD attack logic.
+	* Added the ability to read Obj invisible status from lua scripts.
+	* Fixed MD objlist movement flags location.
+
+2017-04-20  Eric Fry <efry at users.sourceforge.net>
+	* Added MD combat projectile animations
+
+2017-04-07  Eric Fry <efry at users.sourceforge.net>
+	* Work on MD combat logic
+	* More work on MD dreamworld logic
+	* Added new combat.lua file for MD combat logic
+	* Added new lua script functions to lock/unlock the InventoryView
+	  This is used to lock the view in dream mode.
+	* Added new SCRIPT_MODE to Event. This will be used
+	  to offload event logic into lua script.
+	* Started to implement the player attack event in lua script
+
+2017-03-18  Eric Fry <efry at users.sourceforge.net>
+	* Work on MD attack object logic.
+
+2017-03-14  Eric Fry <efry at users.sourceforge.net>
+	* Added lua actor.xyz field
+	* Moved some u6 actor functions into common lua
+	* Work on Minotaur worktype
+
+2017-03-08  Eric Fry <efry at users.sourceforge.net>
+	* Fixed end of buffer bug with NuvieIO class
+	* Added lua functions for querying an Actor's Schedule
+	  Actor.get_number_of_schedules() and Actor.get_schedule()
+	* Added dream quest finish logic
+	* Finished MD switch usecode logic
+
+2017-03-07  Eric Fry <efry at users.sourceforge.net>
+	* Added map_enable_temp_actor_cleaning() script function to
+	  disable temp actor cleaning. Needed for some MD dream sequences
+	  which spawn temp actors more than 19 tiles away from the player.
+	* Started on MD use switch logic
+
+2017-03-03  Eric Fry <efry at users.sourceforge.net>
+	* Changed player_before_move_action() to return movement status.
+	  CAN_MOVE, BLOCKED or FORCE_MOVE
+	* More work on MD cliff fall logic.
+
+2017-03-01  Eric Fry <efry at users.sourceforge.net>
+	* Work player death in dreamworld
+	* Refactored temp object cleanup logic
+
+2017-02-28  Eric Fry <efry at users.sourceforge.net>
+	* More work on MD mother dream logic.
+	* Added select_target_actor() script logic
+
+2017-02-21  Eric Fry <efry at users.sourceforge.net>
+	* Fixed bug when running tools in windows. Write files in binary mode.
+	* Work on MD mother actor logic
+
+2017-02-19  Eric Fry <efry at users.sourceforge.net>
+	* Added new pack_lzc tool.
+	* Removed the SDL requirement from some tools
+	* More work on MD dreamworld logic
+	* Don't drag actors around with vehicle in MD
+
+2017-02-09  Eric Fry <efry at users.sourceforge.net>
+	* Added MD walk on walls logic.
+	* Removed darkness from MD dream levels.
+
+2017-02-09  Eric Fry <efry at users.sourceforge.net>
+	* Don't delete MD dream teleporter objects even though
+	  they are marked as temporary.
+	* Added party_set_in_vehicle() script function
+	* Fixed bug with location table argument handling in lua C logic
+	* Fixed bug with Weather class in MD mode.
+	* More work on MD dream logic
+
+2017-02-02  Eric Fry <efry at users.sourceforge.net>
+	* Started work on using dream machine
+
+2017-02-01  Eric Fry <efry at users.sourceforge.net>
+	* Added MD use headgear
+	* Work on MD use panel
+
+2017-02-01  Eric Fry <efry at users.sourceforge.net>
+	* Added MD talk scripts 1 and 7
+	* Added MD use radium block
+
+2017-01-29  Eric Fry <efry at users.sourceforge.net>
+	* Added MD talk to object logic
+	* Made lua obj.status a read/write field
+	* Fixed null pointer when attempting to load portrait on startup
+	  in original mode
+
+2017-01-29  Eric Fry <efry at users.sourceforge.net>
+	* Added MD oil usecode
+	* Added MD hand mirror usecode
+	* Fixed MD power line reconnection logic
+
+2017-01-23  Eric Fry <efry at users.sourceforge.net>
+	* Added support for MD auto doors, teleport pods and
+	  refective surfaces.
+	* Added obj.xyz script field. This returns a MapCoord table
+	  object.
+
+2017-01-21  Eric Fry <efry at users.sourceforge.net>
+	* Added new script function find_obj_from_area. This allows you
+	  to iterate over all objects within a given area.
+	* Added more MD use entrance logic.
+
+2017-01-18  Eric Fry <efry at users.sourceforge.net>
+	* Fixed MD portrait number logic
+	* Added actor.obj_flag_0 var to script
+
+2017-01-17  Eric Fry <efry at users.sourceforge.net>
+	* Added MD use heartstone logic
+	* Started MD use manuscript logic
+
+2017-01-16  Eric Fry <efry at users.sourceforge.net>
+	* Added script function player_get_name()
+	* Added script function display_text_in_scroll_gump()
+	* Added MD usecode use_pool_table and use_ready_obj
+ 
+2017-01-11  Eric Fry <efry at users.sourceforge.net>
+	* Added reading material usecode logic.
+	* Added new script function load_text_from_lzc()
+
+2017-01-10  Eric Fry <efry at users.sourceforge.net>
+	* Work on MD telekinesis
+	* Work on MD get logic
+
+2017-01-09  Eric Fry <efry at users.sourceforge.net>
+	* Fixed barrel movement bug in Blue Bottle Tavern.
+
+2016-12-31  Eric Fry <efry at users.sourceforge.net>
+	* Lighting fixes for issue #55.
+	* Increased border from 2 to 3 to give a smoother
+	  light experience for light globes with a radius of
+	  3 tiles.
+ 
+2016-12-18  Eric Fry <efry at users.sourceforge.net>
+	* Fixed bug when searching harpsichords and beds.
 
 2016-08-30  Eric Fry <efry at users.sourceforge.net>
 	* Added WOU support for writing LIB files.

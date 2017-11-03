@@ -272,11 +272,10 @@ bool SaveGame::load_objlist()
  command_bar->set_combat_mode(party->is_in_combat_mode()); // update CommandBar
  command_bar->load(&objlist);
 
- game->get_script()->call_load_game(&objlist);
- game->get_event()->set_control_cheat(false);
+  view_manager->reload();
 
- view_manager->reload();
-
+  game->get_script()->call_load_game(&objlist);
+  game->get_event()->set_control_cheat(false);
 
  player->get_location(&px, &py, &pz);
  obj_manager->update(px, py, pz); // spawn eggs.

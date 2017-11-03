@@ -1,0 +1,706 @@
+Slime divides!
+critical!
+heavily
+lightly
+barely
+ wounded.
+`%s grazed.
+`%s killed!
+with ship cannons-
+with bare hands-
+with %s-
+Out of arrows!
+Out of bolts!
+pass.
+nothing!
+Attack with %s-
+Attack
+what?
+Party mode
+`%s fails to respond.
+Solo mode
+Exit to DOS?
+Rest!
+Save game? 
+Pass!
+Shamino says, "I hear something to the %s!"
+Thy sword hath shattered!
+`%s interferes!
+%s:
+%>ARGH!
+ regurgitated!
+`%s dragged under!
+`%s poisoned!
+A slug dissolves %s's %s!
+`%s has been robbed!
+A torch burned out.
+Tangle vine killed!
+Wisp teleports!
+Begin combat!
+Break off combat!
+Out of range!
+"Thou art under arrest!"
+"Wilt thou come quietly?"
+Yes
+The guard strikes thee unconscious!
+Thou dost awaken to...
+No
+"Then defend thyself, rogue!"
+The %s stole some gold!
+Not while aboard ship!
+An unending darkness engulfs thee...
+A voice in the darkness intones, "KAL LOR!"
+"Thou art not upon a Sacred Quest!
+Passage denied!"
+Thou canst not move without wind!
+That spell is not in thy spellbook!
+`%s broken!
+A %s has vanished!
+Not in solo mode!
+Not in combat mode!
+`%s yells for help!
+Shamino says, "This is the 
+`%s is stuck in a web!
+You must be in party mode to enter.
+Not everyone is here.
+%2d-%02d-%04d Wind:%2s
+Sound on
+Sound off
+Please insert the %s disk.
+Version 4.5
+Turbo-C - Copyright (c) 1988 Borland Intl.
+Null pointer assignment
+Divide error
+Abnormal program termination
+vetch
+naxyrzi
+paper.bmp
+newmagic.bmp
+u6face0.bmp
+stats.bmp
+worldmap.bmp
+North
+Northeast
+East
+Southeast
+South
+Southwest
+West
+Northwest
+DISK ERROR!!!! Function: %d, error: %d, file: 
+animdata
+tileflag
+u6pal
+end.exe
+u6mcga.ptr
+u6curs.ega
+u6curs.tga
+u6curs.cga
+config.u6
+U6.CH
+You must first create or transfer a character. 
+ultima6.exe
+C 
+N 
+NE
+E 
+SE
+S 
+SW
+W 
+NW
+ring
+cloak
+Attack
+Cast
+Talk
+Look
+Get
+Drop
+Move
+Use
+Rest
+Save
+%s:
+%s-
+Restore game? 
+Help 
+on
+off
+%02d%02d%02d%03x%03x%1x
+<nat uail abord wip!>
+<gotu eks>: 
+<uai>: 
+<zi>: 
+schedule
+basetile
+savegame\objlist
+chunks
+It's locked.
+ ,.:;!?'-"
+map
+savegame\objblkaa
+savegame\objblkaa.tmp
+savegame\objblkaa.bak
+Error-too many objects in region!
+look.lzd
+nothing
+Nothing
+COMMAND
+FRONT
+REAR
+FLANK
+BERSERK
+RETREAT
+ASSAULT
+STR:%d
+DEX:%d
+INT:%d
+Magic
+%2d%/%d
+Health
+Lev%/Exp
+%d%/%ds
+E:
+I:
+Ready-
+torch
+Can't be readied!
+Too heavy!
+No place to put!
+%>
+Unready-%s
+milady
+milord
+lots of space for any possible NPC name
+morning
+afternoon
+evening
+shrine
+statue
+nothing!
+Undefined.
+Select item: 
+Divide error from talkdr.
+Error occured.
+you
+Unknown command.
+Try to print out a control char
+bye
+Not on screen.
+Not in solo mode.
+You hear a deep moan.
+No response
+Talking to yourself?
+Funny, no response.
+You see 
+you say:
+Command for input key expected.
+Logical error occured.
+look
+IMY
+WO
+WJ
+AJO
+AF
+AM
+IM
+KL
+IF
+IL
+QL
+OJ
+INP
+IY
+IZ
+OPY
+IJ
+EP
+AJ
+AY
+AS
+AG
+PF
+VL
+AP
+AVZ
+VWY
+IS
+AXC
+OY
+KX
+AVM
+IFG
+IW
+VAJO
+ING
+IZG
+RH
+ISG
+VPF
+KBX
+SL
+OG
+AXP
+ASL
+KMC
+AXE
+IQX
+VQ
+FH
+KDY
+VIS
+AO
+NH
+IQY
+IDP
+VOG
+IOY
+GH
+QC
+VRP
+IC
+VAS
+VSL
+KOX
+POW
+VCBM
+CH
+VAL
+VAXE
+VC
+IMC
+VRX
+KXC
+AT
+VPY
+An
+Bet
+Corp
+Des
+Ex
+Flam
+Grav
+Hur
+In
+Jux
+Kal
+Lor
+Mani
+Nox
+Ort
+Por
+Quas
+Rel
+Sanct
+Tym
+Uus
+Vas
+Wis
+Xen
+Ylem
+Zu
+Create Food
+Detect Magic
+Detect Trap
+Dispel Magic
+Douse
+Harm
+Heal
+Help
+Ignite
+Light
+Infravision
+Magic Arrow
+Poison
+Reappear
+Sleep
+Telekinesis
+Unlock Magic
+Untrap
+Vanish
+Curse
+Dispel Field
+Fireball
+Great Light
+Lock
+Mass Awaken
+Mass Sleep
+Peer
+Protection
+Repel Undead
+Animate
+Conjure
+Disable
+Fire Field
+Great Heal
+Locate
+Mass Dispel
+Poison Field
+Sleep Field
+Wind Change
+Energy Field
+Explosion
+Insect Swarm
+Invisibility
+Lightning
+Paralyze
+Pickpocket
+Reveal
+Seance
+X-ray
+Charm
+Clone
+Confuse
+Flame Wind
+Hail Storm
+Mass Protect
+Negate Magic
+Poison Wind
+Replicate
+Web
+Chain Bolt
+Enchant
+Energy Wind
+Fear
+Gate Travel
+Kill
+Mass Curse
+Mass Invis
+Wing Strike
+Wizard Eye
+Armageddon
+Death Wind
+Eclipse
+Mass Charm
+Mass Kill
+Resurrect
+Slime
+Summon
+Time Stop
+Tremor
+mandrake root
+nightshade
+black pearl
+blood moss
+spider silk
+garlic
+ginseng
+sulfurous ash
+1ST
+2ND
+3RD
+4TH
+5TH
+6TH
+7TH
+8TH
+neutral
+evil
+good
+chaotic
+Success
+Failed
+No effect
+Out of range
+Blocked
+nothing
+Not possible
+Done
+On what: 
+On whom: 
+Location: 
+Not usable
+Magical energy prevents you from removing the amulet.
+level
+ is charmed.
+ is paralyzed.
+%s!
+The corpse is too old!
+an awaken
+a cure
+a heal
+a poison
+a sleep
+a protection
+an invisibility
+an xray vision
+It's trapped.
+No trap
+It shows a charge of %s.
+It's not magical.
+It's %s potion.
+It's magical.
+Create %d food.
+Hostile daemon summoned.
+Not Possible
+Direction-
+nowhere
+To phase 
+Which object: 
+Can't carry!
+It's full
+With: 
+none
+No foes.
+nowhere.
+No magic at this time!
+No spells in the spellbook!
+nothing
+(%s)
+Your level is not high enough.
+Not enough magic points.
+No Reagents.
+No spellbook is readied.
+$&
+@r
+Deceit
+Despise
+Destard
+Wrong
+Covetous
+Shame
+Hythloth
+GSA
+Control
+Passion
+Diligence
+Tomb of Kings
+Ant Mound
+Swamp Cave
+Spider Cave
+Cyclops Cave
+Heftimus Cave
+Heroes' Hole
+Pirate Cave
+Buccaneer's Cave
+dungeon 
+shrine of 
+."
+Hic!
+Object mismatch
+wand
+%s is charmed.
+%s is paralyzed.
+%s.
+a 
+an 
+the 
+BOOK.DAT
+Searching here, you find 
+a secret door
+, 
+ and 
+nothing.
+Thou dost see 
+darkness.
+nothing
+Searching here, you find nothing.
+. It weighs
+. They weigh
+ %d.%d stones
+. It
+ and
+ can do %d point\s of damage
+ and can absorb %d point\s of damage
+Ingredients: 
+None
+The time is 
+12:%02d A.M.
+%d:%02d A.M.
+12:%02d P.M.
+%d:%02d P.M.
+How many? 
+0   
+Location: 
+It broke!
+%s!
+The total is too heavy.
+No free hand
+"Stop Thief!!!"
+Stealing!!!
+To 
+nowhere.
+This person is not around!
+nobody.
+Only within the party!
+Can't carry!
+yourself.
+not a container
+Can't move to another person's bag.
+It's too big to fit inside a container.
+You have to unready it first.
+How can a container go into itself!
+Only spells can go into the spellbook.
+Only moonstones can go into the vortex cube.
+Spells are not suppose to be taken out from the Spellbook.
+out of 
+into 
+Acid!
+Poison!
+Bomb!
+Gas!
+closed!
+Can't (Un)lock an opened door
+locked!
+magically locked!
+opened!
+unlocked!
+locked
+On 
+Key broke.
+No free hand to hold the torch.
+Torch is lit.
+fireplace
+brazier
+candelabra
+campfire
+candle
+ is doused.
+buried.
+Cannot be buried here!
+With 
+You need a bucket.
+The bucket of water is too heavy for you.
+The bucket of milk is too heavy for you.
+You need some milk.
+You need a honey jar.
+Fire!
+Not now
+Powder lit!
+The door is blown up!
+No correspondent drawbridge
+Strange, nothing happened.
+Close the drawbridge.
+Open the drawbridge.
+Can't close the drawbridge.
+Can't open the drawbridge.
+Switch the lever, 
+strange, nothing happened.
+you hear a noise.
+can't close the portcullis.
+Operate the switch, 
+You study the scroll!
+Missing a mammoth silk bag.
+Missing a balloon basket.
+Missing a cauldron.
+Missing a rope.
+Done!
+Done!
+No room!
+Ahm
+Mu
+Ra
+Beh
+Cah
+Summ
+Om
+Lum
+Mantra: 
+Wrong mantra!
+Got it, but can't carry it.
+Got it!
+Didn't get a fish.
+You need to stand next to water.
+You drink it.
+Food
+Mutton
+Wine
+Fruit
+Meat
+Make a wish?
+Wish for: 
+You got food
+, but you can't carry it.
+Direction:
+You dig a hole.
+You find a water fountain.
+You find a gold nugget.
+Not in solo mode!
+Only next to land.
+A deed is required.
+Not boardable!
+Sherry says: "Eeek!!! I'm afraid of horses!"
+BehLem says: "Horses are for food!"
+You're already on a horse!
+Rear horse???
+You can't figure out how to use it.
+Where: 
+a red moon gate appears.
+Enter degrees followed by N, S, E or W.
+At latitude=
+  longitude=
+Direction-
+Not now!
+None generated!
+Silver snakes are generated!
+Open the passthrough.
+Close the passthrough.
+You eat the food.
+The Codex has vanished!
+Squeak!
+You feel a breeze.
+horse
+Must be in your hand.
+Not in solo mode.
+Not readied.
+midi.dat
+ultima.m
+bootup.m
+intro.m
+create.m
+forest.m
+hornpipe.m
+engage.m
+stones.m
+dungeon.m
+brit.m
+gargoyle.m
+end.m
+U6ADLIB.DRV
+U6CMS.DRV
+U6TMUS.DRV
+U6ROLAND.DRV
+U6COVOX.DRV
+U6INNOVA.DRV
+portrait.a
+converse.a
+U6MCGA.DRV
+U6EGA.DRV
+U6TANDY.DRV
+U6CGA.DRV
+ has healed.
+Hull Strength: %d%%
+Rest
+-Not while in Combat!
+-Can not be repaired!
+-Only in the wilderness!
+-Not while foes are near!
+-Not while others are near!
+-Not in solo mode!
+-Not enough room!
+-Dismount first!
+How many hours? 
+Who will guard? 
+none
+Mealtime!
+ plays a tune.
+ has food.
+ has no food.
+ stands guard while the party rests.
+You hear something!
+u6.1
+Program
+Introduction
+Endgame
+Game
+Map
+Populace A
+Populace B
+Player
+Disk full.  Do you want to Save the game and continue, 
+or Restore your last saved game? 
+Saving...
+Restoring...
+Out of Memory...
+!Packed file is corruptu

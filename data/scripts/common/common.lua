@@ -21,6 +21,9 @@ UI_STYLE_ORIG_PLUS_FULL_MAP   = 3
 
 STACK_OBJECT_QTY = true
 
+movement_offset_x_tbl  = {0, 1, 1, 1, 0, -1, -1, -1}
+movement_offset_y_tbl = {-1, -1, 0, 1, 1, 1, 0, -1 }
+
 if not setfenv then -- Lua 5.2
    -- based on http://lua-users.org/lists/lua-l/2010-06/msg00314.html
    -- this assumes f is a function
@@ -39,6 +42,12 @@ if not setfenv then -- Lua 5.2
       if level then debug.setupvalue(f, level, t) end
       return f
    end
+end
+
+function get_target()
+   local loc = coroutine.yield("target")
+
+   return loc
 end
 
 function get_direction(prompt)
@@ -115,6 +124,17 @@ function abs(val)
    end
    
    return val
+end
+
+--collect Yes/No input from user and return true if Yes selected. false otherwise.
+function input_should_proceed()
+   local input = input_select("yn", true)
+   print("\n")
+   if input == nil or input == "N" or input == "n" then
+      return false
+   end
+
+   return true
 end
 
 function play_midgame_sequence(seq_num)
@@ -284,11 +304,11 @@ end
 
 function altcode_913_export_tmx_map_files()
    print("\nExport maps to savedir? ")
-   input = input_select("yn", true)
-   print("\n")
-   if input == nil or input == "N" or input == "n" then
+
+   if not input_should_proceed() then
       return
    end
+
    print("saving.\n")
    script_wait(1)
    if map_export_tmx_files() == true then
@@ -296,6 +316,18 @@ function altcode_913_export_tmx_map_files()
    else
       print("error!!\n\n")
    end
+end
+
+function altcode_914_export_tileset()
+   print("Exporting tileset to \"data/images/tiles/"..config_get_game_type().."/custom_tiles.bmp\" in the savegame directory.\n")
+   if not tileset_export() then
+      print("file already exists. Overwrite? ")
+      if not input_should_proceed() then
+         return
+      end
+      tileset_export(true)
+   end
+   print("done.\n\n")
 end
 
 function altcode_999_find_objs_on_map()
@@ -335,6 +367,7 @@ local altcode_tbl = {
    [242]=altcode_242_set_actor_talk_flag,
    [250]=altcode_250_create_object,
    [913]=altcode_913_export_tmx_map_files,
+   [914]=altcode_914_export_tileset,
    [999]=altcode_999_find_objs_on_map,
 }
 
@@ -343,6 +376,14 @@ function handle_alt_code(altcode)
    if func ~= nil then
       func()
    end
+end
+
+function get_actor_or_obj_from_loc(location)
+   local target = map_get_actor(location)
+   if target == nil then
+      target = map_get_obj(location)
+   end
+   return target
 end
 
 --load other common functions

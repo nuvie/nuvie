@@ -1,0 +1,890 @@
+Ultima 6 Conversation scripting...
+This document describes the NPC conversation data used in
+"Ultima VI: The False Prophet" by Origin Systems.
+
+Nuvie Project (a game engine for U6 and Worlds of Ultima)
+<http://nuvie.sourceforge.net>
+
+
+| OVERVIEW
+| FORMAT
+| SEMANTICS
+|  -Syntax-
+|  -Data and Variables-
+|  -Lists-
+|  -Interpretation-
+|  -Summary-
+| TEXT SYMBOLS
+| STATEMENTS/INSTRUCTION SET
+|  -Sections-
+|  -Value Operators-
+|  -Variables-
+|  -Input-
+|  -Object Management-
+|  -NPC Status & Flags-
+|  -Other-
+| TABLES
+|  -Data Sizes-
+|  -Globals-
+|  -Section Markers-
+|  -Instructions (command codes)-
+|  -Value OpCodes (stack opcodes)-
+| DECOMPILED SCRIPT
+| NOTES
+
+
+| OVERVIEW
+All of the conversations are contained in two files: converse.a, and converse.b.
+These are LZW encoded lib_32 packages, whose format is explained in the
+u6tech.txt file. Basically it starts with a list of 32bit entry offsets, one for
+each of the entries in the file. The offset is the start of that item (entry) in
+the file. If an offset is 0, that item is empty.
+If the items in both files are added together, they match up with NPC numbers.
+Converse.a:Item 0 = empty
+Converse.a:Item 1 = empty (the Avatar)
+Converse.a:Item 2 = NPC 2 (Dupre)
+Converse.a:Item 3 = NPC 3 (Iolo)
+Converse.a:Item 4 = NPC 4 (Shamino)
+...
+Converse.a:Item 98 = NPC 98 (Aurendir)
+Converse.b:Item 0 = NPC 99 (Patrick)
+Converse.b:Item 1 = NPC 100 (Thindle)
+...
+Including empty items, converse.a has 99 entries. Converse.b has 125 entries.
+
+The last 14 non-empty items in converse.b contain the conversations for the
+shrines and temporary NPCs (Wisp, Guard.) Conversations are also called scripts.
+
+Each item starts with the four byte uncompressed size of the script at that
+location (which immediately follows the size.)  If the uncompressed size is 0,
+the data is not compressed. If it is not 0, the item has to be decoded before
+you can start reading it.
+
+
+| FORMAT
+Once you have an uncompressed item, it will look like this:
+Location   Description/Value
+00 - Xa    0xFF, NPC number, NPC name
+            NPC number is 1 byte
+            NPC name continues to next section
+Xa - Xb    (0xF1,0xF3 or 0xF1), Character description
+            You see %description. (continues to Converse section)
+Xb - EOF   (0xF2,0xF3 or 0xF2), Converse script
+            The rest of the text and code.
+The script can be divided into sections. NPC identification, look script, and
+converse script. All sections must be included, and in order, for U6 to
+interpret them properly.
+
+
+| SEMANTICS
+
+-Syntax-
+The script is just a sequence of statements. It's very basic, and doesn't look
+like a compiled bytecode language.
+There are two types of statements, Text, and Control. These are interspersed
+freely throughout a script.
+
+A text statement is just that, text to be printed to the conversation window,
+or compiled to be used by a Control statement. It is not terminated in any way
+(such as a NULL character.) There isn't any "print" command. When a printable
+character is encountered, that is not part of a previous control statement, it
+and all printable character up to the next non-printable character are
+considered one text statement. The statement is printed, unless it was collected
+by the previous instruction. See TEXT SYMBOLS.
+Text data in a list are not considered text statements.
+
+A control statement does something. It represents an instruction for the
+interpreter. There are many different instructions, that do things from creating
+an object in the game world, to controlling the flow of conversation. The
+control statement consists of a command (the opcode), with any number of
+parameters to that command. The parameter count is fixed for any particular
+instruction. The arguments must be integer data, 1, 2, or 4 bytes, but strings
+may be referenced by variables. (explained below)
+
+So a basic statement is of the format:
+    <cmd arg arg arg> = complete instruction
+
+But there is a little more to it. A single argument may be more than one value,
+mixed with special value (or stack) opcodes. These extended argument lists must
+be resolved down to one value per argument, before executing the command opcode.
+This can be done by arranging all data and opcodes (for one argument) onto a
+stack, executing each opcode with the preceding value as input (removing the
+values & code from the stack), and pushing the results back onto the stack. The
+resultant data may become input for another opcode, so it is important that
+operations are executed from the "inner-most" values - or left to right. The
+argument is resolved when only one value remains on the stack. Repeat for each.
+
+The above method reveals how the complete argument list is stored:
+    <cmd arg(val opcode) arg arg(val (val val opcode) opcode)>
+Where each "arg(...)" contains multiple values that must be resolved down to
+one argument. This example command has three arguments. The inner-most grouping
+in the third argument must be resolved first, and will become the second input
+value for its final operator.
+
+It is important to note that multi-value arguments are not automatically
+detected as the instruction is read, and must be explicitly resolved by using a
+special value/stack operator (0xA7). It follows any extended argument that
+should be stacked and evaluated. (see STATEMENTS/INSTRUCTION SET)
+
+The opcodes (command or stack) are also called control codes. All instructions
+are collectively considered the control portion of a script. Everything else is
+text.
+
+
+-Data and Variables-
+Data isn't moved around all that much. There is not a general purpose stack
+(only the previously mentioned value stack.) You have variables that can be
+accessed with "let x" type statements, assigned and modified with other
+statements.
+Data as it is literally contained in the statement can only be integer data, but
+strings can be referenced by variables identifiers. (see below)
+
+Data within the instruction is usually going to have a prefix designating its
+size. That prefix can be one of:
+ 0xD3 for "1 byte follows,"
+ 0xD4 for "2 bytes follow," or
+ 0xD2 for "4 bytes follow."
+
+Values are by default 1 byte, and in some cases the data-size is not specified.
+In most statements, if any value is not 1 byte, it must be preceded by the data-
+size. Even if the data is 1 byte, it is freqently preceded by the data-size, to
+avoid any possible conflict with an opcode.
+Some instructions allow exceptions to this default size rule. For example, the
+format for JUMP is <0xb0 4bytes>. 0xb0 is the command, and is followed by a four
+byte address.
+
+Variables are simply identified by a number. They are dereferenced during
+interpretation by a value operator following the identifier.
+There are two sets of variable numbers, for integers and strings. The integer
+variable 0 and the string variable 0 contain different values. The type of
+variable referenced depends on the value opcode used to access the data.
+
+Some variables are set by the game engine when a conversation starts. These
+are Globals, listed under TABLES.
+
+The available variable numbers are:
+ 0x00-0x0F for general use
+ 0x10-0x20 for globals
+ 0x21-0x25 for interpreter use??
+...but any number can be used at any time. I havn't actually tested all of these
+so it's probably wrong!
+
+The types are:
+ 0xb2 contains integer data
+ 0xb3 contains string data 
+(see STATEMENTS/INSTRUCTION SET)
+
+
+-Lists-
+Embedded within the main script, usually at the end, are lists of string and
+integer data. Conversations use these for selecting items at a shop, or random
+sayings. I interchange the terms list and db (datablock/database), as that is
+essentially what they are.
+
+A db can be anywhere in the file. The list is indexed, in that each item can be
+accessed with a 0-based index number, but the db and items only have meaning
+when some command tries to compile and access the list. A single list will
+contain either integer or string data, but should not contain both. Integer
+items are always two bytes. Strings are NULL terminated, with a 0x00 separating
+each item and following the last.
+
+
+-Summary-
+So a script (the converse section) might look like this. This is formatted so
+that you will understand the general structure.
+
+ F3 ??           <STATEMENTS/INSTRUCTION SET lists NPCs with 0xF3 at start>
+ Begin           <0xF2 (use to find script)>
+ Text            <any u6printables>
+ Control(0 args) <any cmd>
+ Control(1 arg)  <cmd val>
+ Control(1 arg)  <cmd ((val opcode) (val val opcode) opcode) 0xA7>
+ Text            <u6printables>
+ Control(2 args) <cmd (val) 0xA7 (val val opcode) 0xA7>
+ Text            <u6printables>
+ Control(4 args) <cmd (val) 0xA7 ((val opc) val opc) 0xA7 (val) 0xA7 (val) 0xA7>
+ Text            <u6printables>
+ Control(0 args) <cmd>
+ Control(0 args) <cmd>
+(cmd = opcode to begin that control statement
+ val = value; some data
+ (...) = group of values and/or opcodes
+ 0xA7 = the EVAL or ARGUMENT-STOP opcode)
+
+I haven't deciphired all of the U6 script instructions, so the format may not be
+completely accurate. (see STATEMENTS/INSTRUCTION SET)
+
+
+| TEXT SYMBOLS
+Printable characters in U6: 0x0a, 0x20 to 0x7a (inclusive.)
+NOTE: Data taken from a list and printed is assumed to be a valid string, even
+if it contains non-printable characters.
+
+When the these patterns are encountered in text statements, they are handled
+specially by the game engine, sometimes being replaced with something else.
+ @ : following word is highlighted
+ * : stop and wait for ENTER/SPACE/ESC key (similiar to `wait' command)
+$G : gender title ("milord", "milady")
+$P : player name
+$N : NPC name
+$T : time of day ("morning", "afternoon", "evening")
+$Y : set-able name, of any NPC
+$Z : previous input
+$X : the value of string variable X
+#X : the value of variable X
+<> : upper-case text between greater-than & less-than brackets is printed as
+     Runic; lower-case text is printed as Gargish
+/\ : !?? related to plural word inflections, text after \ is printed if some
+     variable is not 1, text after / is printed if some variable is 1 ??
+&& : ! a block of text before the first ampersand may be "translated" - replaced
+     by a block of text before the second ampersand
+
+
+| STATEMENTS/INSTRUCTION SET
+The different instructions are described here, and ordered into different
+sections. TABLES has all of control ordered by opcode.
+In the descriptions "false" is zero and "true" is any non-zero value. "Self" is
+the NPC whose conversation script is running.
+
+These NPC numbers can be used in any script:
+ 0x00: the PC
+ 0x01: the PC
+ 0xEB: self
+
+| (code) name [alternative name(s)]
+| [parameter(s)]
+| -> what it does
+| [description]
+
+
+-Sections-
+This actually refers to sections of a script - identity, look, and converse.
+In Ultima VI all of the sections must be included and in that order.
+
+(0xFF) SIDENT [IDENTITY, NPC]
+-> NPC Identity
+One byte NPC number follows, and then the name of the character, up to the start
+of the next section.
+
+(0xF1) SLOOK [DESCRIPTION]
+-> NPC description
+Character description follows. This is a string up to the start of the next
+section. (You see "description")
+
+(0xF2) SCONVERSE
+-> Main script (code & text)
+Conversation script follows. This is after the character description and
+continues to the end of the file.
+
+(0xF3) Unknown ??
+f3 f1: This pattern starts the character description on these NPCs (U6):
+ 20-Fyodor
+ 35-Ephemerides
+ 107-Hendle
+f3 f2: This pattern starts the conversation script on these NPCs (U6):
+ 36-Xiao
+ 38-Rob
+ 44-Nomaan
+ 51-Arvin
+ 55-Le'nard
+ 57-Utomo
+ 58-Nicodemus
+ 68-Michelle
+ 70-Dale
+ 71-James
+ 88-Horance
+ 107-Hendle
+ 110-Dr. Cat
+ 122-Gilron
+ 128-Rudyom
+ 133-Zoltan
+ 140-Wanda
+ 150-Zeke
+ 152-Gherick
+ 154-Amanda
+ 185-Ybarra
+ 189-Mondain
+ 192-Honesty
+ 193-Compassion
+ 194-Valor
+ 195-Justice
+ 196-Sacrifice
+ 197-Honor
+ 198-Spirituality
+ 199-Humility
+ 200-Singularity
+
+
+-Value Operators-
+(Stack operators)
+These aren't command codes, but control codes within statements (mixed among
+the arguments) that operate on the argument list. (see SEMANTICS)
+The input values are listed in the order they appear in the statement
+(val1...valN.)
+
+(0xA7) EVAL [ARG-STOP, CALL]
+Values: NA
+Output: Result of argument evaluation, using all previous values.
+Note: This is an "optional" argument terminator. Many statements don't need it
+and don't use it, but those that ever use it always do so, even if there is only
+one value. None of the preceding opcodes/values will be operated with/on if 0xA7
+doesn't end an argument (they will just be passed as multiple arguments.)
+
+(0x81) GT [>]
+Values: 2
+Output: 1 if val1 is greater than val2, 0 if not.
+
+(0x82) GTE [>=]
+Values: 2
+Output: 1 if val1 is greater than val2, 0 if not.
+
+(0x83) LT [<]
+Values: 2
+Output: 1 if val1 is less than val2, 0 if not.
+
+(0x84) LTE [<=]
+Values: 2
+Output: 1 if val1 is less than val2, 0 if not.
+
+(0x85) NE [!=]
+Values: 2
+Output: 0 if val1 is equal to val2, 1 if it isn't.
+
+(0x86) EQ [==]
+Values: 2
+Output: 1 if val1 is equal to val2, 0 if it isn't.
+
+(0x90) ADD
+Values: 2
+Output: The sum of val1 and val2.
+
+(0x91) SUB
+Values: 2
+Output: The difference between val1 and val2.
+
+(0x92) MUL
+Values: 2
+Output: The product of val1 and val2.
+
+(0x94) Logical OR
+Values: 2
+Output: 1 if val1 is true or val2 is true, 0 if both values are false
+
+(0x95) Logical AND
+Values: 2
+Output: 1 if val1 and val2 are both true, 0 if either value is false
+
+(0x9A) CANCARRY
+Values: 1
+Output: The weight that NPC val1 is free to carry.
+Note: All object weights in conversation scripts are 16-bit integer (stones*10).
+
+(0x9B) WEIGHT
+Values: 2
+Output: Weight of object val1, of quantity val2.
+
+(0x9D) HORSED
+Values: 1
+Output: 1 if npc val1 is riding a horse, 0 if on foot.
+
+(0xA0) RAND
+Values: 2
+Output: A random integer from val1 to val2 (inclusive.)
+
+(0xAB) FLAG
+Values: 2
+Output: The state of flag val2, on NPC val1 (0 or 1)
+
+(0xB2) VAR
+Values: 1
+Output: The value stored at variable val1.
+
+(0xB3) SVAR
+Values: 1
+Output: The value stored at string variable val1.
+Note: A memory pointer to the actual string?
+
+(0xB4) DATA
+Values: 2
+Output: Data (string or integer) from the DB section at val1, index val2.
+
+(0xBB) OBJCOUNT
+Values: 2
+Output: The total quantity of objects of type val2 in the inventory of NPC val1.
+
+(0xC6) NPCINPARTY
+Values: 1
+Output: 1 if NPC val1 is in the Avatar's party, 0 if not.
+
+(0xC7) OBJINPARTY ??
+Values: 2
+Output: 0xFFFF if object val1 with quality val2 is in party inventory, 0x8001
+        if not ??
+Note: Really unknown. Combines two values somehow. Output meaning is unknown.
+
+(0xCA) JOIN
+Values: 1
+Output: 0 if the npc val1 is able and did join the party, 1 if the party is not
+        on land, 2 if the party is too large, 3 if npc is already in the party
+
+(0xCC) LEAVE
+Values: 1
+Output: 0 if the npc val1 left the party, 1 if the party is not on land, 2 if
+        npc is not in the party
+
+(0xD7) NPCNEARBY
+Values: 1
+Output: 1 if NPC val1 is in proximity to self, 0 if not.
+
+(0xDA) WOUNDED
+Values: 1
+Output: 1 if NPC val1 is wounded, 0 if current HP equals maximum HP.
+
+(0xDC) POISONED
+Values: 1
+Output: 1 if NPC val1 "poisoned" flag is true, 0 if it is false.
+
+(0xDD) NPC
+Values: 2 ??
+Output: The NPC number of party member val1.
+Note: Party Member 0 is the Avatar, 1 is Dupre, and it counts up in join order.
+
+(0xE0) EXP
+Values: 2
+Output: The sum of NPC val1 Experience plus val2.
+Note: The NPC's current statistic is updated to the output value.
+
+(0xE1) LVL
+Values: 2
+Output: The sum of NPC val1 Level plus val2.
+Note: The NPC's current statistic is updated to the output value.
+
+(0xE2) STR
+Values: 2
+Output: The sum of NPC val1 Strength plus val2.
+Note: The NPC's current statistic is updated to the output value.
+
+(0xE3) INT
+Values: 2
+Output: The sum of NPC val1 Intelligence plus val2.
+Note: The NPC's current statistic is updated to the output value.
+
+(0xE4) DEX
+Values: 2
+Output: The sum of NPC val1 Dexterity plus val2.
+Note: The NPC's current statistic is updated to the output value.
+
+
+-Variables-
+(0xA6) DECL [LET]
+Arguments: 2 (var, type)
+-> Declare variable number and type
+Declare the variable that will be accessed and modified on the next assign
+statement, which must follow this one. If ASSIGN (0xA8) isn't the next statement
+then the next byte is "swallowed" but does not get assigned to the declared
+variable. (U6)
+See SEMANTICS/Data and Variables for available numbers and types.
+The type of variable is 0xb2: integer, or 0xb3: string. Two variables with the
+same number but of different types can be in use at one time.
+To print a variable use a type prefix and the number. "#0" displays the value
+of integer variable 0, "$0" displays the value of string variable 0.
+
+(0xA8) ASSIGN
+Arguments: 1 (new value)
+-> Assign value(s) to declared variable
+Assign a value to the variable identified by the previous DECL (0xA6) command.
+An error occurs if DECL is not the immediately preceding statement. Value
+operators can be used do perform various calculations on multiple values.
+(a6 00 b2; a8 d3 00 a7 : #0 = 0x00)
+(a6 00 b2; a8 00 b2 d3 01 90 a7 : #0 = #0 + 0x01)
+
+(0xD8) NAME [YASSIGN, SETY]
+Arguments: 1 (npc number)
+-> Assign any NPC name to $Y
+Sets the special symbol "$Y" in text to be replaced with the name of a NPC.
+(d8 d3 01 a7 : $Y = Name of the Avatar)
+(d8 d3 01 d3 00 dd a7 : $Y = Name of party member 1 ("Dupre")
+ dd converts a party-member number to an npc number, the second val is unknown)
+NPC number 0x00 or 0x01 are both The Avatar.
+
+
+-Input-
+Getting the player's input for conversation. Most of how the input is handled
+during conversation is in the next section (Conversation & Flow.)
+
+(0xF7) ASK
+-> Prompt player for input ("you say: ")
+
+(0xF8) ASKC
+Arguments: 0 (collects text)
+-> Prompt player for single character input (no visible prompt)
+Text that follows contains the characters that may be input. As soon as any of
+those characters is entered, script processing continues. Any other keys will do
+nothing.
+
+(0xFB) INPUT
+Arguments: 2 (inputvar, type)
+-> Get input into an integer variable
+Multiple digits can be input, with Enter used to end input. Esc key will input
+`0', or an empty string. Any characters are allowed. Type can only be integer.
+Note: Nuvie treats this command the same as INPUTSTR. U6 does not.
+
+(0xFC) INPUTNUM [GETNUM, INPUTC]
+Arguments: 2 (inputvar, type)
+-> Get numerical, single-digit input into a variable
+Enter and Esc keys from player will input `0'. No keys outside of the 0-9 range
+are allowed.
+
+(0xF9) INPUTSTR [GETSTR, INPUTS]
+Arguments: 2 (inputvar, type)
+-> Get input into a variable
+Multiple digits can be input, with Enter used to end input. Esc key will input
+`0', or an empty string. Any characters are allowed. If the variable type is
+a string, it will be stored as input. If the variable type is an integer, it
+will be read from the input string and stored as such.
+Note: Nuvie treats this command the same as INPUTNUM. U6 does not.
+
+
+-Conversation & Flow-
+These are control-flow statements that change where/how/when parts of a script
+are executed. This includes conversation responses.
+
+(0xA1) IF [TEST]
+Arguments: 1 (test value)
+-> Do statement block only if test value is true
+Some comparison is usually performed on the values in the argument, and code
+execution continues if the result is true. If the result is false, the script
+will resume on the next ELSE (0xA3) or END-IF (0xA2) command in the current
+scope.
+(a1 ((d3 eb) (d3 07) ab) a7 : if flag 7 of self is set)
+(a1 00 b2 a7 : if value at #0 is true)
+
+(0xA3) ELSE
+-> Continue code execution here if previous IF (0xA1) test was false
+All statements between this and the matching END-IF (0xA2) are skipped if the
+previous IF (0xA1) test was true. This command is not needed in an IF...END-IF
+block.
+
+(0xA2) END-IF
+-> End IF...[ELSE...]END-IF block and resume executing all statements normally
+This is required to avoid a script overflow. The script will resume here if the
+previous IF (0xA1) test was false and there is no ELSE (0xA3).
+(a1 (((00 b2) (d3 01) 91) (d3 0x00) 86) a7
+ TRUE
+ a3
+ FALSE
+ a2 : if the value at #0 minus 0x01 is 0x00, print "TRUE", else print "FALSE")
+
+(0xB0) JUMP [GOTO]
+Arguments: 1 (location/4)
+-> Jump to 4-byte script location
+Code execution and text printing continues at the absolute offset from the
+start of the file (as in the start of the conversation script.)
+<b0 12300000: goto L312>
+
+(0xEF) KEYWORDS [CASE]
+Arguments: 0 (collects text)
+-> Define the following text as keywords that trigger the next ANSWER (0xF6)
+This command sets up any text that follows to be collected as a comma-separated
+keyword list. The previous ANSWER (0xF6) block ends. Any of those keywords, if
+input in conversation, trigger any response (answer) blocks that follow. Only
+the first four letters of a keyword need match the input. The keyword "*" will
+match any input.
+
+(0xF6) ANSWER
+-> Start response to KEYWORDS (0xEF)
+This defines a statement block that only executes if player input matched a
+KEYWORDS (0xEF) list, and no other ANSWER (0xF6) block was before this one. The
+block continues to the next keyword list or END-ANSWERS (0xEE).
+
+(0xEE) END-ANSWERS
+-> Stop checking keyword & response cases; resume normal script execution
+This closes the block started by the first KEYWORDS (0xEF) statement. The key-
+words are cleared, the previous ANSWER (0xF6) ends, and any more response blocks
+outside of this are not treated in any way special. ??
+(LGETINPUT:
+ f7
+ ef; name
+  f6
+  "Conversation Example!"\n
+  b0 LGETINPUT
+ ef; job
+  f6
+  "I serve as an example to all."\n
+  b0 LGETINPUT
+ ef; hello,hi,greetings
+  f6
+  "Hello World!"\n
+  b0 LGETINPUT
+ ef; bye
+  f6
+  "Use this knowledge well. Good bye."\n
+  b6
+ ef; *
+  f6
+  "I know all about that, but it isn't relevant to this example."\n
+  b0 LGETINPUT
+ ee)
+
+(0xB6) BYE
+-> End conversation
+Cleanly ends the conversation and execution of the script, saving any changed
+global variables. This must be included to avoid an overflow in Ultima VI.
+
+
+-Object Management-
+(0xB9) NEW [CREATE]
+Arguments: 4 (npc num, obj num, quality, quantity)
+-> Create a number of objects, and places them in NPC inventory
+The npc num identifies who gets the object, and obj num is the type of object.
+Quality gives objects special properties (and sometimes new graphics) and forces
+them to be grouped seperately (not "stacked".)
+The quantity set on a single object in a single inventory slot can only be up to
+144 in Ultima VI. If you add more, they will be divided across multiple slots.
+A quantity of 0 will add 1 object to the inventory, but with no quantity listed.
+(iolo gives everyones gold (object 0x58, count at #5) to the avatar (0x01):
+ b9 (d3 01) a7, (d3 58) a7, (d3 00) a7, (05 b2) a7
+ the player gives sherry (0xeb=self) some cheese (0x84):
+ b9 (d3 eb) a7, (d3 84) a7, (d3 00) a7, (d3 01) a7
+ ephemerides gives the avatar a lens (0x18a):
+ b9 (d3 01) a7, (d4 8a01) a7, (d3 00) a7, (d3 01) a7
+ xiao sells someone (#3 has npc number) a spell (from DB@E8B, index [#0 + #4]):
+ b9 (03 b2) a7,(d3 3a) a7,((d2 8b0e0000) ((00 b2) (04 b2) 90) b4) a7,(d3 01) a7)
+
+(0xBA) DELETE [DESTROY]
+Arguments: 4
+-> Destroy a number of objects in NPC inventory
+This statement has the exact same format as NEW (0xB9), except it removes the
+specified number of objects instead of adding them.
+
+(0xC9) GIVE [TRANSFER]
+Arguments: 4 (obj num, quality, from npc, to npc)
+-> Transfer object from one NPC inventory to another (give item)
+One object (quantity = 0/1 ??) with matching number and quality is removed from
+the first NPC's inventory, and added to the second NPC's inventory.
+(Ariana gives the Avatar the Rune of Compassion (0xF3):
+ c9 (d3 f3) a7, (d3 00) a7, (d3 eb) a7, (d3 01) a7)
+
+
+-NPC Status & Flags-
+(0xA4) SETF [SET, SFLAG]
+Arguments: 2 (npc num, flag num)
+-> Set NPC flag
+NPC flags are persistant, and a few have special meaning. This sets the flags of
+the NPC so that the "flag num" bit is 1.
+
+(0xA5) CLEARF [UNSET, CFLAG]
+Arguments: 2 (npc num, flag num)
+-> Clear NPC flag
+NPC flags are persistant, and a few have special meaning. This sets the flags of
+the NPC so that the "flag num" bit is 0.
+
+(0xCD) WORK
+Arguments: 2 (npc num, worktype)
+-> Set worktype (current activity) of NPC
+(cd d3 05 a7 d3 94 a7 : Lord British (0x05) will now Tend Crops (activity 0x94))
+
+(0xD9) HEAL
+Arguments: 1 (npc num)
+-> Restore all of NPC's hit points
+The HP value of the NPC is set to the Max-HP value of the same.
+
+(0xDB) CURE
+Arguments: 1 (npc num)
+-> Set "poisoned" status on NPC to false
+
+(0xD6) RESURRECT!
+Arguments: 1 (npc num)
+-> Resurrects NPC and places near self
+
+
+-Other-
+These are instructions that didn't fit into the other sections. Do with them
+what you will.
+
+(0x9C) HORSE
+Arguments: 1 (npc num)
+-> Horse NPC
+The NPC is given a horse and they begin riding it.
+
+(0xCB) WAIT
+-> Wait for input to continue
+A page break is displayed (text printing stops and a down arrow is shown) and
+the script is paused until the player inputs ENTER, SPACE, or ESC to continue.
+
+(0xB5) DBPRINT
+Arguments: 2 (data location, index)
+-> Compile and print text from list.
+Non-printable characters in the text data will be considered part of the text.
+
+(0xBE) VIEWNPC [INVENTORY]
+Arguments: 1 (npc num)
+-> Show NPC inventory (equipped and unequipped items)
+The inventory is displayed even if the NPC is not in the Avatar's party.
+(bf d3 eb : show inventory of self)
+
+(0xBF) PORTRAIT
+Arguments: 1 (npc num)
+-> Show NPC name and picture
+If the NPC is in the Avatar's party, or they are equipped with something, their
+equipped items are shown to the left of the portrait. A general description of
+the NPC class is displayed instead of the name if the NPC is not in the Avatar's
+party and does not have its "met" flag set.
+
+(0x9E) SLEEP
+-> Sleep at inn
+The conversation will pause, wait for game time to advance eight hours (at an
+accelerated pace), and resume.
+
+
+| TABLES
+All values are hexadecimal.
+
+-Data Sizes-
+Code    Size (bytes following)
+D2      4
+D3      1 (default)
+D4      2
+
+
+-Globals-
+U6:
+Number    Description
+10        Avatar is -> 0:male 1:female
+14        Avatar's karma
+17        Number of people (living) in the Avatar's party
+18        Number of party members in the Avatar's party, and dead bodies carried
+19        Avatar's health
+1a        Quest flag -> 0:not on a quest 1:on a quest
+20        The current activity of conversing NPC
+23        Previous input from player ($Z)
+
+
+-Section Markers-
+Code    Section
+F1      Look     (SLOOK)
+F2      Converse (SCONVERSE)
+F3      (Unknown)
+FF      Identity (SIDENT)
+
+
+-Instructions (command codes)-
+(along with the clever names I have assigned each in the right column)
+Code    Args
+9C      1       HORSE
+9E      0       SLEEP
+A1      1       IF (test)
+A2      0       END-IF
+A3      0       ELSE
+A4      2       SETF
+A5      2       CLEARF
+A6      2       DECL (lhs)
+A7      0       EVAL
+A8      1       ASSIGN (rhs)
+B0      1       JUMP
+B5      2       DBPRINT
+B6      0       BYE
+b9      4       NEW (object)
+ba      4       DELETE (object)
+be      1       VIEWNPC (+inventory)
+bf      1       PORTRAIT
+C4      2       ADDKARMA
+C5      2       SUBKARMA
+C9      4       GIVE (object)
+CB      0       WAIT
+CD      2       WORK
+D8      1       NAME (sety)
+D6!     1       RESURRECT
+D9      1       HEAL
+DB      1       CURE
+EE      0       END-ANSWERS
+EF      0*      KEYWORDS
+F6      0       ANSWER (ask-case)
+F7      0       ASK
+F8      0*      ASKC
+F9      2       INPUTSTR
+FB      2       INPUT
+FC      2       INPUTNUM
+* collects text
+
+
+-Value OpCodes (stack opcodes)-
+Code    Args    Operation
+81      2       GT    [>]
+82      2       GT/GE [>=]
+83      2       LT    [<]
+84      2       LT/LE [<=]
+85      2       NE    [!=]
+86      2       EQ    [==]
+90      2       ADD
+91      2       SUB
+92      2       MUL
+94      2       Logical OR
+95      2       Logical AND
+9A      1       CANCARRY (weight NPC is free to carry)
+9B      2       WEIGHT (of object)
+9D      1       HORSED
+A0      2       RAND (randomize)
+A7      NA*     EVAL
+AB      2       FLAG
+B2      1       VAR (variable dereference)
+B3      1       SVAR (string variable dereference)
+B4      2       DATA (DB item)
+BB      2       OBJCOUNT (quantity of object NPC carries)
+C6      1       NPCINPARTY (NPC in-party check)
+C7??    2       OBJINPARTY (in-party-inventory ??)
+CA      1       JOIN
+CC      1       LEAVE
+D7      1       NPCNEARBY (NPC nearby check)
+DA      1       WOUNDED
+DC      1       POISONED
+DD      2??     NPC (party member number to NPC number)
+E0      2       EXP
+E1      2       LVL
+E2      2       STR
+E3      2       INT
+E4      2       DEX
+* value count
+
+
+| DECOMPILED SCRIPT
+A U6 data editor has been created by Paul Gilbert (DreamMaster). It allows one
+to view, edit, and save conversations from the original game.
+Get it at <http://u6edit.sourceforge.net/>, and see actual decompiled scripts.
+Thanks go to him for identifying inaccuracies in this document, and finding new
+instructions.
+
+
+| NOTES
+These are notes for myself (and you, if you're interested.)
+
+Only Ultima VI has been tested with above findings. "Martian Dreams" and
+"The Savage Empire" have the U6 engine but may have a slightly different
+interpreter.
+
+Some constant values have special meaning: npc 0xEB = self
+Find and list all of these constants.
+
+What does F3 do?
+
+For object management statements:
+Need to test different qty values. (0 gives anything? or nothing with no
+ grouping?)
+
+Test what various statements do when "npc" is 00.
+
+List other special text symbols. (gargish, anything else?)
+
+Anything with `??' means I havn't completely figured that out, or I havn't
+confirmed it.
+
+Anything with `!' hasn't (or has only partially) been implemented in NUVIE.
+
+Do empty entries in the converse.a/converse.b files have any meaning beyond
+the fact that they're empty? The one in converse.b divides "real" NPCs from
+shrines and temporary NPCs.
+
+
+| Document updated June 6th, 2004
+| Author/Contact: Joseph Applegate (SB-X) / sb-x@users.sourceforge.net
+|                                         / sbx@mailandnews.com

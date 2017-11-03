@@ -105,23 +105,47 @@ set(pack_font_SOURCE_FILES
         misc/U6misc.cpp
         )
 
+set(pack_lzc_SOURCE_FILES
+        tools/pack_lzc.cpp
+
+        Debug.cpp
+        conf/Configuration.cpp
+        conf/Configuration.h
+        conf/XMLNode.cpp
+        conf/XMLNode.h
+        conf/XMLTree.cpp
+        conf/XMLTree.h
+        conf/ConfigNode.h
+
+        files/NuvieIO.cpp
+        files/NuvieIO.h
+        files/NuvieIOFile.cpp
+        files/NuvieIOFile.h
+        files/U6Lib_n.cpp
+        files/U6Lib_n.h
+        files/U6Lzw.cpp
+        files/U6Lzw.h
+
+        misc/U6misc.h
+        misc/U6misc.cpp
+        )
+
 include_directories(.)
 include_directories(./tools)
 include_directories(conf)
 include_directories(misc)
 
+add_executable(pack_lzc ${pack_lzc_SOURCE_FILES})
 add_executable(unpack_lzc ${unpack_lzc_SOURCE_FILES})
 add_executable(unpack_font ${unpack_font_SOURCE_FILES})
 add_executable(pack_font ${pack_font_SOURCE_FILES})
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    TARGET_LINK_LIBRARIES(unpack_lzc ${SDL_LIBS} -Wl,-framework,Cocoa)
     TARGET_LINK_LIBRARIES(unpack_font ${SDL_LIBS} -Wl,-framework,Cocoa)
     TARGET_LINK_LIBRARIES(pack_font ${SDL_LIBS} -Wl,-framework,Cocoa)
 ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
 IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    TARGET_LINK_LIBRARIES(unpack_lzc dl ${SDL_LIBS})
     TARGET_LINK_LIBRARIES(unpack_font dl ${SDL_LIBS})
     TARGET_LINK_LIBRARIES(pack_font dl ${SDL_LIBS})
 ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")

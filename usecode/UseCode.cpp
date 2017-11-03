@@ -343,3 +343,13 @@ bool UseCode::out_of_use_range(Obj *obj, bool check_enemies)
     }
     return false;
 }
+
+const char *useCodeTypeToString(UseCodeType type)
+{
+  switch(type) {
+    case USE : return "use";
+    case MOVE : return "move";
+    case GET : return "get";
+    default : return "other";
+  }
+}

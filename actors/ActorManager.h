@@ -25,6 +25,7 @@
  */
 
 #include <string>
+#include <set>
 #include "ObjManager.h"
 #include "ActorList.h"
 
@@ -48,6 +49,7 @@ class ActorManager
  bool update; // ActorManager is not paused
  bool wait_for_player; // Player's turn; wait until updateActors() is called
  bool combat_movement; // Defines actor movement type (individual/party)
+ bool should_clean_temp_actors; // If set, temp actors are cleaned when > 19 tiles from player.
 
  Map *map;
  Actor *actors[ACTORMANAGER_MAX_ACTORS];
@@ -110,6 +112,7 @@ class ActorManager
  bool toss_actor_get_location(uint16 start_x, uint16 start_y, uint8 start_z, uint16 xrange, uint16 yrange, MapCoord *location);
  void print_actor(Actor *actor);
  bool can_put_actor(MapCoord location);
+ void enable_temp_actor_cleaning(bool value) { should_clean_temp_actors = value; }
 
  protected:
 
@@ -130,6 +133,8 @@ class ActorManager
  bool loadCustomTiles(nuvie_game_t game_type);
  void loadNPCTiles(std::string datadir);
  void loadAvatarTiles(std::string datadir);
+ void loadCustomBaseTiles(std::string datadir);
+ std::set<std::string> getCustomTileFilenames(std::string datadir, std::string filenamePrefix);
 };
 
 #endif /* __ActorManager_h__ */

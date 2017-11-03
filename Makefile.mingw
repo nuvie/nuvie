@@ -70,10 +70,22 @@ UNPACKFONT_OBJS = $(UNPACKFONT_CPPs:%.cpp=tools/%.o)
 unpack_font.exe: $(UNPACKFONT_OBJS)
 	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
+PACKFONT_CPPs = $(filter %.cpp,$(pack_font_SOURCES))
+PACKFONT_OBJS = $(PACKFONT_CPPs:%.cpp=tools/%.o)
+
+pack_font.exe: $(PACKFONT_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
 UNPACKLZC_CPPs = $(filter %.cpp,$(unpack_lzc_SOURCES))
 UNPACKLZC_OBJS = $(UNPACKLZC_CPPs:%.cpp=tools/%.o)
 
 unpack_lzc.exe: $(UNPACKLZC_OBJS)
+	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
+
+PACKLZC_CPPs = $(filter %.cpp,$(pack_lzc_SOURCES))
+PACKLZC_OBJS = $(PACKLZC_CPPs:%.cpp=tools/%.o)
+
+pack_lzc.exe: $(PACKLZC_OBJS)
 	$(CXX) $(LFLAGS) -o $@ $+ $(LIBS)
 
 UNPACKMAPTILES_CPPs = $(filter %.cpp,$(unpack_maptiles_SOURCES))
@@ -111,6 +123,8 @@ nvconfig.dll: win32/nvconfig.def nvconfig_rc.o win32/nvconfig.o $(DLL_OBJS)
 clean:
 	rm -f $(NUVIE_OBJS1) $(NUVIE_OBJS2) builds/mingw/resource.o nuvie.exe \
 	$(U6DECOMP_OBJS) u6decomp.exe $(UNPACKCONV_OBJS) unpack_conv.exe $(UNPACKFONT_OBJS) unpack_font.exe \
+	$(PACKFONT_OBJS) pack_font.exe \
+	$(UNPACKLZC_OBJS) unpack_lzc.exe $(PACKLZC_OBJS) pack_lzc.exe \
 	$(UNPACKMAPTILES_OBJS) unpack_maptiles.exe $(UNPACKPORTRAITS_OBJS) unpack_portraits.exe \
 	$(UNPACKTALK_OBJS) unpack_talk.exe $(UNPACK_OBJS) unpack.exe \
 	nvconfig.dll nvconfig_rc.o win32/nvconfig.o
@@ -118,8 +132,8 @@ clean:
 install: all copy_scripts
 	strip nuvie.exe -o $(U6PATH)/nuvie.exe
 	mkdir -p $(U6PATH)/data/images
-	mkdir -p $(U6PATH)/data/images/actors
-	mkdir -p $(U6PATH)/data/images/actors/U6
+	mkdir -p $(U6PATH)/data/images/tiles
+	mkdir -p $(U6PATH)/data/images/tiles/U6
 	mkdir -p $(U6PATH)/data/images/gumps
 	mkdir -p $(U6PATH)/data/images/gumps/celestial
 	mkdir -p $(U6PATH)/data/images/gumps/fonts
@@ -132,7 +146,7 @@ install: all copy_scripts
 	mkdir -p $(U6PATH)/data/maps
 	mkdir -p $(U6PATH)/data/maps/u6
 	cp data/images/*.bmp $(U6PATH)/data/images
-	cp data/images/actors/U6/*.bmp $(U6PATH)/data/images/actors/U6
+	cp data/images/tiles/U6/*.bmp $(U6PATH)/data/images/tiles/U6
 	cp data/images/gumps/*.bmp $(U6PATH)/data/images/gumps
 	cp data/images/gumps/celestial/*.bmp $(U6PATH)/data/images/gumps/celestial
 	cp data/images/gumps/fonts/*.bmp $(U6PATH)/data/images/gumps/fonts
@@ -192,14 +206,16 @@ copy_scripts:
 	cp data/scripts/u6/*.lua $(U6PATH)/data/scripts/u6
 	cp data/scripts/u6/lang/en/*.lua $(U6PATH)/data/scripts/u6/lang/en
 
-tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe unpack_lzc.exe unpack_maptiles.exe unpack_portraits.exe unpack_talk.exe
+tools: u6decomp.exe unpack.exe unpack_conv.exe unpack_font.exe pack_font.exe unpack_lzc.exe pack_lzc.exe unpack_maptiles.exe unpack_portraits.exe unpack_talk.exe
 	mkdir -p $(U6PATH)
 	mkdir -p $(U6PATH)/tools
 	strip u6decomp.exe -o $(U6PATH)/tools/u6decomp.exe
 	strip unpack.exe -o $(U6PATH)/tools/unpack.exe
 	strip unpack_conv.exe -o $(U6PATH)/tools/unpack_conv.exe
 	strip unpack_font.exe -o $(U6PATH)/tools/unpack_font.exe
+	strip pack_font.exe -o $(U6PATH)/tools/pack_font.exe
 	strip unpack_lzc.exe -o $(U6PATH)/tools/unpack_lzc.exe
+	strip pack_lzc.exe -o $(U6PATH)/tools/pack_lzc.exe
 	strip unpack_maptiles.exe -o $(U6PATH)/tools/unpack_maptiles.exe
 	strip unpack_portraits.exe -o $(U6PATH)/tools/unpack_portraits.exe
 	strip unpack_talk.exe -o $(U6PATH)/tools/unpack_talk.exe

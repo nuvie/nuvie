@@ -24,6 +24,7 @@
  *
  */
 #include <vector>
+#include <string>
 
 class Configuration;
 class Script;
@@ -219,6 +220,7 @@ class Game
  uint16 get_game_height() { return game_height; }
  uint16 get_game_x_offset() { return game_x_offset; }
  uint16 get_game_y_offset() { return game_y_offset; }
+  std::string get_data_file_path(std::string datafile);
 
  /* Return instances of Game classes */
  static Game *get_game()          { return(game); }

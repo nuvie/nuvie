@@ -9,10 +9,15 @@
  *
  */
 #include <string>
-#include <SDL.h>
 #include "nuvieDefs.h"
 
 class Configuration;
+
+typedef enum {
+  BLOCKED,
+  CAN_MOVE,
+  FORCE_MOVE
+} MovementStatus;
 
 std::string config_get_game_key(Configuration *config);
 const char *get_game_tag(int game_type);
@@ -21,6 +26,7 @@ uint8 get_game_type(const char *string);
 nuvie_game_t get_game_type(Configuration *config);
 void build_path(std::string path, std::string filename, std::string &full_path);
 bool directory_exists(const char *directory);
+bool file_exists(const char *path);
 void print_b(DebugLevelType level,uint8 num);
 void print_b16(DebugLevelType level,uint16 num);
 void print_indent(DebugLevelType level,uint8 indent);
@@ -90,9 +96,5 @@ uint16 wrap_signed_coord(sint16 coord, uint8 level);
 sint8 get_wrapped_rel_dir(sint16 p1, sint16 p2, uint8 level);
 
 std::string encode_xml_entity(const std::string &s);
-
-#if SDL_VERSION_ATLEAST(2,0,0)
-int SDL_SetColors(SDL_Surface *surface, SDL_Color *colors, int firstcolor, int ncolors);
-#endif
 
 #endif /* __U6misc_h__ */

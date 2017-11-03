@@ -34,6 +34,7 @@
 #include "PortraitMD.h"
 #include "U6misc.h"
 #include "Objlist.h"
+#include "Script.h"
 
 bool PortraitMD::init()
 {
@@ -67,24 +68,13 @@ bool PortraitMD::load(NuvieIO *objlist)
 
 uint8 PortraitMD::get_portrait_num(Actor *actor)
 {
-	uint8 num;
+  if(actor == NULL)
+    return NO_PORTRAIT_FOUND;
 
-	if(actor == NULL)
-		return NO_PORTRAIT_FOUND;
-
-	if(actor->is_avatar())
-	{
-	  num = avatar_portrait_num;
-	}
-	else
-	{
-	  num = actor->get_actor_num();
-	}
-
-	// FIXME select right avatar portrait, correct offset for MD (SE only has male)
-	num++;
-
-	return num;
+  uint8 num = Game::get_game()->get_script()->call_get_portrait_number(actor);
+  if(num != NO_PORTRAIT_FOUND)
+    num++;
+  return num;
 }
 
 unsigned char *PortraitMD::get_portrait_data(Actor *actor)

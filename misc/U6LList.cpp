@@ -33,9 +33,11 @@ void retainU6Link(U6Link *link)
 
 void releaseU6Link(U6Link *link)
 {
-	link->ref_count--;
-    if(link->ref_count == 0)
-       delete link;
+  if(link) {
+    link->ref_count--;
+    if (link->ref_count == 0)
+      delete link;
+  }
 }
 
 //use locally to cleanup the pointers when unlinking from list.

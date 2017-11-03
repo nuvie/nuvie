@@ -4,16 +4,23 @@ local lua_file = nil
 lua_file = nuvie_load("common/common.lua"); lua_file();
 
 OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING  = 0x1cf2
+OBJLIST_OFFSET_PREV_PLAYER_X            = 0x1d03
+OBJLIST_OFFSET_PREV_PLAYER_Y            = 0x1d04
+OBJLIST_OFFSET_1D22_UNK                 = 0x1d22
 OBJLIST_OFFSET_DREAM_MODE_FLAG          = 0x1d29
 
 OBJLIST_OFFSET_BERRY_COUNTERS           = 0x1d2f
+OBJLIST_OFFSET_DREAM_STAGE              = 0x1d53
 
 function dbg(msg_string)
-	io.stderr:write(msg_string)
+   io.stderr:write(msg_string)
 end
 
 g_hours_till_next_healing = 0
 g_in_dream_mode = false
+
+local g_selected_obj
+local g_attack_target
 
 function update_watch_tile()
    local anim_index = get_anim_index_for_tile(616) --616 = watch tile
@@ -24,12 +31,32 @@ function update_watch_tile()
 end
 
 function load_game()
+   g_selected_obj = nil
+   g_attack_target = nil
+
    objlist_seek(OBJLIST_OFFSET_HOURS_TILL_NEXT_HEALING)
    g_hours_till_next_healing = objlist_read1()
    
    objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
    g_in_dream_mode = bit32.btest(objlist_read2(), 0x10)
-   
+   map_enable_temp_actor_cleaning(not g_in_dream_mode)
+
+   if g_in_dream_mode then
+      lock_inventory_view(Actor.get(0))
+   end
+
+   objlist_seek(OBJLIST_OFFSET_DREAM_STAGE)
+   g_current_dream_stage = objlist_read2()
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_X)
+   g_prev_player_x = objlist_read1()
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_Y)
+   g_prev_player_y = objlist_read1()
+
+   objlist_seek(OBJLIST_OFFSET_1D22_UNK)
+   g_objlist_1d22_unk = objlist_read1()
+
    update_watch_tile()
 end
 
@@ -47,6 +74,17 @@ function save_game()
    objlist_seek(OBJLIST_OFFSET_DREAM_MODE_FLAG)
    objlist_write2(bytes)
 
+   objlist_seek(OBJLIST_OFFSET_DREAM_STAGE)
+   objlist_write2(g_current_dream_stage)
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_X)
+   objlist_write1(g_prev_player_x)
+
+   objlist_seek(OBJLIST_OFFSET_PREV_PLAYER_Y)
+   objlist_write1(g_prev_player_y)
+
+   objlist_seek(OBJLIST_OFFSET_1D22_UNK)
+   objlist_write1(g_objlist_1d22_unk)
 end
 
 
@@ -72,6 +110,85 @@ function is_container_obj(obj_num)
       return true
    end
    return false
+end
+
+--OBJ_CLOSED_DOOR, OBJ_GLOW_WORM, OBJ_DEVIL_POD, OBJ_DEVIL_PLANT, OBJ_GLASS_PITCHER
+local attackable_obj_tbl = {
+   [0xB3]=1,
+   [0x184]=1,
+   [0x133]=1,
+   [0x12C]=1,
+   [0xD9]=1,
+}
+
+function is_obj_attackable(obj)
+   return attackable_obj_tbl[obj.obj_n] ~= nil
+end
+
+--OBJ_VINE, OBJ_TREE, OBJ_PORCUPOD, OBJ_FLOWER, OBJ_HARD_SHELLED_PLANT
+--OBJ_DEVIL_PLANT, OBJ_DEVIL_POD, OBJ_HEDGE
+local plant_obj_tbl = {
+   [0xCD]=1,
+   [0x198]=1,
+   [0xA8]=1,
+   [0xAA]=1,
+   [0xAB]=1,
+   [0x12C]=1,
+   [0x133]=1,
+   [0x12B]=1,
+}
+
+function is_plant_obj(obj)
+   return plant_obj_tbl[obj.obj_n] ~= nil
+end
+
+--OBJ_DOLLAR, OBJ_RUBLE, OBJ_PHOTOGRAPH, OBJ_THREAD, OBJ_BOX_OF_CIGARS
+--OBJ_MATCH, OBJ_BOOK, OBJ_MAP, OBJ_NOTE, OBJ_WORMSBANE_SEED
+--OBJ_SCROLL, OBJ_LIVE_MARTIAN_SEED, OBJ_PILE_OF_COAL
+--OBJ_HUGE_LUMP_OF_COAL, OBJ_CHUNK_OF_ICE
+local burnable_obj_tbl = {
+   [0x18]=1,
+   [0x84]=1,
+   [0x0B9]=1,
+   [0x3E]=1,
+   [0x65]=1,
+   [0x6B]=1,
+   [0x94]=1,
+   [0x96]=1,
+   [0x97]=1,
+   [0x9E]=1,
+   [0x0F3]=1,
+   [0x0FC]=1,
+   [0x1BC]=1,
+   [0x1BF]=1,
+   [0x100]=1,
+}
+
+function is_obj_burnable(obj)
+   return burnable_obj_tbl[obj.obj_n] ~= nil
+end
+
+function is_open_water_at_loc(x, y, z)
+   local tile_num = map_get_tile_num(x, y, z)
+   local is_water = tile_get_flag(tile_num, 1, 0)
+   if not is_water then
+      return false
+   end
+
+   if not tile_get_flag(tile_num, 1, 1) then -- not blocked
+      return false
+   end
+
+   for obj in objs_at_loc(location) do
+      tile_num = obj.tile_num
+      --FIXME original does this too
+      -- sub     ax, word_40FA2
+      if tile_get_flag(tile_num, 3, 1) or tile_get_flag(tile_num, 3, 2) then --SUPPORT_OBJECT or FORCE_PASSABLE
+         return false
+      end
+   end
+
+   return true
 end
 
 function search(obj)
@@ -225,15 +342,16 @@ local g_readiable_objs_tbl = {
 }
 
 function wrap_coord(coord, level)
-   if level > 0 and level < 6 then
-      return coord
+   local map_stride = 1024
+   if level ~= 0 then
+      map_stride = 256
    end
 
    if coord < 0 then
-      return 1024 + coord
+      return map_stride + coord
    end
-   
-   return coord % 1024   
+
+   return coord % map_stride
 end
 
 function can_move_obj(obj, rel_x, rel_y)
@@ -242,16 +360,17 @@ function can_move_obj(obj, rel_x, rel_y)
 end
 
 function obj_get_readiable_location(obj)
-	if g_readiable_objs_tbl[obj.tile_num] ~= nil then
-		return g_readiable_objs_tbl[obj.tile_num]
-	end
+   if g_readiable_objs_tbl[obj.tile_num] ~= nil then
+      return g_readiable_objs_tbl[obj.tile_num]
+   end
 
-	return -1	
+   return -1
 end
 
 function update_lamp_posts()
    --Turn lamps on/off if we have power and it is dark.
    local frame_n = 3
+   local hour = clock_get_hour()
    if Actor.get_talk_flag(0x73, 4) and (hour < 6 or hour > 17) then
       frame_n = 7
    end
@@ -264,30 +383,50 @@ function update_lamp_posts()
    end
 end
 
-function play_md_sfx(sfx_id)
+local PLAY_ASYNC = true
+function play_md_sfx(sfx_id, play_async)
+   --FIXME
+end
+
+function play_door_sfx()
    --FIXME
 end
 
 function create_object_needs_quan(obj_n)
 -- obj.stackable is already checked
-	if obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1
-		return true
-	else
-		return false
-	end
+   if obj_n == 196 or obj_n == 311 or obj_n == 312 then --OBJ_LEVER, OBJ_SWITCH, OBJ_SWITCH1
+      return true
+   else
+      return false
+   end
+end
+
+function input_select_obj_qty(obj)
+   if not obj.stackable then
+      return 1
+   end
+
+   printl("HOW_MANY")
+   local qty = input_select_integer("0123456789", true)
+   if qty > obj.qty then
+      return obj.qty
+   end
+   return qty
 end
 
 --load actor functions
 local actor_load = nuvie_load("md/actor.lua");
 if type(actor_load) == "function" then
-	actor_load()
+   actor_load()
 else
-	if type(actor_load) == "string" then
-		io.stderr:write(actor_load);
-	end
+   if type(actor_load) == "string" then
+      io.stderr:write(actor_load);
+   end
 end
 
 look_init = nuvie_load("md/look.lua"); look_init();
+
+combat_init = nuvie_load("md/combat.lua"); combat_init();
 
 -- init usecode
 usecode_init = nuvie_load("md/usecode.lua"); usecode_init();
@@ -297,3 +436,5 @@ talk_init = nuvie_load("md/talk.lua"); talk_init();
 player_init = nuvie_load("md/player.lua"); player_init();
 
 worktype_init = nuvie_load("md/worktype.lua"); worktype_init();
+
+dreamworld_init = nuvie_load("md/dreamworld.lua"); dreamworld_init();

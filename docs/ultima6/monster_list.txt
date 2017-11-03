@@ -1,0 +1,147 @@
+
+ULTIMA 6 MONSTER LIST
+
+Name        STR DEX INT ARM DMG   HP ALN  SPECIAL                        FR
+
+acid slug     5   5   2   0   1   10  C   AC,IS,DF                        4
+alligator    20  10   3   6  10b  30  C   AM                             16dt
+ant (giant)  16  15   2   3   8b  10  C   IS                             16dt
+antna        16  15   2   3   8b  10  C   IS                             --
+avatar       25  25  25   0   4b  30  G                                  16
+balloon
+bat (giant)   5  25   4   0   6    5  C   NC,FL                           4
+beggar        8   8   9   0   3b   6  N                                  16
+bird          1  28   4   0   1    3  N   FL                              4
+cat           4  18   8   0   2    6  N					  4
+child         8   8   9   0   2b   6  N                                  16
+corpser      17   6   3   0  15   40  C   DR,IS,DF                        4
+cow          14   7   5   0   3b  10  N                                  16dt
+cowoc        14   7   5   0   3b  10  N                                  --
+cyclops      27   8   7   4  20b  40  E                                  32qt
+daemon       35  26  31  10  20b 100  E   [OJ,SL,PF,AXE] FL,NC,UN,Isfd    8
+deer         11  18   5   0   2    8  N                                   8
+dog           5  16   8   0   3    6  N                                   8
+dragon       40  35  27  12  30  150  E   [KXC] DB,FL,IF                 40mt
+drake        22  22  13   4  10   50  E   [OJ] DB,FL,IF                   8
+dress wearer 10  14  15   0   4b   8  N                                  16
+esrohorse    22  27   7   0   3b  15  N                                  --
+farmer       15  15  10   0   4b   8  N                                  16
+fighter      20  17  11   0   6b  20  C                                  16
+Gargoyle ldr 15  32  33   5   6b  50  E   [OG,VPF,AXP,AXE,KXC] FL,IS     48qt
+Gargoyle wkr 25  19   8  10  15b  30  E   IS                             12
+gazer         2  10  21   0   1b  20  E   [IZ,OG,AXE] FL,IN,IS            4
+ghost         1  10   9   0  12   20  E   [SL,QC] ET,NC,UN,IS,IF,ID       4
+gremlin       2  26   7   0   1    5  C   [PY] SF                         4
+guard        30  30   9   0   8b 100  E                                  16
+headless     19  13   8   2  12b  20  E                                   8
+horse        22  27   7   0   3b  15  N                                  16dt
+horse-rider  22  27   7   0   3b  15  N                                  16dt
+hydra        26  11   2   0  15b  50  C   IS,IF                          36
+insects       1  40   1   0   1    1  C   FL,NC,IS                        4
+jester       14  16  12   0   4b   8  N                                  16
+Lord British 30  30  30  30 255b 255  G   [OG,OP,QC,VC,CH,VAL] IM        16
+lute player  12  16  14   0   4b   8  N                                  16
+mage         10  14  22   0   4b  30  E   [OP,PF,IZ,KX,OG,AXE,AXP,FH]    16
+merchant     12  12  18   0   4b   8  E                                  16
+mimic        22   9   8   5  15b  30  C   [INP] IP,IS                    --
+mongbat      20  27  13   4  20   30  E   FL                              8
+mouse         2  25   3   0   2p   5  N                                   4
+rabbit        3   9   3   0   2    5  N                                   4
+raft
+rat (giant)   5  13   4   0   6p   8  N   [IN] IP                         8
+reaper       21  20  16   4  20b  30  C   [OJ,AXE,KBX,OG] IS,DF           4
+rotagator    20  10   3   6  10b  30  C   AM                             --
+rot worms     3  17   2   0   2p   5  C   IP,IS,DF                        4
+scorpion (g) 13  13   3   3   8p  20  C   IS                             16dt
+scorprocs    13  13   3   3   8p  20  C   IS                             --
+sea serpent  17  17   9   2  30   70  E   DB,NC,SW                        4
+sheep         5  10   4   0   2    6  N                                   8
+ship         30  30  30  30  30   30  N   SW                             24mt
+silver serp. 60  21   8  15  60p 200  C                                  32mt
+skeleton     10  14   7   0   6b  20  E   UN,IS,IF,ID                     8
+skiff
+slime         6   6   2   0   4p   5  C   NC,SP,IS,DF                    16
+snake         3   7   6   1   2p   5  C                                   8
+spider (gi)   9  11   4   0   8p  10  C                                   8
+squid (gi)   24  20   8   0  20p  50  E   [OJ] NC,SW,IS                   4
+swashbuckler 15  18  12   0   4b  15  C                                  16
+tangle vine  20  25   1   4   1b  30      IS,DF                           8
+troll        18  14   9   4   6b  15  E                                   8
+villager     11  12  12   0   4b   8  N                                  16
+wisp          1  40  20   0   1b  40  C   [OP,AXE] NC,ET,IS,IF,ID         4
+wolf          8  16   8   0   4    8  N                                   8
+
+Abbreviations:
+
+TRS - treasure chance
+C/S - combat strategy
+FR  - number of animation frames
+
+Combat Strategies
+Front    Fr seek to front line; if in line, attack nearest enemy; no retreat
+Rear     Re seek to spot behind front line; attack nearest enemy
+Flank    Fl seek to enemy flank; attack nearest enemy
+Berserk  Be attack most powerful enemy; attract if out of range; no retreat
+Wild     Wi attack nearest enemy; attract if out of range
+Shy      Sh flee if near player; turn wild if attacked
+Like     Li attract to nearest player
+Graze    Gr wander
+Immobile Im attack nearest enemy; no move; no retreat
+Unfriend Un wander w/chance to turn wild if near player
+Retreat  -- flee if near enemy
+Command  -- under player control
+
+Alignments:
+
+GOOD    attack only evil and chaotic creatures
+NEUTRAL attack only chaotic creatures
+CHAOTIC attack anything except chaotic creatures
+EVIL    attack only good and chaotic creatures
+
+
+SPECIAL key:
+
+AC: acid (dissolves inventory items)
+AM: amphibious
+DB: dragon breath
+DF: take double damage from fire
+DR: drags victims underground
+ET: ethereal (walks through walls)
+FL: flies; also immune to tremor spells
+IB: immune to blindness
+ID: immune to death spells/corp
+IF: immune to fire/flam
+II: immune to illusion/quas
+IM: immortal
+IN: changes to insects when dead
+IO: immune to ort spells
+IP: immune to poison/nox
+IS: immune to sleep/zu
+NC: no corpse
+SP: splits in two
+SF: steals food
+SW: swims
+UN: undead nature (see Notes)
+
+
+Notes:
+
+    Undead creatures take only half damage from non-magical attacks.
+    Undead creatures are immune to "zu" and "corp" spells.
+    Ethereal creatures cannot be MOVEd.
+    Monsters with INT < 5 don't flee.
+    Monsters who cast Sanct Lor can only make themselves visible or
+invisible; they cannot cast the (a)sl spell on other monsters.
+
+
+MonsterFlags:
+
+    bit 0   immune to sleep
+        1   immune to corp spells
+        2   immune to poison
+        3   immune to fire
+        4   double damage from fire
+        5   bludgeons
+        6   poisons
+        7   uses spells or other special attack
+

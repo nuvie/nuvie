@@ -1,0 +1,1026 @@
+obj_n: description.
+
+0000: Nothing
+0001: spear of shamap
+0002: shield of Krukk
+0003: crystal brain
+0004: drawing of you
+0005: drawing of Aiela
+0006: giant gem
+0007: cloth armor
+0008: leather armour
+0009: bark armor
+0010: magnesium ribbon
+0011: light
+0012: paddle
+0013: bark shield
+0014: leather shield
+0015: stegosaurus shield
+0016: something you shouldn't
+0017: web
+0018: something you shouldn't
+0019: sacred hide
+0020: rope
+0021: black staff
+0022: hole in the ceiling
+0023: something you shouldn't
+0024: club
+0025: obsidian knife
+0026: spear
+0027: throwing axe
+0028: axe
+0029: rock hammer
+0030: something you shouldn't
+0031: bow
+0032: blowgun
+0033: obsidian sword
+0034: two handed hammer
+0035: floor
+0036: poisoned dart
+0037: atl atl
+0038: floor plate
+0039: boomerang
+0040: modern rifle
+0041: rifle bullet
+0042: vine
+0043: bell
+0044: knife
+0045: arrow
+0046: something you shouldn't
+0047: turtle bait
+0048: feather
+0049: notebook
+0050: bamboo flintlock
+0051: camera
+0052: scissors
+0053: key
+0054: chocolatl
+0055: pinde
+0056: yopo
+0057: frozen lava
+0058: blue stone
+0059: mortar
+0060: grinding stone
+0061: corn stalk
+0062: bean stalk
+0063: jug of plachta
+0064: ring
+0065: unusual object
+0066: gem stand
+0067: kotl shield
+0068: floor plate
+0069: gold
+0070: gold nugget
+0071: pile of diamonds
+0072: diamond
+0073: emerald
+0074: ruby
+0075: torch
+0076: burned nest
+0077: flute
+0078: orchid bulb
+0079: bones
+0080: bones
+0081: bones
+0082: skeleton
+0083: something you shouldn't
+0084: tooth necklace
+0085: jade necklace
+0086: totem of Heluzz
+0087: totem of Motazz
+0088: totem of Aphazz
+0089: ladle
+0090: drum
+0091: small bones
+0092: folded skin
+0093: corn meal
+0094: fire extingisher
+0095: bottle of liquor
+0096: silver cup
+0097: empty jar
+0098: something you shouldn't
+0099: bamboo rail
+0100: something you shouldn't
+0101: skillet
+0102: tortilla
+0103: meat
+0104: berry
+0105: cake
+0106: dinosaur egg
+0107: roast pteranodon
+0108: corn
+0109: bean
+0110: meat
+0111: dinosaur egg
+0112: broken dinosaur egg
+0113: bananas
+0114: bunch of turnips
+0115: orchid
+0116: plant
+0117: something you shouldn't
+0118: fire axe
+0119: metal hammer
+0120: pepper
+0121: deinonychus skull
+0122: tapestry
+0123: sulfur
+0124: rattle
+0125: log drum
+0126: skull on pole
+0127: bamboo plant
+0128: bamboo pole
+0129: charcoal
+0130: potassium nitrate
+0131: digging stick
+0132: soft clay pot
+0133: fired clay pot
+0134: cloth strip
+0135: lei
+0136: metal bucket
+0137: grenade
+0138: lit grenade
+0139: tar
+0140: water
+0141: pyramid
+0142: grating
+0143: machine
+0144: energy field
+0145: rod
+0146: sundial
+0147: dark moonstone
+0148: jungle drum
+0149: something you shouldn't
+0150: waterfall
+0151: waterfall
+0152: water
+0153: vine
+0154: stepping stone
+0155: ladder
+0156: ladder
+0157: stump
+0158: steps
+0159: carving
+0160: trap door
+0161: door
+0162: fountain
+0163: cave
+0164: table
+0165: loom
+0166: fountain
+0167: boulder
+0168: hole
+0169: stone head
+0170: dirt mound
+0171: pteranodon nest
+0172: blue boulder
+0173: oven
+0174: drop spindle
+0175: stick
+0176: something you shouldn't
+0177: wire screen
+0178: something you shouldn't
+0179: something you shouldn't
+0180: cloth
+0181: jug
+0182: pouch
+0183: basket
+0184: pot
+0185: table
+0186: brazier
+0187: archway
+0188: crate
+0189: something you shouldn't
+0190: metal head
+0191: tarred cloth strip
+0192: clay
+0193: archway
+0194: silver statue
+0195: earth
+0196: chimes
+0197: fruit
+0198: little tree
+0199: window
+0200: well
+0201: vines
+0202: some plachta
+0203: bamboo
+0204: gunpowder
+0205: lava grating
+0206: tree branch
+0207: burnt logs
+0208: torch
+0209: lit torch
+0210: flax
+0211: rib bone
+0212: fishing pole
+0213: fish
+0214: chop
+0215: stone statue
+0216: crystal garden
+0217: lever
+0218: ball
+0219: carpet
+0220: cushion
+0221: instrument
+0222: control panel
+0223: large crystal
+0224: broken black staff
+0225: scorch mark
+0226: stone doorway
+0227:  
+0228: something you shouldn't
+0229: tar pit
+0230: something you shouldn't
+0231: sulphur pit
+0232: hanging bridge
+0233: raft
+0234: door
+0235: statue
+0236: doorway
+0237: raft
+0238: stone snake
+0239: something you shouldn't
+0240: device
+0241: activated device
+0242: fire
+0243: small mat
+0244: mat
+0245: skin
+0246: blanket
+0247: headless metal statue
+0248: blood
+0249: body
+0250: stone snake
+0251: lizard man
+0252: crystal
+0253: something you shouldn't
+0254: fire
+0255: fire
+0256: large crystal
+0257: fire pit
+0258: cauldron
+0259: stairs
+0260: fallen tree
+0261: fallen tree
+0262: fallen tree
+0263: tree
+0264: tree
+0265: tree
+0266: tree
+0267: device
+0268: something you shouldn't
+0269: fire
+0270: door
+0271: window
+0272: stone doorway
+0273: something you shouldn't
+0274: cage
+0275: door
+0276: box
+0277: something you shouldn't
+0278: something you shouldn't
+0279: cushion
+0280: dead serpent woman
+0281: island
+0282: carnivorous orchid
+0283: serpent woman
+0284: baby apatosaurus
+0285: baby apatosaurus
+0286: apatosaurus
+0287: apatosaurus
+0288: pteranodon
+0289: allosaurus
+0290: allosaurus
+0291: wisp
+0292: carnivorous orchid
+0293: tyrannosaurus
+0294: tyrannosaurus
+0295: tyrannosaurus
+0296: gorilla
+0297: robosaurus
+0298: robosaurus
+0299: baby pteranodon
+0300: plesiosaur
+0301: argent sergeant
+0302: turtle
+0303: stegosaurus
+0304: stegosaurus
+0305: triceratops
+0306: triceratops
+0307: 
+0308: snake
+0309: alphadon
+0310: modern man
+0311: professor
+0312: reporter
+0313: woman
+0314: shaman
+0315: chieftain
+0316: man
+0317: parrot
+0318: Sakkhra
+0319: automaton
+0320: man
+0321: woman
+0322: noble
+0323: myrmidex drone
+0324: woman
+0325: neanderthal
+0326: man
+0327: ankylosaurus
+0328: Myrmidex queen
+0329: dancer
+0330: deinonychus
+0331: sabretooth tiger
+0332: sloth
+0333: jaguar
+0334: dimetrodon
+0335: bear
+0336: giant spider
+0337: Nothing
+0338: Nothing
+0339: Nothing
+0340: Nothing
+0341: Nothing
+0342: Nothing
+0343: Nothing
+0344: Nothing
+0345: Nothing
+0346: Nothing
+0347: Nothing
+0348: Nothing
+0349: Nothing
+0350: Nothing
+0351: Nothing
+0352: Nothing
+0353: Nothing
+0354: Nothing
+0355: Nothing
+0356: Nothing
+0357: Nothing
+0358: Nothing
+0359: Nothing
+0360: Nothing
+0361: Nothing
+0362: Nothing
+0363: Nothing
+0364: Nothing
+0365: Nothing
+0366: Nothing
+0367: Nothing
+0368: Nothing
+0369: Nothing
+0370: Nothing
+0371: Nothing
+0372: Nothing
+0373: Nothing
+0374: Nothing
+0375: Nothing
+0376: Nothing
+0377: Nothing
+0378: Nothing
+0379: Nothing
+0380: Nothing
+0381: Nothing
+0382: Nothing
+0383: Nothing
+0384: Nothing
+0385: Nothing
+0386: Nothing
+0387: Nothing
+0388: Nothing
+0389: Nothing
+0390: Nothing
+0391: Nothing
+0392: Nothing
+0393: giant spider
+0394: giant spider
+0395: giant spider
+0396: giant spider
+0397: giant spider
+0398: giant spider
+0399: giant spider
+0400: giant spider
+0401: giant spider
+0402: giant spider
+0403: giant spider
+0404: giant spider
+0405: giant spider
+0406: giant spider
+0407: giant spider
+0408: giant spider
+0409: giant spider
+0410: giant spider
+0411: giant spider
+0412: giant spider
+0413: giant spider
+0414: giant spider
+0415: giant spider
+0416: giant spider
+0417: giant spider
+0418: giant spider
+0419: giant spider
+0420: giant spider
+0421: giant spider
+0422: giant spider
+0423: giant spider
+0424: giant spider
+0425: giant spider
+0426: giant spider
+0427: giant spider
+0428: giant spider
+0429: giant spider
+0430: giant spider
+0431: giant spider
+0432: giant spider
+0433: giant spider
+0434: giant spider
+0435: giant spider
+0436: giant spider
+0437: giant spider
+0438: giant spider
+0439: giant spider
+0440: giant spider
+0441: giant spider
+0442: giant spider
+0443: giant spider
+0444: giant spider
+0445: giant spider
+0446: giant spider
+0447: giant spider
+0448: giant spider
+0449: giant spider
+0450: giant spider
+0451: giant spider
+0452: giant spider
+0453: giant spider
+0454: giant spider
+0455: giant spider
+0456: giant spider
+0457: giant spider
+0458: giant spider
+0459: giant spider
+0460: giant spider
+0461: giant spider
+0462: giant spider
+0463: giant spider
+0464: giant spider
+0465: giant spider
+0466: giant spider
+0467: giant spider
+0468: giant spider
+0469: giant spider
+0470: giant spider
+0471: giant spider
+0472: giant spider
+0473: giant spider
+0474: giant spider
+0475: giant spider
+0476: giant spider
+0477: giant spider
+0478: giant spider
+0479: giant spider
+0480: giant spider
+0481: giant spider
+0482: giant spider
+0483: giant spider
+0484: giant spider
+0485: giant spider
+0486: giant spider
+0487: giant spider
+0488: giant spider
+0489: giant spider
+0490: giant spider
+0491: Nothing
+0492: Nothing
+0493: Nothing
+0494: Nothing
+0495: Nothing
+0496: Nothing
+0497: Nothing
+0498: Nothing
+0499: Nothing
+0500: Nothing
+0501: Nothing
+0502: Nothing
+0503: Nothing
+0504: Nothing
+0505: Nothing
+0506: Nothing
+0507: Nothing
+0508: Nothing
+0509: Nothing
+0510: Nothing
+0511: Nothing
+0512: Nothing
+0513: Nothing
+0514: Nothing
+0515: Nothing
+0516: Nothing
+0517: Nothing
+0518: Nothing
+0519: Nothing
+0520: Nothing
+0521: Nothing
+0522: Nothing
+0523: Nothing
+0524: Nothing
+0525: Nothing
+0526: Nothing
+0527: Nothing
+0528: Nothing
+0529: Nothing
+0530: Nothing
+0531: Nothing
+0532: Nothing
+0533: Nothing
+0534: Nothing
+0535: Nothing
+0536: Nothing
+0537: Nothing
+0538: Nothing
+0539: Nothing
+0540: Nothing
+0541: Nothing
+0542: Nothing
+0543: Nothing
+0544: Nothing
+0545: Nothing
+0546: Nothing
+0547: Nothing
+0548: Nothing
+0549: Nothing
+0550: Nothing
+0551: Nothing
+0552: Nothing
+0553: Nothing
+0554: Nothing
+0555: Nothing
+0556: Nothing
+0557: Nothing
+0558: Nothing
+0559: Nothing
+0560: Nothing
+0561: Nothing
+0562: Nothing
+0563: Nothing
+0564: Nothing
+0565: Nothing
+0566: Nothing
+0567: Nothing
+0568: Nothing
+0569: Nothing
+0570: Nothing
+0571: Nothing
+0572: Nothing
+0573: Nothing
+0574: Nothing
+0575: Nothing
+0576: Nothing
+0577: Nothing
+0578: Nothing
+0579: Nothing
+0580: Nothing
+0581: Nothing
+0582: Nothing
+0583: Nothing
+0584: Nothing
+0585: Nothing
+0586: Nothing
+0587: Nothing
+0588: Nothing
+0589: Nothing
+0590: Nothing
+0591: Nothing
+0592: Nothing
+0593: Nothing
+0594: Nothing
+0595: Nothing
+0596: Nothing
+0597: Nothing
+0598: Nothing
+0599: Nothing
+0600: Nothing
+0601: Nothing
+0602: Nothing
+0603: Nothing
+0604: Nothing
+0605: Nothing
+0606: Nothing
+0607: Nothing
+0608: Nothing
+0609: Nothing
+0610: Nothing
+0611: Nothing
+0612: Nothing
+0613: Nothing
+0614: Nothing
+0615: Nothing
+0616: Nothing
+0617: Nothing
+0618: Nothing
+0619: Nothing
+0620: Nothing
+0621: Nothing
+0622: Nothing
+0623: Nothing
+0624: Nothing
+0625: Nothing
+0626: Nothing
+0627: Nothing
+0628: Nothing
+0629: Nothing
+0630: Nothing
+0631: Nothing
+0632: Nothing
+0633: Nothing
+0634: Nothing
+0635: Nothing
+0636: Nothing
+0637: Nothing
+0638: Nothing
+0639: Nothing
+0640: Nothing
+0641: Nothing
+0642: Nothing
+0643: Nothing
+0644: Nothing
+0645: Nothing
+0646: Nothing
+0647: Nothing
+0648: Nothing
+0649: Nothing
+0650: Nothing
+0651: Nothing
+0652: Nothing
+0653: Nothing
+0654: Nothing
+0655: Nothing
+0656: Nothing
+0657: Nothing
+0658: Nothing
+0659: Nothing
+0660: Nothing
+0661: Nothing
+0662: Nothing
+0663: Nothing
+0664: Nothing
+0665: Nothing
+0666: Nothing
+0667: Nothing
+0668: Nothing
+0669: Nothing
+0670: Nothing
+0671: Nothing
+0672: Nothing
+0673: Nothing
+0674: Nothing
+0675: Nothing
+0676: Nothing
+0677: Nothing
+0678: Nothing
+0679: Nothing
+0680: Nothing
+0681: Nothing
+0682: Nothing
+0683: Nothing
+0684: Nothing
+0685: Nothing
+0686: Nothing
+0687: Nothing
+0688: Nothing
+0689: Nothing
+0690: Nothing
+0691: Nothing
+0692: Nothing
+0693: Nothing
+0694: Nothing
+0695: Nothing
+0696: Nothing
+0697: Nothing
+0698: Nothing
+0699: Nothing
+0700: Nothing
+0701: Nothing
+0702: Nothing
+0703: Nothing
+0704: Nothing
+0705: Nothing
+0706: Nothing
+0707: Nothing
+0708: Nothing
+0709: Nothing
+0710: Nothing
+0711: Nothing
+0712: Nothing
+0713: Nothing
+0714: Nothing
+0715: Nothing
+0716: Nothing
+0717: Nothing
+0718: Nothing
+0719: Nothing
+0720: Nothing
+0721: Nothing
+0722: Nothing
+0723: Nothing
+0724: Nothing
+0725: Nothing
+0726: Nothing
+0727: Nothing
+0728: Nothing
+0729: Nothing
+0730: Nothing
+0731: Nothing
+0732: Nothing
+0733: Nothing
+0734: Nothing
+0735: Nothing
+0736: Nothing
+0737: Nothing
+0738: Nothing
+0739: Nothing
+0740: Nothing
+0741: Nothing
+0742: Nothing
+0743: Nothing
+0744: Nothing
+0745: Nothing
+0746: Nothing
+0747: Nothing
+0748: Nothing
+0749: Nothing
+0750: Nothing
+0751: Nothing
+0752: Nothing
+0753: Nothing
+0754: Nothing
+0755: Nothing
+0756: Nothing
+0757: Nothing
+0758: Nothing
+0759: Nothing
+0760: Nothing
+0761: Nothing
+0762: Nothing
+0763: Nothing
+0764: Nothing
+0765: Nothing
+0766: Nothing
+0767: Nothing
+0768: Nothing
+0769: Nothing
+0770: Nothing
+0771: Nothing
+0772: Nothing
+0773: Nothing
+0774: Nothing
+0775: Nothing
+0776: Nothing
+0777: Nothing
+0778: Nothing
+0779: Nothing
+0780: Nothing
+0781: Nothing
+0782: Nothing
+0783: Nothing
+0784: Nothing
+0785: Nothing
+0786: Nothing
+0787: Nothing
+0788: Nothing
+0789: Nothing
+0790: Nothing
+0791: Nothing
+0792: Nothing
+0793: Nothing
+0794: Nothing
+0795: Nothing
+0796: Nothing
+0797: Nothing
+0798: Nothing
+0799: Nothing
+0800: Nothing
+0801: Nothing
+0802: Nothing
+0803: Nothing
+0804: Nothing
+0805: Nothing
+0806: Nothing
+0807: Nothing
+0808: Nothing
+0809: Nothing
+0810: Nothing
+0811: Nothing
+0812: Nothing
+0813: Nothing
+0814: Nothing
+0815: Nothing
+0816: Nothing
+0817: Nothing
+0818: Nothing
+0819: Nothing
+0820: Nothing
+0821: Nothing
+0822: Nothing
+0823: Nothing
+0824: Nothing
+0825: Nothing
+0826: Nothing
+0827: Nothing
+0828: Nothing
+0829: Nothing
+0830: Nothing
+0831: Nothing
+0832: Nothing
+0833: Nothing
+0834: Nothing
+0835: Nothing
+0836: Nothing
+0837: Nothing
+0838: Nothing
+0839: Nothing
+0840: Nothing
+0841: Nothing
+0842: Nothing
+0843: Nothing
+0844: Nothing
+0845: Nothing
+0846: Nothing
+0847: Nothing
+0848: Nothing
+0849: Nothing
+0850: Nothing
+0851: Nothing
+0852: Nothing
+0853: Nothing
+0854: Nothing
+0855: Nothing
+0856: Nothing
+0857: Nothing
+0858: Nothing
+0859: Nothing
+0860: Nothing
+0861: Nothing
+0862: Nothing
+0863: Nothing
+0864: Nothing
+0865: Nothing
+0866: Nothing
+0867: Nothing
+0868: Nothing
+0869: Nothing
+0870: Nothing
+0871: Nothing
+0872: Nothing
+0873: Nothing
+0874: Nothing
+0875: Nothing
+0876: Nothing
+0877: Nothing
+0878: Nothing
+0879: Nothing
+0880: Nothing
+0881: Nothing
+0882: Nothing
+0883: Nothing
+0884: Nothing
+0885: Nothing
+0886: Nothing
+0887: Nothing
+0888: Nothing
+0889: Nothing
+0890: Nothing
+0891: Nothing
+0892: Nothing
+0893: Nothing
+0894: Nothing
+0895: Nothing
+0896: Nothing
+0897: Nothing
+0898: Nothing
+0899: Nothing
+0900: Nothing
+0901: Nothing
+0902: Nothing
+0903: Nothing
+0904: Nothing
+0905: Nothing
+0906: Nothing
+0907: Nothing
+0908: Nothing
+0909: Nothing
+0910: Nothing
+0911: Nothing
+0912: Nothing
+0913: Nothing
+0914: Nothing
+0915: Nothing
+0916: Nothing
+0917: Nothing
+0918: Nothing
+0919: Nothing
+0920: Nothing
+0921: Nothing
+0922: Nothing
+0923: Nothing
+0924: Nothing
+0925: Nothing
+0926: Nothing
+0927: Nothing
+0928: Nothing
+0929: Nothing
+0930: Nothing
+0931: Nothing
+0932: Nothing
+0933: Nothing
+0934: Nothing
+0935: Nothing
+0936: Nothing
+0937: Nothing
+0938: Nothing
+0939: Nothing
+0940: Nothing
+0941: Nothing
+0942: Nothing
+0943: Nothing
+0944: Nothing
+0945: Nothing
+0946: Nothing
+0947: Nothing
+0948: Nothing
+0949: Nothing
+0950: Nothing
+0951: Nothing
+0952: Nothing
+0953: Nothing
+0954: Nothing
+0955: Nothing
+0956: Nothing
+0957: Nothing
+0958: Nothing
+0959: Nothing
+0960: Nothing
+0961: Nothing
+0962: Nothing
+0963: Nothing
+0964: Nothing
+0965: Nothing
+0966: Nothing
+0967: Nothing
+0968: Nothing
+0969: Nothing
+0970: Nothing
+0971: Nothing
+0972: Nothing
+0973: Nothing
+0974: Nothing
+0975: Nothing
+0976: Nothing
+0977: Nothing
+0978: Nothing
+0979: Nothing
+0980: Nothing
+0981: Nothing
+0982: Nothing
+0983: Nothing
+0984: Nothing
+0985: Nothing
+0986: Nothing
+0987: Nothing
+0988: Nothing
+0989: Nothing
+0990: Nothing
+0991: Nothing
+0992: Nothing
+0993: Nothing
+0994: Nothing
+0995: Nothing
+0996: Nothing
+0997: Nothing
+0998: Nothing
+0999: Nothing
+1000: Nothing
+1001: Nothing
+1002: Nothing
+1003: Nothing
+1004: Nothing
+1005: Nothing
+1006: Nothing
+1007: Nothing
+1008: Nothing
+1009: Nothing
+1010: Nothing
+1011: Nothing
+1012: Nothing
+1013: Nothing
+1014: Nothing
+1015: Nothing
+1016: Nothing
+1017: Nothing
+1018: Nothing
+1019: Nothing
+1020: Nothing
+1021: Nothing
+1022: Nothing
+1023: Nothing

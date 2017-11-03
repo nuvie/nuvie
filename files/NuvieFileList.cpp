@@ -148,10 +148,23 @@ std::string *NuvieFileList::get_latest()
 
 uint32 NuvieFileList::get_num_files()
 {
- return file_list.size();
+ return (uint32)file_list.size();
 }
 
 void NuvieFileList::close()
 {
  return;
+}
+
+std::set<std::string> NuvieFileList::get_filenames() {
+ std::set<std::string> filenames;
+ std::list<NuvieFileDesc>::iterator iter = file_list.begin();
+
+ while(iter != file_list.end())
+ {
+   filenames.insert((*iter).filename);
+   iter++;
+ }
+
+ return filenames;
 }

@@ -1,0 +1,11571 @@
+Loading Config from '/Users/eric/.nuvierc': Done.
+Attempting to set vid mode: 320x200x32x1 Software Surface
+
+egg at 12e, 33, 0
+Status: 00000000
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 20, y = 896, z = 7
+  Quantity: 7
+  Quality: 3
+
+  gargoyle 
+  Status: 00001000
+  x = 20, y = 896, z = 7
+  Quantity: 3
+  Quality: 4
+
+  gargoyle 
+  Status: 00001000
+  x = 20, y = 896, z = 7
+  Quantity: 3
+  Quality: 6
+---------
+
+
+egg at fc, 34, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 40, 40, 0
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 177, 40, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 24, y = 896, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 200, 40, 0
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 13, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 3c0, 40, 0
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 704, z = 7
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 29b, 43, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 4, y = 0, z = 0
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 24b, 4a, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 93, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 144, 53, 0
+Status: 00000000
+Quantity: 33
+Quality: 11
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 26, y = 896, z = 7
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 1f4, 57, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 1, y = 896, z = 7
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 1a2, 5a, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 7, y = 896, z = 7
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 187, 5c, 0
+Status: 00000000
+Quantity: 25
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 15, y = 896, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 188, 5c, 0
+Status: 00000000
+Quantity: 25
+Quality: 2
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 17, y = 896, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 1c4, 61, 0
+Status: 00000000
+Quantity: 50
+Quality: 2
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 32, y = 896, z = 7
+  Quantity: 5
+  Quality: 12
+---------
+
+
+egg at 273, 62, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  dog 
+  Status: 00001000
+  x = 357, y = 0, z = 0
+  Quantity: 1
+  Quality: 10
+---------
+
+
+egg at 27b, 63, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 360, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 31c, 65, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 0, y = 704, z = 7
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at 2c0, 6f, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 141, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 2aa, 72, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 143, y = 0, z = 0
+  Quantity: 5
+  Quality: 10
+---------
+
+
+egg at 11b, 73, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  troll 
+  Status: 00001000
+  x = 53, y = 896, z = 7
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 252, 75, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 521, y = 0, z = 0
+  Quantity: 1
+  Quality: 15
+---------
+
+
+egg at 8c, 76, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 2, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at bc, 7c, 0
+Status: 00000000
+Quantity: 66
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 4, y = 0, z = 0
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 2d0, 81, 0
+Status: 00000000
+Quantity: 50
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at e3, 83, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 9, y = 0, z = 0
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 91, 89, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 28, y = 0, z = 0
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 2e1, 8a, 0
+Status: 00000000
+Quantity: 33
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 2, y = 0, z = 0
+  Quantity: 3
+  Quality: 0
+---------
+
+
+egg at 2d8, 8b, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 4, y = 0, z = 0
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 2b2, 8c, 0
+Status: 00000000
+Quantity: 33
+Quality: 14
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 6, y = 0, z = 0
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 2e3, 8d, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 8, y = 0, z = 0
+  Quantity: 3
+  Quality: 10
+---------
+
+
+egg at 1f0, 93, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  fighter 
+  Status: 00001000
+  x = 1, y = 896, z = 7
+  Quantity: 5
+  Quality: 3
+
+  mage 
+  Status: 00001000
+  x = 1, y = 896, z = 7
+  Quantity: 1
+  Quality: 4
+
+  swashbuckler 
+  Status: 00001000
+  x = 1, y = 896, z = 7
+  Quantity: 2
+  Quality: 4
+
+  headless 
+  Status: 00001000
+  x = 1, y = 896, z = 7
+  Quantity: 3
+  Quality: 3
+---------
+
+
+egg at f4, 99, 0
+Status: 00000000
+Quantity: 75
+Quality: 21
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 144, y = 0, z = 0
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at 37c, 9a, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 0, y = 704, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 1b4, 9b, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 6, y = 896, z = 7
+  Quantity: 8
+  Quality: 8
+
+  dog 
+  Status: 00001000
+  x = 6, y = 896, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 30d, 9b, 0
+Status: 00000000
+Quantity: 25
+Quality: 2
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 2, y = 704, z = 7
+  Quantity: 1
+  Quality: 5
+
+  fighter 
+  Status: 00001000
+  x = 2, y = 704, z = 7
+  Quantity: 3
+  Quality: 3
+
+  swashbuckler 
+  Status: 00001000
+  x = 2, y = 704, z = 7
+  Quantity: 2
+  Quality: 4
+
+  mage 
+  Status: 00001000
+  x = 2, y = 704, z = 7
+  Quantity: 1
+  Quality: 4
+---------
+
+
+egg at 160, 9c, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 18, y = 896, z = 7
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 27f, a1, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 28a, a2, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 10, y = 0, z = 0
+  Quantity: 3
+  Quality: 10
+---------
+
+
+egg at 249, a3, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 2, y = 0, z = 0
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 2cb, a5, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 12, y = 0, z = 0
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at ee, a7, 0
+Status: 00000000
+Quantity: 75
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 238, y = 0, z = 0
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at b1, a8, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 241, y = 0, z = 0
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 36b, ac, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 25, y = 704, z = 7
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at e6, b1, 0
+Status: 00000000
+Quantity: 80
+Quality: 1
+Container
+---------
+  peasant 
+  Status: 00001000
+  x = 267, y = 0, z = 0
+  Quantity: 1
+  Quality: 10
+---------
+
+
+egg at f0, b1, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  mage 
+  Status: 00001000
+  x = 273, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 340, b1, 0
+Status: 00000000
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 29, y = 704, z = 7
+  Quantity: 2
+  Quality: 6
+
+  gargoyle 
+  Status: 00001000
+  x = 29, y = 704, z = 7
+  Quantity: 3
+  Quality: 4
+
+  gargoyle 
+  Status: 00001000
+  x = 29, y = 704, z = 7
+  Quantity: 6
+  Quality: 3
+
+  gargoyle 
+  Status: 00001000
+  x = 29, y = 704, z = 7
+  Quantity: 2
+  Quality: 5
+---------
+
+
+egg at eb, b5, 0
+Status: 00000000
+Quantity: 100
+Quality: 21
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 288, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 346, b6, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 34, y = 704, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at f0, b9, 0
+Status: 00000000
+Quantity: 75
+Quality: 1
+Container
+---------
+  child 
+  Status: 00001000
+  x = 340, y = 0, z = 0
+  Quantity: 1
+  Quality: 9
+---------
+
+
+egg at 363, bd, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 37, y = 704, z = 7
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 19c, c3, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  dog 
+  Status: 00001000
+  x = 9, y = 896, z = 7
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 20d, c3, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 4, y = 0, z = 0
+  Quantity: 4
+  Quality: 9
+---------
+
+
+egg at 8b, c4, 0
+Status: 00000000
+Quantity: 75
+Quality: 21
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 408, y = 0, z = 0
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 344, c4, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 40, y = 704, z = 7
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at d8, c7, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 425, y = 0, z = 0
+  Quantity: 4
+  Quality: 14
+---------
+
+
+egg at 43, c9, 0
+Status: 00000000
+Quantity: 25
+Quality: 4
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 114, y = 0, z = 0
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 82, cb, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 435, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 1bc, cb, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 11, y = 896, z = 7
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at 35b, cc, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 42, y = 704, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 114, d1, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 119, y = 896, z = 7
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 13e, d7, 0
+Status: 00000000
+Quantity: 66
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 121, y = 896, z = 7
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 7b, d8, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 168, y = 0, z = 0
+  Quantity: 5
+  Quality: 12
+---------
+
+
+egg at 35a, da, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 44, y = 704, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at a6, db, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 535, y = 0, z = 0
+  Quantity: 6
+  Quality: 10
+---------
+
+
+egg at 2c3, db, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mandrake root 
+  Status: 00001000
+  x = 14, y = 0, z = 0
+  Quantity: 2
+  Quality: 0
+---------
+
+
+egg at 2c4, db, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 16, y = 0, z = 0
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 2c3, dc, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 18, y = 0, z = 0
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 2c4, dc, 0
+Status: 00000000
+Quantity: 20
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 20, y = 0, z = 0
+  Quantity: 3
+  Quality: 0
+---------
+
+
+egg at 28e, e0, 0
+Status: 00000000
+Quantity: 33
+Quality: 14
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 22, y = 0, z = 0
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 1ee, e6, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mandrake root 
+  Status: 00001000
+  x = 13, y = 896, z = 7
+  Quantity: 6
+  Quality: 0
+---------
+
+
+egg at 1f8, e6, 0
+Status: 00000000
+Quantity: 20
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 15, y = 896, z = 7
+  Quantity: 12
+  Quality: 0
+---------
+
+
+egg at 1fb, e7, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 17, y = 896, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 13d, e9, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 123, y = 896, z = 7
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 163, ec, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 125, y = 896, z = 7
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at 1b4, ec, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 19, y = 896, z = 7
+  Quantity: 6
+  Quality: 9
+---------
+
+
+egg at 26b, ec, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 6, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 1cd, f4, 0
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 21, y = 896, z = 7
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at 1fc, f4, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 23, y = 896, z = 7
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at ad, f5, 0
+Status: 00000000
+Quantity: 25
+Quality: 0
+Container
+---------
+  bit of blood moss 
+  Status: 00001000
+  x = 674, y = 0, z = 0
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 1cd, f5, 0
+Status: 00000000
+Quantity: 75
+Quality: 2
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 25, y = 896, z = 7
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 233, f5, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 9, y = 0, z = 0
+  Quantity: 8
+  Quality: 6
+---------
+
+
+egg at 81, f9, 0
+Status: 00000000
+Quantity: 25
+Quality: 0
+Container
+---------
+  bit of blood moss 
+  Status: 00001000
+  x = 676, y = 0, z = 0
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 2df, fb, 0
+Status: 00000000
+Quantity: 33
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 24, y = 0, z = 0
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 3ac, fb, 0
+Status: 00000000
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 26, y = 704, z = 7
+  Quantity: 2
+  Quality: 4
+
+  gargoyle 
+  Status: 00001000
+  x = 26, y = 704, z = 7
+  Quantity: 2
+  Quality: 6
+
+  gargoyle 
+  Status: 00001000
+  x = 26, y = 704, z = 7
+  Quantity: 5
+  Quality: 3
+---------
+
+
+egg at 2d7, fc, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 26, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 5b, fe, 0
+Status: 00000000
+Quantity: 33
+Quality: 24
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 204, y = 0, z = 0
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 5c, fe, 0
+Status: 00000000
+Quantity: 33
+Quality: 24
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 206, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 2d9, 109, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 0, y = 704, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 2e3, 10b, 0
+Status: 00000000
+Quantity: 33
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 2, y = 704, z = 15
+  Quantity: 3
+  Quality: 0
+---------
+
+
+egg at 2eb, 10c, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 4, y = 704, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 333, 10c, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 2
+  Quality: 11
+
+  giant squid 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 363, 10c, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 3, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 16f, 110, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 1, y = 640, z = 1
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 11c, 111, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 3, y = 640, z = 1
+  Quantity: 5
+  Quality: 14
+---------
+
+
+egg at a5, 113, 0
+Status: 00000000
+Quantity: 66
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 2, y = 704, z = 15
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 1b2, 118, 0
+Status: 00000000
+Quantity: 75
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 0, y = 640, z = 1
+  Quantity: 20
+  Quality: 9
+---------
+
+
+egg at b2, 11b, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  troll 
+  Status: 00001000
+  x = 4, y = 704, z = 15
+  Quantity: 4
+  Quality: 4
+
+  headless 
+  Status: 00001000
+  x = 4, y = 704, z = 15
+  Quantity: 8
+  Quality: 3
+---------
+
+
+egg at 1d3, 11b, 0
+Status: 00000000
+Quantity: 50
+Quality: 24
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 2, y = 640, z = 1
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at b9, 11c, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  bit of blood moss 
+  Status: 00001000
+  x = 8, y = 704, z = 15
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 2d3, 121, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 6, y = 704, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 14f, 127, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  swashbuckler 
+  Status: 00001000
+  x = 5, y = 640, z = 1
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 1a3, 12b, 0
+Status: 00000000
+Quantity: 50
+Quality: 24
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 4, y = 640, z = 1
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 1fb, 12c, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 6, y = 640, z = 1
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 2dc, 12c, 0
+Status: 00000000
+Quantity: 33
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 8, y = 704, z = 15
+  Quantity: 4
+  Quality: 0
+---------
+
+
+egg at 386, 12d, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 20, y = 0, z = 0
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 28f, 12f, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 10, y = 704, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 12b, 135, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 8, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 3c4, 135, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 23, y = 0, z = 0
+  Quantity: 3
+  Quality: 8
+
+  snake 
+  Status: 00001000
+  x = 23, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 162, 13b, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 18, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 1f4, 13c, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 8, y = 640, z = 1
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 214, 13c, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 25, y = 704, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 38b, 13e, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 26, y = 0, z = 0
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 11c, 142, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cow 
+  Status: 00001000
+  x = 32, y = 640, z = 1
+  Quantity: 6
+  Quality: 1
+---------
+
+
+egg at 7c, 143, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 0, y = 704, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 209, 147, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  troll 
+  Status: 00001000
+  x = 32, y = 704, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at ec, 14b, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 10, y = 704, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 278, 14f, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 60, y = 704, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 239, 154, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 77, y = 704, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 192, 15b, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 29, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 293, 15c, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 12, y = 704, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 133, 15e, 0
+Status: 00100000
+Quantity: 100
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00101000
+  x = 156, y = 640, z = 1
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at a4, 163, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  troll 
+  Status: 00001000
+  x = 24, y = 704, z = 15
+  Quantity: 5
+  Quality: 4
+
+  headless 
+  Status: 00001000
+  x = 24, y = 704, z = 15
+  Quantity: 5
+  Quality: 3
+---------
+
+
+egg at 8b, 164, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 27, y = 704, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 26b, 165, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 178, y = 704, z = 15
+  Quantity: 3
+  Quality: 10
+---------
+
+
+egg at 74, 168, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 2, y = 704, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 133, 168, 0
+Status: 00000000
+Quantity: 66
+Quality: 21
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 393, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 1f7, 169, 0
+Status: 00000000
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 44, y = 640, z = 1
+  Quantity: 2
+  Quality: 3
+
+  gargoyle 
+  Status: 00001000
+  x = 44, y = 640, z = 1
+  Quantity: 1
+  Quality: 4
+---------
+
+
+egg at 274, 16c, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 230, y = 704, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 4c, 16f, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 4, y = 704, z = 15
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 1a4, 171, 0
+Status: 00000000
+Quantity: 33
+Quality: 14
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 54, y = 640, z = 1
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 25f, 171, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 239, y = 704, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at f5, 173, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 41, y = 704, z = 15
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 1a4, 173, 0
+Status: 00000000
+Quantity: 33
+Quality: 2
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 56, y = 640, z = 1
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 4c, 174, 0
+Status: 00000000
+Quantity: 66
+Quality: 20
+Container
+---------
+  mandrake root 
+  Status: 00001000
+  x = 6, y = 704, z = 15
+  Quantity: 10
+  Quality: 0
+
+  nightshade mushroom 
+  Status: 00001000
+  x = 6, y = 704, z = 15
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 39b, 174, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 28, y = 0, z = 0
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 1e4, 17c, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 58, y = 640, z = 1
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 354, 18d, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 0, y = 0, z = 0
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 1b6, 18e, 0
+Status: 00000000
+Quantity: 33
+Quality: 11
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 8, y = 640, z = 1
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at 133, 193, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 302, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 96, 19b, 0
+Status: 00000000
+Quantity: 33
+Quality: 14
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 2, y = 704, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 36b, 19c, 0
+Status: 00000000
+Quantity: 75
+Quality: 21
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 63, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 168, 19f, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 631, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 193, 1a3, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 59, y = 640, z = 1
+  Quantity: 1
+  Quality: 16
+---------
+
+
+egg at 38b, 1a3, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 112, y = 0, z = 0
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 3ad, 1a6, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  tangle vine 
+  Status: 00001000
+  x = 114, y = 0, z = 0
+  Quantity: 1
+  Quality: 14
+---------
+
+
+egg at e2, 1a7, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 12, y = 704, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 35e, 1a9, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 85, y = 0, z = 0
+  Quantity: 4
+  Quality: 9
+---------
+
+
+egg at 167, 1ac, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 734, y = 640, z = 1
+  Quantity: 1
+  Quality: 9
+---------
+
+
+egg at 37b, 1ac, 0
+Status: 00000000
+Quantity: 75
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 102, y = 0, z = 0
+  Quantity: 1
+  Quality: 15
+---------
+
+
+egg at 374, 1b4, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 140, y = 0, z = 0
+  Quantity: 1
+  Quality: 16
+---------
+
+
+egg at 382, 1b4, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 122, y = 0, z = 0
+  Quantity: 1
+  Quality: 16
+---------
+
+
+egg at 3be, 1b4, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 125, y = 0, z = 0
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at ad, 1b5, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 15, y = 704, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at bf, 1b8, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 17, y = 704, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 391, 1b8, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 136, y = 0, z = 0
+  Quantity: 2
+  Quality: 9
+---------
+
+
+egg at 118, 1b9, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 865, y = 640, z = 1
+  Quantity: 4
+  Quality: 12
+---------
+
+
+egg at 10b, 1ba, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 872, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 11c, 1c3, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 931, y = 640, z = 1
+  Quantity: 1
+  Quality: 15
+---------
+
+
+egg at 83, 1cc, 0
+Status: 00000000
+Quantity: 25
+Quality: 0
+Container
+---------
+  mongbat 
+  Status: 00001000
+  x = 37, y = 704, z = 15
+  Quantity: 5
+  Quality: 8
+
+  fighter 
+  Status: 00001000
+  x = 37, y = 704, z = 15
+  Quantity: 5
+  Quality: 3
+
+  swashbuckler 
+  Status: 00001000
+  x = 37, y = 704, z = 15
+  Quantity: 3
+  Quality: 4
+---------
+
+
+egg at 394, 1cf, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 151, y = 0, z = 0
+  Quantity: 2
+  Quality: 9
+---------
+
+
+egg at c6, 1d1, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cat 
+  Status: 00001000
+  x = 64, y = 704, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 394, 1d1, 0
+Status: 00000000
+Quantity: 50
+Quality: 2
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 153, y = 0, z = 0
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at d0, 1d9, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cat 
+  Status: 00001000
+  x = 66, y = 704, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 3c, 1de, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 40, y = 704, z = 15
+  Quantity: 6
+  Quality: 9
+---------
+
+
+egg at 3c0, 1e2, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  cow 
+  Status: 00001000
+  x = 155, y = 0, z = 0
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at dc, 1e3, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 68, y = 704, z = 15
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 162, 1e4, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  tangle vine 
+  Status: 00001000
+  x = 939, y = 640, z = 1
+  Quantity: 2
+  Quality: 14
+
+  reaper 
+  Status: 00001000
+  x = 939, y = 640, z = 1
+  Quantity: 2
+  Quality: 14
+---------
+
+
+egg at 193, 1e7, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 61, y = 640, z = 1
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 383, 1f3, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 174, y = 0, z = 0
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 391, 1f8, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 232, y = 0, z = 0
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 39d, 1f9, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cat 
+  Status: 00001000
+  x = 247, y = 0, z = 0
+  Quantity: 1
+  Quality: 9
+---------
+
+
+egg at 4b, 1fb, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 134, y = 128, z = 10
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at ef, 1fb, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  deer 
+  Status: 00001000
+  x = 70, y = 128, z = 10
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at 14b, 1fc, 0
+Status: 00000000
+Quantity: 25
+Quality: 11
+Container
+---------
+  dog 
+  Status: 00001000
+  x = 942, y = 640, z = 1
+  Quantity: 1
+  Quality: 10
+---------
+
+
+egg at 3b3, 1fc, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 259, y = 0, z = 0
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at ef, 1fd, 0
+Status: 00000000
+Quantity: 33
+Quality: 2
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 72, y = 128, z = 10
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 395, 1fe, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 272, y = 0, z = 0
+  Quantity: 1
+  Quality: 9
+---------
+
+
+egg at 200, 200, 0
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 512, z = 5
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 300, 200, 0
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 640, z = 1
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 38c, 203, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 16, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 135, 212, 0
+Status: 00000000
+Quantity: 25
+Quality: 4
+Container
+---------
+  tangle vine 
+  Status: 00001000
+  x = 0, y = 128, z = 10
+  Quantity: 3
+  Quality: 14
+---------
+
+
+egg at 3a2, 214, 0
+Status: 00000000
+Quantity: 75
+Quality: 21
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 186, y = 640, z = 1
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at b5, 215, 0
+Status: 00000000
+Quantity: 100
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 0, y = 704, z = 12
+  Quantity: 4
+  Quality: 9
+---------
+
+
+egg at 155, 217, 0
+Status: 00000000
+Quantity: 25
+Quality: 14
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 2, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 18d, 217, 0
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 3, y = 128, z = 10
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at 3a0, 225, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 264, y = 640, z = 1
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 393, 22c, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 266, y = 640, z = 1
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 128, 237, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 52, y = 128, z = 10
+  Quantity: 6
+  Quality: 9
+---------
+
+
+egg at ac, 23e, 0
+Status: 00000000
+Quantity: 100
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 2, y = 704, z = 12
+  Quantity: 2
+  Quality: 9
+---------
+
+
+egg at 97, 23f, 0
+Status: 00000000
+Quantity: 100
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 4, y = 704, z = 12
+  Quantity: 2
+  Quality: 9
+---------
+
+
+egg at 3a6, 240, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 268, y = 640, z = 1
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at fb, 243, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 6, y = 704, z = 12
+  Quantity: 2
+  Quality: 4
+
+  mongbat 
+  Status: 00001000
+  x = 6, y = 704, z = 12
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 192, 247, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cat 
+  Status: 00001000
+  x = 77, y = 128, z = 10
+  Quantity: 4
+  Quality: 12
+---------
+
+
+egg at cc, 25a, 0
+Status: 00000000
+Quantity: 100
+Quality: 21
+Container
+---------
+  wisp 
+  Status: 00001000
+  x = 9, y = 704, z = 12
+  Quantity: 1
+  Quality: 9
+---------
+
+
+egg at 161, 25a, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cow 
+  Status: 00001000
+  x = 145, y = 128, z = 10
+  Quantity: 1
+  Quality: 14
+---------
+
+
+egg at 161, 25c, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cow 
+  Status: 00001000
+  x = 168, y = 128, z = 10
+  Quantity: 1
+  Quality: 14
+---------
+
+
+egg at 12c, 25d, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 173, y = 128, z = 10
+  Quantity: 5
+  Quality: 8
+
+  dragon 
+  Status: 00001000
+  x = 173, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 169, 25e, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cow 
+  Status: 00001000
+  x = 191, y = 128, z = 10
+  Quantity: 1
+  Quality: 14
+---------
+
+
+egg at 165, 265, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  cow 
+  Status: 00001000
+  x = 229, y = 128, z = 10
+  Quantity: 5
+  Quality: 12
+---------
+
+
+egg at 164, 26f, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  sheep 
+  Status: 00001000
+  x = 295, y = 128, z = 10
+  Quantity: 4
+  Quality: 12
+---------
+
+
+egg at 26b, 272, 0
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 191, y = 512, z = 5
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 1fc, 27c, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 327, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 12e, 280, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 0, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 197, 283, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 2, y = 128, z = 10
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 196, 284, 0
+Status: 00000000
+Quantity: 33
+Quality: 20
+Container
+---------
+  mandrake root 
+  Status: 00001000
+  x = 4, y = 128, z = 10
+  Quantity: 4
+  Quality: 0
+---------
+
+
+egg at 197, 284, 0
+Status: 00000000
+Quantity: 33
+Quality: 24
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 6, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 196, 285, 0
+Status: 00000000
+Quantity: 33
+Quality: 20
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 8, y = 128, z = 10
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 197, 285, 0
+Status: 00000000
+Quantity: 33
+Quality: 24
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 10, y = 128, z = 10
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 116, 287, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 2, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 2eb, 28b, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 8, y = 512, z = 5
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 2fb, 28b, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 14, y = 512, z = 5
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at e3, 28c, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 704, z = 12
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 11f, 297, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 5, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+
+  drake 
+  Status: 00001000
+  x = 5, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 191, 29f, 0
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 12, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 194, 29f, 0
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 14, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 195, 2a1, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mandrake root 
+  Status: 00001000
+  x = 16, y = 128, z = 10
+  Quantity: 6
+  Quality: 0
+
+  nightshade mushroom 
+  Status: 00001000
+  x = 16, y = 128, z = 10
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 31e, 2a8, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 640, z = 1
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 153, 2aa, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 8, y = 128, z = 10
+  Quantity: 6
+  Quality: 9
+---------
+
+
+egg at 163, 2bb, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 10, y = 128, z = 10
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 2e3, 2bb, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  sheep 
+  Status: 00001000
+  x = 271, y = 768, z = 13
+  Quantity: 6
+  Quality: 12
+---------
+
+
+egg at 2fe, 2c4, 0
+Status: 00000000
+Quantity: 50
+Quality: 11
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 315, y = 768, z = 13
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 140, 2c7, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  tangle vine 
+  Status: 00001000
+  x = 12, y = 128, z = 10
+  Quantity: 3
+  Quality: 14
+---------
+
+
+egg at a3, 2cb, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 2, y = 704, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 163, 2d3, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 14, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 19b, 2d4, 0
+Status: 00000000
+Quantity: 75
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 43, y = 128, z = 10
+  Quantity: 1
+  Quality: 15
+---------
+
+
+egg at 192, 2db, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 97, y = 128, z = 10
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at 19d, 2e3, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 194, y = 128, z = 10
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 19d, 2e4, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 211, y = 128, z = 10
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 1b3, 2e6, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 254, y = 128, z = 10
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 13b, 2eb, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  sheep 
+  Status: 00001000
+  x = 16, y = 128, z = 10
+  Quantity: 6
+  Quality: 9
+---------
+
+
+egg at 191, 2ec, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 312, y = 128, z = 10
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at 1b0, 2ec, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  dog 
+  Status: 00001000
+  x = 322, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 19b, 2f3, 0
+Status: 00000000
+Quantity: 75
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 362, y = 128, z = 10
+  Quantity: 1
+  Quality: 15
+---------
+
+
+egg at 40, 300, 0
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 0, z = 11
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 300, 300, 0
+Status: 00000000
+Quantity: 80
+Quality: 2
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 768, z = 7
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 144, 304, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  tangle vine 
+  Status: 00001000
+  x = 0, y = 960, z = 12
+  Quantity: 3
+  Quality: 14
+---------
+
+
+egg at 306, 306, 0
+Status: 00000000
+Quantity: 80
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 2, y = 768, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 183, 313, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 39, y = 960, z = 12
+  Quantity: 8
+  Quality: 9
+---------
+
+
+egg at 39b, 315, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 0, y = 768, z = 7
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 199, 31b, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 87, y = 960, z = 12
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 19c, 322, 0
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  horse 
+  Status: 00001000
+  x = 142, y = 960, z = 12
+  Quantity: 3
+  Quality: 12
+---------
+
+
+egg at 8c, 325, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 0, y = 0, z = 11
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at 92, 32b, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 2, y = 0, z = 11
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 8c, 32c, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  mandrake root 
+  Status: 00001000
+  x = 4, y = 0, z = 11
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 8f, 32c, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  nightshade mushroom 
+  Status: 00001000
+  x = 6, y = 0, z = 11
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 2d0, 32f, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 9b, 334, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 8, y = 0, z = 11
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 144, 334, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 6, y = 960, z = 12
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 14a, 338, 0
+Status: 00000000
+Quantity: 99
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 17, y = 960, z = 12
+  Quantity: 1
+  Quality: 6
+
+  gargoyle 
+  Status: 00001000
+  x = 17, y = 960, z = 12
+  Quantity: 3
+  Quality: 3
+
+  gargoyle 
+  Status: 00001000
+  x = 17, y = 960, z = 12
+  Quantity: 2
+  Quality: 4
+---------
+
+
+egg at 3a8, 338, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 2, y = 768, z = 7
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 2c3, 33a, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 5, y = 640, z = 12
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 178, 33b, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 27, y = 960, z = 12
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 2c6, 344, 0
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 7, y = 640, z = 12
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 2ba, 346, 0
+Status: 00000000
+Quantity: 33
+Quality: 2
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 9, y = 640, z = 12
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 2da, 347, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 11, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 39b, 348, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 4, y = 768, z = 7
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 2c0, 350, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 13, y = 640, z = 12
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 2ab, 353, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 15, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+
+  giant squid 
+  Status: 00001000
+  x = 15, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 3a8, 356, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 60, y = 768, z = 7
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 98, 35b, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 118, y = 0, z = 11
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 38f, 35d, 0
+Status: 00000000
+Quantity: 50
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 101, y = 768, z = 7
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 183, 364, 0
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 177, y = 960, z = 12
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 93, 36a, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 160, y = 0, z = 11
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at 15f, 371, 0
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 31, y = 960, z = 12
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 93, 373, 0
+Status: 00000000
+Quantity: 33
+Quality: 1
+Container
+---------
+  bird 
+  Status: 00001000
+  x = 239, y = 0, z = 11
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 1eb, 37b, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 179, y = 960, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 364, 384, 0
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 0, y = 768, z = 7
+  Quantity: 2
+  Quality: 8
+
+  giant squid 
+  Status: 00001000
+  x = 0, y = 768, z = 7
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 243, 394, 0
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 0, y = 640, z = 12
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 38d, 39d, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  bit of sulfurous ash 
+  Status: 00001000
+  x = 8, y = 768, z = 7
+  Quantity: 6
+  Quality: 0
+---------
+
+
+egg at 3b2, 39d, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  bit of sulfurous ash 
+  Status: 00001000
+  x = 10, y = 768, z = 7
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 1a8, 3a6, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 5, y = 960, z = 12
+  Quantity: 3
+  Quality: 8
+
+  skeleton 
+  Status: 00001000
+  x = 5, y = 960, z = 12
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at a9, 3a7, 0
+Status: 00000000
+Quantity: 101
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 79, y = 0, z = 11
+  Quantity: 5
+  Quality: 3
+
+  gargoyle 
+  Status: 00001000
+  x = 79, y = 0, z = 11
+  Quantity: 2
+  Quality: 4
+
+  gargoyle 
+  Status: 00001000
+  x = 79, y = 0, z = 11
+  Quantity: 1
+  Quality: 6
+---------
+
+
+egg at 39e, 3a7, 0
+Status: 00000000
+Quantity: 101
+Quality: 0
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 31, y = 768, z = 7
+  Quantity: 2
+  Quality: 4
+
+  gargoyle 
+  Status: 00001000
+  x = 31, y = 768, z = 7
+  Quantity: 5
+  Quality: 3
+
+  gargoyle 
+  Status: 00001000
+  x = 31, y = 768, z = 7
+  Quantity: 2
+  Quality: 5
+
+  gargoyle 
+  Status: 00001000
+  x = 31, y = 768, z = 7
+  Quantity: 1
+  Quality: 6
+---------
+
+
+egg at 30a, 3a9, 0
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  chest 
+  Status: 00001000
+  x = 6, y = 768, z = 7
+  Quantity: 1
+  Quality: 14
+---------
+
+
+egg at 318, 3a9, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant scorpion 
+  Status: 01001000
+  x = 17, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 31c, 3a9, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 01001000
+  x = 20, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 21a, 3aa, 0
+Status: 00000000
+Quantity: 75
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 181, y = 640, z = 12
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 22c, 3aa, 0
+Status: 00000000
+Quantity: 75
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 190, y = 640, z = 12
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 30b, 3b0, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 76, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 30f, 3b0, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 80, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 313, 3b0, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 84, y = 768, z = 7
+  Quantity: 1
+  Quality: 14
+---------
+
+
+egg at 317, 3b0, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 88, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 31b, 3b0, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 92, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 220, 3b2, 0
+Status: 00000000
+Quantity: 75
+Quality: 1
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 261, y = 640, z = 12
+  Quantity: 1
+  Quality: 15
+---------
+
+
+egg at 1db, 3b3, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 8, y = 960, z = 12
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 30b, 3b4, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  cow 
+  Status: 01001000
+  x = 97, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 30f, 3b4, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 99, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 317, 3b4, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 102, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 31b, 3b4, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  cow 
+  Status: 01001000
+  x = 104, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 30d, 3b9, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant scorpion 
+  Status: 01001000
+  x = 121, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 319, 3b9, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 01001000
+  x = 130, y = 768, z = 7
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 23b, 3bb, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 374, y = 640, z = 12
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at 29b, 3bb, 0
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 0, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 223, 3bc, 0
+Status: 00000000
+Quantity: 66
+Quality: 11
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 378, y = 640, z = 12
+  Quantity: 2
+  Quality: 12
+---------
+
+
+egg at 275, 3bc, 0
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  sheep 
+  Status: 00001000
+  x = 380, y = 640, z = 12
+  Quantity: 6
+  Quality: 12
+---------
+
+
+egg at 307, 3bf, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  cow 
+  Status: 01001000
+  x = 141, y = 768, z = 7
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 31f, 3bf, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 01001000
+  x = 150, y = 768, z = 7
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 40, 3c0, 0
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 30, y = 0, z = 11
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 25c, 3c4, 0
+Status: 00000000
+Quantity: 25
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 485, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 313, 3ce, 0
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 154, y = 768, z = 7
+  Quantity: 15
+  Quality: 8
+---------
+
+
+egg at 2e8, 3d8, 0
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 2, y = 640, z = 12
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 73, 3, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  club 
+  Status: 00001000
+  x = 8, y = 1, z = 15
+  Quantity: 0
+  Quality: 0
+
+  slime 
+  Status: 00001000
+  x = 8, y = 0, z = 15
+  Quantity: 15
+  Quality: 8
+---------
+
+
+egg at 7b, 3, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mage 
+  Status: 00001000
+  x = 11, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+  Container
+  ---------
+    dagger 
+    Status: 00001000
+    x = 12, y = 1, z = 15
+    Quantity: 0
+    Quality: 0
+  ---------
+---------
+
+
+egg at 93, 3, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  leather boots 
+  Status: 00001000
+  x = 22, y = 1, z = 15
+  Quantity: 0
+  Quality: 0
+
+  wolf 
+  Status: 00001000
+  x = 22, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 9b, 3, 1
+Status: 00000000
+Quantity: 80
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 24, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 56, 6, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  dog 
+  Status: 00001000
+  x = 34, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+
+  wolf 
+  Status: 00001000
+  x = 34, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+
+  cat 
+  Status: 00001000
+  x = 34, y = 0, z = 15
+  Quantity: 1
+  Quality: 4
+---------
+
+
+egg at 3e, 9, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 45, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 33, a, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 50, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+  Container
+  ---------
+    mace 
+    Status: 00001000
+    x = 51, y = 1, z = 15
+    Quantity: 0
+    Quality: 0
+  ---------
+---------
+
+
+egg at 49, a, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 55, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at a9, b, 1
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 67, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at d5, d, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 74, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at d4, 13, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 101, y = 1, z = 15
+  Quantity: 6
+  Quality: 8
+
+  giant ant 
+  Status: 00001000
+  x = 101, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at cd, 14, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 105, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at ed, 15, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 112, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+  Container
+  ---------
+    giant squid 
+    Status: 00001000
+    x = 113, y = 1, z = 15
+    Quantity: 1
+    Quality: 11
+  ---------
+---------
+
+
+egg at c1, 16, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 117, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at e3, 1b, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 154, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 3b, 1c, 1
+Status: 00000000
+Quantity: 66
+Quality: 1
+Container
+---------
+  mongbat 
+  Status: 00001000
+  x = 156, y = 0, z = 15
+  Quantity: 3
+  Quality: 5
+
+  troll 
+  Status: 00001000
+  x = 156, y = 0, z = 15
+  Quantity: 4
+  Quality: 3
+
+  headless 
+  Status: 00001000
+  x = 156, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+
+  gazer 
+  Status: 00001000
+  x = 156, y = 0, z = 15
+  Quantity: 1
+  Quality: 4
+
+  corpser 
+  Status: 00001000
+  x = 156, y = 0, z = 15
+  Quantity: 2
+  Quality: 6
+---------
+
+
+egg at c1, 21, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 195, y = 1, z = 15
+  Quantity: 5
+  Quality: 11
+
+  giant ant 
+  Status: 00001000
+  x = 195, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at d2, 22, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 198, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at bb, 23, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 204, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 59, 29, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  bit of sulfurous ash 
+  Status: 00001000
+  x = 226, y = 1, z = 15
+  Quantity: 10
+  Quality: 0
+
+  mouse 
+  Status: 00001000
+  x = 226, y = 0, z = 15
+  Quantity: 15
+  Quality: 8
+---------
+
+
+egg at f3, 2a, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 230, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 73, 2b, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  gazer 
+  Status: 00001000
+  x = 233, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 7b, 2b, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  swashbuckler 
+  Status: 00001000
+  x = 235, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 83, 2b, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 237, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 9b, 2b, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 247, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at b1, 2b, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 249, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at c0, 2b, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 251, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at ca, 2b, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 253, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 3, 31, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 275, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 69, 31, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 277, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 6, 33, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mongbat 
+  Status: 00001000
+  x = 302, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at da, 33, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 306, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at c, 35, 1
+Status: 00000000
+Quantity: 20
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 318, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 36, 35, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 322, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 4c, 35, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 325, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 7b, 35, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+
+
+egg at 7c, 35, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+
+
+egg at 9c, 35, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 329, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 83, 3a, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 346, y = 0, z = 15
+  Quantity: 10
+  Quality: 8
+---------
+
+
+egg at 34, 3c, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 353, y = 0, z = 15
+  Quantity: 5
+  Quality: 9
+  Container
+  ---------
+    guard 
+    Status: 00001000
+    x = 354, y = 1, z = 15
+    Quantity: 4
+    Quality: 3
+  ---------
+---------
+
+
+egg at bc, 3c, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 357, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 6, 3e, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 362, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 6b, 3e, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 364, y = 0, z = 15
+  Quantity: 3
+  Quality: 9
+---------
+
+
+egg at 28, 3f, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 368, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 4b, 41, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 371, y = 0, z = 15
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 1b, 42, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 383, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 7b, 43, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 395, y = 0, z = 15
+  Quantity: 15
+  Quality: 8
+---------
+
+
+egg at cb, 43, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 402, y = 0, z = 15
+  Quantity: 6
+  Quality: 11
+  Container
+  ---------
+    dragon 
+    Status: 00001000
+    x = 403, y = 1, z = 15
+    Quantity: 1
+    Quality: 8
+  ---------
+---------
+
+
+egg at 4b, 4b, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 498, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at e3, 4b, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 506, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at b6, 4c, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 512, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 7, 50, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 523, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 28, 52, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 540, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at fb, 54, 1
+Status: 00000000
+Quantity: 30
+Quality: 4
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 559, y = 0, z = 15
+  Quantity: 4
+  Quality: 6
+
+  headless 
+  Status: 00001000
+  x = 559, y = 0, z = 15
+  Quantity: 3
+  Quality: 4
+---------
+
+
+egg at 7c, 55, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 562, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 3e, 5a, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 583, y = 0, z = 15
+  Quantity: 2
+  Quality: 0
+---------
+
+
+egg at bc, 5b, 1
+Status: 00000000
+Quantity: 30
+Quality: 4
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 601, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 2c, 5c, 1
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 609, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 13, 5d, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 623, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 1b, 5d, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 625, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 7c, 5d, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 630, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 2, 5e, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 635, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 8e, 61, 1
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  mongbat 
+  Status: 00001000
+  x = 678, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 4b, 63, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 700, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 63, 63, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 703, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 8c, 63, 1
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 705, y = 1, z = 15
+  Quantity: 2
+  Quality: 8
+
+  sea serpent 
+  Status: 00001000
+  x = 705, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 7c, 64, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 713, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at b2, 65, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 739, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 15, 66, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 743, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+  Container
+  ---------
+    drake 
+    Status: 00001000
+    x = 744, y = 1, z = 15
+    Quantity: 4
+    Quality: 8
+  ---------
+---------
+
+
+egg at 25, 66, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 745, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at a6, 6e, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 842, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 7, 70, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 853, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at b1, 71, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 859, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 22, 73, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 873, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 13, 74, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 882, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 45, 79, 1
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 923, y = 0, z = 15
+  Quantity: 1
+  Quality: 12
+---------
+
+
+egg at 6b, 7b, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 947, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 3, 7c, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 953, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 2d, 81, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 995, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at c3, 82, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 1008, y = 0, z = 15
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 43, 83, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 1014, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 4e, 83, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 1016, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 1b, 84, 1
+Status: 00000000
+Quantity: 100
+Quality: 1
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 1020, y = 0, z = 15
+  Quantity: 2
+  Quality: 9
+---------
+
+
+egg at 8c, 84, 1
+Status: 00000000
+Quantity: 75
+Quality: 1
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 1023, y = 0, z = 15
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 36, 8c, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at a3, 8c, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 2b, 8d, 1
+Status: 00000000
+Quantity: 66
+Quality: 1
+
+
+egg at 58, 8d, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 6a, 8d, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 3b, 8f, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 36, 92, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at cb, 93, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at f3, 93, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 9c, 94, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at a6, 94, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at dc, 97, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 38, 98, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 36, 99, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at ab, 99, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 2d, 9c, 1
+Status: 00000000
+Quantity: 10
+Quality: 0
+
+
+egg at 2f, 9c, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 4b, 9c, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 64, 9c, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 83, 9d, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 13, a3, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 6b, a4, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at f3, a5, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 2e, a6, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 3a, a6, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 9d, a6, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at b6, a6, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at c0, a6, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 5a, a9, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 34, ab, 1
+Status: 00000000
+Quantity: 100
+Quality: 4
+
+
+egg at 8b, ab, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 9b, ab, 1
+Status: 00000000
+Quantity: 100
+Quality: 0
+
+
+egg at 38, b0, 1
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at b6, b1, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 5b, b5, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at fa, b5, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 2b, b6, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 66, b6, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 7b, ba, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 11, bb, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at e4, bb, 1
+Status: 00000000
+Quantity: 99
+Quality: 2
+
+
+egg at 3b, bc, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 9c, bd, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 2c, bf, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 63, c4, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6b, ca, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at eb, cb, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at d2, cd, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6b, d3, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 9b, d4, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 8, d8, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at bc, dc, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6d, df, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 83, e2, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 7b, e3, 1
+Status: 00000000
+Quantity: 100
+Quality: 4
+
+
+egg at a5, e3, 1
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at cb, e3, 1
+Status: 00000000
+Quantity: 100
+Quality: 0
+
+
+egg at 30, e8, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6d, e9, 1
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at ab, ec, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 46, ed, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 55, ed, 1
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at fa, ed, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at a, ee, 1
+Status: 00000000
+Quantity: 75
+Quality: 2
+
+
+egg at bb, f3, 1
+Status: 00000000
+Quantity: 100
+Quality: 0
+
+
+egg at cb, f3, 1
+Status: 00000000
+Quantity: 100
+Quality: 0
+
+
+egg at 9b, f4, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 69, f6, 1
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at e2, fa, 1
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at bb, fb, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 4, fc, 1
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 41, 3, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mage 
+  Status: 00001000
+  x = 15, y = 0, z = 15
+  Quantity: 1
+  Quality: 4
+
+  ghost 
+  Status: 00001000
+  x = 15, y = 0, z = 15
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 7b, 3, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  child 
+  Status: 00001000
+  x = 19, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 8b, 3, 2
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 21, y = 1, z = 15
+  Quantity: 5
+  Quality: 8
+
+  guard 
+  Status: 00001000
+  x = 21, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 9b, 3, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 23, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at ba, 5, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 36, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 60, 7, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  cyclops 
+  Status: 00001000
+  x = 48, y = 1, z = 15
+  Quantity: 2
+  Quality: 4
+
+  troll 
+  Status: 00001000
+  x = 48, y = 1, z = 15
+  Quantity: 2
+  Quality: 5
+
+  headless 
+  Status: 00001000
+  x = 48, y = 1, z = 15
+  Quantity: 5
+  Quality: 3
+
+  insects 
+  Status: 00001000
+  x = 48, y = 0, z = 15
+  Quantity: 10
+  Quality: 11
+---------
+
+
+egg at e1, a, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 51, y = 0, z = 15
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 16, e, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 65, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 24, e, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  wine 
+  Status: 00001000
+  x = 67, y = 1, z = 15
+  Quantity: 1
+  Quality: 0
+
+  mead 
+  Status: 00001000
+  x = 67, y = 1, z = 15
+  Quantity: 1
+  Quality: 0
+
+  drake 
+  Status: 00001000
+  x = 67, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 31, e, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 69, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 3f, f, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  gazer 
+  Status: 00001000
+  x = 71, y = 0, z = 15
+  Quantity: 2
+  Quality: 4
+
+  giant spider 
+  Status: 00001000
+  x = 71, y = 0, z = 15
+  Quantity: 4
+  Quality: 3
+
+  insects 
+  Status: 00001000
+  x = 71, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+
+  gremlin 
+  Status: 00001000
+  x = 71, y = 0, z = 15
+  Quantity: 5
+  Quality: 5
+---------
+
+
+egg at d1, f, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 77, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 59, 12, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 91, y = 0, z = 15
+  Quantity: 4
+  Quality: 14
+---------
+
+
+egg at 9b, 13, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  gazer 
+  Status: 00001000
+  x = 100, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 71, 16, 2
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  corpser 
+  Status: 00001000
+  x = 116, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 3, 17, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  magic bow 
+  Status: 00001000
+  x = 118, y = 1, z = 15
+  Quantity: 0
+  Quality: 0
+
+  glass sword 
+  Status: 00001000
+  x = 118, y = 1, z = 15
+  Quantity: 0
+  Quality: 0
+
+  hydra 
+  Status: 00001000
+  x = 118, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at a9, 19, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 127, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+  Container
+  ---------
+    cyclops 
+    Status: 00001000
+    x = 128, y = 1, z = 15
+    Quantity: 2
+    Quality: 8
+  ---------
+---------
+
+
+egg at e, 1b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 138, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 4d, 1b, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  insects 
+  Status: 00001000
+  x = 142, y = 0, z = 15
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 7b, 1b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 148, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+  Container
+  ---------
+    torch 
+    Status: 00001000
+    x = 149, y = 1, z = 15
+    Quantity: 1
+    Quality: 0
+  ---------
+---------
+
+
+egg at 83, 1b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 150, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 93, 1b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 153, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at c5, 1b, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 156, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 28, 1c, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 160, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at da, 1e, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 183, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at eb, 20, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 187, y = 0, z = 15
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at 56, 22, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 192, y = 0, z = 15
+  Quantity: 5
+  Quality: 14
+---------
+
+
+egg at 6a, 23, 2
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 197, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 6c, 25, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 211, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+  Container
+  ---------
+    dragon 
+    Status: 00001000
+    x = 212, y = 1, z = 15
+    Quantity: 1
+    Quality: 8
+  ---------
+---------
+
+
+egg at 1b, 2b, 2
+Status: 00000000
+Quantity: 66
+Quality: 2
+Container
+---------
+  mouse 
+  Status: 00001000
+  x = 244, y = 0, z = 15
+  Quantity: 5
+  Quality: 9
+---------
+
+
+egg at 4b, 2b, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  wolf 
+  Status: 00001000
+  x = 246, y = 0, z = 15
+  Quantity: 8
+  Quality: 6
+  Container
+  ---------
+    dragon 
+    Status: 00001000
+    x = 247, y = 1, z = 15
+    Quantity: 1
+    Quality: 8
+  ---------
+---------
+
+
+egg at 7b, 2b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  daemon 
+  Status: 00001000
+  x = 249, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+  Container
+  ---------
+    bucket 
+    Status: 00001000
+    x = 250, y = 1, z = 15
+    Quantity: 0
+    Quality: 0
+  ---------
+---------
+
+
+egg at 8b, 2b, 2
+Status: 00000000
+Quantity: 80
+Quality: 0
+Container
+---------
+  guard 
+  Status: 00001000
+  x = 251, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 9b, 2b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  mage 
+  Status: 00001000
+  x = 253, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 3b, 2c, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  ghost 
+  Status: 00001000
+  x = 258, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 5e, 2e, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 275, y = 0, z = 15
+  Quantity: 5
+  Quality: 14
+---------
+
+
+egg at 6d, 2e, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 277, y = 0, z = 15
+  Quantity: 5
+  Quality: 14
+---------
+
+
+egg at c2, 2e, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 280, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 2d, 30, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 289, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+  Container
+  ---------
+    invisibility ring 
+    Status: 00001000
+    x = 290, y = 1, z = 15
+    Quantity: 0
+    Quality: 0
+  ---------
+---------
+
+
+egg at 4b, 33, 2
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 305, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 54, 33, 2
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 308, y = 0, z = 15
+  Quantity: 4
+  Quality: 0
+---------
+
+
+egg at df, 33, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 310, y = 0, z = 15
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 1c, 34, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 317, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 8d, 34, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 320, y = 0, z = 15
+  Quantity: 10
+  Quality: 8
+---------
+
+
+egg at 84, 35, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 327, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+  Container
+  ---------
+    ghost 
+    Status: 00001000
+    x = 328, y = 1, z = 15
+    Quantity: 3
+    Quality: 11
+  ---------
+---------
+
+
+egg at 44, 3b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 370, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 82, 3b, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 378, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at b0, 3f, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 444, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 48, 47, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 523, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at de, 49, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 552, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 23, 4a, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 558, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 6b, 4a, 2
+Status: 00000000
+Quantity: 30
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 560, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+  Container
+  ---------
+    skeleton 
+    Status: 00001000
+    x = 562, y = 1, z = 15
+    Quantity: 4
+    Quality: 8
+  ---------
+
+  mouse 
+  Status: 00001000
+  x = 560, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 14, 4d, 2
+Status: 00000000
+Quantity: 99
+Quality: 0
+Container
+---------
+  strand of spidersilk 
+  Status: 00001000
+  x = 587, y = 0, z = 15
+  Quantity: 6
+  Quality: 0
+---------
+
+
+egg at 83, 4e, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 594, y = 1, z = 15
+  Quantity: 1
+  Quality: 8
+
+  snake 
+  Status: 00001000
+  x = 594, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at b1, 4e, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 596, y = 1, z = 15
+  Quantity: 10
+  Quality: 8
+
+  wolf 
+  Status: 00001000
+  x = 596, y = 0, z = 15
+  Quantity: 2
+  Quality: 6
+  Container
+  ---------
+    dragon 
+    Status: 00001000
+    x = 600, y = 1, z = 15
+    Quantity: 2
+    Quality: 8
+  ---------
+
+  ghost 
+  Status: 00001000
+  x = 596, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+
+  gazer 
+  Status: 00001000
+  x = 596, y = 0, z = 15
+  Quantity: 2
+  Quality: 4
+  Container
+  ---------
+    skeleton 
+    Status: 00001000
+    x = 598, y = 1, z = 15
+    Quantity: 4
+    Quality: 8
+  ---------
+
+  skeleton 
+  Status: 00001000
+  x = 596, y = 0, z = 15
+  Quantity: 6
+  Quality: 3
+---------
+
+
+egg at d1, 4e, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 602, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at c0, 4f, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 607, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 3, 53, 2
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 647, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+  Container
+  ---------
+    daemon 
+    Status: 00001000
+    x = 648, y = 1, z = 15
+    Quantity: 3
+    Quality: 8
+  ---------
+---------
+
+
+egg at 12, 54, 2
+Status: 00000000
+Quantity: 99
+Quality: 0
+Container
+---------
+  strand of spidersilk 
+  Status: 00001000
+  x = 675, y = 0, z = 15
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 1b, 54, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 677, y = 1, z = 15
+  Quantity: 5
+  Quality: 11
+
+  giant spider 
+  Status: 00001000
+  x = 677, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 34, 54, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 682, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 6f, 57, 2
+Status: 00000000
+Quantity: 30
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 736, y = 0, z = 15
+  Quantity: 8
+  Quality: 8
+
+  mouse 
+  Status: 00001000
+  x = 736, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at e, 59, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 745, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+  Container
+  ---------
+    giant bat 
+    Status: 00001000
+    x = 746, y = 1, z = 15
+    Quantity: 10
+    Quality: 11
+  ---------
+---------
+
+
+egg at 26, 5a, 2
+Status: 00000000
+Quantity: 99
+Quality: 0
+Container
+---------
+  strand of spidersilk 
+  Status: 00001000
+  x = 752, y = 0, z = 15
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 11, 5b, 2
+Status: 00000000
+Quantity: 99
+Quality: 0
+Container
+---------
+  strand of spidersilk 
+  Status: 00001000
+  x = 768, y = 0, z = 15
+  Quantity: 15
+  Quality: 0
+---------
+
+
+egg at 31, 5b, 2
+Status: 00000000
+Quantity: 66
+Quality: 2
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 770, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 60, 5b, 2
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 775, y = 0, z = 15
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at a4, 5b, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 778, y = 0, z = 15
+  Quantity: 5
+  Quality: 3
+
+  daemon 
+  Status: 00001000
+  x = 778, y = 0, z = 15
+  Quantity: 1
+  Quality: 4
+---------
+
+
+egg at 20, 60, 2
+Status: 00000000
+Quantity: 99
+Quality: 0
+Container
+---------
+  strand of spidersilk 
+  Status: 00001000
+  x = 835, y = 0, z = 15
+  Quantity: 10
+  Quality: 0
+---------
+
+
+egg at 1d, 61, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 839, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 80, 62, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  corpser 
+  Status: 00001000
+  x = 850, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 53, 63, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 854, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 8c, 64, 2
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 868, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at b3, 64, 2
+Status: 00000000
+Quantity: 50
+Quality: 2
+Container
+---------
+  mongbat 
+  Status: 00001000
+  x = 871, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 6, 67, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 893, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at a3, 67, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 897, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at f8, 67, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  corpser 
+  Status: 00001000
+  x = 899, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 30, 68, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 902, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 2a, 6a, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 920, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 23, 6b, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 930, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 6c, 6c, 2
+Status: 00000000
+Quantity: 30
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 955, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+
+  mouse 
+  Status: 00001000
+  x = 955, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at bb, 6c, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 960, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 8b, 6d, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 969, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 8b, 72, 2
+Status: 00000000
+Quantity: 75
+Quality: 2
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 1010, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 3, 73, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 1019, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 25, 73, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 1021, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at a4, 74, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 1b, 75, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 3a, 76, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 57, 76, 2
+Status: 00000000
+Quantity: 60
+Quality: 4
+
+
+egg at b3, 7b, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 5, 7e, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 33, 83, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 14, 84, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 5a, 86, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at be, 87, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at e8, 87, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at d0, 88, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at e, 89, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 6a, 8a, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 9b, 8a, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 43, 8b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at f3, 8b, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at bc, 8d, 2
+Status: 00000000
+Quantity: 100
+Quality: 0
+
+
+egg at 9b, 92, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at b3, 92, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 84, 93, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at ce, 98, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at e7, 98, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 32, 99, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at fb, 9a, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 15, 9b, 2
+Status: 00000000
+Quantity: 75
+Quality: 2
+
+
+egg at 1a, 9b, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 53, 9b, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 6f, 9f, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at d9, a1, 2
+Status: 00000000
+Quantity: 33
+Quality: 2
+
+
+egg at 23, a3, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at b1, a3, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at c2, a6, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at d4, aa, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at ab, ab, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at b, ad, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 29, ae, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 35, ae, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at e1, ae, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at e0, af, 2
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 13, b4, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 5c, b4, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at bb, b4, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at f5, b4, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 8b, b6, 2
+Status: 00000000
+Quantity: 100
+Quality: 4
+
+
+egg at c6, b6, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at a0, b8, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 41, b9, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at ab, b9, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 83, ba, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 33, bc, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at b3, bc, 2
+Status: 00000000
+Quantity: 100
+Quality: 4
+
+
+egg at 4e, be, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 6e, be, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 2b, c4, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 13, c5, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 94, c5, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at b4, c5, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at a6, c6, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at af, c7, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at b, ca, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 3c, cb, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 4b, cb, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at a3, cb, 2
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at e2, cb, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 5, d3, 2
+Status: 00000000
+Quantity: 80
+Quality: 0
+
+
+egg at 24, d3, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at bb, d3, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 16, d9, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at d5, da, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at eb, db, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6e, dd, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 89, de, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at dd, e2, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at a3, e3, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 7b, e4, 2
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at a3, e4, 2
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at a4, e4, 2
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 32, e5, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6, e6, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 1a, e6, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 26, e6, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 6d, e9, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 87, e9, 2
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 42, ea, 2
+Status: 00000000
+Quantity: 99
+Quality: 4
+
+
+egg at 31, f1, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 23, f3, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at d2, fa, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at fa, fa, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 33, fb, 2
+Status: 00000000
+Quantity: 75
+Quality: 1
+
+
+egg at bb, fb, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 24, fc, 2
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 94, fc, 2
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 5b, 1, 3
+Status: 00000000
+Quantity: 20
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 1, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 5c, 3, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 13, y = 1, z = 15
+  Quantity: 3
+  Quality: 8
+
+  gazer 
+  Status: 00001000
+  x = 13, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 8e, 3, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 19, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 63, 5, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 37, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+
+  insects 
+  Status: 00001000
+  x = 37, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at a5, 7, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 59, y = 1, z = 15
+  Quantity: 4
+  Quality: 11
+
+  giant ant 
+  Status: 00001000
+  x = 59, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at df, 8, 3
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  child 
+  Status: 00001000
+  x = 63, y = 0, z = 15
+  Quantity: 6
+  Quality: 12
+---------
+
+
+egg at a, a, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 71, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at b9, e, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 145, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 8f, 10, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 161, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at cb, 10, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 167, y = 1, z = 15
+  Quantity: 5
+  Quality: 11
+
+  giant ant 
+  Status: 00001000
+  x = 167, y = 0, z = 15
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at db, 10, 3
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 169, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at e4, 12, 3
+Status: 00000000
+Quantity: 33
+Quality: 2
+Container
+---------
+  mage 
+  Status: 00001000
+  x = 196, y = 0, z = 15
+  Quantity: 6
+  Quality: 4
+
+  skeleton 
+  Status: 00001000
+  x = 196, y = 0, z = 15
+  Quantity: 12
+  Quality: 8
+  Container
+  ---------
+    giant bat 
+    Status: 00001000
+    x = 197, y = 1, z = 15
+    Quantity: 5
+    Quality: 8
+  ---------
+---------
+
+
+egg at 83, 13, 3
+Status: 00000000
+Quantity: 90
+Quality: 0
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 212, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 34, 14, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 225, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 43, 14, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 227, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+
+  insects 
+  Status: 00001000
+  x = 227, y = 0, z = 15
+  Quantity: 6
+  Quality: 10
+---------
+
+
+egg at 73, 14, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 230, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 13, 15, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 242, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 23, 1b, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 274, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 63, 1b, 3
+Status: 00000000
+Quantity: 80
+Quality: 4
+Container
+---------
+  swashbuckler 
+  Status: 00001000
+  x = 277, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 73, 1b, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 281, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 83, 1b, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 285, y = 1, z = 15
+  Quantity: 3
+  Quality: 14
+
+  troll 
+  Status: 00001000
+  x = 285, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at a5, 1f, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 294, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at b1, 1f, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 296, y = 1, z = 15
+  Quantity: 8
+  Quality: 8
+
+  giant ant 
+  Status: 00001000
+  x = 296, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 91, 20, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 298, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at c0, 23, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 331, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 64, 24, 3
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 340, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 1d, 25, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 343, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+  Container
+  ---------
+    slime 
+    Status: 00001000
+    x = 344, y = 1, z = 15
+    Quantity: 10
+    Quality: 8
+  ---------
+---------
+
+
+egg at 87, 2d, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 387, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 95, 2f, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 390, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at a8, 2f, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 392, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+  Container
+  ---------
+    acid slug 
+    Status: 00001000
+    x = 393, y = 1, z = 15
+    Quantity: 6
+    Quality: 8
+  ---------
+---------
+
+
+egg at 5a, 32, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 403, y = 0, z = 15
+  Quantity: 10
+  Quality: 8
+---------
+
+
+egg at 2c, 33, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 410, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 6b, 33, 3
+Status: 00000000
+Quantity: 80
+Quality: 4
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 416, y = 1, z = 15
+  Quantity: 2
+  Quality: 8
+
+  villager 
+  Status: 00001000
+  x = 416, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 7b, 33, 3
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 422, y = 1, z = 15
+  Quantity: 5
+  Quality: 11
+
+  child 
+  Status: 00001000
+  x = 422, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at bf, 36, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 450, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at aa, 3b, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 497, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 14, 3e, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 511, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 48, 3e, 3
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  corpser 
+  Status: 00001000
+  x = 517, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 22, 42, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 562, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+
+  giant squid 
+  Status: 00001000
+  x = 562, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 53, 43, 3
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 589, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at c8, 47, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 633, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at db, 4a, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  slime 
+  Status: 00001000
+  x = 643, y = 513, z = 1
+  Quantity: 5
+  Quality: 8
+
+  slime 
+  Status: 00001000
+  x = 643, y = 0, z = 15
+  Quantity: 10
+  Quality: 8
+---------
+
+
+egg at 2b, 4b, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 645, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at a, 53, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  rot worms 
+  Status: 00001000
+  x = 675, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 57, 57, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 696, y = 0, z = 15
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 76, 5a, 3
+Status: 00000000
+Quantity: 99
+Quality: 4
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 709, y = 0, z = 15
+  Quantity: 16
+  Quality: 8
+---------
+
+
+egg at 62, 5f, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 741, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 97, 60, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 747, y = 0, z = 15
+  Quantity: 10
+  Quality: 8
+---------
+
+
+egg at 35, 63, 3
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 761, y = 0, z = 15
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at ab, 63, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 766, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 1b, 64, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant spider 
+  Status: 00001000
+  x = 777, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at b3, 64, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  corpser 
+  Status: 00001000
+  x = 780, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at a4, 65, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 785, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at b, 6b, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 804, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 51, 6e, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 836, y = 0, z = 15
+  Quantity: 5
+  Quality: 14
+---------
+
+
+egg at bb, 71, 3
+Status: 00000000
+Quantity: 75
+Quality: 2
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 869, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at b5, 72, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 882, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 13, 74, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  acid slug 
+  Status: 00001000
+  x = 908, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 9d, 77, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  gazer 
+  Status: 00001000
+  x = 930, y = 0, z = 15
+  Quantity: 1
+  Quality: 4
+
+  headless 
+  Status: 00001000
+  x = 930, y = 0, z = 15
+  Quantity: 5
+  Quality: 3
+---------
+
+
+egg at 75, 7a, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 936, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 31, 7b, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  gazer 
+  Status: 00001000
+  x = 943, y = 0, z = 15
+  Quantity: 3
+  Quality: 4
+
+  headless 
+  Status: 00001000
+  x = 943, y = 0, z = 15
+  Quantity: 8
+  Quality: 3
+
+  wolf 
+  Status: 00001000
+  x = 943, y = 0, z = 15
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 39, 7b, 3
+Status: 00000000
+Quantity: 20
+Quality: 0
+
+
+egg at 8c, 7b, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 950, y = 0, z = 15
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 52, 7e, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  troll 
+  Status: 00001000
+  x = 977, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 48, 80, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  troll 
+  Status: 00001000
+  x = 984, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at b, 83, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  skeleton 
+  Status: 00001000
+  x = 991, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+
+  ghost 
+  Status: 00001000
+  x = 991, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at b6, 86, 3
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 1017, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at aa, 8a, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 38, 8b, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at eb, 8c, 3
+Status: 00000000
+Quantity: 80
+Quality: 4
+
+
+egg at 43, 8d, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at aa, 8d, 3
+Status: 00000000
+Quantity: 75
+Quality: 2
+
+
+egg at ca, 8d, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 74, 91, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 8d, 95, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at e4, 95, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 31, 96, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at bb, 9b, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at e2, 9d, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at f9, 9e, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at ef, 9f, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at a5, a5, 3
+Status: 00000000
+Quantity: 50
+Quality: 1
+
+
+egg at b4, a6, 3
+Status: 00000000
+Quantity: 50
+Quality: 2
+
+
+egg at f0, a8, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at a3, ab, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at d3, ac, 3
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 43, ad, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at b4, ad, 3
+Status: 00000000
+Quantity: 50
+Quality: 3
+
+
+egg at 99, ae, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 4c, b2, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at b, b4, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 6e, b7, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at a7, b7, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at d7, b7, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 1d, ba, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 63, ba, 3
+Status: 00000000
+Quantity: 100
+Quality: 4
+
+
+egg at 5, bb, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 5a, bd, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 2b, c3, 3
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 43, c3, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at f4, c3, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at b3, ca, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 8b, cb, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 36, ce, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at c0, cf, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at a1, d1, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at fa, d2, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 73, d3, 3
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 16, d9, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 86, da, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at b5, dc, 3
+Status: 00000000
+Quantity: 75
+Quality: 2
+
+
+egg at 53, dd, 3
+Status: 00000000
+Quantity: 100
+Quality: 2
+
+
+egg at c2, dd, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 7c, e2, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at a2, e3, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at dc, e4, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 2b, e6, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 77, e6, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at b5, e9, 3
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 85, ea, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 67, eb, 3
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 98, eb, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 72, ec, 3
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at cb, ec, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at a3, f2, 3
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 80, f3, 3
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at f5, f4, 3
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at c3, fb, 3
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 23, 3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 23, y = 129, z = 10
+  Quantity: 10
+  Quality: 8
+
+  skeleton 
+  Status: 00001000
+  x = 23, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+
+  ghost 
+  Status: 00001000
+  x = 23, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 5b, 3, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  child 
+  Status: 00001000
+  x = 27, y = 129, z = 10
+  Quantity: 6
+  Quality: 9
+
+  ghost 
+  Status: 00001000
+  x = 27, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 6b, 3, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 33, y = 129, z = 10
+  Quantity: 5
+  Quality: 11
+
+  skeleton 
+  Status: 00001000
+  x = 33, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at e8, 3, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  rabbit 
+  Status: 00001000
+  x = 47, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 53, 4, 4
+Status: 00000000
+Quantity: 20
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 54, y = 0, z = 15
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at b, 5, 4
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 64, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at c1, 5, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  daemon 
+  Status: 00001000
+  x = 73, y = 0, z = 15
+  Quantity: 3
+  Quality: 6
+  Container
+  ---------
+    giant scorpion 
+    Status: 00001000
+    x = 74, y = 129, z = 10
+    Quantity: 2
+    Quality: 8
+  ---------
+---------
+
+
+egg at d5, 5, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 75, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 32, 6, 4
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 83, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at b5, 7, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  daemon 
+  Status: 00001000
+  x = 96, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at a3, a, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 143, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 5e, e, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 188, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 68, e, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 190, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 53, f, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  gremlin 
+  Status: 00001000
+  x = 206, y = 0, z = 15
+  Quantity: 10
+  Quality: 8
+---------
+
+
+egg at e7, f, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 217, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at f8, f, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 219, y = 129, z = 10
+  Quantity: 1
+  Quality: 0
+
+  giant ant 
+  Status: 00001000
+  x = 219, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 43, 11, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 225, y = 129, z = 10
+  Quantity: 1
+  Quality: 0
+
+  drake 
+  Status: 00001000
+  x = 225, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 7f, 13, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 239, y = 0, z = 15
+  Quantity: 7
+  Quality: 11
+---------
+
+
+egg at 5e, 18, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 266, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 68, 18, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 268, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 43, 1b, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 285, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at d3, 1b, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 292, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at f1, 1b, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  daemon 
+  Status: 00001000
+  x = 294, y = 129, z = 10
+  Quantity: 2
+  Quality: 8
+
+  giant ant 
+  Status: 00001000
+  x = 294, y = 0, z = 15
+  Quantity: 6
+  Quality: 3
+---------
+
+
+egg at f5, 1b, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 297, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 3b, 1d, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  snake 
+  Status: 00001000
+  x = 312, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+
+  alligator 
+  Status: 00001000
+  x = 312, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+  Container
+  ---------
+    skeleton 
+    Status: 00001000
+    x = 313, y = 129, z = 10
+    Quantity: 2
+    Quality: 8
+  ---------
+---------
+
+
+egg at 3e, 1d, 4
+Status: 00000000
+Quantity: 10
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 315, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 4c, 1e, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  daemon 
+  Status: 00001000
+  x = 325, y = 129, z = 10
+  Quantity: 1
+  Quality: 8
+
+  gremlin 
+  Status: 00001000
+  x = 325, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 43, 23, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 372, y = 0, z = 15
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 73, 23, 4
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 375, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 8b, 23, 4
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  headless 
+  Status: 00001000
+  x = 381, y = 129, z = 10
+  Quantity: 5
+  Quality: 8
+
+  silver serpent 
+  Status: 00001000
+  x = 381, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at a3, 23, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 383, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 26, 26, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 401, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+  Container
+  ---------
+    slime 
+    Status: 00001000
+    x = 402, y = 129, z = 10
+    Quantity: 5
+    Quality: 8
+  ---------
+---------
+
+
+egg at 31, 26, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 404, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at ef, 27, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 426, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 27, 28, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 429, y = 0, z = 15
+  Quantity: 20
+  Quality: 0
+---------
+
+
+egg at 2f, 28, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 432, y = 0, z = 15
+  Quantity: 30
+  Quality: 0
+---------
+
+
+egg at 2c, 2b, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 466, y = 0, z = 15
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 63, 2b, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 475, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+---------
+
+
+egg at 9b, 2b, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 477, y = 0, z = 15
+  Quantity: 4
+  Quality: 11
+  Container
+  ---------
+    fan 
+    Status: 00001000
+    x = 478, y = 129, z = 10
+    Quantity: 150
+    Quality: 0
+  ---------
+---------
+
+
+egg at 73, 33, 4
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 536, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 8b, 33, 4
+Status: 00000000
+Quantity: 100
+Quality: 0
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 542, y = 0, z = 15
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 2c, 34, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 544, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at e4, 34, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  gold coin 
+  Status: 00001000
+  x = 551, y = 129, z = 10
+  Quantity: 12
+  Quality: 0
+
+  giant ant 
+  Status: 00001000
+  x = 551, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at f4, 35, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 571, y = 129, z = 10
+  Quantity: 3
+  Quality: 8
+
+  giant ant 
+  Status: 00001000
+  x = 571, y = 0, z = 15
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 31, 39, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 579, y = 0, z = 15
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at a3, 39, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 589, y = 0, z = 15
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 1, 3a, 4
+Status: 00000000
+Quantity: 20
+Quality: 0
+Container
+---------
+  balloon plans 
+  Status: 00001000
+  x = 591, y = 129, z = 10
+  Quantity: 0
+  Quality: 123
+
+  torch 
+  Status: 00001000
+  x = 591, y = 129, z = 10
+  Quantity: 1
+  Quality: 0
+
+  dagger 
+  Status: 00001000
+  x = 591, y = 129, z = 10
+  Quantity: 0
+  Quality: 0
+
+  gold nugget 
+  Status: 00001000
+  x = 591, y = 0, z = 15
+  Quantity: 1
+  Quality: 0
+---------
+
+
+egg at 3, 3b, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 600, y = 0, z = 15
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 23, 3b, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 602, y = 0, z = 15
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at e, 3e, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  alligator 
+  Status: 00001000
+  x = 616, y = 0, z = 15
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at 19, 3e, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  gold nugget 
+  Status: 00001000
+  x = 619, y = 128, z = 10
+  Quantity: 5
+  Quality: 0
+---------
+
+
+egg at 3d, 3e, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  gazer 
+  Status: 00001000
+  x = 622, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 44, 44, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 652, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at a7, 45, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 666, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at c0, 46, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 672, y = 128, z = 10
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 5c, 4b, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 700, y = 128, z = 10
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at fb, 4b, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 712, y = 128, z = 10
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 2c, 4c, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 715, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 8b, 4c, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 719, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+
+  insects 
+  Status: 00001000
+  x = 719, y = 128, z = 10
+  Quantity: 6
+  Quality: 8
+  Container
+  ---------
+    rabbit 
+    Status: 00001000
+    x = 720, y = 129, z = 10
+    Quantity: 5
+    Quality: 8
+  ---------
+---------
+
+
+egg at d0, 50, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  giant ant 
+  Status: 00001000
+  x = 729, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 4, 54, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 738, y = 128, z = 10
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at 24, 5b, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 760, y = 128, z = 10
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 9b, 5b, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 764, y = 128, z = 10
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 5c, 5c, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 771, y = 128, z = 10
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 84, 5d, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  giant squid 
+  Status: 00001000
+  x = 777, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 7e, 5e, 4
+Status: 00000000
+Quantity: 75
+Quality: 2
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 779, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 83, 61, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 784, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at f3, 63, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  corpser 
+  Status: 00001000
+  x = 797, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 5b, 68, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 805, y = 128, z = 10
+  Quantity: 2
+  Quality: 11
+---------
+
+
+egg at 3c, 6b, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 814, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 1b, 6c, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 833, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 7f, 6f, 4
+Status: 00000000
+Quantity: 99
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 849, y = 128, z = 10
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at 88, 6f, 4
+Status: 00000000
+Quantity: 99
+Quality: 4
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 851, y = 128, z = 10
+  Quantity: 8
+  Quality: 11
+---------
+
+
+egg at 2b, 73, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 862, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 71, 73, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 865, y = 128, z = 10
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at b3, 73, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+Container
+---------
+  giant rat 
+  Status: 00001000
+  x = 868, y = 128, z = 10
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 61, 75, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  giant bat 
+  Status: 00001000
+  x = 881, y = 128, z = 10
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at 9e, 7e, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+Container
+---------
+  hydra 
+  Status: 00001000
+  x = 934, y = 128, z = 10
+  Quantity: 1
+  Quality: 8
+---------
+
+
+egg at 13, 83, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 965, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 23, 83, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 967, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 34, 83, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  dragon 
+  Status: 00001000
+  x = 969, y = 128, z = 10
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 44, 83, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 971, y = 128, z = 10
+  Quantity: 4
+  Quality: 8
+---------
+
+
+egg at 5b, 84, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+Container
+---------
+  reaper 
+  Status: 00001000
+  x = 978, y = 128, z = 10
+  Quantity: 8
+  Quality: 8
+---------
+
+
+egg at 7f, 86, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+Container
+---------
+  sea serpent 
+  Status: 00001000
+  x = 987, y = 128, z = 10
+  Quantity: 1
+  Quality: 11
+---------
+
+
+egg at e4, 8b, 4
+Status: 00000000
+Quantity: 75
+Quality: 4
+Container
+---------
+  giant scorpion 
+  Status: 00001000
+  x = 1016, y = 128, z = 10
+  Quantity: 3
+  Quality: 8
+
+  giant ant 
+  Status: 00001000
+  x = 1016, y = 128, z = 10
+  Quantity: 6
+  Quality: 8
+---------
+
+
+egg at f3, 8b, 4
+Status: 00000000
+Quantity: 90
+Quality: 2
+
+
+egg at d1, 8e, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+
+
+egg at d1, 90, 4
+Status: 00000000
+Quantity: 100
+Quality: 4
+
+
+egg at 61, 91, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 84, 91, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at eb, 93, 4
+Status: 00000000
+Quantity: 80
+Quality: 4
+
+
+egg at 2b, 94, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at b, 9c, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 4b, 9c, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at ae, 9c, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at d3, 9c, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at d3, a0, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 69, a1, 4
+Status: 00000000
+Quantity: 10
+Quality: 0
+
+
+egg at e3, a3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at a4, a4, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at dc, a4, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at f3, a5, 4
+Status: 00000000
+Quantity: 66
+Quality: 2
+
+
+egg at e3, aa, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 83, ab, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at b3, ab, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at eb, ad, 4
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 53, b1, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 53, b3, 4
+Status: 00000000
+Quantity: 10
+Quality: 0
+
+
+egg at 64, b3, 4
+Status: 00000000
+Quantity: 10
+Quality: 0
+
+
+egg at 70, b3, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 73, b3, 4
+Status: 00000000
+Quantity: 20
+Quality: 0
+
+
+egg at bb, b3, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at c, b4, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 2b, b4, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at cc, b4, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 80, b7, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 3, ba, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 4, ba, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at 6a, ba, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at cb, ba, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 5b, bd, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at d8, be, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 9e, c1, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 53, c3, 4
+Status: 00000000
+Quantity: 75
+Quality: 4
+
+
+egg at 63, c3, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 73, c3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 83, c3, 4
+Status: 00000000
+Quantity: 33
+Quality: 2
+
+
+egg at 94, c3, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at ee, c3, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at ac, c4, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at c8, c5, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 16, c6, 4
+Status: 00000000
+Quantity: 80
+Quality: 4
+
+
+egg at bf, c7, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 3f, c8, 4
+Status: 00000000
+Quantity: 75
+Quality: 0
+
+
+egg at 25, c9, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 31, c9, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 5b, cb, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 6b, cb, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 7b, cb, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at f9, cb, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 8f, cf, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at 9b, cf, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at a8, cf, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at 53, d3, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at 63, d3, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 73, d3, 4
+Status: 00000000
+Quantity: 50
+Quality: 4
+
+
+egg at 83, d3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 13, da, 4
+Status: 00000000
+Quantity: 66
+Quality: 4
+
+
+egg at f3, da, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 5b, db, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 7b, db, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at b6, db, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 53, e3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 95, e3, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at a3, e3, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at c3, e3, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 5b, eb, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 6b, eb, 4
+Status: 00000000
+Quantity: 66
+Quality: 0
+
+
+egg at 7b, eb, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 9b, ec, 4
+Status: 00000000
+Quantity: 99
+Quality: 0
+
+
+egg at 53, f3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 63, f3, 4
+Status: 00000000
+Quantity: 33
+Quality: 4
+
+
+egg at 73, f3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at 83, f3, 4
+Status: 00000000
+Quantity: 33
+Quality: 0
+
+
+egg at c3, f3, 4
+Status: 00000000
+Quantity: 50
+Quality: 0
+
+
+egg at 41, fb, 4
+Status: 00000000
+Quantity: 100
+Quality: 2
+
+
+egg at ca, 30, 5
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  daemon 
+  Status: 00001000
+  x = 40, y = 128, z = 2
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 42, 34, 5
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  mongbat 
+  Status: 00001000
+  x = 47, y = 128, z = 2
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at c6, 40, 5
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  drake 
+  Status: 00001000
+  x = 69, y = 128, z = 2
+  Quantity: 2
+  Quality: 8
+---------
+
+
+egg at 5f, 52, 5
+Status: 00000000
+Quantity: 66
+Quality: 12
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 95, y = 128, z = 2
+  Quantity: 4
+  Quality: 6
+---------
+
+
+egg at 9f, 55, 5
+Status: 00000000
+Quantity: 66
+Quality: 12
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 101, y = 128, z = 2
+  Quantity: 3
+  Quality: 6
+---------
+
+
+egg at 80, 56, 5
+Status: 00000000
+Quantity: 33
+Quality: 12
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 104, y = 128, z = 2
+  Quantity: 5
+  Quality: 8
+---------
+
+
+egg at 63, 73, 5
+Status: 00000000
+Quantity: 50
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 312, y = 128, z = 2
+  Quantity: 3
+  Quality: 6
+---------
+
+
+egg at 7f, 73, 5
+Status: 00000000
+Quantity: 33
+Quality: 12
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 322, y = 128, z = 2
+  Quantity: 3
+  Quality: 6
+---------
+
+
+egg at 37, 74, 5
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 324, y = 128, z = 2
+  Quantity: 5
+  Quality: 11
+---------
+
+
+egg at e1, 7f, 5
+Status: 00000000
+Quantity: 50
+Quality: 4
+Container
+---------
+  tangle vine 
+  Status: 00001000
+  x = 349, y = 128, z = 2
+  Quantity: 3
+  Quality: 8
+---------
+
+
+egg at 9f, 89, 5
+Status: 00000000
+Quantity: 66
+Quality: 2
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 410, y = 128, z = 2
+  Quantity: 3
+  Quality: 11
+---------
+
+
+egg at 80, 8b, 5
+Status: 00000000
+Quantity: 33
+Quality: 12
+Container
+---------
+  gargoyle 
+  Status: 00001000
+  x = 416, y = 128, z = 2
+  Quantity: 2
+  Quality: 6
+---------
+
+
+egg at 53, bf, 5
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 589, y = 128, z = 2
+  Quantity: 6
+  Quality: 11
+---------
+
+
+egg at 95, d2, 5
+Status: 00000000
+Quantity: 33
+Quality: 4
+Container
+---------
+  silver serpent 
+  Status: 00001000
+  x = 624, y = 128, z = 2
+  Quantity: 6
+  Quality: 11
+---------
+
+Initial gametime:  4-07-0161 08:00 A.M.

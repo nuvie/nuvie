@@ -162,7 +162,7 @@ NuvieIOBuffer *ConverseSpeech::load_speech(std::string filename, uint16 sample_n
         case 1 : 
         case 2 : 
                  converted_audio[k+1] = (sint16)(0.666 * (float)prev_sample + 0.333 * (float)sample);
-                 converted_audio[k+2] = (sint16)(0.333 * (float)prev_sample + 0.666 * (float)sample);             
+                 converted_audio[k+2] = (sint16)(0.333 * (float)prev_sample + 0.666 * (float)sample);
                  k += 2;
                  break;
         case 3 : converted_audio[k+1] = (sint16)(0.5 * (float)(prev_sample + sample));

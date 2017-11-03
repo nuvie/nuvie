@@ -269,6 +269,8 @@ class Actor
  ReadiedObj *readied_objects[ACTOR_MAX_READIED_OBJECTS];
 
  Schedule **sched;
+ int num_schedules;
+
  U6LList *obj_inventory;
 
  //current schedule pos;
@@ -295,7 +297,7 @@ class Actor
  bool is_nearby(uint8 actor_num);
  bool is_nearby(MapCoord &where, uint8 thresh = 5);
  bool is_at_position(Obj *obj);
- bool is_passable();
+ virtual bool is_passable();
  bool is_temp() { return temp_actor; }
 
  //for lack of a better name:
@@ -495,6 +497,8 @@ class Actor
  
  bool get_schedule_location(MapCoord *loc);
  bool is_at_scheduled_location();
+ int get_number_of_schedules() { return num_schedules; }
+ Schedule *get_schedule(uint8 index);
  virtual bool will_not_talk() { return false; }
  uint16 get_custom_tile_num(uint16 obj_num);
  protected:

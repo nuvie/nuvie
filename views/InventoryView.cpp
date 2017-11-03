@@ -54,6 +54,7 @@ InventoryView::InventoryView(Configuration *cfg) : View(cfg),
  is_party_member = false;
  picking_pocket = false;
  outside_actor = NULL;
+ lock_actor = false;
 }
 
 InventoryView::~InventoryView()
@@ -62,7 +63,7 @@ InventoryView::~InventoryView()
 
 bool InventoryView::set_party_member(uint8 party_member)
 {
- if(party_member >= party->get_party_size())
+ if(lock_actor || party_member >= party->get_party_size())
  {
    return false;
  }
@@ -100,6 +101,9 @@ bool InventoryView::set_party_member(uint8 party_member)
 
 bool InventoryView::set_actor(Actor *actor, bool pickpocket)
 {
+  if(lock_actor)
+    return false;
+
    if(party->contains_actor(actor))
    {
      set_party_member(party->get_member_num(actor));
@@ -161,7 +165,7 @@ void InventoryView::Display(bool full_redraw)
  if(full_redraw || update_display)
    {
     if(MD)
-        fill_md_background(area);
+        fill_md_background(lock_actor ? 7 : bg_color, area);
     else
         screen->fill(bg_color, area.x, area.y, area.w, area.h);
 

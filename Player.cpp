@@ -335,16 +335,16 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 	const uint8 ship_cost[8] = {0xA, 5, 3, 4, 5, 4, 3, 5};
 	const uint8 skiff_cost[8] = {3, 4, 5, 7, 0xA, 7, 5, 4};
 
-	bool can_move = true;
+    MovementStatus movementStatus = CAN_MOVE;
 	bool can_change_rel_dir = true;
 	uint8 wind_dir = Game::get_game()->get_weather()->get_wind_dir();
     uint16 x, y;
     uint8 z;
     actor->get_location(&x, &y, &z);
 
-    if(game_type == NUVIE_GAME_U6)
-    {
-    	if(actor->id_n == 0)
+	if(game_type == NUVIE_GAME_U6)
+	{
+		if(actor->id_n == 0) // vehicle actor
     	{
     		if(actor->obj_n == OBJ_U6_INFLATED_BALLOON &&
     		   (!Game::get_game()->has_free_balloon_movement() || !party->has_obj(OBJ_U6_FAN, 0, false)))
@@ -389,7 +389,7 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     			}
     		}
     	}
-    	else
+    	else // normal actor
     	{
     		if(alcohol > 3 && NUVIE_RAND()%4 != 0)
     		{
@@ -399,12 +399,14 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     			Game::get_game()->get_scroll()->display_string("Hic!\n");
     		}
     	}
+
 		ActorMoveFlags move_flags = ACTOR_IGNORE_DANGER | ACTOR_IGNORE_PARTY_MEMBERS;
 		// don't allow diagonal move between blocked tiles (player only)
 		if(rel_x && rel_y && !actor->check_move(x + rel_x, y + 0, z, move_flags)
-		   && !actor->check_move(x + 0, y + rel_y, z, move_flags))
-			can_move = false;
-    }
+		   && !actor->check_move(x + 0, y + rel_y, z, move_flags)) {
+			movementStatus = BLOCKED;
+		}
+	}
     else if(game_type == NUVIE_GAME_MD)
     {
       if(Game::get_game()->get_clock()->get_timer(GAMECLOCK_TIMER_MD_BLUE_BERRY) != 0 && NUVIE_RAND()%2 == 0)
@@ -417,28 +419,34 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     }
 
     if(actor->is_immobile() && actor->id_n != 0)
-        can_move = false;
+        movementStatus = BLOCKED;
 
-    if(can_move && game_type != NUVIE_GAME_U6)
+    if(movementStatus != BLOCKED && game_type != NUVIE_GAME_U6)
     {
-      can_move = Game::get_game()->get_script()->call_player_before_move_action(rel_x, rel_y);
+      movementStatus = Game::get_game()->get_script()->call_player_before_move_action(&rel_x, &rel_y);
     }
 
-    if(can_move)
+    if(movementStatus != BLOCKED)
     {
-
-		if(!check_moveRelative(rel_x, rel_y)) {
-				can_move = false;
+      if(movementStatus == FORCE_MOVE) {
+        actor->moveRelative(rel_x, rel_y, ACTOR_FORCE_MOVE);
+      } else if(!check_moveRelative(rel_x, rel_y)) {
+          movementStatus = BLOCKED;
 				if(mouse_movement && rel_x != 0 && rel_y != 0 && can_change_rel_dir) {
 					if(check_moveRelative(rel_x, 0)) { // try x movement only
 						rel_y = 0;
-						can_move = true;
+                      movementStatus = CAN_MOVE;
 					} else if(check_moveRelative(0, rel_y)) { // try y movement only
 						rel_x = 0;
-						can_move = true;
+                      movementStatus = CAN_MOVE;
 					}
 				}
-				if(can_move == false) {
+				// Try opening a door FIXME: shouldn't be U6 specific
+				if (movementStatus == BLOCKED) {
+					if (obj_manager->is_door(x + rel_x, y + rel_y, z))
+						try_open_door(x + rel_x, y + rel_y, z);
+				}
+				if(movementStatus == BLOCKED) {
 					Game::get_game()->get_sound_manager()->playSfx(NUVIE_SFX_BLOCKED);
 					if(actor->id_n == 0) //vehicle actor.
 						actor->set_moves_left(0); //zero movement points here so U6 can change wind direction by advancing game time.
@@ -448,13 +456,13 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 	actor->set_direction(rel_x, rel_y);
 
     // post-move
-    if(can_move)
+    if(movementStatus != BLOCKED)
     {
 		if(party_mode && party->is_leader(actor)) // lead party
 		{
 			party->follow(rel_x, rel_y);
 		}
-		else if(actor->id_n == 0) // using vehicle; drag party along
+		else if(actor->id_n == 0 && game_type != NUVIE_GAME_MD) // using vehicle; drag party along
 		{
 			MapCoord new_xyz = actor->get_location();
 			party->move(new_xyz.x, new_xyz.y, new_xyz.z);
@@ -501,7 +509,8 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
 
     if(game_type != NUVIE_GAME_U6)
     {
-      Game::get_game()->get_script()->call_player_post_move_action(can_move);
+      Game::get_game()->get_script()->call_player_post_move_action(movementStatus != BLOCKED);
+      actor->get_location(&x, &y, &z); //update location in case we have moved.
     }
 
     // update world around player
@@ -509,6 +518,17 @@ void Player::moveRelative(sint16 rel_x, sint16 rel_y, bool mouse_movement)
     obj_manager->update(x, y, z); // remove temporary objs, hatch eggs
     clock->inc_move_counter(); // doesn't update time
     actor_manager->startActors(); // end player turn
+}
+
+void Player::try_open_door(uint16 x, uint16 y, uint8 z)
+{
+	UseCode *usecode = Game::get_game()->get_usecode();
+	Obj *obj = obj_manager->get_obj(x, y, z);
+	if (!usecode->is_door(obj))
+		return;
+	usecode->use_obj(obj, get_actor());
+	subtract_movement_points(MOVE_COST_USE);
+	map_window->updateBlacking();
 }
 
 // teleport-type move

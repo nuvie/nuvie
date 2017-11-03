@@ -38,6 +38,7 @@
 #include "ActorManager.h"
 #include "TileManager.h"
 #include "ViewManager.h"
+#include "InventoryView.h"
 #include "SaveManager.h"
 #include "Actor.h"
 #include "Weather.h"
@@ -53,6 +54,7 @@
 #include "TMXMap.h"
 
 #include <math.h>
+#include "U6Lib_n.h"
 
 #include "lua.hpp"
 
@@ -68,6 +70,7 @@ An in-game object
 @int x x position
 @int y y position
 @int z z position
+@tparam[readonly] MapCoord| xyz The object's Location in a MapCoord table.
 @int obj_n object number
 @int frame_n frame number
 @int quality
@@ -86,8 +89,8 @@ An in-game object
 @int[readonly] tile_num The tile number corresponding to the obj_n + frame_num values
 @bool[readonly] getable Is this object getable by the player?
 @bool ok_to_take Is it considered stealing if the player gets this object?
-@int[writeonly] status Object status *writeonly*
-@bool[writeonly] invisible Toggle object visibility *writeonly*
+@int status Object status
+@bool invisible Toggle object visibility
 @bool[writeonly] temporary Toggle temporary status *writeonly*
 
  */
@@ -99,6 +102,17 @@ A map coordinate
 @int y
 @int z 0 for the 1024x1024 surface level, 1..5 for the dungeon levels
  */
+
+/***
+An actor schedule entry
+@table Schedule
+@int day_of_week
+@int worktype
+@int x
+@int y
+@int z
+ */
+
 extern bool nscript_new_actor_var(lua_State *L, uint16 actor_num);
 
 struct ScriptObjRef
@@ -201,6 +215,7 @@ static int nscript_objlist_read2(lua_State *L);
 static int nscript_objlist_write2(lua_State *L);
 
 static int nscript_game_get_ui_style(lua_State *L);
+static int nscript_player_get_name(lua_State *L);
 static int nscript_player_get_gender(lua_State *L);
 static int nscript_player_get_location(lua_State *L);
 static int nscript_player_get_karma(lua_State *L);
@@ -220,6 +235,7 @@ static int nscript_party_get_member(lua_State *L);
 static int nscript_party_update_leader(lua_State *L);
 static int nscript_party_resurrect_dead_members(lua_State *L);
 static int nscript_party_exit_vehicle(lua_State *L);
+static int nscript_party_set_in_vehicle(lua_State *L);
 static int nscript_party_dismount_from_horses(lua_State *L);
 static int nscript_party_show_all(lua_State *L);
 static int nscript_party_hide_all(lua_State *L);
@@ -256,8 +272,11 @@ static int nscript_map_line_hit_check(lua_State *L);
 
 static int nscript_map_can_put_actor(lua_State *L);
 static int nscript_map_can_put_obj(lua_State *L);
+static int nscript_map_enable_temp_actor_cleaning(lua_State *L);
 
 static int nscript_map_export_tmx_files(lua_State *L);
+
+static int nscript_tileset_export(lua_State *L);
 
 static int nscript_tile_get_flag(lua_State *L);
 static int nscript_tile_get_description(lua_State *L);
@@ -308,6 +327,13 @@ static int nscript_mapwindow_get_loc(lua_State *L);
 static int nscript_mapwindow_set_loc(lua_State *L);
 static int nscript_mapwindow_set_enable_blacking(lua_State *L);
 
+static int nscript_load_text_from_lzc(lua_State *L);
+
+static int nscript_display_text_in_scroll_gump(lua_State *L);
+
+static int nscript_lock_inventory_view(lua_State *L);
+static int nscript_unlock_inventory_view(lua_State *L);
+
 //Iterators
 int nscript_u6llist_iter(lua_State *L);
 int nscript_u6llist_iter_recursive(lua_State *L);
@@ -318,6 +344,7 @@ static int nscript_container(lua_State *L);
 int nscript_init_u6link_iter(lua_State *L, U6LList *list, bool is_recursive);
 
 static int nscript_find_obj(lua_State *L);
+static int nscript_find_obj_from_area(lua_State *L);
 
 Script *Script::script = NULL;
 
@@ -340,10 +367,10 @@ static int lua_error_handler(lua_State *L)
 	return 1;
 }
 
-static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field)
+static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field, int table_stack_offset = -2)
 {
    lua_pushstring(L, index);
-   lua_gettable(L, -2);
+   lua_gettable(L, table_stack_offset);
 
    if(!lua_isnumber(L, -1))
       return false;
@@ -353,10 +380,10 @@ static bool get_tbl_field_sint16(lua_State *L, const char *index, sint16 *field)
    return true;
 }
 
-static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint16 *field, uint8 map_level)
+static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint16 *field, uint8 map_level, int table_stack_offset = -2)
 {
   sint16 coord;
-  if(get_tbl_field_sint16(L,index,&coord) == false)
+  if(get_tbl_field_sint16(L,index,&coord, table_stack_offset) == false)
   {
     return false;
   }
@@ -366,10 +393,10 @@ static bool get_tbl_field_as_wrapped_coord(lua_State *L, const char *index, uint
   return true;
 }
 
-static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
+static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field, int table_stack_offset = -2)
 {
    lua_pushstring(L, index);
-   lua_gettable(L, -2);
+   lua_gettable(L, table_stack_offset);
 
    if(!lua_isnumber(L, -1))
       return false;
@@ -379,10 +406,10 @@ static bool get_tbl_field_uint16(lua_State *L, const char *index, uint16 *field)
    return true;
 }
 
-static bool get_tbl_field_uint8(lua_State *L, const char *index, uint8 *field)
+static bool get_tbl_field_uint8(lua_State *L, const char *index, uint8 *field, int table_stack_offset = -2)
 {
    lua_pushstring(L, index);
-   lua_gettable(L, -2);
+   lua_gettable(L, table_stack_offset);
 
    if(!lua_isnumber(L, -1))
       return false;
@@ -622,7 +649,10 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_find_obj);
    lua_setglobal(L, "find_obj");
-   
+
+   lua_pushcfunction(L, nscript_find_obj_from_area);
+   lua_setglobal(L, "find_obj_from_area");
+
    lua_pushcfunction(L, nscript_timer_set);
    lua_setglobal(L, "timer_set");
 
@@ -713,6 +743,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_map_can_put_obj);
    lua_setglobal(L, "map_can_put_obj");
 
+   lua_pushcfunction(L, nscript_map_enable_temp_actor_cleaning);
+   lua_setglobal(L, "map_enable_temp_actor_cleaning");
+
    lua_pushcfunction(L, nscript_map_line_test);
    lua_setglobal(L, "map_can_reach_point");
 
@@ -722,8 +755,14 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_map_export_tmx_files);
    lua_setglobal(L, "map_export_tmx_files");
 
+   lua_pushcfunction(L, nscript_tileset_export);
+   lua_setglobal(L, "tileset_export");
+
    lua_pushcfunction(L, nscript_game_get_ui_style);
    lua_setglobal(L, "game_get_ui_style");
+
+   lua_pushcfunction(L, nscript_player_get_name);
+   lua_setglobal(L, "player_get_name");
 
    lua_pushcfunction(L, nscript_player_get_gender);
    lua_setglobal(L, "player_get_gender");
@@ -778,6 +817,9 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
 
    lua_pushcfunction(L, nscript_party_exit_vehicle);
    lua_setglobal(L, "party_exit_vehicle");
+
+   lua_pushcfunction(L, nscript_party_set_in_vehicle);
+   lua_setglobal(L, "party_set_in_vehicle");
 
    lua_pushcfunction(L, nscript_party_dismount_from_horses);
    lua_setglobal(L, "party_dismount_from_horses");
@@ -863,6 +905,18 @@ Script::Script(Configuration *cfg, GUI *gui, SoundManager *sm, nuvie_game_t type
    lua_pushcfunction(L, nscript_mapwindow_set_enable_blacking);
    lua_setglobal(L, "mapwindow_set_enable_blacking");
 
+   lua_pushcfunction(L, nscript_load_text_from_lzc);
+   lua_setglobal(L, "load_text_from_lzc");
+
+   lua_pushcfunction(L, nscript_display_text_in_scroll_gump);
+   lua_setglobal(L, "display_text_in_scroll_gump");
+
+   lua_pushcfunction(L, nscript_lock_inventory_view);
+   lua_setglobal(L, "lock_inventory_view");
+
+   lua_pushcfunction(L, nscript_unlock_inventory_view);
+   lua_setglobal(L, "unlock_inventory_view");
+
    seed_random();
 
    lua_getglobal(L, "package");
@@ -945,23 +999,36 @@ bool Script::play_cutscene(const char *script_file)
 	script_file_path += script_file;
 
 	ConsoleHide();
-	//FIXME SDL2 SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
+   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL*2);
+#endif
 
 	return run_lua_file(script_file_path.c_str());
 }
 
-bool Script::call_player_before_move_action(sint16 rel_x, sint16 rel_y)
+MovementStatus Script::call_player_before_move_action(sint16 *rel_x, sint16 *rel_y)
 {
   lua_getglobal(L, "player_before_move_action");
-  lua_pushinteger(L, rel_x);
-  lua_pushinteger(L, rel_y);
+  lua_pushinteger(L, *rel_x);
+  lua_pushinteger(L, *rel_y);
 
-  if(call_function("player_before_move_action", 2, 1) == false)
+  if(call_function("player_before_move_action", 2, 3))
   {
-    return false;
-  }
+     if(!lua_isnil(L, -2)) {
+        *rel_x = (sint16)lua_tointeger(L, -2);
+     }
+     if(!lua_isnil(L, -1)) {
+        *rel_y = (sint16)lua_tointeger(L, -1);
+     }
 
-  return lua_toboolean(L,-1);
+     switch(lua_tointeger(L,-3)) {
+        case 0 : return CAN_MOVE;
+        case 1 : return BLOCKED;
+        case 2 : return FORCE_MOVE;
+        default : break;
+     }
+  }
+   return CAN_MOVE;
 }
 
 
@@ -1122,13 +1189,19 @@ uint8 Script::actor_get_max_magic_points(Actor *actor)
 	return (uint8)lua_tointeger(L,-1);
 }
 
-bool Script::call_actor_get_obj(Actor *actor, Obj *obj)
+bool Script::call_actor_get_obj(Actor *actor, Obj *obj, Obj *container)
 {
+   int num_args = 2;
    lua_getglobal(L, "actor_get_obj");
    nscript_new_actor_var(L, actor->get_actor_num());
    nscript_obj_new(L, obj);
 
-   if(call_function("actor_get_obj", 2, 1) == false)
+   if(container)
+   {
+      nscript_obj_new(L, container);
+      num_args++;
+   }
+   if(call_function("actor_get_obj", num_args, 1) == false)
 	   return false;
 
    return lua_toboolean(L,-1);
@@ -1356,6 +1429,16 @@ bool Script::call_is_avatar_dead()
 	return lua_toboolean(L,-1);
 }
 
+bool Script::call_is_ranged_select(UseCodeType operation)
+{
+  lua_getglobal(L, "is_ranged_select");
+  lua_pushstring(L, useCodeTypeToString(operation));
+
+  if(call_function("is_ranged_select", 1, 1) == false)
+    return false;
+  return lua_toboolean(L,-1);
+}
+
 bool Script::call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace)
 {
 	int start_idx = lua_gettop(L);
@@ -1384,6 +1467,22 @@ bool Script::call_function(const char *func_name, int num_args, int num_return, 
 		DEBUG(0, LEVEL_ERROR, "lua stack error!");
 
 	return (result != 0) ? false : true;
+}
+
+ScriptThread *Script::call_function_in_thread(const char *function_name)
+{
+   ScriptThread *t = NULL;
+   lua_State *s;
+
+   s = lua_newthread(L);
+
+   lua_getglobal(s, function_name);
+
+   //FIXME wrap stacktrace dumping logic here as per call_function method.
+
+   t = new ScriptThread(s, 0);
+
+   return t;
 }
 
 bool Script::run_lua_file(const char *filename)
@@ -1499,12 +1598,50 @@ bool Script::call_talk_script(uint8 script_number)
   return true;
 }
 
+bool Script::call_talk_to_obj(Obj *obj) {
+   lua_getglobal(L, "talk_to_obj");
+
+   nscript_obj_new(L, obj);
+
+   if(call_function("talk_to_obj", 1, 1) == false)
+      return false;
+
+   return (bool)lua_toboolean(L,-1);
+}
+
+bool Script::call_talk_to_actor(Actor *actor) {
+   lua_getglobal(L, "talk_to_actor");
+
+   nscript_new_actor_var(L, actor->get_actor_num());
+
+   if(call_function("talk_to_actor", 1, 1) == false)
+      return false;
+
+   return (bool)lua_toboolean(L, -1);
+}
+
 bool Script::call_is_container_obj(uint16 obj_n)
 {
     lua_getglobal(L, "is_container_obj");
     lua_pushnumber(L, (lua_Number)obj_n);
     call_function("is_container_object", 1, 1);
-    return(lua_toboolean(L,-1));
+    return (bool)lua_toboolean(L,-1);
+}
+
+uint8 Script::call_get_portrait_number(Actor *actor)
+{
+   lua_getglobal(L, "get_portrait_number");
+   nscript_new_actor_var(L, actor->get_actor_num());
+   if(call_function("get_portrait_number", 1, 1) == false)
+      return 1;
+   return (uint8)lua_tointeger(L,-1);
+}
+
+bool Script::call_player_attack()
+{
+   lua_getglobal(L, "player_attack");
+
+   return call_function("player_attack", 0, 0);
 }
 
 ScriptThread *Script::new_thread(const char *scriptfile)
@@ -1540,13 +1677,13 @@ bool nscript_get_location_from_args(lua_State *L, uint16 *x, uint16 *y, uint8 *z
 {
    if(lua_istable(L, lua_stack_offset))
    {
-      if(!get_tbl_field_uint8(L, "z", z)) return false;
-      if(!get_tbl_field_as_wrapped_coord(L, "x", x, *z)) return false;
-      if(!get_tbl_field_as_wrapped_coord(L, "y", y, *z)) return false;
+      if(!get_tbl_field_uint8(L, "z", z, lua_stack_offset)) return false;
+      if(!get_tbl_field_as_wrapped_coord(L, "x", x, *z, lua_stack_offset)) return false;
+      if(!get_tbl_field_as_wrapped_coord(L, "y", y, *z, lua_stack_offset)) return false;
    }
    else
    {
-	  if(lua_isnil(L, lua_stack_offset)) return false;
+      if(lua_isnil(L, lua_stack_offset)) return false;
       *z = (uint8)luaL_checkinteger(L,  lua_stack_offset + 2);
       *x = wrap_signed_coord((sint16)luaL_checkinteger(L, lua_stack_offset), *z);
       *y = wrap_signed_coord((sint16)luaL_checkinteger(L, lua_stack_offset + 1), *z);
@@ -2001,6 +2138,11 @@ static int nscript_obj_get(lua_State *L)
       lua_pushboolean(L, (int)obj_manager->is_stackable(obj)); return 1;
    }
 
+   if(!strcmp(key, "status"))
+   {
+      lua_pushnumber(L, obj->status); return 1;
+   }
+
    if(!strcmp(key, "weight"))
    {
       ObjManager *obj_manager = Game::get_game()->get_obj_manager();
@@ -2053,6 +2195,29 @@ static int nscript_obj_get(lua_State *L)
          return 1;
        }
      }
+   }
+
+   if(!strcmp(key, "xyz"))
+   {
+      lua_newtable(L);
+      lua_pushstring(L, "x");
+      lua_pushinteger(L, obj->x);
+      lua_settable(L, -3);
+
+      lua_pushstring(L, "y");
+      lua_pushinteger(L, obj->y);
+      lua_settable(L, -3);
+
+      lua_pushstring(L, "z");
+      lua_pushinteger(L, obj->z);
+      lua_settable(L, -3);
+
+      return 1;
+   }
+
+   if(!strcmp(key, "invisible"))
+   {
+      lua_pushboolean(L, (int)obj->is_invisible()); return 1;
    }
 
    return 0;
@@ -2527,6 +2692,24 @@ static int nscript_game_get_ui_style(lua_State *L)
 }
 
 /***
+Get the player name
+@function player_get_name
+@return string player name
+@within player
+ */
+static int nscript_player_get_name(lua_State *L)
+{
+   Player *player = Game::get_game()->get_player();
+   if(player)
+   {
+      lua_pushstring(L, player->get_name());
+      return 1;
+   }
+
+   return 0;
+}
+
+/***
 Get the gender of the player
 @function player_get_gender
 @return
@@ -2861,6 +3044,19 @@ static int nscript_party_dismount_from_horses(lua_State *L)
 }
 
 /***
+Toggle party vehicle mode
+@function party_set_in_vehicle
+@bool value
+@within party
+ */
+static int nscript_party_set_in_vehicle(lua_State *L)
+{
+   Party *party = Game::get_game()->get_party();
+   party->set_in_vehicle((bool) lua_toboolean(L, 1));
+   return 0;
+}
+
+/***
 Show all party members on the map.
 @function party_show_all
 @within party
@@ -2904,14 +3100,17 @@ static int nscript_map_get_obj(lua_State *L)
    if(nscript_get_location_from_args(L, &x, &y, &z) == false)
       return 0;
 
+   int top = lua_gettop(L);
+   bool loc_is_table = lua_istable(L, 1);
+   int stack_offset = loc_is_table ? 2 : 4;
 
-   if(lua_gettop(L) > 3)
+   if((loc_is_table && top > 1) || top > 3)
    {
-	   uint16 obj_n = lua_tointeger(L, 4);
+	   uint16 obj_n = lua_tointeger(L, stack_offset);
 	   bool include_multi_tile_objs = false;
-	   if(lua_gettop(L) > 4)
+	   if(lua_gettop(L) > stack_offset)
 	   {
-	     include_multi_tile_objs = lua_toboolean(L, 5);
+	     include_multi_tile_objs = lua_toboolean(L, stack_offset + 1);
 	   }
 	   if(include_multi_tile_objs)
 	   {
@@ -3006,11 +3205,22 @@ static int nscript_map_can_put_obj(lua_State *L)
 }
 
 /***
+Toggle automatic cleaning of out of area temporary actors.
+@function map_enable_temp_actor_cleaning
+@tparam bool value
+@within map
+ */
+static int nscript_map_enable_temp_actor_cleaning(lua_State *L)
+{
+   ActorManager *actorManager = Game::get_game()->get_actor_manager();
+   actorManager->enable_temp_actor_cleaning((bool)lua_toboolean(L, 1));
+   return 0;
+}
+
+/***
 Check map location for water
 @function map_is_water
-@int x
-@int y
-@int z
+@tparam MapCoord|x,y,z location
 @treturn bool true if the map at location is a water tile otherwise false
 @within map
  */
@@ -3031,9 +3241,7 @@ static int nscript_map_is_water(lua_State *L)
 /***
 Checks if the map location is currently on screen
 @function map_is_on_screen
-@int x
-@int y
-@int z
+@tparam MapCoord|x,y,z location
 @treturn bool true if the map location is currently on screen otherwise false
 @within map
  */
@@ -3084,14 +3292,14 @@ static int nscript_map_get_impedence(lua_State *L)
 /***
 get the map tile number for a given map location
 @function map_get_tile_num
-@int x
-@int y
-@int z
+@tparam MapCoord|x,y,z location
+@bool[opt=false] get_original_tile_num return the original tile_num.
 @treturn int|nil
 @within map
  */
 static int nscript_map_get_tile_num(lua_State *L)
 {
+  bool original_tile = false;
   Map *map = Game::get_game()->get_game_map();
 
   uint16 x, y;
@@ -3099,7 +3307,15 @@ static int nscript_map_get_tile_num(lua_State *L)
   if(nscript_get_location_from_args(L, &x, &y, &z, 1) == false)
    return 0;
 
-  Tile *t = map->get_tile(x, y, z);
+   if(lua_istable(L, 1)) {
+      if(lua_gettop(L) >= 2)
+         original_tile = (bool) lua_toboolean(L, 2);
+   } else {
+      if (lua_gettop(L) >= 4)
+         original_tile = (bool) lua_toboolean(L, 4);
+   }
+
+  Tile *t = map->get_tile(x, y, z, original_tile);
   if(t != NULL)
   {
     lua_pushinteger(L, t->tile_num);
@@ -3224,6 +3440,43 @@ static int nscript_map_export_tmx_files(lua_State *L)
 
   delete tmxMap;
   return 1;
+}
+
+/***
+export tileset to a bmp file 'data/images/tiles/nn/custom_tiles.bmp' in the current savegame directory.
+@function tileset_export
+@bool[opt=false] overWriteFile specifies if the output file should be overwritten if it already exists.
+@treturn bool returns true if the was written to disk. false otherwise
+ */
+static int nscript_tileset_export(lua_State *L)
+{
+   Game *game = Game::get_game();
+   bool overwriteFile = false;
+
+  if(lua_gettop(L) >= 1) {
+    overwriteFile = (bool)lua_toboolean(L, 1);
+  }
+
+   std::string path;
+   build_path(game->get_save_manager()->get_savegame_directory(), "data", path);
+   build_path(path, "images", path);
+   build_path(path, "tiles", path);
+   build_path(path, get_game_tag(game->get_game_type()), path);
+
+   if(!directory_exists(path.c_str())) {
+     mkdir_recursive(path.c_str(), 0700);
+   }
+
+  build_path(path, "custom_tiles.bmp", path);
+
+  if(!overwriteFile && file_exists(path.c_str())) {
+    lua_pushboolean(L, false);
+  } else {
+    game->get_tile_manager()->exportTilesetToBmpFile(path, false);
+    lua_pushboolean(L, true);
+  }
+
+   return 1;
 }
 
 /***
@@ -3938,6 +4191,70 @@ int nscript_find_obj_iter(lua_State *L)
 	return 1;
 }
 
+Obj *nscript_get_next_obj_from_area(U6Link **link, uint16 x, uint16 y, uint8 z, uint16 w, uint16 h, uint16 *xOffset, uint16 *yOffset)
+{
+  if(*link != NULL) {
+    Obj *obj = (Obj *) (*link)->data;
+    *link = (*link)->next;
+    return obj;
+  }
+
+  ObjManager *obj_manager = Game::get_game()->get_obj_manager();
+  while(*yOffset < h) {
+    U6LList *list = obj_manager->get_obj_list(x + *xOffset, y + *yOffset, z);
+
+    (*xOffset)++;
+    if (*xOffset == w) {
+      (*yOffset)++;
+      *xOffset = 0;
+    }
+
+    if(list) {
+      *link = list->start();
+      if(*link) {
+         Obj *obj = (Obj *) (*link)->data;
+         *link = (*link)->next;
+         return obj;
+      }
+    }
+  }
+
+  return NULL;
+}
+
+int nscript_find_obj_from_area_iter(lua_State *L)
+{
+   Obj *cur_obj = NULL;
+
+  U6Link **s_link = (U6Link **)luaL_checkudata(L, lua_upvalueindex(1), "nuvie.U6Link");
+
+  uint16 x = (uint16)lua_tointeger(L, lua_upvalueindex(2));
+  uint16 y = (uint16)lua_tointeger(L, lua_upvalueindex(3));
+  uint8 z = (uint8)lua_tointeger(L, lua_upvalueindex(4));
+  uint16 width = (uint16)lua_tointeger(L, lua_upvalueindex(5));
+  uint16 height = (uint16)lua_tointeger(L, lua_upvalueindex(6));
+  uint16 xOffset = (uint16)lua_tointeger(L, lua_upvalueindex(7));
+  uint16 yOffset = (uint16)lua_tointeger(L, lua_upvalueindex(8));
+
+  releaseU6Link(*s_link); // release old link object.
+
+  cur_obj = nscript_get_next_obj_from_area(s_link, x, y, z, width, height, &xOffset, &yOffset);
+
+  retainU6Link(*s_link);
+
+   if(cur_obj == NULL)
+      return 0;
+
+   lua_pushinteger(L, xOffset);
+   lua_replace(L, lua_upvalueindex(7));
+
+   lua_pushinteger(L, yOffset);
+   lua_replace(L, lua_upvalueindex(8));
+
+   nscript_new_obj_var(L, cur_obj);
+
+   return 1;
+}
 /***
 Iterate through all objects of a specific type on a given map level.
 @function find_obj
@@ -3993,6 +4310,47 @@ static int nscript_find_obj(lua_State *L)
 	lua_pushcclosure(L, &nscript_find_obj_iter, 4);
 
 	return 1;
+}
+
+/***
+Iterate through all objects within a given area.
+@function find_obj_from_area
+@tparam MapCoord|x,y,z location location for the effect to take place
+@int width width of area to search
+@int height height of area to search
+@within Object
+ */
+static int nscript_find_obj_from_area(lua_State *L)
+{
+   MapCoord loc;
+   int stackOffset = 4;
+   if(nscript_get_location_from_args(L, &loc.x, &loc.y, &loc.z) == false)
+      return 0;
+   if(lua_istable(L, 1))
+   {
+      stackOffset = 2;
+   }
+
+   uint16 width = (uint16)luaL_checkinteger(L, stackOffset++);
+   uint16 height = (uint16)luaL_checkinteger(L, stackOffset);
+
+   U6Link **p_link = (U6Link **)lua_newuserdata(L, sizeof(U6Link *));
+   *p_link = NULL;
+
+   luaL_getmetatable(L, "nuvie.U6Link");
+   lua_setmetatable(L, -2);
+
+   lua_pushinteger(L, loc.x);
+   lua_pushinteger(L, loc.y);
+   lua_pushinteger(L, loc.z);
+   lua_pushinteger(L, width);
+   lua_pushinteger(L, height);
+   lua_pushinteger(L, 0); //cur x offset
+   lua_pushinteger(L, 0); //cur y offset
+
+   lua_pushcclosure(L, &nscript_find_obj_from_area_iter, 8);
+
+   return 1;
 }
 
 /***
@@ -4547,7 +4905,7 @@ static int nscript_mapwindow_set_loc(lua_State *L)
 }
 
 /***
-Toggle mapwindow 'blacking'. Blacking hides tiles that are not visiblt to the player because they are obscured
+Toggle mapwindow 'blacking'. Blacking hides tiles that are not visible to the player because they are obscured
 by a wall.
 @function mapwindow_set_enable_blacking
 @bool enable_blacking
@@ -4562,4 +4920,103 @@ static int nscript_mapwindow_set_enable_blacking(lua_State *L)
   map_window->set_enable_blacking(enable_blacking);
 
   return 0;
+}
+
+/***
+Loads text from a given LZC file.
+@function load_text_from_lzc
+@string filename the lzc file to extract the text from
+@int index offset in the lzc file to load the text from
+@treturn string the extracted text
+ */
+static int nscript_load_text_from_lzc(lua_State *L)
+{
+   unsigned char *buf = NULL;
+   std::string filename(lua_tostring(L, 1));
+   U6Lib_n lib_n;
+
+   std::string path;
+
+   config_get_path(Game::get_game()->get_config(), filename, path);
+
+   if(!lib_n.open(path, 4, NUVIE_GAME_MD))
+   {
+      return 0;
+   }
+   int idx = lua_tointeger(L, 2);
+   if(idx >= lib_n.get_num_items())
+   {
+      return 0;
+   }
+
+   buf = lib_n.get_item(idx, NULL);
+   if(!buf)
+   {
+      return 0;
+   }
+
+   int len = lib_n.get_item_size(idx);
+   lib_n.close();
+
+   if(len < 1 || buf[len-1] != 0)
+   {
+      free(buf);
+      return 0;
+   }
+
+   if( len >= 2 && buf[len-2] == 0xff)
+   {
+      buf[len-2] = 0x0;
+   }
+
+   lua_pushstring(L, (const char *)buf);
+   free(buf);
+
+   return 1;
+}
+
+/***
+Display string in scroll gump if in new style. Otherwise display on regular message scroll.
+@function display_text_in_scroll_gump
+@string text the text to display in the scroll
+@within UI
+ */
+static int nscript_display_text_in_scroll_gump(lua_State *L)
+{
+   const char *text = lua_tostring(L, 1);
+   if(text) {
+      if (Game::get_game()->is_new_style())
+         Game::get_game()->get_view_manager()->open_scroll_gump(text, strlen(text));
+      else
+         Game::get_game()->get_scroll()->message(text);
+   }
+   return 0;
+}
+
+/***
+Lock the inventory view to a specific Actor.
+@function lock_inventory_view
+@tparam Actor actor
+@within UI
+ */
+static int nscript_lock_inventory_view(lua_State *L)
+{
+   Actor *actor = nscript_get_actor_from_args(L, 1);
+   Game::get_game()->get_view_manager()->get_inventory_view()->set_actor(actor, true);
+   Game::get_game()->get_view_manager()->get_inventory_view()->lock_to_actor(true);
+   Game::get_game()->get_view_manager()->set_inventory_mode();
+   return 0;
+}
+
+/***
+Unlock the inventory view
+@function unlock_inventory_view
+@within UI
+ */
+static int nscript_unlock_inventory_view(lua_State *L)
+{
+   Game::get_game()->get_view_manager()->get_inventory_view()->lock_to_actor(false);
+   Game::get_game()->get_view_manager()->get_inventory_view()->set_party_member(0);
+   Game::get_game()->get_view_manager()->set_inventory_mode();
+   return 0;
 }

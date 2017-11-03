@@ -1,0 +1,265 @@
+This file contains Actor/NPC related data.
+
+0x000
+
+Object flags (common for all objects)
+bit 0 Owned
+bit 1 Invisible
+bit 2 Charmed
+bit 3 -+- Meaning of obj position (0=map 1=container 2=inventory 3=readied)
+bit 4 /
+bit 5 Disposable
+bit 6 Mutant/Broken/Cursed: set on two-headed animals
+bit 7 Lit: set on torches
+
+0x100 
+
+256 NPC positions in 3 byte x,y,z notation.
+
+0x400
+
+256 NPC object number + frame number combinations. 2 byte.
+
+0x600
+
+Actor Qty. 2 byte.
+
+0x800
+
+NPC flags
+
+bit 0 Protected
+bit 1 Paralysed
+bit 2 Asleep
+bit 3 Poisoned
+bit 4 Dead
+bit 5 -+- Alignment 0 = neutral, 1 = evil, 2 = good, 3 = chaotic
+bit 6 /
+bit 7 In Party
+
+0x900
+
+NPC strength
+
+0xa00
+
+NPC dexterity
+
+0xb00
+
+NPC inteligence
+
+0xc00
+
+Experience. 2 bytes each
+
+0xe00
+
+NPC Health Points
+
+0xf00
+
+16 Party  Names. Each name can be a max of 13 chars long. strings are null 
+terminated.
+
+0xfe0
+
+Party Roster order of command. 1 byte per member. Actor ID
+
+0xff0 (1 byte) Number of party members 
+
+0xff1
+
+NPC Level. 1 byte each
+
+0x10f1
+
+NPCs current schedule
+
+0x11f1
+
+NPCs current worktype.
+
+0x12f1
+
+Combat mode
+
+  0x2 = command
+  0x3 = front
+  0x4 = rear
+  0x5 = flank
+  0x6 = berserk
+  0x7 = retreat
+  0x8 = assault
+
+  ?? Temp NPC's have different values.
+
+0x13f1
+
+Magic points. 1 byte each
+
+0x14f1
+
+Movement points. 1 byte each
+
+0x15f1
+
+last NPC object number and frame.
+same format as at 0x400. This is used when an NPC goes to sleep or dies.
+
+0x17f1
+
+Talk flags
+bit 0 met player
+bit 1 hate player
+
+0x18f1 
+
+?? Changes when in combat mode actor numbers. 
+
+0x19f1
+
+?? some kind of flags
+bit 0 \
+bit 1  > actor direction
+bit 2 /
+bit 3 unk protection from dmg tiles?? unset when waking from sleep. actor hit?
+bit 4 corpser flag. Actor dragged under.
+bit 5 
+bit 6
+bit 7 unk movement related?
+
+0x1af1
+
+Actor pathfinding instructions. 8 * 32 byte blocks. 
+There can be a maximum of 8 actors pathfinding
+at once. Each actor path can contain up to 32 commands.
+
+Each command byte is made up of the direction and the number of steps to be 
+taken. 
+
+Bits 0-1 contain the direction. 0 North, 1 East, 2 South, 3 West
+Bits 2-7 contain the number of steps to be moved.
+
+0x1bf1 quest flag (1 byte)
+0x1bf2 Rest counter. Hours left till party can heal again by resting.
+0x1bf3 minutes
+0x1bf4 hour
+0x1bf5 day
+0x1bf6 month
+0x1bf7 year
+0x1bf8 year 
+0x1bf9 Player's Karma (1 byte)
+0x1bfa wind direction (1 byte) 0 .. 7 N, NE, E, SE, S, SW, W, NW. C = 0xff
+0x1bfb The npc that is centered on the screen.
+0x1bfc ?? (1 byte)
+0x1bfd X coordinate (2 bytes Little Endian) where the game was saved
+0x1bfe /   These don't seem to matter when loading the game back in.
+0x1bff Y coordinate (2 bytes LE)
+0x1c00 /
+0x1c01 Z coordinate (2 bytes LE)
+0x1c02 /
+0x1c03 spell timer - Light/Great Light.
+0x1c04 spell timer - Infravision 
+0x1c05 Unknown duration counter (decremented each turn)
+0x1c06 Unknown duration counter (decremented each turn)
+0x1c07 Unknown duration counter (decremented each turn)
+0x1c08 Unknown duration counter (decremented each turn)
+0x1c09 Unknown duration counter (decremented each turn)
+0x1c0a Unknown duration counter. referenced in subtract_movement_pts
+       If > 0 and !InParty and align = EVIL or CHAOTIC then double points are
+       subtracted.
+0x1c0b
+0x1c0c
+0x1c0d Unknown duration counter. referenced in subtract_movement_pts if > 0 and
+       InParty then half points are subtracted.
+0x1c0e
+0x1c0f
+0x1c10 Magical storm. Storm will persist for val turns
+0x1c11 Time Stop. Time Stopped for val turns
+0x1c12 Solar eclipse. Eclipse will persist for val turns
+0x1c13 Object number of object removed from map with vanish spell. (2 bytes)
+0x1c14 /
+0x1c15 ??
+0x1c16 caught fish flag. Stop the player from catching another fish for awhile. 
+0x1c17 number of alcoholic drinks consumed by the player. When this number gets
+       above 3 the player starts to act drunk.
+0x1c18 bell ringer flag. If set then the npc worktype 0x98 should ring the bell.
+0x1c19 sound on/off flag. (2 bytes)
+0x1c1a /
+0x1c1b X bury location (2 bytes LE) new moonstone
+0x1c1c / a moonstone that is only dropped is not listed here
+0x1c1d Y and a moonstone 'moved' after burying doesn't affect this either
+0x1c1e / getting the moonstone clears this. 
+0x1c1f Z blue gates appear on these locations when any moon is in the sky
+0x1c20 / if you bury a moonstone, then move it, wait for the gate to appear
+         and then rebury it, there will be two gates for that stone, the last 
+         bury location is recorded here though, so only that one will be
+         there next time. Destination is the moongate tied to the moon
+         that is highest in the sky.
+0x1c21 X bury location waning crescent moonstone
+0x1c22 /
+0x1c23 Y
+0x1c24 /
+0x1c25 Z
+0x1c26 /
+0x1c27 X bury location last quarter moonstone
+0x1c28 /
+0x1c29 Y 
+0x1c2a /
+0x1c2b Z
+0x1c2c /
+0x1c2d X bury location waning gibbous moonstone
+0x1c2e /
+0x1c2f Y
+0x1c30 /
+0x1c31 Z
+0x1c32 /
+0x1c33 X bury location full moonstone
+0x1c34 /
+0x1c35 Y
+0x1c36 /
+0x1c37 Z
+0x1c38 /
+0x1c39 X bury location waxing gibbous moonstone
+0x1c3a /
+0x1c3b Y
+0x1c3c /
+0x1c3d Z
+0x1c3e /
+0x1c3f X bury location first quarter moonstone
+0x1c40 /
+0x1c41 Y
+0x1c42 /
+0x1c43 Z
+0x1c44 /
+0x1c45 X bury location waxing crescent moonstone
+0x1c46 /
+0x1c47 Y
+0x1c48 /
+0x1c49 Z
+0x1c4a /
+0x1c4b lit keg timer
+0x1c4c /
+0x1c4d lit keg obj
+0x1c4e /
+0x1c4f Learned Gargish. (2 bytes)
+0x1c50 /
+0x1c51 Actor numbers of the actors that are pathfinding. It looks like there
+       can be up to 8 actors pathfinding at any given time (8 bytes)
+
+0x1c59 pathfinder index of the current path command for each actor. (8 bytes)   
+
+0x1c61 pathfinder the number of steps taken on current path command. (8 bytes)
+
+0x1c69 Combat mode. 0x1 = combat mode, 0x0 = normal mode
+0x1c6a Solo mode. 0xff for party mode, 0x0 for first party member, 
+       0x1 for second party member ... etc
+
+0x1c6b Unk? seems to be storing a worktype
+0x1c6c Right click action as shown by a blue underline on the command bar.
+       Values are 0x81 to 0x8a for the corresponding buttons on the bar.
+??
+
+0x1c71 Player Gender. 0 male, 1 female
+0x1c72 Player portrait number. 6 female, 6 male starting from 0

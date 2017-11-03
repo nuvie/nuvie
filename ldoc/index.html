@@ -39,6 +39,7 @@
 <li><a href="#time">time</a></li>
 <li><a href="#io">io</a></li>
 <li><a href="#mapwindow">mapwindow</a></li>
+<li><a href="#UI">UI</a></li>
 <li><a href="#Actor">Actor</a></li>
 </ul>
 
@@ -118,6 +119,10 @@
 	<td class="summary">export map to Tiled TMX files.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#tileset_export">tileset_export ([overWriteFile=false])</a></td>
+	<td class="summary">export tileset to a bmp file &lsquo;data/images/tiles/nn/custom_tiles.bmp&rsquo; in the current savegame directory.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#tile_get_flag">tile_get_flag (tile_number, flag_set, bit_number)</a></td>
 	<td class="summary">get a tile flag for a given tile number</td>
 	</tr>
@@ -173,6 +178,10 @@
 	<td class="name" nowrap><a href="#set_armageddon">set_armageddon (new_value)</a></td>
 	<td class="summary">Set armageddon flag</td>
 	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#load_text_from_lzc">load_text_from_lzc (filename, index)</a></td>
+	<td class="summary">Loads text from a given LZC file.</td>
+	</tr>
 </table>
 <h2><a href="#Tables">Tables</a></h2>
 <table class="function_list">
@@ -183,6 +192,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#MapCoord">MapCoord</a></td>
 	<td class="summary">A map coordinate</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Schedule">Schedule</a></td>
+	<td class="summary">An actor schedule entry</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#Actor">Actor</a></td>
@@ -228,6 +241,10 @@
 	<td class="summary">Iterate through all objects of a specific type on a given map level.</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#find_obj_from_area">find_obj_from_area (location, width, height)</a></td>
+	<td class="summary">Iterate through all objects within a given area.</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#objs_at_loc">objs_at_loc (location)</a></td>
 	<td class="summary">Iterate through objects at a given map location</td>
 	</tr>
@@ -242,6 +259,10 @@
 </table>
 <h2><a href="#player">player</a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#player_get_name">player_get_name ()</a></td>
+	<td class="summary">Get the player name</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#player_get_gender">player_get_gender ()</a></td>
 	<td class="summary">Get the gender of the player</td>
@@ -322,6 +343,10 @@
 	<td class="summary">Dismount all party members from their horses (U6)</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#party_set_in_vehicle">party_set_in_vehicle (value)</a></td>
+	<td class="summary">Toggle party vehicle mode</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#party_show_all">party_show_all ()</a></td>
 	<td class="summary">Show all party members on the map.</td>
 	</tr>
@@ -353,11 +378,15 @@
 	<td class="summary">Can you put an object at a given map location</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_is_water">map_is_water (x, y, z)</a></td>
+	<td class="name" nowrap><a href="#map_enable_temp_actor_cleaning">map_enable_temp_actor_cleaning (value)</a></td>
+	<td class="summary">Toggle automatic cleaning of out of area temporary actors.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#map_is_water">map_is_water (location)</a></td>
 	<td class="summary">Check map location for water</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_is_on_screen">map_is_on_screen (x, y, z)</a></td>
+	<td class="name" nowrap><a href="#map_is_on_screen">map_is_on_screen (location)</a></td>
 	<td class="summary">Checks if the map location is currently on screen</td>
 	</tr>
 	<tr>
@@ -365,7 +394,7 @@
 	<td class="summary">Get the impedance of a map location</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (x, y, z)</a></td>
+	<td class="name" nowrap><a href="#map_get_tile_num">map_get_tile_num (location[, get_original_tile_num=false])</a></td>
 	<td class="summary">get the map tile number for a given map location</td>
 	</tr>
 	<tr>
@@ -526,6 +555,21 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<td class="summary">Toggle mapwindow &lsquo;blacking&rsquo;.</td>
 	</tr>
 </table>
+<h2><a href="#UI">UI</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#display_text_in_scroll_gump">display_text_in_scroll_gump (text)</a></td>
+	<td class="summary">Display string in scroll gump if in new style.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#lock_inventory_view">lock_inventory_view (actor)</a></td>
+	<td class="summary">Lock the inventory view to a specific Actor.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unlock_inventory_view">unlock_inventory_view ()</a></td>
+	<td class="summary">Unlock the inventory view</td>
+	</tr>
+</table>
 <h2><a href="#Actor">Actor</a></h2>
 <table class="function_list">
 	<tr>
@@ -667,6 +711,14 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 	<tr>
 	<td class="name" nowrap><a href="#Actor.clear_talk_flag">Actor.clear_talk_flag (actor, flag)</a></td>
 	<td class="summary">Clear one of the actor&rsquo;s talk flags</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_number_of_schedules">Actor.get_number_of_schedules (actor)</a></td>
+	<td class="summary">Get the number of schedule entries</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Actor.get_schedule">Actor.get_schedule (actor, index)</a></td>
+	<td class="summary">Get an Actor schedule entry</td>
 	</tr>
 </table>
 
@@ -977,6 +1029,34 @@ If no boundary tiles are crossed on the line then x1, y1 are returned</td>
 
            <span class="types"><span class="type">bool</span></span>
         returns true if the tmx files were created successfully. false on error
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "tileset_export"></a>
+    <strong>tileset_export ([overWriteFile=false])</strong>
+    </dt>
+    <dd>
+    export tileset to a bmp file &lsquo;data/images/tiles/nn/custom_tiles.bmp&rsquo; in the current savegame directory.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">overWriteFile</span>
+            <span class="types"><span class="type">bool</span></span>
+         specifies if the output file should be overwritten if it already exists.
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">bool</span></span>
+        returns true if the was written to disk. false otherwise
     </ol>
 
 
@@ -1314,6 +1394,37 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
 
 </dd>
+    <dt>
+    <a name = "load_text_from_lzc"></a>
+    <strong>load_text_from_lzc (filename, index)</strong>
+    </dt>
+    <dd>
+    Loads text from a given LZC file.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         the lzc file to extract the text from
+        </li>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">int</span></span>
+         offset in the lzc file to load the text from
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+        the extracted text
+    </ol>
+
+
+
+
+</dd>
 </dl>
     <h2><a name="Tables"></a>Tables</h2>
     <dl class="function">
@@ -1346,6 +1457,11 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
         <li><span class="parameter">z</span>
             <span class="types"><span class="type">int</span></span>
          z position
+        </li>
+        <li><span class="parameter">xyz</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a></span>
+         The object&rsquo;s Location in a MapCoord table.
+          <em>readonly</em>
         </li>
         <li><span class="parameter">obj_n</span>
             <span class="types"><span class="type">int</span></span>
@@ -1421,11 +1537,11 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
         </li>
         <li><span class="parameter">status</span>
             <span class="types"><span class="type">int</span></span>
-         Object status <em>writeonly</em>
+         Object status
         </li>
         <li><span class="parameter">invisible</span>
             <span class="types"><span class="type">bool</span></span>
-         Toggle object visibility <em>writeonly</em>
+         Toggle object visibility
         </li>
         <li><span class="parameter">temporary</span>
             <span class="types"><span class="type">bool</span></span>
@@ -1470,6 +1586,48 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
 </dd>
     <dt>
+    <a name = "Schedule"></a>
+    <strong>Schedule</strong>
+    </dt>
+    <dd>
+    An actor schedule entry
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">day_of_week</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">worktype</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">x</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">y</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+        <li><span class="parameter">z</span>
+            <span class="types"><span class="type">int</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "Actor"></a>
     <strong>Actor</strong>
     </dt>
@@ -1479,6 +1637,15 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
     <h3>Fields:</h3>
     <ul>
+        <li><span class="parameter">xyz</span>
+         table containing location</p>
+
+<p> table format
+<code>&lt;code&gt;
+{["x"]=x, ["y"]=y, ["z"]=z}
+&lt;/code&gt;</code>
+          <em>readonly</em>
+        </li>
         <li><span class="parameter">luatype</span>
             <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
          This returns &ldquo;actor&rdquo;
@@ -1629,6 +1796,10 @@ The file ending.lua is used from the relevant game&rsquo;s script directory.
 
 
           <em>readonly</em>
+        </li>
+        <li><span class="parameter">obj_flag_0</span>
+            <span class="types"><span class="type">bool</span></span>
+         obj flag 0
         </li>
         <li><span class="parameter">obj_n</span>
             <span class="types"><span class="type">int</span></span>
@@ -1984,6 +2155,35 @@ The object will be unlinked from the engine after this operation. It will be fre
 
 </dd>
     <dt>
+    <a name = "find_obj_from_area"></a>
+    <strong>find_obj_from_area (location, width, height)</strong>
+    </dt>
+    <dd>
+    Iterate through all objects within a given area.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
+         location for the effect to take place
+        </li>
+        <li><span class="parameter">width</span>
+            <span class="types"><span class="type">int</span></span>
+         width of area to search
+        </li>
+        <li><span class="parameter">height</span>
+            <span class="types"><span class="type">int</span></span>
+         height of area to search
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "objs_at_loc"></a>
     <strong>objs_at_loc (location)</strong>
     </dt>
@@ -2074,6 +2274,25 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dl>
     <h2><a name="player"></a>player</h2>
     <dl class="function">
+    <dt>
+    <a name = "player_get_name"></a>
+    <strong>player_get_name ()</strong>
+    </dt>
+    <dd>
+    Get the player name
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        string player name
+    </ol>
+
+
+
+
+</dd>
     <dt>
     <a name = "player_get_gender"></a>
     <strong>player_get_gender ()</strong>
@@ -2465,6 +2684,28 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
 </dd>
     <dt>
+    <a name = "party_set_in_vehicle"></a>
+    <strong>party_set_in_vehicle (value)</strong>
+    </dt>
+    <dd>
+    Toggle party vehicle mode
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "party_show_all"></a>
     <strong>party_show_all ()</strong>
     </dt>
@@ -2644,8 +2885,30 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
 </dd>
     <dt>
+    <a name = "map_enable_temp_actor_cleaning"></a>
+    <strong>map_enable_temp_actor_cleaning (value)</strong>
+    </dt>
+    <dd>
+    Toggle automatic cleaning of out of area temporary actors.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+            <span class="types"><span class="type">bool</span></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "map_is_water"></a>
-    <strong>map_is_water (x, y, z)</strong>
+    <strong>map_is_water (location)</strong>
     </dt>
     <dd>
     Check map location for water
@@ -2653,18 +2916,8 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">z</span>
-            <span class="types"><span class="type">int</span></span>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
         </li>
@@ -2683,7 +2936,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dd>
     <dt>
     <a name = "map_is_on_screen"></a>
-    <strong>map_is_on_screen (x, y, z)</strong>
+    <strong>map_is_on_screen (location)</strong>
     </dt>
     <dd>
     Checks if the map location is currently on screen
@@ -2691,18 +2944,8 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">z</span>
-            <span class="types"><span class="type">int</span></span>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
         </li>
@@ -2764,7 +3007,7 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 </dd>
     <dt>
     <a name = "map_get_tile_num"></a>
-    <strong>map_get_tile_num (x, y, z)</strong>
+    <strong>map_get_tile_num (location[, get_original_tile_num=false])</strong>
     </dt>
     <dd>
     get the map tile number for a given map location
@@ -2772,20 +3015,15 @@ The search starts top left and finishes bottom right. The first volcano/fumarole
 
     <h3>Parameters:</h3>
     <ul>
-        <li><span class="parameter">x</span>
-            <span class="types"><span class="type">int</span></span>
+        <li><span class="parameter">location</span>
+            <span class="types"><a class="type" href="index.html#MapCoord">MapCoord</a> or <span class="type">x,y,z</span></span>
 
 
         </li>
-        <li><span class="parameter">y</span>
-            <span class="types"><span class="type">int</span></span>
-
-
-        </li>
-        <li><span class="parameter">z</span>
-            <span class="types"><span class="type">int</span></span>
-
-
+        <li><span class="parameter">get_original_tile_num</span>
+            <span class="types"><span class="type">bool</span></span>
+         return the original tile_num.
+         (<em>default</em> false)
         </li>
     </ul>
 
@@ -3818,7 +4056,7 @@ of the mapwindow.
     <strong>mapwindow_set_enable_blacking (enable_blacking)</strong>
     </dt>
     <dd>
-    Toggle mapwindow &lsquo;blacking&rsquo;.  Blacking hides tiles that are not visiblt to the player because they are obscured
+    Toggle mapwindow &lsquo;blacking&rsquo;.  Blacking hides tiles that are not visible to the player because they are obscured
 by a wall.
 
 
@@ -3830,6 +4068,66 @@ by a wall.
 
         </li>
     </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="UI"></a>UI</h2>
+    <dl class="function">
+    <dt>
+    <a name = "display_text_in_scroll_gump"></a>
+    <strong>display_text_in_scroll_gump (text)</strong>
+    </dt>
+    <dd>
+    Display string in scroll gump if in new style.  Otherwise display on regular message scroll.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.2/manual.html#6.4">string</a></span>
+         the text to display in the scroll
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "lock_inventory_view"></a>
+    <strong>lock_inventory_view (actor)</strong>
+    </dt>
+    <dd>
+    Lock the inventory view to a specific Actor.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unlock_inventory_view"></a>
+    <strong>unlock_inventory_view ()</strong>
+    </dt>
+    <dd>
+    Unlock the inventory view
+
+
 
 
 
@@ -4899,6 +5197,68 @@ Schedules change on the hour.
         </li>
     </ul>
 
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_number_of_schedules"></a>
+    <strong>Actor.get_number_of_schedules (actor)</strong>
+    </dt>
+    <dd>
+    Get the number of schedule entries
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">int</span></span>
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Actor.get_schedule"></a>
+    <strong>Actor.get_schedule (actor, index)</strong>
+    </dt>
+    <dd>
+    Get an Actor schedule entry
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">actor</span>
+            <span class="types"><a class="type" href="index.html#Actor">Actor</a></span>
+
+
+        </li>
+        <li><span class="parameter">index</span>
+            <span class="types"><span class="type">int</span></span>
+         The index of the schedule to retrieve
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="index.html#Schedule">Schedule</a></span>
+
+
+    </ol>
 
 
 

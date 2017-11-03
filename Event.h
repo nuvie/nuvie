@@ -27,6 +27,7 @@
 #include <string>
 
 #include <SDL.h>
+#include <script/Script.h>
 
 #include "ObjManager.h"
 //#include "GUI_CallBack.h"
@@ -51,6 +52,7 @@ class GUI_Dialog;
 class Magic;
 class KeyBinder;
 class FpsCounter;
+class ScriptThread;
 
 #define NUVIE_INTERVAL    50
 #define PUSH_FROM_PLAYER false
@@ -73,7 +75,8 @@ typedef enum {
  WAIT_MODE, /* waiting for something, optionally display prompt when finished */
  INPUT_MODE,
  MULTIUSE_MODE,
- KEYINPUT_MODE
+ KEYINPUT_MODE,
+ SCRIPT_MODE
 } EventMode;
 
 extern uint32 nuvieGameCounter;
@@ -160,6 +163,7 @@ friend class Magic; // FIXME
  Uint32 fps_timestamp;
  uint16 fps_counter;
  FpsCounter *fps_counter_widget;
+ ScriptThread *scriptThread;
 
  public:
  Event(Configuration *cfg);
@@ -226,10 +230,12 @@ friend class Magic; // FIXME
 
  bool use_start();
  bool use(sint16 rel_x, sint16 rel_y);
+ bool use(MapCoord coord);
  bool use(Obj *obj);
  bool use(Actor *actor, uint16 x, uint16 y);
 
  bool get_start();
+ bool get(MapCoord coord);
  bool get(sint16 rel_x, sint16 rel_y);
  bool perform_get(Obj *obj, Obj *container_obj = NULL, Actor *actor = NULL);
 
@@ -250,6 +256,7 @@ friend class Magic; // FIXME
  bool push_start();
  bool pushFrom(Obj *obj);
  bool pushFrom(sint16 rel_x, sint16 rel_y);
+ bool pushFrom(MapCoord target);
  bool pushTo(Obj *obj, Actor *actor);
  bool pushTo(sint16 rel_x, sint16 rel_y, bool push_from=PUSH_FROM_PLAYER);
 

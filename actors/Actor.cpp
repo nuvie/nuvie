@@ -43,7 +43,7 @@
 #include "Event.h"
 #include "U6Actor.h"
 
-static uint8 walk_frame_tbl[4] = {0,1,2,1};
+uint8 walk_frame_tbl[4] = {0,1,2,1};
 
 class ActorManager;
 
@@ -68,7 +68,8 @@ Actor::Actor(Map *m, ObjManager *om, GameClock *c)
  worktype = 0;
  sched_pos = 0;
  move_time = 0;
- 
+ num_schedules = 0;
+
  alignment = ACTOR_ALIGNMENT_NEUTRAL;
  
  memset(readied_objects,0,sizeof(readied_objects));
@@ -499,12 +500,12 @@ bool Actor::move(uint16 new_x, uint16 new_y, uint8 new_z, ActorMoveFlags flags)
 // assert(new_z < 6); // shouldn't need to check anymore
 
  //const uint8 move_cost = 5; // base cost to move
- bool force_move = flags & ACTOR_FORCE_MOVE;
- bool open_doors = flags & ACTOR_OPEN_DOORS;
- bool ignore_actors = flags & ACTOR_IGNORE_OTHERS;
- bool ignore_danger = (flags & ACTOR_IGNORE_DANGER);
+ bool force_move = (bool)(flags & ACTOR_FORCE_MOVE);
+ bool open_doors = (bool)(flags & ACTOR_OPEN_DOORS);
+ bool ignore_actors = (bool)(flags & ACTOR_IGNORE_OTHERS);
+ bool ignore_danger = (bool)(flags & ACTOR_IGNORE_DANGER);
 // bool ignore_danger = true;
- bool ignore_moves = flags & ACTOR_IGNORE_MOVES;
+ bool ignore_moves = (bool)(flags & ACTOR_IGNORE_MOVES);
  Obj *obj = NULL;
  MapCoord oldpos(x, y, z);
 
@@ -1365,7 +1366,7 @@ void Actor::loadSchedule(unsigned char *sched_data, uint16 num)
  unsigned char *sched_data_ptr;
 
  sched = (Schedule**)malloc(sizeof(Schedule*) * (num+1));
-
+ num_schedules = num;
  sched_data_ptr = sched_data;
 
  for(i=0;i<num;i++)
@@ -2176,6 +2177,13 @@ bool Actor::is_at_scheduled_location()
 	   return true;
 
    return false;
+}
+
+Schedule *Actor::get_schedule(uint8 index) {
+  if(index >= num_schedules)
+    return NULL;
+
+  return sched[index];
 }
 
 void Actor::cure()

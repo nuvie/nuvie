@@ -65,7 +65,7 @@ class View: public GUI_Widget
  uint8 get_party_member_num() { return cur_party_member; }
  bool next_party_member();
  bool prev_party_member();
- void fill_md_background(SDL_Rect area);
+ void fill_md_background(uint8 color, SDL_Rect area);
  void set_combat_mode(Actor *actor);
  uint8 get_combat_mode_index(Actor *actor);
 

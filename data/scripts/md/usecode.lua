@@ -1125,13 +1125,12 @@ function use_sledge_hammer_on_replacement_track_to_broken_track(obj, target_obj,
 end
 
 function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
-   --FIXME error when using telekinesis
---[[
-   if telekinetic flag then
+
+    if actor_find_max_wrapped_xy_distance(actor, to_obj.x, to_obj.y) > 1 then
       printl("THE_WORK_IS_TO_PRECISE_TO_PERFORM_TELEKINETICALLY")
       return
    end
---]]
+
    if Actor.get_talk_flag(0x73, 2) == false or Actor.get_talk_flag(0x71, 3) == true then
       printl("THE_CABLE_DOES_NOT_NEED_REPLACEMENT")
       return
@@ -1145,10 +1144,19 @@ function use_pliers_on_spool_to_tower(obj, target_obj, to_obj, actor)
          Actor.talk(spector)
       end
    else
+      play_md_sfx(0x1f)
       Obj.removeFromEngine(target_obj)
       Actor.set_talk_flag(0x73, 4)
-      --FIXME add logic from midgame_cutscene_2() here.
       play_midgame_sequence(3)
+      for obj in find_obj_from_area(0x3d0, 0x1d0, 0, 32, 17) do
+         if obj.obj_n == 215 then -- OBJ_POWER_CABLE1
+            obj.obj_n = 214 -- OBJ_POWER_CABLE
+         end
+      end
+
+      for obj in find_obj(0, 315) do --OBJ_CHAMBER1
+         Obj.removeFromEngine(obj)
+      end
    end
    
 end
@@ -1200,6 +1208,111 @@ function use_switch_bar(obj, actor)
       railcar.frame_n = railcar.frame_n - (railcar.frame_n % 2)
       railcar.frame_n = railcar.frame_n + turntable.frame_n
    end
+end
+
+function use_reading_material(obj, actor)
+   if obj.quality == 0 then
+      local signatures = ""
+      if Actor.get_talk_flag(5, 3) == true then
+         signatures = signatures .. " Richard Sherman"
+      end
+      signatures = signatures .. "\n"
+
+      if Actor.get_talk_flag(0x19, 3) == true then
+         signatures = signatures .. "  Capt. Gregory Duprey"
+      end
+      signatures = signatures .. "\n"
+
+      if Actor.get_talk_flag(0x1a, 3) == true then
+         signatures = signatures .. "  Doctor David Yellin"
+      end
+      signatures = signatures .. "\n"
+
+      display_text_in_scroll_gump(i18nf("AFFIDAVIT", player_get_name(), signatures))
+   else
+      local text = load_text_from_lzc("mdtext.lzc", obj.quality - 1)
+      if text ~= nil then
+         display_text_in_scroll_gump(text)
+      else
+         printl("YOU_CANT_READ_IT")
+      end
+   end
+
+end
+
+function use_pool_table(obj, actor)
+   if Actor.inv_get_readied_obj_n(actor, ARM) ~= 401 then --OBJ_POOL_CUE
+      printl("YOU_NEED_A_POOL_CUE")
+      return
+   end
+   local pool_table1 = map_get_obj(wrap_coord(obj.x - 1, obj.z), obj.y, obj.z, 400) -- OBJ_UNK_400
+   local rand = math.random
+   if pool_table1 == nil then
+      pool_table1 = Obj.new(400, rand(0, 6))
+      Obj.moveToMap(pool_table1, wrap_coord(obj.x - 1, obj.z), obj.y, obj.z)
+   end
+
+   local pool_table2 = map_get_obj(obj.x, obj.y, obj.z, 400) -- OBJ_UNK_400
+   if pool_table2 == nil then
+      pool_table2 = Obj.new(400, rand(0, 6))
+      Obj.moveToMap(pool_table2, wrap_coord(obj.x - 1, obj.z), obj.y, obj.z)
+   end
+
+   for i=1,10 do
+      if i~= 1 then
+         script_wait(rand(200,500))
+      end
+      play_md_sfx(0x1c + rand(0, 2))
+      script_wait(rand(10,200))
+      play_md_sfx(0x1c + rand(0, 2))
+
+      pool_table1.frame_n = rand(0, 6)
+      pool_table2.frame_n = rand(0, 6)
+
+      if rand(0, 40) >= actor_dex_adj(actor) then
+         break
+      end
+   end
+
+   if rand(0, 40) < actor_dex_adj(actor) then
+      printl("GOOD_SHOT_OLD_BEAN")
+   end
+end
+
+function use_ready_obj(obj, actor)
+   if not Actor.can_carry_obj(actor, obj) then
+      printl("YOU_ARE_CARRYING_TOO_MUCH_ALREADY")
+      return
+   end
+   if obj.readied == true then
+      return
+   end
+
+   Obj.removeFromEngine(obj)
+   Obj.moveToInv(obj, actor.actor_num)
+
+   Actor.inv_ready_obj(actor, obj)
+end
+
+function use_heartstone_on_metal_woman(obj, target_obj, actor)
+   if target_obj.quality == 1 then
+      printl("THE_ROBOT_ALREADY_HAS_A_HEARTSTONE")
+   else
+      target_obj.quality = 1
+      Obj.removeFromEngine(obj)
+      play_md_sfx(0x1f)
+      printl("THE_HEARTSTONE_IS_INSTALLED")
+   end
+
+end
+
+function use_manuscript_on_mailbox(obj, target_obj, actor)
+   local twain = Actor.get(0x57)
+
+   finish_dream_quest(twain)
+   Actor.set_talk_flag(twain, 6)
+   Actor.talk(twain)
+   wake_from_dream()
 end
 
 function use_assembled_drill(obj, actor)
@@ -1361,9 +1474,473 @@ local use_shovel_on_tbl = {
    [0]=use_tool_on_ground, --hole in ice, hole
 }
 
+function use_oil_on_door(obj, target_obj, actor)
+   if obj.obj_n == 235 and obj.frame_n ~= 4 then
+      printl("IT_HAS_NO_EFFECT")
+      return
+   end
+
+   if target_obj ~= nil then
+      if bit32.band(target_obj.quality, 0x80) == 0 then
+         printl("THIS_DOOR_IS_NOT_RUSTED")
+      else
+         target_obj.quality = bit32.band(target_obj.quality, 0x7f) --unset bit 7
+         printl("THE_DOOR_IS_UNSTUCK")
+         play_md_sfx(4)
+         if obj.stackable then
+            if obj.qty == 1 then
+               Obj.removeFromEngine(obj)
+            else
+               obj.qty = obj.qty - 1
+            end
+         else
+            Obj.removeFromEngine(obj)
+         end
+      end
+   end
+end
+
+function use_oil_on_dream_door(obj, target_obj, actor, target_x, target_y, target_z)
+   if map_get_tile_num(target_x, target_y, target_z) == 8 then
+      local melies = Actor.get(0x51)
+      Actor.set_talk_flag(melies, 6)
+      Actor.talk(melies)
+      finish_dream_quest(melies)
+      wake_from_dream()
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
+function use_hand_mirror(obj, actor)
+   if actor.x >= 0x76 and actor.x <= 0x78 and actor.y >= 0xca and actor.y <= 0xcc and actor.z == 2 then
+      local lowell = Actor.get(0x50)
+
+      Actor.set_talk_flag(lowell, 6)
+      Actor.talk(lowell)
+      finish_dream_quest(lowell)
+      wake_from_dream()
+   else
+      printl("YOU_SEE_YOURSELF")
+   end
+
+end
+
+function use_radium(obj, target_obj, actor)
+   actor_radiation_check(actor, obj)
+   if obj.obj_n == 448 then --OBJ_BLOCK_OF_RADIUM
+      if target_obj.obj_n == 448 and target_obj.on_map then
+         local power_unit = map_get_obj(obj.x, obj.y, obj.z, 290) --OBJ_POWER_UNIT
+         if power_unit ~= nil then
+            target_obj = power_unit
+         end
+      end
+
+      if target_obj.obj_n == 290 then --OBJ_POWER_UNIT
+         if target_obj.frame_n == 1 then
+            printl("RADIUM_HAS_ALREADY_BEEN_INSTALLED")
+         else
+            Obj.removeFromEngine(obj)
+            play_md_sfx(4)
+            printl("THE_RADIUM_HAS_BEEN_INSTALLED")
+            target_obj.frame_n = 1
+            Actor.set_talk_flag(0x74, 2)
+            if Actor.get_talk_flag(0x74, 0) then
+               Actor.set_talk_flag(0x60, 2)
+            end
+         end
+
+      else
+         printl("IT_HAS_NO_EFFECT")
+      end
+
+   elseif obj.obj_n == 449 then --OBJ_CHIP_OF_RADIUM
+      if target_obj.qty < 0xf0 then
+         local qty = input_select_obj_qty(obj)
+         if qty == 0 then
+            return
+         end
+
+         if target_obj.qty + qty * 30 > 0xf0 then
+            qty = math.ceil((0xf0 - target_obj.qty) / 30)
+            printfl("THE_OBJ_ONLY_NEEDED_N_RADIUM_BLOCKS", target_obj.name, qty)
+            printfl("THE_OBJ_IS_FULLY_CHARGED", target_obj.name)
+            target_obj.qty = 0xf0
+         else
+            target_obj.qty = target_obj.qty + qty * 30
+         end
+
+
+         if obj.qty == qty then
+            Obj.removeFromEngine(obj)
+         else
+            obj.qty = obj.qty - qty
+         end
+      else
+         printfl("THE_OBJ_IS_FULLY_CHARGED", target_obj.name)
+      end
+
+   end
+
+end
+
+function use_head_gear(obj, target_obj, actor)
+   local machine
+   if target_obj.obj_n == 289 then --OBJ_DREAM_MACHINE2
+      local machine = map_get_obj(target_obj.x, target_obj.y, target_obj.z, 288)
+      if machine == nil then
+         printl("IT_HAS_NO_EFFECT")
+         return
+      end
+   else
+      machine = target_obj
+   end
+
+   local loc = machine.xyz
+
+   machine = Obj.new(100)
+   machine.frame_n = 1
+   Obj.moveToMap(machine, loc)
+
+   printl("THE_HEADGEAR_IS_INSTALLED")
+
+   Actor.set_talk_flag(0x74, 4)
+   if Actor.get_talk_flag(0x74, 0) then
+      Actor.set_talk_flag(0x60, 2)
+   end
+
+end
+
+function use_dream_machine(panel_obj)
+   if Actor.get_talk_flag(0x46, 3) then
+      printl("THE_DREAM_MACHINES_SEEM_TO_HAVE_CEASED_FUNCTIONING")
+      return
+   end
+
+   local z = panel_obj.z
+   local power_unit
+   local dream_quality
+   local headgear_installed = false
+   local seat_x, seat_y
+   for obj in find_obj_from_area(panel_obj.x - 5, panel_obj.y - 5, z, 11, 11) do
+      local obj_n = obj.obj_n
+      if obj_n == 290 and obj.frame_n == 1 then --OBJ_POWER_UNIT
+         power_unit = obj
+      elseif obj_n == 100 then --OBJ_DREAM_MACHINE
+         headgear_installed = true
+      elseif obj_n == 289 then --OBJ_DREAM_MACHINE2
+         seat_x = obj.x
+         seat_y = obj.y
+      elseif obj_n == 288 then --OBJ_DREAM_MACHINE2
+         dream_quality = obj.quality
+      end
+   end
+
+   local actor_in_seat = map_get_actor(seat_x, seat_y, z)
+
+   if power_unit == nil or dream_quality == nil or not headgear_installed then
+      printl("THE_MACHINE_DOES_NOT_WORK")
+      return
+   end
+
+   local martian_obj = map_get_obj(seat_x, seat_y, z, 291) --OBJ_UNCONSCIOUS_MARTIAN
+   if martian_obj ~= nil then
+      if Actor.get_talk_flag(0x21, 2) or not Actor.get_talk_flag(0x61, 4) then
+         printl("IT_HAS_NO_EFFECT")
+      else
+         play_midgame_sequence(5)
+         local martian = Actor.get(0x21)
+         Actor.talk(martian)
+         Actor.set_talk_flag(martian, 2)
+         martian.x = seat_x
+         martian.y = seat_y + 1
+         martian.z = panel_obj.z
+         kill_actor(martian)
+         Obj.removeFromEngine(martian_obj)
+      end
+
+      return
+   end
+
+   local metal_woman_obj = map_get_obj(seat_x, seat_y, z, 287) --OBJ_METAL_WOMAN
+   if metal_woman_obj ~= nil then
+      if metal_woman_obj.quality == 0 then
+         printl("IT_HAS_NO_EFFECT")
+      else
+         --FIXME implement metal woman activation logic
+      end
+   elseif actor_in_seat ~= nil then
+      if z ~= 0 then
+         wake_from_dream()
+      else
+         if dream_quality < 2 then
+            Actor.set_talk_flag(0x60, 3)
+         end
+         if dream_quality == 3 then
+            if Actor.get_talk_flag(0x46, 0) then
+               --FIXME call sub_3F624
+            else
+               printl("THE_MACHINE_DOES_NOT_WORK")
+            end
+         else
+            actor_use_dream_machine(actor_in_seat, dream_quality)
+         end
+
+      end
+   else
+      printl("THERE_IS_NOBODY_SITTING_IN_THE_MACHINE")
+   end
+
+end
+
+function use_sprayer_system(panel_obj)
+end
+
+function use_lens_controls(panel_obj)
+end
+
+function use_pump_controls(panel_obj)
+end
+
+local use_panel_tbl = {
+   [0]=function() printl("YOU_ARE_COMPLETELY_UNSURE_WHAT_YOU_JUST_DID") end,
+   [1]=function() printl("YOU_ACTUATE_THE_MECHANISM_TO_NO_APPARENT_EFFECT") end,
+   [2]=function() printl("STATUS_LIGHTS_CHANGE_BUT_YOU_SEE_NO_OTHER_EFFECT") end,
+   [3]=function() printl("LIGHTS_FLASH_AND_CHANGE_COLOR_BUT_NOTHING_ELSE_HAPPENS") end,
+   [4]=use_dream_machine,
+   [5]=use_sprayer_system,
+   [6]=use_lens_controls,
+   [7]=use_pump_controls,
+}
+
+function use_panel(obj, actor)
+   if bit32.band(obj.quality, 2) ~= 0 then
+      printl("THE_PANEL_IS_BROKEN")
+      return
+   end
+   if bit32.band(obj.quality, 1) ~= 0 then
+      printl("THE_PANEL_IS_NOT_INSTALLED")
+      return
+   end
+
+   local cabinet = map_get_obj(obj.x, obj.y, obj.z, 457) --OBJ_CABINET
+   if cabinet == nil then
+      printl("PANELS_ARE_ONLY_INSTALLED_ONTO_CABINETS")
+      return
+   end
+
+   local quality = cabinet.quality
+   if use_panel_tbl[quality] ~= nil then
+      use_panel_tbl[quality](obj)
+   else
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
+function has_minotaur_left_the_shop(cur_z)
+   for i=1,0xff do
+      local actor = Actor.get(i)
+      if actor.obj_n == 398 then --OBJ_MINOTAUR
+         if actor.z == cur_z and not Actor.get_talk_flag(0x54, 6)
+                 and actor.x >= 0x37 and actor.y <= 0x37 then
+            return true
+         end
+      end
+   end
+   return false
+end
+
+function use_switch(obj, actor)
+   local switch_qty = obj.qty
+   local switch_quality = obj.quality
+   local target_obj
+
+   local num_switches = 0
+   local switches = {}
+
+   for obj in find_obj_from_area(obj.x - 32, obj.y - 32, obj.z, 64, 64) do
+      if obj.obj_n == 179 or obj.obj_n == 227 then --OBJ_CLOSED_DOOR, OBJ_DOOR3
+         if bit32.band(obj.quality, 0x7f) == switch_qty then
+            target_obj = obj
+         end
+      elseif (obj.obj_n == 311 or obj.obj_n == 312 or obj.obj_n == 196) then --and obj.quality < 2 then
+         if num_switches < 4 then
+            num_switches = num_switches + 1
+            switches[num_switches] = obj
+         end
+      end
+   end
+
+   if target_obj == nil then
+      printl("STRANGELY_NOTHING_HAPPENS")
+      return
+   end
+
+   if num_switches == 0 then
+      printl("STRANGELY_IT_DOESNT_MOVE")
+      return
+   end
+
+   local frame_n = 0
+   if switch_quality == 1 then
+      if bit32.band(target_obj.quality, 0x80) == 0 then
+         target_obj.quality = bit32.bor(target_obj.quality, 0x80)
+      else
+         target_obj.quality = bit32.band(target_obj.quality, 0x7f)
+         frame_n = 1
+      end
+   else
+      local old_frame_n = target_obj.frame_n
+      target_obj.frame_n = bit32.band(old_frame_n, 2) + 5
+      play_door_sfx()
+      if old_frame_n < 4 then
+         target_obj.frame_n = bit32.band(old_frame_n, 2) + 9
+         frame_n = 1
+      else
+         target_obj.frame_n = bit32.band(old_frame_n, 2) + 1
+
+         if g_in_dream_mode and g_current_dream_stage == 0x44 and has_minotaur_left_the_shop(target_obj.z) then
+            complete_tiffany_stage()
+            return
+         end
+      end
+      play_door_sfx()
+   end
+
+   for i=1,num_switches do
+      switches[i].frame_n = frame_n
+   end
+   play_md_sfx(0x11)
+end
+
+function use_drawbridge_lever(obj, actor)
+   --FIXME
+end
+
+function use_cheat_lever(obj, actor)
+   --FIXME
+end
+
+function use_cheat_lever2(obj, actor)
+   --FIXME
+end
+
+local switch_qual_tbl = {
+   [1] = use_switch,
+   [2] = use_switch,
+   [10] = use_drawbridge_lever,
+   [20] = use_cheat_lever,
+   [21] = use_cheat_lever2,
+}
+
+function use_switch_device(obj, actor)
+   if switch_qual_tbl[obj.quality] ~= nil then
+      switch_qual_tbl[obj.quality](obj, actor)
+   else
+      printl("WHAT_AN_ODD_LEVER")
+   end
+end
+
+function use_dreamstuff(obj, actor)
+   printl("YOU_IMAGINE")
+
+   for item in container_objs(obj) do
+      if item.obj_n < 342 then -- OBJ_POOR_MONK
+         --object
+         print(item.look_string.."\n")
+         if obj.on_map then
+            Obj.moveToMap(item, obj.xyz)
+         else
+            local parent = obj.parent
+            if parent.luatype == "actor" then
+               Obj.moveToInv(item, parent.actor_num)
+            else
+               Obj.moveToCont(item, parent)
+            end
+         end
+      else
+         --actor
+         print(item.name.."\n")
+         local spawned_actor = Actor.new(item.obj_n, actor.x, actor.y, actor.z)
+
+         actor_init(spawned_actor, obj.quality + 1) -- alignment
+         toss_actor(spawned_actor, actor.x, actor.y, actor.z)
+         spawned_actor.wt = item.quality
+      end
+      Obj.removeFromEngine(obj)
+      return
+   end
+
+   printl("NOTHING")
+end
+
+function use_obj_on_spray_gun(obj, target_obj, actor)
+   if obj.obj_n == 119 and target_obj.quality == 0 then --OBJ_BOTTLE_OF_GREEN_PAINT
+      target_obj.quality = 1
+      target_obj.qty = 20
+      printl("SPRAY_GUN_GREEN_PAINT")
+   elseif obj.obj_n == 128 and target_obj.quality ~= 0 then --OBJ_WEED_KILLER
+      target_obj.quality = 0
+      target_obj.qty = 10
+      printl("SPRAY_GUN_WEED_KILLER")
+   else
+      local spray_gun_qty = target_obj.qty + 10
+      if spray_gun_qty > 0x1e then
+         spray_gun_qty = 0x1e
+      end
+      target_obj.qty = spray_gun_qty
+      printl("SPRAY_GUN_10_MORE_CHARGES")
+   end
+
+   Obj.removeFromEngine(obj)
+end
+
+function use_spray_gun(obj, target_obj, actor)
+   if obj.qty == 0 then
+      printl("THERE_IS_NOTHING_IN_THE_GUN")
+      return
+   end
+
+   if obj.quality ~= 0 then
+      obj.qty = obj.qty - 1
+      if target_obj.luatype == "actor" and target_obj.obj_n == 145 then --OBJ_MONSTER_FOOTPRINTS
+         target_obj.obj_n = 364 --OBJ_PROTO_MARTIAN
+         printfl("BECOMES_VISIBLE", target_obj.name)
+      else
+         if target_obj.luatype == "actor" and not target_obj.visible then
+            target_obj.visible = true
+            printfl("BECOMES_VISIBLE", target_obj.name)
+         elseif target_obj.luatype == "obj" and target_obj.invisible then
+            target_obj.invisible = false
+            printfl("BECOMES_VISIBLE", target_obj.name)
+         else
+            printl("IT_HAS_NO_EFFECT")
+         end
+      end
+   elseif target_obj.luatype == "actor" then
+      attack_target_with_weapon(actor, target_obj.x, target_obj.y, obj)
+   elseif is_plant_obj(target_obj) then
+      hit_target(target_obj, RED_HIT_TILE)
+      printl("YOU_KILLED_THE_PLANT")
+      if target_obj.obj_n == 205 then --OBJ_VINE
+         Actor.set_talk_flag(0x30, 7)
+         Obj.removeFromEngine(target_obj)
+      elseif target_obj.obj_n == 408 then --OBJ_TREE
+         target_obj.obj_n = 166 --OBJ_DEAD_TREE
+      else
+         Obj.removeFromEngine(target_obj)
+      end
+   else
+      obj.qty = obj.qty - 1
+      printl("IT_HAS_NO_EFFECT")
+   end
+end
+
 local usecode_table = {
 --OBJ_RUBY_SLIPPERS
 [12]=use_ruby_slippers,
+--OBJ_RUBBER_GLOVES
+[38]=use_ready_obj,
 --OBJ_SLEDGE_HAMMER
 [52]={
 --on
@@ -1401,11 +1978,54 @@ local usecode_table = {
 [78]=use_misc_text, 
 [86]=use_container,
 [87]=use_container,
+--OBJ_MANUSCRIPT
+[88]={
+   --on
+   [84]=use_manuscript_on_mailbox, --OBJ_MAILBOX
+},
 [96]=use_sextant,
 [102]={[86]=use_crate,[427]=use_prybar_on_hatch},
 [104]=use_container,
 --OBJ_FOLDED_TENT
 [106]=use_tent,
+--OBJ_BOTTLE_OF_GREEN_PAINT
+[119]={
+   --on
+   --OBJ_WEED_SPRAYER
+   [129]=use_obj_on_spray_gun,
+   --OBJ_SPRAY_GUN
+   [261]=use_obj_on_spray_gun,
+},
+--OBJ_CAN_OF_LAMP_OIL
+[124]={
+   --on
+   --OBJ_CLOSED_DOOR
+   [179]=use_oil_on_door,
+   --OBJ_DOOR3
+   [227]=use_oil_on_door,
+   --OBJ_CLOSED_HATCH
+   [421]=use_oil_on_door,
+   --OBJ_DOOR
+   [152]=use_oil_on_door,
+   --OBJ_DOOR1
+   [219]=use_oil_on_door,
+   --OBJ_DOOR2
+   [222]=use_oil_on_door,
+   [0]=use_oil_on_dream_door,
+},
+--OBJ_WEED_KILLER
+[128]={
+   --on
+   --OBJ_WEED_SPRAYER
+   [129]=use_obj_on_spray_gun,
+   --OBJ_SPRAY_GUN
+   [261]=use_obj_on_spray_gun,
+},
+--OBJ_WEED_SPRAYER
+[129]={
+   --on
+   [0]=use_spray_gun
+},
 --OBJ_BLOB_OF_OXIUM
 [131]=use_misc_text,
 --OBJ_WRENCH
@@ -1415,16 +2035,26 @@ local usecode_table = {
    [440]=use_wrench_on_drill,
    [458]=use_wrench_on_panel
 },
+--OBJ_TONGS
+[136]=use_ready_obj,
 --OBJ_REPAIRED_BELT
 [144]={
 --on
    [192]=use_fixed_belt_on_bare_rollers,
 },
+--OBJ_HAND_MIRROR
+[147]=use_hand_mirror,
+--OBJ_BOOK
+[148]=use_reading_material,
+--OBJ_NOTE
+[151]=use_reading_material,
 --OBJ_DOOR 
 [152]=use_door,
 [181]=use_gate,
 --OBJ_CAMERA
 [184]=use_misc_text,
+--OBJ_LEVER
+[196]=use_switch_device,
 --OBJ_CABLE_SPOOL
 [199]=use_misc_text,
 [212]=use_oxium_bin,
@@ -1435,7 +2065,31 @@ local usecode_table = {
    [130]=use_hammer_on_oxium_geode, --OBJ_OXIUM_GEODE
    [298]=use_gong, --OBJ_GONG
    --FIXME OBJ_BRASS_CHEST, OBJ_OBSIDIAN_BOX, OBJ_STEAMER_TRUNK, OBJ_OPEN_BRASS_TRUNK use_crate
-   },    
+   },
+--OBJ_POTASH (this is actually oil when frame_n == 4)
+[235]={
+--on
+   --OBJ_CLOSED_DOOR
+   [179]=use_oil_on_door,
+   --OBJ_DOOR3
+   [227]=use_oil_on_door,
+   --OBJ_CLOSED_HATCH
+   [421]=use_oil_on_door,
+   --OBJ_DOOR
+   [152]=use_oil_on_door,
+   --OBJ_DOOR1
+   [219]=use_oil_on_door,
+   --OBJ_DOOR2
+   [222]=use_oil_on_door,
+   [0]=use_oil_on_dream_door,
+},
+--OBJ_SCROLL
+[243]=use_reading_material,
+--OBJ_SPRAY_GUN
+[261]={
+   --on
+   [0]=use_spray_gun
+},
 --OBJ_MARTIAN_HOE
 [263]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
 --OBJ_MARTIAN_SHOVEL
@@ -1456,13 +2110,32 @@ local usecode_table = {
 [288]=use_misc_text,
 --OBJ_MARTIAN_CLOCK
 [293]=use_misc_text,
+--OBJ_HEADGEAR
+[296]={
+   --on
+   [288]=use_head_gear, --OBJ_DREAM_MACHINE1
+   [289]=use_head_gear, --OBJ_DREAM_MACHINE2
+},
+--OBJ_SWITCH
+[311]=use_switch_device,
+--OBJ_SWITCH1
+[312]=use_switch_device,
 --OBJ_OXYGENATED_AIR_MACHINE
 [323]=use_misc_text,
 --OBJ_MARTIAN_PICK
 [327]={[255]=use_misc_text,[257]=use_misc_text}, --hole in ice, hole
+[331]=use_dreamstuff,
+[399]=use_pool_table,
+--OBJ_POOL_QUE
+[401]=use_ready_obj,
 [411]=use_switch_bar,
 --OBJ_CLOSED_HATCH
 [421]=use_door,
+--OBJ_HEART_STONE
+[426]={
+   --on
+   [287]= use_heartstone_on_metal_woman, --OBJ_METAL_WOMAN
+},
 [427]=use_misc_text,
 --OBJ_ASSEMBLED_DRILL
 [441]=use_assembled_drill,
@@ -1472,6 +2145,20 @@ local usecode_table = {
 [443]=use_misc_text,
 --OBJ_PILE_OF_COAL
 [444]=use_misc_text,
+--OBJ_BLOCK_OF_RADIUM
+[448]={
+   --on
+   [290]=use_radium, --OBJ_POWER_UNIT
+   [448]=use_radium, --OBJ_BLOCK_OF_RADIUM
+},
+--OBJ_CHIP_OF_RADIUM
+[449]={
+   --on
+   [240]=use_radium, --OBJ_HEAT_RAY_GUN
+   [241]=use_radium, --OBJ_FREEZE_RAY_GUN
+},
+--OBJ_PANEL
+[458]=use_panel,
 }
 
 function ready_winged_shoes(obj, actor)
@@ -1609,6 +2296,12 @@ function move_car_obj(obj, rel_x, rel_y)
    return true
 end
 
+function move_plank(obj, rel_x, rel_y)
+   obj.x = obj.x + rel_x
+   obj.y = obj.y + rel_y
+   return true
+end
+
 function is_track_tile(tile_num)
    if tile_num == 108 or tile_num == 109 or tile_num == 110 or tile_num == 77 or tile_num == 79 then
       return true
@@ -1618,6 +2311,7 @@ end
 
 local usecode_move_obj_table = {
 [268]=move_wheelbarrow,
+[395]=move_plank,
 [410]=move_rail_cart,
 [441]=move_drill,
 }
@@ -1665,23 +2359,26 @@ function use_obj_on(obj, actor, use_on_tbl)
 	end
 
 	local target_x, target_y = direction_get_loc(dir, actor.x, actor.y)
+
+   local target_entity = map_get_actor(target_x, target_y, actor.z)
+   if target_entity == nil then
+      target_entity = map_get_obj(target_x, target_y, actor.z)
+   end
 	
-	local target_obj = map_get_obj(target_x, target_y, actor.z)
-	
-	if target_obj ~= nil then
-		print(target_obj.name.."\n\n")
-		local on = use_on_tbl[target_obj.obj_n]
+	if target_entity ~= nil then
+		print(target_entity.name.."\n\n")
+		local on = use_on_tbl[target_entity.obj_n]
 		if on ~= nil then
 			if type(on) == "function" then
 				local func = on
-				func(obj, target_obj, actor)
+				func(obj, target_entity, actor)
 			else
-				use_obj_on_to(obj, target_obj, actor, on)
+				use_obj_on_to(obj, target_entity, actor, on)
 			end
 		else
 			local func = use_on_tbl[0]
 			if func ~= nil then
-				func(obj, target_obj, actor)
+				func(obj, target_entity, actor)
 			else
 				printl("NO_EFFECT")
 			end
@@ -1696,7 +2393,28 @@ function use_obj_on(obj, actor, use_on_tbl)
 	end
 end
 
+function can_interact_with_obj(actor, obj)
+    if obj.on_map then
+        --FIXME get_combat_range()
+        local distance = actor_find_max_wrapped_xy_distance(actor, obj.x, obj.y)
+        if actor_is_affected_by_purple_berries(actor.actor_num) and distance <= actor.level then
+            return true
+        end
+
+        if distance > 1 then
+            printl("OUT_OF_RANGE")
+            return false
+        end
+    end
+
+    return true
+end
+
 function use_obj(obj, actor)
+    if not can_interact_with_obj(actor, obj) then
+        return
+    end
+
 	if type(usecode_table[obj.obj_n]) == "function" then
 		local func = usecode_table[obj.obj_n]
 		if func ~= nil then
@@ -1705,7 +2423,9 @@ function use_obj(obj, actor)
 		end
 	else
 		use_obj_on(obj, actor, usecode_table[obj.obj_n])
-	end
+   end
+
+   update_objects_around_party()
 end
 
 function ready_obj(obj, actor)
@@ -1733,4 +2453,8 @@ function move_obj(obj, rel_x, rel_y)
     return usecode_move_obj_table[obj.obj_n](obj, rel_x, rel_y)
   end
 	return true
+end
+
+function is_ranged_select(operation)
+    return actor_is_affected_by_purple_berries(Actor.get_player_actor().actor_num)
 end

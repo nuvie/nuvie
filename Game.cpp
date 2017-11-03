@@ -379,7 +379,6 @@ bool Game::loadGame(Script *s)
 
    map_window->Show();
    scroll->Show();
-   view_manager->set_party_mode();
    view_manager->update();
 
    if(cursor)
@@ -675,7 +674,9 @@ void Game::play()
 
   //map_window->drawMap();
 
-  //FIXME SDL2 SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL);
+#if !SDL_VERSION_ATLEAST(2, 0, 0)
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY/2,SDL_DEFAULT_REPEAT_INTERVAL);
+#endif
 
   map_window->updateBlacking();
 
@@ -756,4 +757,18 @@ void Game::update_once_display()
     screen->preformUpdate();
     sound_manager->update();
     event->wait();
+}
+
+/* return the fullpath to the datafile. First look for it in the savegame directory.
+ * Then in the app data directory.
+ */
+std::string Game::get_data_file_path(std::string datafile) {
+  std::string path;
+  build_path("data", datafile, path);
+  build_path(save_manager->get_savegame_directory(), path, path);
+  if(!file_exists(path.c_str())) {
+    build_path(gui->get_data_dir(), datafile, path);
+  }
+
+  return path;
 }

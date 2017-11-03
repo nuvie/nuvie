@@ -115,17 +115,17 @@ bool View::prev_party_member()
  return false;
 }
 
-void View::fill_md_background(SDL_Rect area)
+void View::fill_md_background(uint8 color, SDL_Rect area)
 {
 	Screen *screen = Game::get_game()->get_screen();
-	screen->fill(bg_color, area.x +1, area.y + 9, 1, 1); // left pillar
-	screen->fill(bg_color, area.x +2, area.y + 6, 1, 4); // left pillar
-	screen->fill(bg_color, area.x +3, area.y + 3, 1, 11); // left pillar
-	screen->fill(bg_color, area.x + area.w -2, area.y + 9, 1, 1); // right pillar
-	screen->fill(bg_color, area.x + area.w -3, area.y + 6, 1, 4); // right pillar
-	screen->fill(bg_color, area.x + area.w -4, area.y + 3, 1, 11); // right pillar
-	screen->fill(bg_color, area.x + 4, area.y, area.w-8, 15); // top center
-	screen->fill(bg_color, area.x, area.y +14, area.w, area.h -14); // bottom
+	screen->fill(color, area.x +1, area.y + 9, 1, 1); // left pillar
+	screen->fill(color, area.x +2, area.y + 6, 1, 4); // left pillar
+	screen->fill(color, area.x +3, area.y + 3, 1, 11); // left pillar
+	screen->fill(color, area.x + area.w -2, area.y + 9, 1, 1); // right pillar
+	screen->fill(color, area.x + area.w -3, area.y + 6, 1, 4); // right pillar
+	screen->fill(color, area.x + area.w -4, area.y + 3, 1, 11); // right pillar
+	screen->fill(color, area.x + 4, area.y, area.w-8, 15); // top center
+	screen->fill(color, area.x, area.y +14, area.w, area.h -14); // bottom
   //screen->fill(15, area.x, area.y, area.w, area.h); // bottom
 
 }

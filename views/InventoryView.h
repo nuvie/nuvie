@@ -44,6 +44,7 @@ class InventoryView : public View {
  bool is_party_member;
  bool picking_pocket;
  Actor* outside_actor;
+ bool lock_actor;
 
  enum invarea
  {
@@ -84,6 +85,7 @@ class InventoryView : public View {
  GUI_status KeyDown(SDL_Keysym key);
  void simulate_CB_callback();
  bool is_picking_pocket() { return picking_pocket; }
+ void lock_to_actor(bool value) { lock_actor = value; }
 
  protected:
 

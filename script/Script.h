@@ -28,6 +28,7 @@
 #include <list>
 #include "GUI.h"
 
+#include "U6misc.h"
 #include "UseCode.h"
 
 #include "lua.hpp"
@@ -107,7 +108,7 @@ class Script
    bool call_save_game(NuvieIO *objlist);
 
    bool play_cutscene(const char *script_file);
-   bool call_player_before_move_action(sint16 rel_x, sint16 rel_y);
+   MovementStatus call_player_before_move_action(sint16 *rel_x, sint16 *rel_y);
    bool call_player_post_move_action(bool didMove);
    bool call_player_pass();
    bool call_actor_update_all();
@@ -122,7 +123,7 @@ class Script
    bool call_look_obj(Obj *obj);
    int call_obj_get_readiable_location(Obj *obj);
    uint8 actor_get_max_magic_points(Actor *actor);
-   bool call_actor_get_obj(Actor *actor, Obj *obj);
+   bool call_actor_get_obj(Actor *actor, Obj *obj, Obj *container=NULL);
    bool call_actor_subtract_movement_points(Actor *actor, uint8 points);
    bool call_actor_resurrect(Actor *actor);
    bool call_use_keg(Obj *obj); //we need this until we move all usecode into script.
@@ -135,12 +136,14 @@ class Script
    bool call_magic_get_spell_list(Spell **spell_list);
    bool call_actor_use_effect(Obj *effect_obj, Actor *actor);
    bool call_function(const char *func_name, int num_args, int num_return, bool print_stacktrace=true);
+   ScriptThread *call_function_in_thread(const char *function_name);
    bool run_lua_file(const char *filename);
    bool call_moonstone_set_loc(uint8 phase, MapCoord location); //this is a hack until we have 'use' moonstone in script.
    bool call_advance_time(uint16 minutes);
    bool call_can_get_obj_override(Obj *obj);
    bool call_out_of_ammo(Actor *attacker, Obj *weapon, bool print_message);
    bool call_is_avatar_dead();
+   bool call_is_ranged_select(UseCodeType operation);
    bool call_set_g_show_stealing(bool stealing);
    uint8 call_get_combat_range(uint16 absx, uint16 absy);
    uint8 call_get_weapon_range(uint16 obj_n);
@@ -150,15 +153,18 @@ class Script
 
    uint8 call_play_midgame_sequence(uint16 seq_num);
    bool call_talk_script(uint8 script_number);
+   bool call_talk_to_obj(Obj *obj);
+   bool call_talk_to_actor(Actor *actor);
    bool call_is_container_obj(uint16 obj_n);
+   uint8 call_get_portrait_number(Actor *actor);
+   bool call_player_attack();
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);
- 
+
  protected:
    bool call_loadsave_game(const char *function, NuvieIO *objlist);
    void seed_random();
-
 };
 
 

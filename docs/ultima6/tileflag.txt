@@ -1,0 +1,95 @@
+0x000
+
+bit 0 : Wet (1  water for boat travel)
+bit 1 : Impassable
+bit 2 : Wall tile
+bit 3 : Damaging
+bit 4 : - WSEN
+bit 5 : /
+bit 6 : /
+bit 7 : /
+
+0x800
+
+bit 0 : - Light emitting two bits. light intensity.
+bit 1 : /
+bit 2 : boundary
+bit 3 : look through boundary
+bit 4 : Foreground ('toptile')
+bit 5 : No Shoot Through
+bit 6 : vertical size
+bit 7 : horizontal size
+
+0x1000
+
+Object weights table.
+
+0x1400
+
+bit 0 : Warm. This tile is visible in the dark with infravision spell. LOS rules
+        still apply though.
+bit 1 : Support. Objects can be placed on top of this tile. Tables have 
+        this bit set. 
+bit 2 : Breakthrough. force passable. If an object tile has this bit set the
+        underlying maptile is forced passable.
+bit 3 : Ge  ??? further research needed.
+bit 4 : Ignore. used on shadows etc.
+bit 5 : Background. Used on solid tiles like Walkway, drawbridge etc. 
+	Original acts funky if set on a (partly) transparant tile,
+	e.g. the gargoyle heatsource, as the buffers aren't being cleared.
+	This gives an insight into the workings of the original.
+bit 6 : - article "", "a", "an", "the"
+bit 7 : / 
+
+0x1c00
+
+---
+= Flag meanings =
+
+Our best guess at the meaning of the tile flags is in the table below. Our own
+names usually predate the information we got from the AceArticle's screenshots
+of the original editor, the article text and the 'old docs' someone posted on
+our phorum.
+
+	*Flag*	*Size*	*Description*									*U6 editor abbr. & (guessed) name*	
+						
+	N	1 bit	<|4> Directional Flags. Also doubles as 4 bit impedance.			N	North	
+	E	1 bit											E	East	
+	S	1 bit											S	South	
+	W	1 bit											W	West	
+	D	1 bit	Tile does damage when stepped on						Damag	Damaging	
+	M	1 bit	Tile is a wall									Wall	Wall	
+	B	1 bit	Tile is blocking/impassible							Impass	Impassable	
+	w	1 bit	Water for boat travel								Wet	Wet	
+						
+	h	1 bit	<|2>Double: this object is drawn with two tiles (x and x-1).			Double	Double width	
+	v	1 bit	Double tiles can be ''not double'', ''horizontal'', ''vertical'', or ''both''	Double	Double width	
+	A	1 bit	Air travel (balloon) boundary? Missile boundary					Nos	No shoot through	
+	t	1 bit	toptile										For	Foreground	
+	l	1 bit	LOS look through boundary, cannot be seen through unless standing next to it.	Win	Window	
+	b	1 bit	LOS boundary									Opa	Opaque	
+	L	2 bit	Light level (0-3)								Light	Light	
+						
+	Ar	2 bit	article to use for this tile							x a an the	
+	3	1 bit	Background? Only on a few tiles, like floor, carpet, walkway, drawbridge	Ba 	Background 	
+	2	1 bit	Ignore when looking? Only on a few tiles like shadow, egg, blood, a 'nothing'	Ig 	Ignore 	
+	1	1 bit	'Ge'?, set on spinning wheel (among lots of others), see ACE mag. screenshot	Ge	?	
+	f	1 bit	force passable map location							Br	Breakthrough	
+	o	1 bit	can place something On-Top							Su	Supporting	
+	!	1 bit	maybe meant for an infravision spell, or the peer effect?			Wa	Warm	
+						
+
+The flags in the 3rd block still to be matched more definately with our own
+research. The order below is from the way they are in the screenshots in the
+ACE magazine article, and seems to match with our own partial results; there's
+just the little/big (or big/little) endian issue.
+
+	*Flag*	*Size*	*Guesses at meaning*								*Our flag*	*Notes*	
+	Wa	1 bit	Warm (contrasting with Wet), Warning						!		pretty sure about this one, it is set on warm-bodied creatures, some lava tiles etc.	
+	Su	1 bit	Supporting; Set Upon								o		pretty sure about this one, tables, book stand, etc.	
+	Br	1 bit	Breakthrough;Block(ing)/Barrier Remover;Breakable				f		pretty sure about this one, just misnamed by us	
+	Ge	1 bit	?										1		0x08 (Set on the spinningwheel, so can match with this bit position)	
+	Ig	1 bit	Ignore										2		0x10	
+	Ba	1 bit	Background (contrasting with Foreground)					3		0x20	
+	  	2 bit	Article	Ar									0xC0 known good match	
+

@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <CustomBuild Include="..\ChangeLog" />
-    <CustomBuild Include="..\nuvie.cfg" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="actors">
@@ -62,11 +61,17 @@
     <Filter Include="nuvie">
       <UniqueIdentifier>{fb799932-9120-45f2-85a2-b9555b4cc2a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="visualc7">
-      <UniqueIdentifier>{ace28aa6-aea5-4e1e-bd9c-7b68ac40b165}</UniqueIdentifier>
-    </Filter>
     <Filter Include="keybinding">
       <UniqueIdentifier>{887a2a7a-f3c9-4f07-a00f-b92c7c1c04bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="portraits">
+      <UniqueIdentifier>{87c908d8-b3fa-49c9-91dd-ba14599ec0c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="menus">
+      <UniqueIdentifier>{b8b3ec26-675f-49a3-a1f7-79f81c3f4780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="msvc">
+      <UniqueIdentifier>{5f5add06-9f32-4e0a-84f3-06b06df487c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -403,16 +408,10 @@
     <ClCompile Include="..\sound\mixer\decoder\wave\adpcm.cpp">
       <Filter>sound\mixer\decoder\wave</Filter>
     </ClCompile>
-    <ClCompile Include="..\usecode\SEUseCode.cpp">
-      <Filter>usecode</Filter>
-    </ClCompile>
     <ClCompile Include="..\usecode\U6UseCode.cpp">
       <Filter>usecode</Filter>
     </ClCompile>
     <ClCompile Include="..\usecode\UseCode.cpp">
-      <Filter>usecode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\usecode\MDUseCode.cpp">
       <Filter>usecode</Filter>
     </ClCompile>
     <ClCompile Include="..\views\PortraitView.cpp">
@@ -559,9 +558,6 @@
     <ClCompile Include="..\Player.cpp">
       <Filter>nuvie</Filter>
     </ClCompile>
-    <ClCompile Include="..\Portrait.cpp">
-      <Filter>nuvie</Filter>
-    </ClCompile>
     <ClCompile Include="..\Text.cpp">
       <Filter>nuvie</Filter>
     </ClCompile>
@@ -570,9 +566,6 @@
     </ClCompile>
     <ClCompile Include="..\misc\U6misc.cpp">
       <Filter>misc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\visualc7\dirent.cpp">
-      <Filter>visualc7</Filter>
     </ClCompile>
     <ClCompile Include="..\keybinding\KeyActions.cpp">
       <Filter>keybinding</Filter>
@@ -588,6 +581,117 @@
     </ClCompile>
     <ClCompile Include="..\actors\MDActor.cpp">
       <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\portraits\PortraitU6.cpp">
+      <Filter>portraits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\portraits\Portrait.cpp">
+      <Filter>portraits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\portraits\PortraitMD.cpp">
+      <Filter>portraits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\portraits\PortraitSE.cpp">
+      <Filter>portraits</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\InputDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\JoystickDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\VideoDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\AudioDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\CheatsDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\GameMenuDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\menus\GameplayDialog.cpp">
+      <Filter>menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\actors\WOUActor.cpp">
+      <Filter>actors</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\NuvieBmpFile.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\files\TMXMap.cpp">
+      <Filter>files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fonts\BMPFont.cpp">
+      <Filter>fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fonts\WOUFont.cpp">
+      <Filter>fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\SunMoonStripWidget.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\SunMoonRibbon.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\MDSkyStripWidget.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GUI\GUI_TextToggleButton.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\SignViewGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ScrollViewGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\views\ScrollWidgetGump.cpp">
+      <Filter>views</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FpsCounter.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ConverseGumpWOU.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MsgScrollNewUI.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CommandBarNewUI.cpp">
+      <Filter>nuvie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\adplug\mid.cpp">
+      <Filter>sound\adplug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lcorolib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lbitlib.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\lctype.c">
+      <Filter>lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\OriginFXAdLibDriver.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\mixer\decoder\AdLibSfxStream.cpp">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\adplug\OplClass.cpp">
+      <Filter>sound\adplug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\AdLibSfxManager.cpp">
+      <Filter>sound</Filter>
+    </ClCompile>
+    <ClCompile Include="dirent.cpp">
+      <Filter>msvc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\misc\SDLUtils.cpp">
+      <Filter>misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -981,12 +1085,6 @@
     <ClInclude Include="..\sound\mixer\decoder\wave\adpcm.h">
       <Filter>sound\mixer\decoder\wave</Filter>
     </ClInclude>
-    <ClInclude Include="..\usecode\MDUseCode.h">
-      <Filter>usecode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\usecode\SEUseCode.h">
-      <Filter>usecode</Filter>
-    </ClInclude>
     <ClInclude Include="..\usecode\U6ObjectTypes.h">
       <Filter>usecode</Filter>
     </ClInclude>
@@ -1140,9 +1238,6 @@
     <ClInclude Include="..\Player.h">
       <Filter>nuvie</Filter>
     </ClInclude>
-    <ClInclude Include="..\Portrait.h">
-      <Filter>nuvie</Filter>
-    </ClInclude>
     <ClInclude Include="..\Text.h">
       <Filter>nuvie</Filter>
     </ClInclude>
@@ -1161,12 +1256,6 @@
     <ClInclude Include="..\misc\U6misc.h">
       <Filter>misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\visualc7\vc7inc.h">
-      <Filter>visualc7</Filter>
-    </ClInclude>
-    <ClInclude Include="..\visualc7\dirent.h">
-      <Filter>visualc7</Filter>
-    </ClInclude>
     <ClInclude Include="..\keybinding\KeyActions.h">
       <Filter>keybinding</Filter>
     </ClInclude>
@@ -1182,6 +1271,117 @@
     <ClInclude Include="..\actors\MDActor.h">
       <Filter>actors</Filter>
     </ClInclude>
+    <ClInclude Include="..\portraits\PortraitU6.h">
+      <Filter>portraits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\portraits\Portrait.h">
+      <Filter>portraits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\portraits\PortraitMD.h">
+      <Filter>portraits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\portraits\PortraitSE.h">
+      <Filter>portraits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\GameplayDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\InputDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\JoystickDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\VideoDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\AudioDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\CheatsDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\menus\GameMenuDialog.h">
+      <Filter>menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\actors\WOUActor.h">
+      <Filter>actors</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\NuvieBmpFile.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\files\TMXMap.h">
+      <Filter>files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fonts\BMPFont.h">
+      <Filter>fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fonts\WOUFont.h">
+      <Filter>fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\SDL_compat.h">
+      <Filter>misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\SunMoonRibbon.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\SunMoonStripWidget.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\MDSkyStripWidget.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GUI\GUI_TextToggleButton.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\SignViewGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ScrollViewGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\views\ScrollWidgetGump.h">
+      <Filter>views</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FpsCounter.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ConverseGumpWOU.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\MsgScrollNewUI.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CommandBarNewUI.h">
+      <Filter>nuvie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\mid.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lua\lctype.h">
+      <Filter>lua</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\OriginFXAdLibDriver.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\mixer\decoder\AdLibSfxStream.h">
+      <Filter>sound\mixer\decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\adplug\OplClass.h">
+      <Filter>sound\adplug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\AdLibSfxManager.h">
+      <Filter>sound</Filter>
+    </ClInclude>
+    <ClInclude Include="dirent.h">
+      <Filter>msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="msvc_inc.h">
+      <Filter>msvc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\misc\SDLUtils.h">
+      <Filter>misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\screen\Scale.inl">
@@ -1190,5 +1390,10 @@
     <None Include="..\sound\adplug\README">
       <Filter>sound\adplug</Filter>
     </None>
+    <None Include="packages.config" />
+    <None Include="..\nuvie.cfg.sample" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="msvc_build_notes.txt" />
   </ItemGroup>
 </Project>
