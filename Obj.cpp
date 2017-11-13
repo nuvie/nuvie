@@ -298,8 +298,13 @@ uint32 Obj::get_total_qty(uint16 match_obj_n)
   uint16 total_qty = 0;
   
   if(obj_n == match_obj_n)
-    total_qty += qty;
-  
+  {
+    if(qty == 0)
+      total_qty += 1;
+    else
+      total_qty += qty;
+  }
+
   if(container != NULL)
   {
     for(link = container->start();link != NULL;link=link->next)
@@ -310,7 +315,12 @@ uint32 Obj::get_total_qty(uint16 match_obj_n)
         if(obj->container)
           total_qty += obj->get_total_qty(match_obj_n);
         else if(obj->obj_n == match_obj_n)
-          total_qty += obj->qty;
+        {
+          if(obj->qty == 0)
+            total_qty += 1;
+          else
+            total_qty += obj->qty;
+        }
       }
     }
   }

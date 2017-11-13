@@ -1,3 +1,9 @@
+2017-11-13 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Fix issue #54 based off of Joseph Applegate's solution.
+	  Obj::get_total_qty will now count objects with a quantity of 0 as
+	  having a quantity of 1.
+	* Add thread to U6Objects.
+
 2017-11-01 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Use proper rounding for displayed inventory and equipped weight.
 
