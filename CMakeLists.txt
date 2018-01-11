@@ -628,4 +628,4 @@ TARGET_LINK_LIBRARIES(nuvie ${SDL2_LIBRARY})
 #    TARGET_LINK_LIBRARIES(nuvie dl ${SDL_LIBS} )
 #ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
-include(tools/CMakeLists.txt)
+#include(tools/CMakeLists.txt)
