@@ -32,6 +32,10 @@ before_build:
   - cmd: cd build
   - cmd: cmake -G "Visual Studio 14 2015" ..
 
+build:
+  parallel: true                  # enable MSBuild parallel builds
+  project: nuvie.sln
+
 after_build:
   - cmd: 7z a c:\projects\nuvie\nuvie.zip c:\projects\nuvie\build\Release\nuvie.exe c:\projects\nuvie\data c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
 
