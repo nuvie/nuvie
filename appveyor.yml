@@ -34,7 +34,7 @@ before_build:
 
 build:
   parallel: true                  # enable MSBuild parallel builds
-  project: nuvie.sln
+  project: C:\projects\nuvie\build\nuvie.sln
 
 after_build:
   - cmd: 7z a c:\projects\nuvie\nuvie.zip c:\projects\nuvie\build\Release\nuvie.exe c:\projects\nuvie\data c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
