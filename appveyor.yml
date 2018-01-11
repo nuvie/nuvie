@@ -1,0 +1,40 @@
+# Specify version format
+version: "{build}"
+
+# Operating system (build VM template)
+os: Visual Studio 2015
+
+# build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
+platform: 
+  - Win32
+
+configuration:
+  - Release
+
+# clone directory
+clone_folder: C:\projects\nuvie
+
+install:
+  # SDL2
+  - ps: |
+      $SDL_VERSION = "2.0.7"
+      $SDL2DIR = "C:\sdl_root\SDL2-$SDL_VERSION"
+      if (!(Test-Path -Path $SDL2DIR)) {
+        Start-FileDownload https://libsdl.org/release/SDL2-devel-$SDL_VERSION-VC.zip
+        7z x SDL2-devel-$SDL_VERSION-VC.zip -aoa -oC:\sdl_root\
+      }
+      $env:SDL2DIR = $SDL2DIR
+
+# scripts to run before build
+before_build:
+  - cmd: cd C:\projects\nuvie
+  - cmd: md build
+  - cmd: cd build
+  - cmd: cmake -G "Visual Studio 14 2015" ..
+
+after_build:
+  - cmd: 7z a c:\projects\nuvie\nuvie.zip c:\projects\nuvie\build\Release\nuvie.exe c:\projects\nuvie\data c:\sdl_root\SDL2-2.0.7\lib\x86\*.dll
+
+artifacts:
+  - path: nuvie.zip
+    name: nuvie 
