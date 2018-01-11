@@ -591,6 +591,11 @@ set(SOURCE_FILES
     Weather.cpp
     Weather.h)
 
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    list(APPEND SOURCE_FILES msvc/dirent.cpp msvc/dirent.h)
+    include_directories(msvc)
+ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIR})
 include_directories(.)
 include_directories(actors)
