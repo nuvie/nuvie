@@ -31,6 +31,7 @@ before_build:
   - cmd: md build
   - cmd: cd build
   - cmd: cmake -G "Visual Studio 14 2015" ..
+  - cmd: dir
 
 build:
   parallel: true                  # enable MSBuild parallel builds
