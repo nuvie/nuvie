@@ -1,3 +1,6 @@
+2018-1-13 Malignant Manor <malignantmanor@users.sourceforge.net>
+	* Stop the tv in the intro from going too far left
+
 2017-11-13 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Fix issue #54 based off of Joseph Applegate's solution.
 	  Obj::get_total_qty will now count objects with a quantity of 0 as

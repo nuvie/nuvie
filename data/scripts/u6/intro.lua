@@ -199,7 +199,11 @@ local function display_tv_sprite(s_idx, image_num)
 		sprite.image = g_img_tbl[0x10+image_num]
 		sprite.x = g_tv_base_x + g_tv_x_off[image_num+1]
 		sprite.y = g_tv_base_y + g_tv_y_off[image_num+1]
-		sprite.clip_x = g_tv_base_x
+		if g_tv_base_x < 0 then
+			sprite.clip_x = 0
+		else
+			sprite.clip_x = g_tv_base_x
+		end
 		sprite.clip_y = g_tv_base_y
 		sprite.visible = true
 	end
