@@ -1,3 +1,7 @@
+2018-9-13 Eric Fry <efry at users.sourceforge.net>
+	* Added README.md
+	* Added AppVeyor Windows build CI
+
 2018-1-13 Malignant Manor <malignantmanor@users.sourceforge.net>
 	* Stop the tv in the intro from going too far left
 

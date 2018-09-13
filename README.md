@@ -1,4 +1,6 @@
 # Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
+Windows: [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/nuvie/nuvie?branch=master&svg=true)](https://ci.appveyor.com/project/yuv422/nuvie)
+
 http://nuvie.sourceforge.net/
 Version 0.5
 
