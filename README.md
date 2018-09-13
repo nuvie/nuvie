@@ -1,19 +1,20 @@
-Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
+# Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
 http://nuvie.sourceforge.net/
+Version 0.5
 
-Version 0.5 
+![Nuvie](docs/images/nuvie.png)
 
 
 What is Nuvie
 -------------
 
-Nuvie (Pronounced New-Vee) is an open source engine for Origin's games
+Nuvie (Pronounced *New-Vee*) is an open source engine for Origin's games
 Ultima 6, Martian Dreams and The Savage Empire. It uses the original data files
 from the games. Nuvie currently runs on Linux, Mac OS X and Windows. It should
 be able to run on any platform that is supported by the SDL library.
 
-We are currently focusing on Ultima 6 we hope to fully support Martian Dreams
-and Savage Empire at a later date.
+Ultima 6 is completable and we are currently adding support for Martian Dreams
+and Savage Empire.
 
 Compiling Nuvie
 ---------------
@@ -24,9 +25,10 @@ Unix (various)
 
 Compiling should (hopefully) be as simple as
 
+```
 ./configure
 make
-
+```
 Win32
 
 Nuvie can be compiled for win32 using MinGW
@@ -44,35 +46,36 @@ The config file will be automatically created the first time you launch
 Nuvie on Windows and Mac OS X environments.
 
 On Windows Vista/7/8 the config file (nuvie.cfg) is located at
-\Users\username\AppData\Roaming\Nuvie\
+`\Users\username\AppData\Roaming\Nuvie\`
 
 On Windows 2000/XP the config file (nuvie.cfg) is located at
-\Documents and Settings\username\Application Data\Nuvie\
+`\Documents and Settings\username\Application Data\Nuvie\`
 
 On Windows NT4 the config file (nuvie.cfg) is located at
-<windir>\Profiles\username\Application Data\Nuvie\
+`<windir>\Profiles\username\Application Data\Nuvie\`
 
 On Windows 95/98/ME the config file (nuvie.cfg) lives alongside
 the nuvie.exe file.
 
 On Mac OS X the configuration file is called "Nuvie Preferences" and lives in
 the following directory.
-"~/Library/Preferences/Nuvie Preferences"
+`~/Library/Preferences/Nuvie Preferences`
 
-Linux users will need to manually create a config file in either "./nuvie.cfg"
-or "~/.nuvierc"
+Linux users will need to manually create a config file in either `./nuvie.cfg`
+or `~/.nuvierc`
 
 A sample config file has been included nuvie.cfg.sample
 
 Keyboard commands
 -----------------
 
-All the keyboard commands from the original game should be avilable in Nuvie.
+All the keyboard commands from the original game should be available in Nuvie.
 
 Additional keys.
 
-Quit. 'q'
-Loading/Saving games. 's'.
+Quit. `q`
+
+Loading/Saving games. `s`.
 
 Mouse
 -----
@@ -86,8 +89,8 @@ Nuvie supports the english language speech and sfx from the FM-Towns version
 of Ultima VI. You can enable FM-Towns support with the following options in the
 config file.
 
-Set "config/ultima6/townsdir" to the location of your FM-Towns U6 data files.
-Set "config/ultima6/sfx" to "towns".
+Set `config/ultima6/townsdir` to the location of your FM-Towns U6 data files.
+Set `config/ultima6/sfx` to `towns`.
 
 Scalers
 -------
@@ -96,17 +99,17 @@ Nuvie currently supports the following scalers.
 
 Note! These scaler names are case-sensitive in the config file.
 
-Point
-Interlaced
-2xSaI
-Super2xSaI
-Scale2x
-SuperEagle
-BiLinear
-BiLinearPlus
-BilinearInterlaced
-BilinearHalfInterlaced
-BilinearQuarterInterlaced
+* Point
+* Interlaced
+* 2xSaI
+* Super2xSaI
+* Scale2x
+* SuperEagle
+* BiLinear
+* BiLinearPlus
+* BilinearInterlaced
+* BilinearHalfInterlaced
+* BilinearQuarterInterlaced
 
 Helping
 -------
