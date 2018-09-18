@@ -839,8 +839,13 @@ uint32 Actor::inventory_count_object(uint16 obj_n)
     for(link = inv->start(); link != NULL; link = link->next)
     {
         obj = (Obj *)link->data;
-        if(obj)
-          qty += obj->get_total_qty(obj_n);
+		if (obj) {
+			uint32 obj_qty = obj->get_total_qty(obj_n); // FIXME: should this be returning 0? (issue #54)
+			if (obj_qty > 0)
+				qty += obj_qty;
+			else if(obj->obj_n == obj_n)
+				qty += 1;
+		}
     }
 
     return(qty);
