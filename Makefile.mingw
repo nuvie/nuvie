@@ -225,7 +225,7 @@ dist: install tools nvconfig.dll
 	cp AUTHORS $(U6PATH)/AUTHORS.txt
 	cp ChangeLog $(U6PATH)/ChangeLog.txt
 	cp COPYING $(U6PATH)/COPYING.txt
-	cp README $(U6PATH)/README.txt
+	cp README.md $(U6PATH)/README.txt
 	cp SDL/README-SDL.txt $(U6PATH)
 	cp SDL/lib/$(SDL_DLL) $(U6PATH)
 	cp SDL/lib/$(SDL_DLL) $(U6PATH)/tools

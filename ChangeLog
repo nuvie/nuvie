@@ -1,4 +1,7 @@
-2018-9-13 Eric Fry <efry at users.sourceforge.net>
+2018-09-18 Eric Fry <efry at users.sourceforge.net>
+	* Updated references to README.md
+
+2018-09-13 Eric Fry <efry at users.sourceforge.net>
 	* Added README.md
 	* Added AppVeyor Windows build CI
 

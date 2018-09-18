@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog README TODO nuvie.cfg.sample
+%doc AUTHORS COPYING ChangeLog README.md TODO nuvie.cfg.sample
 %{_bindir}/nuvie
 %{_datadir}/nuvie/*.bmp
 %{_datadir}/nuvie/defaultkeys.txt
