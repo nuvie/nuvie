@@ -64,7 +64,7 @@ osxdmg: bundle
 	cp $(srcdir)/AUTHORS ./Nuvie-snapshot/Authors
 	cp $(srcdir)/COPYING ./Nuvie-snapshot/License
 	cp $(srcdir)/changelog ./Nuvie-snapshot/Changelog
-	cp $(srcdir)/README ./Nuvie-snapshot/ReadMe
+	cp $(srcdir)/README.md ./Nuvie-snapshot/ReadMe
 	cp $(srcdir)/xcodebuild/misc/README_MacOSX.txt ./Nuvie-snapshot/ReadMe.MacOSX
 	cp $(srcdir)/nuvie.cfg.sample ./Nuvie-snapshot/nuvie.cfg.sample
 	SetFile -t ttro -c ttxt ./Nuvie-snapshot/Authors
