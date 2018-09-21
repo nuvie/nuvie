@@ -122,7 +122,7 @@ can help out in any way please contact us.
 Contact
 -------
 
-Email: efry <AT> users.sourceforge.net
+Email: `efry <AT> users.sourceforge.net`
 IRC: #nuvie on freenode.net
 Message board: http://nuvie.sourceforge.net/phorum
 

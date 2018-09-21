@@ -320,7 +320,7 @@ static void Scale_2xSaI
 			   }
 			   else
 			   {
-				  register int r = 0;
+			   	  int r = 0;
 				  //product1 = INTERPOLATE(colorA, colorC);
 				  product1 = Interpolate_2xSaI(colorA, colorC);
 				  //product = INTERPOLATE(colorA, colorB);
@@ -509,7 +509,7 @@ static void Scale_Super2xSaI
 			else
 			if (color5 == color3 && color2 == color6)
 			{
-			   	register int r = 0;
+			   	int r = 0;
 
                	//r += GetResult (color6, color5, color1, colorA1);
                	//r += GetResult (color6, color5, color4, colorB1);
@@ -791,7 +791,7 @@ static void Scale_SuperEagle
             else
             if (color5 == color3 && color2 == color6)
             {
-               register int r = 0;
+               int r = 0;
 
                //r += GetResult (color6, color5, color1, colorA1);
                //r += GetResult (color6, color5, color4, colorB1);
