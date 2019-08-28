@@ -1644,6 +1644,22 @@ bool Script::call_player_attack()
    return call_function("player_attack", 0, 0);
 }
 
+uint16 Script::call_get_tile_to_object_mapping(uint16 tile_n)
+{
+	lua_getglobal(L, "get_tile_to_object_mapping");
+	lua_pushnumber(L, (lua_Number)tile_n);
+	call_function("get_tile_to_object_mapping", 1, 1);
+	return(lua_tounsigned(L,-1));
+}
+
+bool Script::call_is_tile_object(uint16 obj_n)
+{
+	lua_getglobal(L, "is_tile_object");
+	lua_pushnumber(L, (lua_Number)obj_n);
+	call_function("is_tile_object", 1, 1);
+	return(lua_toboolean(L,-1));
+}
+
 ScriptThread *Script::new_thread(const char *scriptfile)
 {
    ScriptThread *t = NULL;

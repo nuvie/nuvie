@@ -590,13 +590,29 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 }
 
 
-Obj *MapWindow::get_objAtCursor()
+Obj *MapWindow::get_objAtCursor(bool for_use /* = false */)
 {
+    uint16 tile_n = tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)];
+    if(tile_n == 0) //black area
+        return NULL; // nothing to see here. ;)
 
- if(tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)] == 0) //black area
-   return NULL; // nothing to see here. ;)
-
- return obj_manager->get_obj(WRAPPED_COORD(cur_x + cursor_x, cur_level), cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+    Obj *obj = obj_manager->get_obj(WRAPPED_COORD(cur_x + cursor_x, cur_level), cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+    // Savage Empire Create Object from Tile
+    if (for_use && game_type == NUVIE_GAME_SE && obj == NULL)
+    {
+        Script *script = game->get_script();
+        Uint16 obj_n = script->call_get_tile_to_object_mapping(tile_n);
+        printf("mapped obj #: %x\n", obj_n);
+        if (obj_n != 0) {
+            obj = new Obj();
+            obj->obj_n = obj_n;
+            obj->x = WRAPPED_COORD(cur_x + cursor_x, cur_level);
+            obj->y = cur_y + cursor_y;
+            obj->z = cur_level;
+			obj->set_on_map(NULL);
+        }
+    }
+    return obj;
 }
 
 Actor *MapWindow::get_actorAtCursor()
@@ -2043,11 +2059,16 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	if(actor->get_z() != obj->z)
 		return false;
 
-	LineTestResult lt;
-	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt, 0, obj))
-	{
-			return false;
-	}
+    LineTestResult lt;
+    if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt, 0, obj))
+    {
+        // Skip Check for SE Tile Objects - We are actually using the blocking item/tree
+        Script *script = game->get_script();
+        if (game_type != NUVIE_GAME_SE || !script->call_is_tile_object(obj->obj_n))
+        {
+            return false;
+        }
+    }
 
 	if(game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SECRET_DOOR)
 		return true;

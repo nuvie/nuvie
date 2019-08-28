@@ -425,6 +425,7 @@
 #define OBJ_SE_TARRED_CLOTH_STRIP  191
 #define OBJ_SE_CLAY                192
 #define OBJ_SE_GUNPOWDER           204
+#define OBJ_SE_BRANCH              206
 #define OBJ_SE_TORCH               208
 #define OBJ_SE_FLAX                210
 #define OBJ_SE_RIB_BONE            211

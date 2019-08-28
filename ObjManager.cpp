@@ -767,6 +767,7 @@ bool ObjManager::is_stackable(Obj *obj)
    case OBJ_SE_TARRED_CLOTH_STRIP:
    case OBJ_SE_CLAY:
    case OBJ_SE_GUNPOWDER:
+   case OBJ_SE_BRANCH:
    case OBJ_SE_TORCH:
    case OBJ_SE_FLAX:
    case OBJ_SE_RIB_BONE:
@@ -1454,13 +1455,13 @@ bool ObjManager::move(Obj *obj, uint16 x, uint16 y, uint8 level)
  */
 const char *ObjManager::look_obj(Obj *obj, bool show_prefix)
 {
- const char *desc;
- if(obj == NULL)
-  return NULL;
+    const char *desc;
+    if(obj == NULL)
+        return NULL;
 
- desc = tile_manager->lookAtTile(get_obj_tile_num(obj->obj_n)+obj->frame_n,obj->qty,show_prefix);
+    desc = tile_manager->lookAtTile(get_obj_tile_num(obj)+obj->frame_n,obj->qty,show_prefix);
 
- return desc;
+    return desc;
 }
 
 const char *ObjManager::get_obj_name(Obj *obj)
@@ -1530,7 +1531,7 @@ float ObjManager::get_obj_weight(Obj *obj, bool include_container_items, bool sc
 
 uint16 ObjManager::get_obj_tile_num(uint16 obj_num) //assume obj_num is < 1024 :)
 {
- return obj_to_tile[obj_num];
+    return obj_to_tile[obj_num];
 }
 
 inline bool ObjManager::is_corpse(Obj *obj)
@@ -1565,12 +1566,18 @@ inline bool ObjManager::is_corpse(Obj *obj)
 
 uint16 ObjManager::get_obj_tile_num(Obj *obj) //assume obj_num is < 1024 :)
 {
-  if(custom_actor_tiles && is_corpse(obj))
-  {
-    return Game::get_game()->get_actor_manager()->get_actor(obj->quality)->get_custom_tile_num(obj->obj_n);
-  }
+    if(custom_actor_tiles && is_corpse(obj))
+    {
+        return Game::get_game()->get_actor_manager()->get_actor(obj->quality)->get_custom_tile_num(obj->obj_n);
+    }
 
- return obj_to_tile[obj->obj_n];
+    uint16 obj_num = obj->obj_n;
+    // Savage Empire Tile Object (Get Tile from Map Location)
+    if (game_type == NUVIE_GAME_SE &&
+        Game::get_game()->get_script()->call_is_tile_object(obj_num)) {
+        return(Game::get_game()->get_game_map()->get_tile(obj->x, obj->y, obj->z)->tile_num);
+    }
+    return get_obj_tile_num(obj_num);
 }
 
 void ObjManager::set_obj_tile_num(uint16 obj_num, uint16 tile_num)

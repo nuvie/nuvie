@@ -158,6 +158,9 @@ class Script
    bool call_is_container_obj(uint16 obj_n);
    uint8 call_get_portrait_number(Actor *actor);
    bool call_player_attack();
+
+   uint16 call_get_tile_to_object_mapping(uint16 tile_n);
+   bool call_is_tile_object(uint16 obj_n);
    
  ScriptThread *new_thread(const char *scriptfile);
  ScriptThread *new_thread_from_string(const char *script);
