@@ -724,9 +724,10 @@ static int nscript_sprite_set(lua_State *L)
 		sprite->text_color = lua_tointeger(L, 3);
 		return 0;
 	}
-  if(!strcmp(key, "text_align_centre"))
+  if(!strcmp(key, "text_align"))
   {
-    sprite->text_centred = lua_toboolean(L, 3);
+    int align_val = lua_tointeger(L, 3);
+    sprite->text_align = (uint8) align_val;
     return 0;
   }
    return 0;
@@ -1747,7 +1748,7 @@ void ScriptCutscene::Display(bool full_redraw)
 
 				if(s->text.length() > 0)
 				{
-				  if(s->text_centred)
+				  if(s->text_align != 0)
 				  {
             display_wrapped_text(s);
 				  }
@@ -1805,14 +1806,14 @@ void ScriptCutscene::display_wrapped_text(CSSprite *s)
     {
       std::string token = str.substr(start,found-start);
 
-      y = display_wrapped_text_line(token, text_color, s->x, y);
+      y = display_wrapped_text_line(token, text_color, s->x, y, s->text_align);
 
       start = found + 1;
       found=str.find_first_of("^", start);
     }
 }
 
-int ScriptCutscene::display_wrapped_text_line(std::string str, uint8 text_color, int x, int y)
+int ScriptCutscene::display_wrapped_text_line(std::string str, uint8 text_color, int x, int y, uint8 align_val)
 {
 
   //font->drawString(screen, s->text.c_str(), s->x + x_off, s->y + y_off, text_color, text_color);
@@ -1842,7 +1843,7 @@ int ScriptCutscene::display_wrapped_text_line(std::string str, uint8 text_color,
         {
           len -= space_width;
         }
-        font->drawString(screen, line.c_str(), x + x_off + (width - len) / 2, y + y_off, text_color, text_color);
+        font->drawString(screen, line.c_str(), x + x_off + (align_val == 1 ? 0 : (width - len)) / 2, y + y_off, text_color, text_color);
         line = "";
         y += char_height + 2;
         len = 0;
@@ -1858,7 +1859,7 @@ int ScriptCutscene::display_wrapped_text_line(std::string str, uint8 text_color,
     if(len > 0)
     {
       len -= space_width;
-      font->drawString(screen, line.c_str(), x + x_off + (width - len) / 2, y + y_off, text_color, text_color);
+      font->drawString(screen, line.c_str(), x + x_off + (align_val == 1 ? 0 : (width - len)) / 2, y + y_off, text_color, text_color);
       y += char_height + 2;
     }
 
