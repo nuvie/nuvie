@@ -602,7 +602,6 @@ Obj *MapWindow::get_objAtCursor(bool for_use /* = false */)
     {
         Script *script = game->get_script();
         Uint16 obj_n = script->call_get_tile_to_object_mapping(tile_n);
-        printf("mapped obj #: %x\n", obj_n);
         if (obj_n != 0) {
             obj = new Obj();
             obj->obj_n = obj_n;
