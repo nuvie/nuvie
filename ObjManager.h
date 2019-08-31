@@ -95,6 +95,7 @@ class ObjManager
  UseCode *usecode;
 
  std::list<Obj *> temp_obj_list;
+ std::list<Obj *> tile_obj_list; // SE single instance 'map tile' objects
  uint16 last_obj_blk_x, last_obj_blk_y;
  uint8 last_obj_blk_z;
 
@@ -153,6 +154,7 @@ class ObjManager
  Obj *get_obj_of_type_from_location(uint16 obj_n, uint16 x, uint16 y, uint8 z);
  Obj *get_obj_of_type_from_location(uint16 obj_n, sint16 quality, sint32 qty, uint16 x, uint16 y, uint8 z);
  Obj *get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, bool include_ignored_objects = true, Obj *excluded_obj = NULL);
+ Obj *get_tile_obj(uint16 obj_n);
 
  uint16 get_obj_tile_num(uint16 obj_num);
  inline bool is_corpse(Obj *obj);

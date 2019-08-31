@@ -592,23 +592,33 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 
 Obj *MapWindow::get_objAtCursor(bool for_use /* = false */)
 {
-    uint16 tile_n = tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)];
-    if(tile_n == 0) //black area
+    MapCoord coord = get_cursorCoord();
+    return get_objAtCoord(coord, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED, for_use);
+}
+
+Obj *MapWindow::get_objAtCoord(MapCoord coord, bool top_obj, bool include_ignored_objects, bool for_use /* = false */)
+{
+    if (tile_is_black(coord.x, coord.y))
         return NULL; // nothing to see here. ;)
 
-    Obj *obj = obj_manager->get_obj(WRAPPED_COORD(cur_x + cursor_x, cur_level), cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+    Obj *obj = obj_manager->get_obj(coord.x, coord.y, coord.z, top_obj, include_ignored_objects);
     // Savage Empire Create Object from Tile
     if (for_use && game_type == NUVIE_GAME_SE && obj == NULL)
     {
         Script *script = game->get_script();
-        Uint16 obj_n = script->call_get_tile_to_object_mapping(tile_n);
-        if (obj_n != 0) {
-            obj = new Obj();
-            obj->obj_n = obj_n;
-            obj->x = WRAPPED_COORD(cur_x + cursor_x, cur_level);
-            obj->y = cur_y + cursor_y;
-            obj->z = cur_level;
-			obj->set_on_map(NULL);
+        uint16 map_win_x = WRAP_VIEWP(cur_x, coord.x, map_width);
+        uint16 map_win_y = coord.y - cur_y;
+        // Check that x,y is in tmp_map_buf
+        if (map_win_x <= win_width + (TMP_MAP_BORDER * 2) &&
+            map_win_y <= win_height + (TMP_MAP_BORDER * 2)) {
+            uint16 tile_n = tmp_map_buf[(map_win_y+TMP_MAP_BORDER) * tmp_map_width + (map_win_x+TMP_MAP_BORDER)];
+            uint16 obj_n = script->call_get_tile_to_object_mapping(tile_n);
+            if (obj_n != 0) {
+                obj = obj_manager->get_tile_obj(obj_n);
+                obj->x = coord.x;
+                obj->y = coord.y;
+                obj->z = coord.z;
+            }
         }
     }
     return obj;

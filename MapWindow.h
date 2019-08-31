@@ -201,6 +201,7 @@ class MapWindow: public GUI_Widget
  const char *look(uint16 x, uint16 y, bool show_prefix = true);
  const char *lookAtCursor(bool show_prefix = true) { return(look(cursor_x, cursor_y, show_prefix)); }
  Obj *get_objAtCursor(bool for_use = false);
+ Obj *get_objAtCoord(MapCoord coord, bool top_obj, bool include_ignored_objects, bool for_use = false);
  Actor *get_actorAtCursor();
  MapCoord get_cursorCoord();
  Obj *get_objAtMousePos(int x, int y);

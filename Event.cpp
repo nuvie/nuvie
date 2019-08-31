@@ -1004,7 +1004,7 @@ bool Event::use(MapCoord coord) {
 
   if (!map_window->tile_is_black(coord.x, coord.y)) {
     Actor *actor = game->get_actor_manager()->get_actor(coord.x, coord.y, coord.z);
-    Obj *obj = map_window->get_objAtCursor(true);
+    Obj *obj = map_window->get_objAtCoord(coord, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED, true);
 
     if (obj && obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj)) {
       Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);

@@ -1341,6 +1341,22 @@ Obj *ObjManager::get_objBasedAt(uint16 x, uint16 y, uint8 level, bool top_obj, b
  return NULL;
 }
 
+// ObjManager keeps one instance of tile_obj per object.
+// SE has 3 tile objects (Trees, Yucca Plants, and Oven Fires)
+Obj *ObjManager::get_tile_obj(uint16 obj_n)
+{
+    for (std::list<Obj *>::iterator it = tile_obj_list.begin(); it != tile_obj_list.end(); ++it) {
+        if ((*it)->obj_n == obj_n) {
+            return *it;
+        }
+    }
+    Obj *obj = new Obj();
+    obj->obj_n = obj_n;
+    obj->set_on_map(NULL);
+    tile_obj_list.push_back(obj);
+    return obj;
+}
+
 /*
 bool ObjManager::add_obj(Obj *obj, bool addOnTop)
 {
