@@ -590,13 +590,37 @@ const char *MapWindow::look(uint16 x, uint16 y, bool show_prefix)
 }
 
 
-Obj *MapWindow::get_objAtCursor()
+Obj *MapWindow::get_objAtCursor(bool for_use /* = false */)
 {
+    MapCoord coord = get_cursorCoord();
+    return get_objAtCoord(coord, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED, for_use);
+}
 
- if(tmp_map_buf[(cursor_y+TMP_MAP_BORDER) * tmp_map_width + (cursor_x+TMP_MAP_BORDER)] == 0) //black area
-   return NULL; // nothing to see here. ;)
+Obj *MapWindow::get_objAtCoord(MapCoord coord, bool top_obj, bool include_ignored_objects, bool for_use /* = false */)
+{
+    if (tile_is_black(coord.x, coord.y))
+        return NULL; // nothing to see here. ;)
 
- return obj_manager->get_obj(WRAPPED_COORD(cur_x + cursor_x, cur_level), cur_y + cursor_y, cur_level,OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+    Obj *obj = obj_manager->get_obj(coord.x, coord.y, coord.z, top_obj, include_ignored_objects);
+    // Savage Empire Create Object from Tile
+    if (for_use && game_type == NUVIE_GAME_SE && obj == NULL)
+    {
+        Script *script = game->get_script();
+        uint16 map_win_x = WRAP_VIEWP(cur_x, coord.x, map_width);
+        uint16 map_win_y = coord.y - cur_y;
+        // Check that x,y is in tmp_map_buf
+        if (is_on_screen(coord.x, coord.y, coord.z)) {
+            uint16 tile_n = tmp_map_buf[(map_win_y+TMP_MAP_BORDER) * tmp_map_width + (map_win_x+TMP_MAP_BORDER)];
+            uint16 obj_n = script->call_get_tile_to_object_mapping(tile_n);
+            if (obj_n != 0) {
+                obj = obj_manager->get_tile_obj(obj_n);
+                obj->x = coord.x;
+                obj->y = coord.y;
+                obj->z = coord.z;
+            }
+        }
+    }
+    return obj;
 }
 
 Actor *MapWindow::get_actorAtCursor()
@@ -2043,11 +2067,16 @@ bool MapWindow::can_get_obj(Actor *actor, Obj *obj)
 	if(actor->get_z() != obj->z)
 		return false;
 
-	LineTestResult lt;
-	if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt, 0, obj))
-	{
-			return false;
-	}
+    LineTestResult lt;
+    if(map->lineTest(actor->get_x(), actor->get_y(), obj->x, obj->y, obj->z, LT_HitUnpassable, lt, 0, obj))
+    {
+        // Skip Check for SE Tile Objects - We are actually using the blocking item/tree
+        Script *script = game->get_script();
+        if (game_type != NUVIE_GAME_SE || !script->call_is_tile_object(obj->obj_n))
+        {
+            return false;
+        }
+    }
 
 	if(game_type == NUVIE_GAME_U6 && obj->obj_n == OBJ_U6_SECRET_DOOR)
 		return true;

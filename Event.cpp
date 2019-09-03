@@ -1004,7 +1004,7 @@ bool Event::use(MapCoord coord) {
 
   if (!map_window->tile_is_black(coord.x, coord.y)) {
     Actor *actor = game->get_actor_manager()->get_actor(coord.x, coord.y, coord.z);
-    Obj *obj = obj_manager->get_obj(coord.x, coord.y, coord.z, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED);
+    Obj *obj = map_window->get_objAtCoord(coord, OBJ_SEARCH_TOP, OBJ_EXCLUDE_IGNORED, true);
 
     if (obj && obj->is_on_map() && map_window->tile_is_black(obj->x, obj->y, obj)) {
       Obj *bottom_obj = obj_manager->get_obj(obj->x, obj->y, obj->z, false);
@@ -1508,6 +1508,12 @@ void Event::alt_code_input(const char *in) {
       active_alt_code = 0;
       break;
 
+    case 301: // Show Midgame graphics
+      game->get_script()->call_play_midgame_sequence((uint16) strtol(in, NULL, 10));
+      scroll->display_string("\n");
+      active_alt_code = 0;
+      break;
+
     case 400: // talk to NPC (FIXME: get portrait and inventory too)
       a_num = (uint8) strtol(in, NULL, 10);
       if (a_num == 0 || !game->get_converse()->start(a_num)) {
@@ -1650,6 +1656,12 @@ void Event::alt_code(const char *cs) {
   switch (c) {
     case 300: // display portrait by number
       scroll->display_string("Portrait? ");
+      get_scroll_input();
+      active_alt_code = c;
+      break;
+
+    case 301: // display midgame sequence
+      scroll->display_string("Midgame? ");
       get_scroll_input();
       active_alt_code = c;
       break;
