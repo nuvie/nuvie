@@ -609,8 +609,7 @@ Obj *MapWindow::get_objAtCoord(MapCoord coord, bool top_obj, bool include_ignore
         uint16 map_win_x = WRAP_VIEWP(cur_x, coord.x, map_width);
         uint16 map_win_y = coord.y - cur_y;
         // Check that x,y is in tmp_map_buf
-        if (map_win_x <= win_width + (TMP_MAP_BORDER * 2) &&
-            map_win_y <= win_height + (TMP_MAP_BORDER * 2)) {
+        if (is_on_screen(coord.x, coord.y, coord.z)) {
             uint16 tile_n = tmp_map_buf[(map_win_y+TMP_MAP_BORDER) * tmp_map_width + (map_win_x+TMP_MAP_BORDER)];
             uint16 obj_n = script->call_get_tile_to_object_mapping(tile_n);
             if (obj_n != 0) {

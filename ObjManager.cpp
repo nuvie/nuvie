@@ -434,6 +434,11 @@ void ObjManager::clean()
  // remove the temporary object list. The objects were deleted from the surface and dungeon trees.
  temp_obj_list.clear();
 
+ for (std::list<Obj *>::iterator it = tile_obj_list.begin(); it != tile_obj_list.end(); ++it) {
+     delete *it;
+ }
+ tile_obj_list.clear();
+
  return;
 }
 

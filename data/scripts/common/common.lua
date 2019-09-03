@@ -161,7 +161,7 @@ function play_midgame_sequence(seq_num)
       text_sprite_bg.text_color = 14
       --]]
       text_sprite = sprite_new(nil, 8, 160, true)
-      text_sprite.text_align_centre = 2
+      text_sprite.text_align = 2
       text_sprite.text_color = 15
       bg.x = 80
       bg.y = 12
