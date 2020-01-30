@@ -31,6 +31,7 @@
 #include "emuopl.h"
 #include "SoundManager.h"
 #include "SongAdPlug.h"
+#include "SongCustom.h"
 #include "Sample.h"
 #include <algorithm>
 #include <cmath>
@@ -304,7 +305,7 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
       song = (Song *)SongExists(token2);
       if(song == NULL)
         {
-          song = new Song;
+          song = new SongCustom(mixer->getMixer());
           if(!loadSong(song, filename.c_str()))
             continue; //error loading song
         }
