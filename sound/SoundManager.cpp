@@ -752,7 +752,7 @@ void SoundManager::update()
       if(m_pCurrentSong)
         {
           DEBUG(0,LEVEL_INFORMATIONAL,"assigning new song! '%s'\n", m_pCurrentSong->GetName().c_str());
-          if(!m_pCurrentSong->Play (false))
+          if(!m_pCurrentSong->Play (true))
             {
               DEBUG(0,LEVEL_ERROR,"play failed!\n");
             }

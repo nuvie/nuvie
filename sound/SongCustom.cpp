@@ -60,10 +60,15 @@ bool SongCustom::Init(const char *filename) {
 
 bool SongCustom::Play(bool looping) {
 
-    if(stream)
-    {
-    	mixer->playStream(Audio::Mixer::kMusicSoundType, &handle, (Audio::AudioStream *) stream, -1, Audio::Mixer::kMaxChannelVolume, 0, DisposeAfterUse::NO);
-    }
+	if(looping)
+	{
+		Audio::LoopingAudioStream *looping_stream = new Audio::LoopingAudioStream(stream, 0);
+		mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, looping_stream, -1, Audio::Mixer::kMaxChannelVolume, 0, DisposeAfterUse::NO);
+	}
+	else
+	{
+		mixer->playStream(Audio::Mixer::kPlainSoundType, &handle, (Audio::AudioStream *) stream, -1, Audio::Mixer::kMaxChannelVolume, 0, DisposeAfterUse::NO);
+	}
 	return true;
 }
 
