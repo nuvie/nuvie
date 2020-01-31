@@ -63,6 +63,7 @@ public:
     void update(); // at the moment this just changes songs if required
 
     void musicPlayFrom(string group);
+    void musicPlaySongnum(int songnum);
 
     void musicPause();
     void musicPlay();
@@ -107,6 +108,7 @@ private:
 	Sound* RequestTileSound(int id);
 	Sound* RequestObjectSound(int id);
 	Sound* RequestSong(string group); //request a song from this group
+	Sound* RequestSong(int songnum); // request a song by list index
 
 	uint16 RequestObjectSfxId(uint16 obj_n);
 
