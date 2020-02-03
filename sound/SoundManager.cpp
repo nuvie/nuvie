@@ -301,19 +301,20 @@ bool SoundManager::LoadNativeU6Songs()
 bool SoundManager::LoadCustomSongs (string sound_dir)
 {
   char seps[] = ";\r\n";
-  char seps_group[] = ",";
-  char seps_song[] = "|";
-  char *groupname;
-  char *resource;
-  char *songname;
+  char sep_group[] = ",";
+  char sep_song[] = "|";
   char *token1;
   char *token2;
-  char *state;
   char *sz;
   NuvieIOFileRead niof;
   Song *song;
+  std::string buffer;
+  std::string groupname;
+  std::string resource;
+  std::string songname;
   std::string scriptname;
   std::string filename;
+  std::string::size_type idx;
 
   build_path(sound_dir, "music.cfg", scriptname);
 
@@ -328,10 +329,13 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
   token1 = strtok (sz, seps);
   for( ; (token1 != NULL) && ((token2 = strtok(NULL, seps)) != NULL) ; token1 = strtok(NULL, seps))
     {
-      // parses string in format of: <groupname>[,<groupname>[,...]];<resource>[|<songname>]
-      state = token2;
-      resource = strtok_r(state, seps_song, &state);
-      songname = strtok_r(state, seps_song, &state);
+      // parses token in format of: <resource>[|<songname>]
+      buffer = token2;
+	  idx = buffer.find(sep_song);
+      resource = buffer.substr(0, idx);
+      if (idx != std::string::npos)
+        songname = buffer.substr(idx+1);
+
       build_path(sound_dir, resource, filename);
 
       song = (Song *)SongExists(token2);
@@ -341,15 +345,18 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
           if(!loadSong(song, filename.c_str()))
             continue; //error loading song
 
-          if(songname != NULL)
-            song->SetName(songname);
+          if(!songname.empty())
+            song->SetName(songname.c_str());
         }
 
-      state = token1;
-      for(groupname = strtok_r(state, seps_group, &state) ; groupname != NULL ; groupname = strtok_r(state, seps_group, &state))
+      // parses token in format of: <groupname>[,<groupname>[,...]]
+	  for(buffer = token1 ; ! buffer.empty() ; buffer = idx == std::string::npos ? "" : buffer.substr(idx+1))
         {
-          if(groupAddSong(groupname, song))
-            DEBUG(0,LEVEL_DEBUGGING,"%s : %s\n", groupname, resource);
+	      idx = buffer.find(sep_group);
+	      groupname = buffer.substr(0, idx);
+
+          if(groupAddSong(groupname.c_str(), song))
+            DEBUG(0,LEVEL_DEBUGGING,"%s : %s\n", groupname.c_str(), resource.c_str());
         }
     }
 
@@ -376,7 +383,6 @@ bool SoundManager::loadSong(Song *song, const char *filename)
 // (SB-X)
 bool SoundManager::loadSong(Song *song, const char *filename, const char *title)
 {
-	DEBUG(0, LEVEL_INFORMATIONAL,"loading song %s\n", song->GetName());
     if(loadSong(song, filename) == true)
     {
         song->SetName(title);
@@ -387,7 +393,6 @@ bool SoundManager::loadSong(Song *song, const char *filename, const char *title)
 
 bool SoundManager::groupAddSong (const char *group, Song *song)
 {
-	DEBUG(0, LEVEL_INFORMATIONAL,"adding song %s to group %s\n", song->GetName(), group);
   if(song != NULL)
     {                       //we have a valid song
       SoundCollection *psc;
