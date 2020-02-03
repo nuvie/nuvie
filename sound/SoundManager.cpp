@@ -31,6 +31,7 @@
 #include "emuopl.h"
 #include "SoundManager.h"
 #include "SongAdPlug.h"
+#include "SongCustom.h"
 #include "Sample.h"
 #include <algorithm>
 #include <cmath>
@@ -231,46 +232,68 @@ bool SoundManager::LoadNativeU6Songs()
 
  string filename;
 
- config_get_path(m_Config, "brit.m", filename);
+ config_get_path(m_Config, "ultima.m", filename);
  song = new SongAdPlug(mixer->getMixer(), opl);
-// loadSong(song, filename.c_str());
- loadSong(song, filename.c_str(), "Rule Britannia");
+ loadSong(song, filename.c_str(), "Ultima Theme");
  groupAddSong("random", song);
+ groupAddSong("menu", song);
+
+ config_get_path(m_Config, "bootup.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Bootup (Can't Remove the Pain)");
+ groupAddSong("bootup", song);
+
+ config_get_path(m_Config, "intro.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Introduction (Fall Leaves)");
+ groupAddSong("intro", song);
+
+ config_get_path(m_Config, "create.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Character Creation (I Hear You Crying)");
+ groupAddSong("create", song);
 
  config_get_path(m_Config, "forest.m", filename);
  song = new SongAdPlug(mixer->getMixer(), opl);
- loadSong(song, filename.c_str(), "Wanderer (Forest)");
+ loadSong(song, filename.c_str(), "Black Forest");
  groupAddSong("random", song);
-
- config_get_path(m_Config, "stones.m", filename);
- song = new SongAdPlug(mixer->getMixer(), opl);
- loadSong(song, filename.c_str(), "Stones");
- groupAddSong("random", song);
-
- config_get_path(m_Config, "ultima.m", filename);
- song = new SongAdPlug(mixer->getMixer(), opl);
- loadSong(song, filename.c_str(), "Ultima VI Theme");
- groupAddSong("random", song);
-
- config_get_path(m_Config, "engage.m", filename);
- song = new SongAdPlug(mixer->getMixer(), opl);
- loadSong(song, filename.c_str(), "Engagement and Melee");
- groupAddSong("combat", song);
 
  config_get_path(m_Config, "hornpipe.m", filename);
  song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Captain Johne's Hornpipe");
  groupAddSong("boat", song);
 
+ config_get_path(m_Config, "engage.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Engagement and Melee");
+ groupAddSong("combat", song);
+
+ config_get_path(m_Config, "stones.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Stones");
+ groupAddSong("random", song);
+
+ config_get_path(m_Config, "dungeon.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Dungeon (The Wander)");
+ groupAddSong("dungeon", song);
+
+ config_get_path(m_Config, "brit.m", filename);
+ song = new SongAdPlug(mixer->getMixer(), opl);
+ loadSong(song, filename.c_str(), "Rule Britannia");
+ groupAddSong("random", song);
+ groupAddSong("end_brit", song);
+
  config_get_path(m_Config, "gargoyle.m", filename);
  song = new SongAdPlug(mixer->getMixer(), opl);
  loadSong(song, filename.c_str(), "Audchar Gargl Zenmur");
  groupAddSong("gargoyle", song);
+ groupAddSong("end_gargoyle", song);
 
- config_get_path(m_Config, "dungeon.m", filename);
+ config_get_path(m_Config, "end.m", filename);
  song = new SongAdPlug(mixer->getMixer(), opl);
- loadSong(song, filename.c_str(), "Dungeon");
- groupAddSong("dungeon", song);
+ loadSong(song, filename.c_str(), "Unity");
+ groupAddSong("end", song);
 
  return true;
 }
@@ -278,13 +301,20 @@ bool SoundManager::LoadNativeU6Songs()
 bool SoundManager::LoadCustomSongs (string sound_dir)
 {
   char seps[] = ";\r\n";
+  char sep_group[] = ",";
+  char sep_song[] = "|";
   char *token1;
   char *token2;
   char *sz;
   NuvieIOFileRead niof;
   Song *song;
+  std::string buffer;
+  std::string groupname;
+  std::string resource;
+  std::string songname;
   std::string scriptname;
   std::string filename;
+  std::string::size_type idx;
 
   build_path(sound_dir, "music.cfg", scriptname);
 
@@ -299,18 +329,35 @@ bool SoundManager::LoadCustomSongs (string sound_dir)
   token1 = strtok (sz, seps);
   for( ; (token1 != NULL) && ((token2 = strtok(NULL, seps)) != NULL) ; token1 = strtok(NULL, seps))
     {
-      build_path(sound_dir, token2, filename);
+      // parses token in format of: <resource>[|<songname>]
+      buffer = token2;
+	  idx = buffer.find(sep_song);
+      resource = buffer.substr(0, idx);
+      if (idx != std::string::npos)
+        songname = buffer.substr(idx+1);
+
+      build_path(sound_dir, resource, filename);
 
       song = (Song *)SongExists(token2);
       if(song == NULL)
         {
-          song = new Song;
+          song = new SongCustom(mixer->getMixer());
           if(!loadSong(song, filename.c_str()))
             continue; //error loading song
+
+          if(!songname.empty())
+            song->SetName(songname.c_str());
         }
 
-      if(groupAddSong(token1, song))
-        DEBUG(0,LEVEL_DEBUGGING,"%s : %s\n", token1, token2);
+      // parses token in format of: <groupname>[,<groupname>[,...]]
+	  for(buffer = token1 ; ! buffer.empty() ; buffer = idx == std::string::npos ? "" : buffer.substr(idx+1))
+        {
+	      idx = buffer.find(sep_group);
+	      groupname = buffer.substr(0, idx);
+
+          if(groupAddSong(groupname.c_str(), song))
+            DEBUG(0,LEVEL_DEBUGGING,"%s : %s\n", groupname.c_str(), resource.c_str());
+        }
     }
 
   free(sz);
@@ -547,6 +594,22 @@ void SoundManager::musicPlayFrom(string group)
   }
 }
 
+void SoundManager::musicPlaySongnum(int songnum)
+{
+	if (!music_enabled || !audio_enabled)
+		return;
+
+	Sound *song = RequestSong(songnum);
+
+	if (song != NULL && song != m_pCurrentSong)
+	{
+		musicStop();
+		m_pCurrentSong = song;
+		m_CurrentGroup = "";
+		musicPlay();
+	}
+}
+
 void SoundManager::musicPause()
 {
  //Mix_PauseMusic();
@@ -567,7 +630,7 @@ void SoundManager::musicPlay()
 
  if (m_pCurrentSong != NULL)
         {
-         m_pCurrentSong->Play();
+         m_pCurrentSong->Play(true);
          m_pCurrentSong->SetVolume(music_volume);
         }
 
@@ -751,7 +814,7 @@ void SoundManager::update()
       if(m_pCurrentSong)
         {
           DEBUG(0,LEVEL_INFORMATIONAL,"assigning new song! '%s'\n", m_pCurrentSong->GetName().c_str());
-          if(!m_pCurrentSong->Play (false))
+          if(!m_pCurrentSong->Play (true))
             {
               DEBUG(0,LEVEL_ERROR,"play failed!\n");
             }
@@ -838,6 +901,25 @@ Sound *SoundManager::RequestSong (string group)
     }
   return NULL;
 };
+
+Sound *SoundManager::RequestSong (int songnum)
+{
+	int idx = 0;
+
+	--songnum; // songnum is 1-indexed
+
+	if (songnum < 0)
+		return NULL;
+
+	std::list < Sound * >::iterator it;
+	for (it = m_Songs.begin (); it != m_Songs.end (); ++it, ++idx)
+	{
+		if (songnum == idx)
+			return *it;
+	}
+
+	return NULL;
+}
 
 Audio::SoundHandle SoundManager::playTownsSound(std::string filename, uint16 sample_num)
 {

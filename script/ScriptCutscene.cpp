@@ -113,6 +113,8 @@ static int nscript_canvas_string_length(lua_State *L);
 static int nscript_canvas_rotate_game_palette(lua_State *L);
 
 static int nscript_music_play(lua_State *L);
+static int nscript_music_play_from(lua_State *L);
+static int nscript_music_play_songnum(lua_State *L);
 static int nscript_music_stop(lua_State *L);
 static int nscript_get_mouse_x(lua_State *L);
 static int nscript_get_mouse_y(lua_State *L);
@@ -222,6 +224,12 @@ void nscript_init_cutscene(lua_State *L, Configuration *cfg, GUI *gui, SoundMana
 
    lua_pushcfunction(L, nscript_music_play);
    lua_setglobal(L, "music_play");
+
+   lua_pushcfunction(L, nscript_music_play_from);
+   lua_setglobal(L, "music_play_from");
+
+   lua_pushcfunction(L, nscript_music_play_songnum);
+   lua_setglobal(L, "music_play_songnum");
 
    lua_pushcfunction(L, nscript_music_stop);
    lua_setglobal(L, "music_stop");
@@ -1056,6 +1064,24 @@ static int nscript_music_play(lua_State *L)
 	}
 
 	cutScene->get_sound_manager()->musicPlay(filename, song_num);
+
+	return 0;
+}
+
+static int nscript_music_play_from(lua_State *L)
+{
+	const char *groupname = lua_tostring(L, 1);
+
+	cutScene->get_sound_manager()->musicPlayFrom(groupname);
+
+	return 0;
+}
+
+static int nscript_music_play_songnum(lua_State *L)
+{
+	uint16 song_num = lua_tointeger(L, 1);
+
+	cutScene->get_sound_manager()->musicPlaySongnum(song_num);
 
 	return 0;
 }

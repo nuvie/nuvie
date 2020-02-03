@@ -457,6 +457,8 @@ set(SOURCE_FILES
     sound/Song.h
     sound/SongAdPlug.cpp
     sound/SongAdPlug.h
+    sound/SongCustom.cpp
+    sound/SongCustom.h
     sound/Sound.h
     sound/SoundManager.cpp
     sound/SoundManager.h

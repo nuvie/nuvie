@@ -1030,7 +1030,7 @@ local function play()
 mouse_cursor_set_pointer(0)
 mouse_cursor_visible(false)
 load_images("intro_1.shp")
-music_play("bootup.m")
+music_play_from("bootup")
 --[ [
 canvas_set_palette("palettes.int", 0)
 canvas_set_update_interval(25)
@@ -1044,7 +1044,7 @@ background.y = 0
 background.opacity = 0
 background.visible = true
 
-music_play("bootup.m")
+music_play_from("bootup")
 for i=0,0xff,3 do
 	background.opacity = i
 	if poll_for_esc() == true then return end
@@ -1678,7 +1678,7 @@ g_keycode_tbl =
 [122]="z",
 }
 local function create_character()
-	music_play("create.m")
+	music_play_from("create")
 	
 	local bubbles = sprite_new(image_new(100,100, 0), 110, 30, false)
 	local bg = sprite_new(image_load("vellum1.shp", 0), 0x10, 0x50, true)
@@ -2340,7 +2340,7 @@ local function intro()
 	local ropes = sprite_new(intro_img_tbl[12], 0xd2, 0x84, false)
 			
 	canvas_set_palette("palettes.int", 7)
-	music_play("intro.m")
+	music_play_from("intro")
 					
 	fade_in()
 	
@@ -2953,7 +2953,7 @@ local function main_menu_set_pal(idx)
 end
 
 local function main_menu_load()
-	music_play("ultima.m")
+	music_play_from("menu")
 	g_menu = {}
 	
 	canvas_set_palette("palettes.int", 0)
@@ -2981,7 +2981,7 @@ local function selected_intro()
 	fade_out()
 	canvas_hide_all_sprites()
 	intro()
-	music_play("ultima.m")
+	music_play_from("menu")
 	g_menu["title"].visible = true
 	fade_in()
 	g_menu["subtitle"].visible = true
@@ -3000,7 +3000,7 @@ local function selected_create_character()
 	canvas_set_palette("palettes.int", 0)
 	g_menu_idx=0
 	main_menu_set_pal(g_menu_idx)
-	music_play("ultima.m")
+	music_play_from("menu")
 	fade_in_sprite(g_menu["menu"])
 	return false
 end
@@ -3063,21 +3063,7 @@ local function main_menu()
 					input = input - 48
 				end
 
-				local song_names = {
-					"ultima.m",
-					"bootup.m",
-					"intro.m",
-					"create.m",
-					"forest.m",
-					"hornpipe.m",
-					"engage.m",
-					"stones.m",
-					"dungeon.m",
-					"brit.m",
-					"gargoyle.m",
-					"end.m"
-				}
-				music_play(song_names[input])
+				music_play_songnum(input)
 			elseif input == 0 then --mouse click
 				local x = get_mouse_x()
 				if x > 56 and x < 264 then
