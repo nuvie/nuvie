@@ -538,14 +538,14 @@ bool Nuvie::initDefaultConfigMacOSX(const char *home_env)
 		return false;
 
 	SharedDefaultConfigValues();
-	config->set("config/ultima6/gamedir", "/Library/Application Support/Nuvie Support/ultima6");
-	config->set("config/ultima6/townsdir", "/Library/Application Support/Nuvie Support/townsU6");
+	config->set("config/ultima6/gamedir", home + "/Library/Application Support/Nuvie/ultima6");
+	config->set("config/ultima6/townsdir", home + "/Library/Application Support/Nuvie/townsU6");
 	config->set("config/ultima6/savedir", home + "/Library/Application Support/Nuvie/savegames");
 	config->set("config/ultima6/sfxdir", home + "/Library/Application Support/Nuvie/custom_sfx");
 	config->set("config/ultima6/patch_keys", home + "/Library/Preferences/Nuvie Preferences/patchkeys.txt");
-	config->set("config/martian/gamedir", "/Library/Application Support/Nuvie Support/martian");
+	config->set("config/martian/gamedir", home + "/Library/Application Support/Nuvie/martian");
 	config->set("config/martian/patch_keys", home + "/Library/Preferences/Nuvie Preferences/patchkeys.txt");
-	config->set("config/savage/gamedir", "/Library/Application Support/Nuvie Support/savage");
+	config->set("config/savage/gamedir", home + "/Library/Application Support/Nuvie/savage");
 	config->set("config/savage/patch_keys", home + "/Library/Preferences/Nuvie Preferences/patchkeys.txt");
 
 	config->write();
