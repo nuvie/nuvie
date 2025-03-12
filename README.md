@@ -1,4 +1,16 @@
 # Nuvie - An Engine for Ultima6, Martian Dreams and Savage Empire.
+
+Nuvie has moved to the ScummVM project
+--------------------------------------
+The Nuvie project has a new home as an engine inside the [ScummVM](https://www.scummvm.org/) application. [Github Repo](https://github.com/scummvm/scummvm) 
+Further developments will be done there.
+
+ScummVM offers a range of benefits to Nuvie. More supported platforms, MT-32 audio support. Extensive shader support etc.
+
+Please raise any issues with the ScummVM [bug tracker](https://bugs.scummvm.org/) 
+
+---
+
 Windows: [![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/nuvie/nuvie?branch=master&svg=true)](https://ci.appveyor.com/project/yuv422/nuvie)
 
 http://nuvie.sourceforge.net/
